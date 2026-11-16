@@ -1,0 +1,36 @@
+# Derleme çıktıları
+bin/
+obj/
+publish/
+*.user
+.vs/
+__pycache__/
+*.pyc
+node_modules/
+
+# WebView2 sabit sürüm paketi (depoya konmaz)
+WebView2Runtime/
+Microsoft.WebView2.FixedVersionRuntime*/
+*.cab
+
+# VERİ VE GİZLİ BİLGİ: hiçbir koşulda depoya girmez
+*.db
+*.sqlite
+*.sqlite3
+*.bak
+*.xlsx
+*.xlsb
+*.xls
+*.csv
+*.jpg
+*.jpeg
+*.png
+conn.dat
+*.pfx
+*.key
+appsettings.*.json
+secrets*
+
+# Derleme sırasında ui-src/build.py ile üretilir
+src/Gorevlendirme.App/Ui/index.html
+tools/kilavuz/shots/

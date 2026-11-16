@@ -1,0 +1,30 @@
+# Gorevlendirme.App – plan ve durum
+
+Durum işaretleri: [ ] bekliyor · [~] kodlandı, sınanmadı · [x] sınandı ve birleştirildi · [!] engelli
+
+## Dış bağımlılıklar
+- [ ] IT: ilk kurulumdan önce `SST_Ozluk` tam yedeği (gerçek Özlük verisi aynı veritabanında)
+- [x] Özlük şeması ve rolleri hazır (`SST_Ozluk`, `ozluk_kullanici`, `dbo.sp_ben`)
+- [ ] Kullanıcı: eski `gorevlendirme.db` ile kuru çalıştırma raporu (Dilim 3b)
+- [ ] Kullanıcı: iş akışı dokümanlarındaki (01, 02) iş kuralı farkları için gerektikçe onay
+
+## Kararlar (özet; tam liste CLAUDE.md)
+dbo.* dokunulmaz · `SST_Ozluk` içinde `gorev` şeması · FM ve yıllık izin yok · çakışmada yönetici seçer · rapor evrakı veritabanında · eski veri erken taşınır · kılavuz güncel tutulur.
+
+## Dilimler
+Ayrıntı: `docs/DILIMLER.md`.
+
+| # | Dilim | SQL gerekir | Durum |
+|---|---|---|---|
+| 0 | İskelet, belgeler, dbo koruma denetimi | hayır | [~] dal `dilim-0-iskelet`; denetim testleri geçti, CI bekliyor |
+| 1 | Şema çekirdeği, ORTAM, kaldır/sıfırla, Migrator, kabuk | evet | [ ] |
+| 2 | Kimlik, kadro eşitleme, ilk arayüz, kılavuz aracı | evet | [ ] |
+| 3 | Proje havuzu, akademik takvim | evet | [ ] |
+| 3b | Eski veri aktarımı (erken) | evet | [ ] |
+| 4 | Talep (Proje Sorumlusu) | evet | [ ] |
+| 5 | Atama (Yönetici), çakışma kararı | evet | [ ] |
+| 6 | Haftalık matris | evet | [ ] |
+| 7 | İzin ve rapor | evet | [ ] |
+| 8 | Revize, iptal, ikame, devir | evet | [ ] |
+| 9 | Analiz ve arşiv | evet | [ ] |
+| 10 | Canlıya geçiş | evet | [ ] |
