@@ -1,0 +1,49 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Nullable>enable</Nullable>
+    <!-- CodeQL yerine: .NET güvenlik çözümleyicileri uyarı olarak açık; derlemeyi bozmaz -->
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <AnalysisModeSecurity>All</AnalysisModeSecurity>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>Gorevlendirme</AssemblyName>
+    <RootNamespace>Gorevlendirme</RootNamespace>
+    <Version>0.1.0</Version>
+    <DebugType>none</DebugType>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+
+    <!-- Kurulum gerektirmeyen tek .exe: .NET çalışma zamanı içine gömülür -->
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <SelfContained>true</SelfContained>
+    <PublishSingleFile>true</PublishSingleFile>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.*" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="7.*" />
+    <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="10.*" />
+    <PackageReference Include="SonarAnalyzer.CSharp" Version="10.*" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Gorevlendirme.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Betikler ve arayüz exe içine gömülür -->
+    <EmbeddedResource Include="Sql\*.sql" LogicalName="Sql/%(Filename)%(Extension)" />
+    <EmbeddedResource Include="Ui\**\*" LogicalName="Ui/%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+
+  <!-- Ui\index.html derleme sırasında üretilir; yoksa açık bir hata ver -->
+  <Target Name="UiVarMi" BeforeTargets="BeforeBuild">
+    <Error Condition="!Exists('Ui\index.html')" Text="Ui\index.html yok. Önce ui-src klasöründe çalıştırın: python build.py ../src/Gorevlendirme.App/Ui/index.html" />
+  </Target>
+
+</Project>

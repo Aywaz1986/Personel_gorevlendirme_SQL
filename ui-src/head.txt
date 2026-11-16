@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Personel Görevlendirme</title>
+<style>
+:root{--bg:#f4f6f9;--kart:#fff;--yazi:#1d2733;--soluk:#5b6877;--cizgi:#dbe1e8;--vurgu:#1f5fbf;--vurgu-yazi:#fff;--iyi:#1b7f3b;--uyari:#a15c00;--kotu:#b3261e;--iyi-bg:#e4f4ea;--uyari-bg:#fff1d9;--kotu-bg:#fde7e5}
+@media (prefers-color-scheme:dark){:root{--bg:#12161c;--kart:#1b2129;--yazi:#e6ebf1;--soluk:#9aa7b6;--cizgi:#2d3744;--vurgu:#5b9bf0;--vurgu-yazi:#0b1320;--iyi:#6fd08c;--uyari:#f0b35a;--kotu:#ff8f86;--iyi-bg:#17301f;--uyari-bg:#3a2c10;--kotu-bg:#3b1a18}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--yazi);font:14px/1.5 "Segoe UI",system-ui,sans-serif}
+header{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;background:var(--kart);border-bottom:1px solid var(--cizgi)}
+header h1{font-size:17px;margin:0}
+header .sag{color:var(--soluk);font-size:12px}
+main{max-width:920px;margin:0 auto;padding:20px 16px 48px;display:grid;gap:16px}
+.kart{background:var(--kart);border:1px solid var(--cizgi);border-radius:10px;padding:16px 18px}
+.kart h2{font-size:14px;margin:0 0 12px}
+.satir{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+label{display:grid;gap:4px;font-size:12px;color:var(--soluk)}
+input[type=text]{padding:7px 9px;border:1px solid var(--cizgi);border-radius:6px;background:var(--bg);color:var(--yazi);min-width:220px;font:inherit}
+.onay{display:flex;gap:6px;align-items:center;font-size:13px;color:var(--yazi)}
+button{padding:8px 14px;border:1px solid var(--cizgi);border-radius:6px;background:var(--kart);color:var(--yazi);font:inherit;cursor:pointer}
+button.ana{background:var(--vurgu);border-color:var(--vurgu);color:var(--vurgu-yazi)}
+button:disabled{opacity:.5;cursor:default}
+.rozet{display:inline-block;padding:2px 9px;border-radius:99px;font-size:12px;font-weight:600}
+.rozet.iyi{background:var(--iyi-bg);color:var(--iyi)}.rozet.uyari{background:var(--uyari-bg);color:var(--uyari)}.rozet.kotu{background:var(--kotu-bg);color:var(--kotu)}
+dl{display:grid;grid-template-columns:max-content 1fr;gap:6px 18px;margin:0}
+dt{color:var(--soluk)}dd{margin:0}
+table{width:100%;border-collapse:collapse}
+th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--cizgi);vertical-align:top}
+th{font-size:12px;color:var(--soluk);font-weight:600}
+.mesaj{padding:10px 12px;border-radius:8px;margin-top:12px}
+.mesaj.iyi{background:var(--iyi-bg);color:var(--iyi)}.mesaj.uyari{background:var(--uyari-bg);color:var(--uyari)}.mesaj.kotu{background:var(--kotu-bg);color:var(--kotu)}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<header><h1>Personel Görevlendirme</h1><div class="sag" id="surumEtiket"></div></header>
+<main>
+  <section class="kart" id="baglantiKart">
+    <h2>SQL Server bağlantısı</h2>
+    <div class="satir" id="baglantiForm" hidden>
+      <label>Sunucu<input type="text" id="sunucu" placeholder="SUNUCU,PORT" autocomplete="off"></label>
+      <label>Veritabanı<input type="text" id="veritabani" placeholder="veritabanı adı" autocomplete="off"></label>
+      <label class="onay"><input type="checkbox" id="sifrele" checked> Şifreli bağlantı</label>
+      <label class="onay"><input type="checkbox" id="guven"> Sertifikaya güven</label>
+      <button class="ana" id="baglanDugme">Bağlan</button>
+    </div>
+    <div id="baglantiOzet" hidden></div>
+    <div class="mesaj kotu" id="baglantiHata" hidden></div>
+  </section>
+
+  <section class="kart" id="durumKart" hidden>
+    <h2>Durum</h2>
+    <dl id="durumListe"></dl>
+    <div class="mesaj" id="surumMesaj"></div>
+    <div class="satir" style="margin-top:12px">
+      <button class="ana" id="kurDugme" hidden>Şemayı kur / yükselt</button>
+      <button id="denetimDugme">Sunucu denetimi</button>
+      <button id="yenileDugme">Yenile</button>
+      <button id="kapatDugme">Bağlantıyı kapat</button>
+    </div>
+    <div class="mesaj" id="islemMesaj" hidden></div>
+  </section>
+
+  <section class="kart" id="denetimKart" hidden>
+    <h2>Sunucu denetimi</h2>
+    <table><thead><tr><th>Denetim</th><th>Durum</th><th>Ayrıntı</th></tr></thead><tbody id="denetimGovde"></tbody></table>
+  </section>
+</main>
+<script>
+'use strict';

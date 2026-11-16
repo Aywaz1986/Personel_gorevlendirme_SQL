@@ -50,3 +50,8 @@ Giriş denetimi yalnızca `gorev` tablolarına bakar (dbo okuması yok). En az 1
 
 ## 5. Eşzamanlılık
 Onay/atama yordamları `SERIALIZABLE` + `UPDLOCK`: aynı personel, aynı gün ve dilimde çakışma sunucuda yakalanır (rapor 50002, izin 50003, atama 50004). Ekranlar 30 sn'de bir yenilenir (`rowversion` ile değişiklik yoklaması; yalnız değişen veri çekilir).
+
+## Dilim 1 ekleri
+- **Kurulum sırası:** `Migrator.UygulaAsync` → (1) sahip kontrolü: `gorev` şeması başka sahiple varsa dur; (2) `CREATE USER gorev_sahip WITHOUT LOGIN`, `CREATE SCHEMA gorev AUTHORIZATION gorev_sahip`, `gorev.sema_surumleri`; (3) bekleyen betikler, her biri ayrı işlemde ve `sp_getapplock 'gorev_sema'` altında.
+- **Sürüm kapısı:** `gorev.sp_surum_bilgi` (herkes çağırır) → `Surum.Denetle(uygulama, MIN_UYGULAMA_SURUMU, şema, hedef)` → engel `AppState.Engel`'e yazılır, `kapiGerekli` komutlar reddedilir.
+- **Okuma/yazma:** `gorev_kullanici` yalnızca `EXECUTE ON SCHEMA::gorev` alır; tablolara doğrudan yetkisi yoktur. Yordamlar `WITH EXECUTE AS OWNER` (= `gorev_sahip`) çalışır; `ORIGINAL_LOGIN()` gerçek bağlanan hesabı verir.
