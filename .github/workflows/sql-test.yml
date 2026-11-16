@@ -1,0 +1,38 @@
+name: sql-test
+
+# Gerçek SQL Server 2019 (Linux konteyneri) üzerinde gorev şema betikleri, yordamlar, sıfırla/kaldır betikleri ve dbo koruması sınanır.
+# Konteyner varsayılanı SQL_Latin1_General_CP1_CI_AS; veritabanı Turkish_CI_AS açılır → harmanlama çakışmaları burada patlar.
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  sql:
+    runs-on: ubuntu-latest
+    services:
+      mssql:
+        image: mcr.microsoft.com/mssql/server:2019-latest
+        env:
+          ACCEPT_EULA: "Y"
+          MSSQL_SA_PASSWORD: "Ci_Test_2026_x!"
+        ports:
+          - 1433:1433
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - name: SQL testleri
+        env:
+          GOREV_TEST_SERVER: localhost,1433
+          GOREV_TEST_USER: sa
+          GOREV_TEST_PASSWORD: "Ci_Test_2026_x!"
+        shell: bash
+        run: |
+          set -o pipefail
+          dotnet test tests/Gorevlendirme.SqlTests/Gorevlendirme.SqlTests.csproj -c Release 2>&1 | tee sql.log || {
+            grep -E "error|Failed|Assert|Exception|SqlException|Msg " sql.log | sort -u | head -25 | while IFS= read -r l; do echo "::error::${l:0:400}"; done
+            exit 1
+          }

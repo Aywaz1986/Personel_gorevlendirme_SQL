@@ -1,0 +1,64 @@
+name: derle
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write   # kota dolarsa exe'yi Release olarak yüklemek için
+
+jobs:
+  derle:
+    runs-on: windows-latest
+    steps:
+      - name: Kodu al
+        uses: actions/checkout@v4
+
+      - name: .NET 10 kur
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Arayüzü birleştir (ui-src → Ui/index.html)
+        working-directory: ui-src
+        run: |
+          python build.py ../src/Gorevlendirme.App/Ui/index.html
+          python -c "import os;print('index.html', os.path.getsize('../src/Gorevlendirme.App/Ui/index.html'), 'bayt')"
+
+      - name: C# testleri (SQL gerektirmeyenler)
+        shell: bash
+        run: |
+          set -o pipefail
+          dotnet test tests/Gorevlendirme.Tests/Gorevlendirme.Tests.csproj -c Release 2>&1 | tee test.log || {
+            grep -E "error|Failed|Assert|Exception" test.log | sort -u | head -12 | while IFS= read -r l; do echo "::error::${l:0:400}"; done
+            exit 1
+          }
+
+      - name: Derle ve tek dosya yayınla
+        run: dotnet publish src/Gorevlendirme.App/Gorevlendirme.App.csproj -c Release -o publish -p:Version=0.1.${{ github.run_number }}
+
+      - name: Çıktıyı yükle
+        id: yukle
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
+        with:
+          name: Gorevlendirme-0.1.${{ github.run_number }}
+          path: publish
+          retention-days: 3
+
+      # Artifact kotası doluysa (ücretsiz plan) exe, Release olarak yüklenir; yalnızca son 3 önizleme tutulur
+      - name: Yedek yükleme (Release)
+        if: steps.yukle.outcome == 'failure'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          ad="Gorevlendirme-0.1.${{ github.run_number }}"
+          (cd publish && 7z a -tzip "../$ad.zip" . > /dev/null)
+          gh release delete "exe-${{ github.run_number }}" --cleanup-tag -y 2>/dev/null || true
+          gh release create "exe-${{ github.run_number }}" "$ad.zip" --prerelease --target "${{ github.sha }}" \
+            --title "$ad (${{ github.ref_name }})" --notes "Artifact kotası dolu olduğu için Release olarak yüklendi. Dal: ${{ github.ref_name }}"
+          gh release list --limit 50 --json tagName --jq '.[].tagName' | grep '^exe-' | sort -t- -k2 -n -r | tail -n +4 | while read t; do gh release delete "$t" --cleanup-tag --yes || true; done
+          echo "::notice::Exe yedek olarak Release'e yüklendi: exe-${{ github.run_number }}"

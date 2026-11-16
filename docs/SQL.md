@@ -26,6 +26,7 @@ Genel şablon: Özlük deposu `docs/SQL-ORTAK-YAPI.md`. Bu belge o şablondan **
 - Günlükte işlemi yapanı sunucu yazar (`ORIGINAL_LOGIN()`); yordam parametresi olarak kullanıcı adı alınmaz.
 
 ## 4. Betik ve sürüm düzeni
+- Betiklerden önce `Migrator` açılışta (tekrar çalıştırılabilir) `gorev_sahip` kullanıcısını, `gorev` şemasını (sahip `gorev_sahip`) ve `gorev.sema_surumleri`'ni kurar; `gorev` şeması başka bir sahiple varsa kurulum durur. `001_cekirdek.sql`: rol, `sistem_ayarlari`, `islem_log` (+ değiştirilemez tetikleyici), `sp_surum_bilgi`.
 - Dosya `src/Gorevlendirme.App/Sql/NNN_ad.sql`, exe'ye gömülür; `GO` ile bloklanır, her betik tek işlemde, `gorev.sema_surumleri`'ne işlenir (Özlük'ün `dbo.sema_surumleri`'nden bağımsız).
 - Kendi `Migrator`'ı ve kendi kilidi (`sp_getapplock`, kaynak `gorev_sema`). Uygulanmış betik değişmez; düzeltme yeni numara + `CREATE OR ALTER`.
 - Sürüm kapısı `gorev.sistem_ayarlari` anahtarı `MIN_UYGULAMA_SURUMU` (Özlük'ünkinden ayrı). Uygulama < asgari ya da şema > uygulama ise bağlantı engellenir.
@@ -33,10 +34,11 @@ Genel şablon: Özlük deposu `docs/SQL-ORTAK-YAPI.md`. Bu belge o şablondan **
 ## 5. Ortak veritabanında geliştirme: test sıfırlama önlemleri
 Geliştirme ayrı test veritabanı olmadan `SST_Ozluk` üzerinde sürer (karar 16.11.2026). Önlemler:
 1. **dbo koruma denetimi** (§2): yanlışlıkla Özlük nesnesine dokunan betik CI'da düşer.
-2. **ORTAM bayrağı:** `gorev.sistem_ayarlari` anahtarı `ORTAM` = `TEST` | `CANLI`. İlk kurulum `TEST`. `gorev.sp_ortam_canli` (yalnız gorev yöneticisi, tek yönlü) canlıya geçişte `CANLI` yapar; geri dönüş yalnızca `db_owner`'ın elle SQL'iyle.
-3. **`tools/sql/gorev_sifirla.sql`** (verileri temizle, şemayı bırak) ve **`tools/sql/gorev_kaldir.sql`** (tüm gorev nesnelerini ve rolleri kaldır): ikisi de dinamik olarak yalnızca `SCHEMA_ID(N'gorev')` altındaki nesneleri bulur; ORTAM `CANLI` ise çalışmayı reddeder; onay için dosya başındaki `@onay` değişkenine açıkça `SIFIRLA`/`KALDIR` yazılması gerekir. Audit tetikleyicisi `DROP`'u engellemez.
+2. **ORTAM bayrağı:** `gorev.sistem_ayarlari` anahtarı `ORTAM` = `TEST` | `CANLI`. İlk kurulum `TEST`. Dilim 1'de değeri yalnızca `db_owner` elle değiştirir (`UPDATE gorev.sistem_ayarlari ...`); yönetici kavramı gelince (Dilim 2) `gorev.sp_ortam_canli` (yalnız gorev yöneticisi, tek yönlü) eklenir ve canlıya geçişte (Dilim 10) kullanılır; geri dönüş yalnızca `db_owner`'ın elle SQL'iyle.
+3. **`tools/sql/gorev_sifirla.sql`** (verileri temizle, şemayı bırak) ve **`tools/sql/gorev_kaldir.sql`** (tüm gorev nesnelerini ve rolleri kaldır): ikisi de dinamik olarak yalnızca `SCHEMA_ID(N'gorev')` altındaki nesneleri bulur; ORTAM `CANLI` ise çalışmayı reddeder; onay için dosya başındaki `@onay` değişkenine açıkça `SIFIRLA`/`KALDIR` yazılması gerekir. Hata kodları: 50011 yapılacak şey yok, 50012 onay yok, 50013 ORTAM TEST değil, 50014 başka şemadan gorev'e yabancı anahtar var. `gorev_sifirla` `sema_surumleri` ve `sistem_ayarlari`'na dokunmaz, IDENTITY sayaçlarını sıfırlamaz (denetim `DBCC`'yi yasaklar). Audit tetikleyicisi `DROP`'u engellemez.
 4. **Yedek:** ilk kurulumdan ve canlıya geçişten önce IT'den `SST_Ozluk` tam yedeği (Özlük gerçek veri içeriyor).
-5. **Tohum veri:** test için uydurma veri `tools/sql/gorev_test_tohum.sql` (Dilim 1'den sonra); gerçek veri depoya girmez.
+5. **dbo parmak izi:** `tools/sql/dbo_iz.sql` (yalnız sistem katalogları) kurulum/sıfırla/kaldır öncesi ve sonrası çalıştırılır; sonuç aynı olmalı. CI'da eşdeğeri `DboKorumaTests`.
+6. **Tohum veri:** test için uydurma veri `tools/sql/gorev_test_tohum.sql` (Dilim 1'den sonra); gerçek veri depoya girmez.
 
 ## 6. Ad haritası (02 numaralı doküman → bu proje)
 | 02 | Bu proje (`gorev.`) | Not |

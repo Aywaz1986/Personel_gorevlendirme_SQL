@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Gerçek SQL Server'a karşı sınama (Linux konteyneri, CI'da). Uygulama kodundan yalnızca SQL katmanı derlenir; WinForms/WebView2 yok.
+       GOREV_TEST_SERVER yoksa testler atlanır. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.*" />
+    <PackageReference Include="xunit" Version="2.*" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.*" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="7.*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\..\src\Gorevlendirme.App\Data\Migrator.cs" />
+    <Compile Include="..\..\src\Gorevlendirme.App\Data\SqlService.cs" />
+    <Compile Include="..\..\src\Gorevlendirme.App\Data\ConnInfo.cs" />
+    <Compile Include="..\..\src\Gorevlendirme.App\Bridge\GorevException.cs" />
+    <Compile Include="..\..\src\Gorevlendirme.App\Shell\AppInfo.cs" />
+    <Compile Include="..\..\src\Gorevlendirme.App\Services\SurumBilgisi.cs" />
+    <Compile Include="..\..\src\Gorevlendirme.App\Services\SunucuDenetimi.cs" />
+    <EmbeddedResource Include="..\..\src\Gorevlendirme.App\Sql\*.sql" LogicalName="Sql/%(Filename)%(Extension)" />
+  </ItemGroup>
+
+</Project>

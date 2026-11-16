@@ -18,8 +18,8 @@ Ayrıntı: [`docs/PLAN.md`](docs/PLAN.md), dilim içerikleri: [`docs/DILIMLER.md
 
 | Dilim | Konu | Durum |
 |---|---|---|
-| 0 | İskelet, belgeler, dbo koruma denetimi | dal `dilim-0-iskelet` (denetim testleri geçti) |
-| 1 | Şema çekirdeği, ORTAM bayrağı, kaldır/sıfırla, `Migrator`, kabuk | bekliyor |
+| 0 | İskelet, belgeler, dbo koruma denetimi | birleştirildi |
+| 1 | Şema çekirdeği, ORTAM bayrağı, kaldır/sıfırla, `Migrator`, kabuk | dal `dilim-1-sema-cekirdegi` (kodlandı, sınanmadı) |
 | 2 | Kimlik, roller, kadro eşitleme, ilk arayüz, kılavuz aracı | bekliyor |
 | 3 / 3b | Proje havuzu + takvim / **eski veri aktarımı** | bekliyor |
 | 4–10 | Talep, atama, haftalık matris, izin/rapor, revize/ikame, analiz, canlıya geçiş | bekliyor |
@@ -34,13 +34,15 @@ Ayrıntı: [`docs/PLAN.md`](docs/PLAN.md), dilim içerikleri: [`docs/DILIMLER.md
 | `docs/SQL.md` | Şema standartları, ad haritası, betik düzeni, dbo koruma, test sıfırlama |
 | `docs/YETKI.md` | Roller ve yetki matrisi |
 | `docs/TASIMA.md` | Eski `gorevlendirme.db` → `gorev.*` aktarımı |
+| `docs/ARAYUZ.md` | Köprü komutları (arayüz ↔ C#) |
+| `docs/test-dilim-N.md` | Dilim sınama listeleri (SSMS adımları dahil) |
 
 ## Depo yapısı
 ```text
-src/Gorevlendirme.App/   (Dilim 1'den itibaren) Bridge, Data, Security, Services, Shell, Sql, Ui
-tests/                   (Dilim 1'den itibaren) *.Tests (SQL'siz), *.SqlTests (CI'da SQL Server)
-ui-src/                  (Dilim 2) arayüz kaynağı, build.py ile birleşir
-tools/                   dbo_koruma.py (+ test), sql/ (gorev_kaldir, gorev_sifirla), kilavuz/
+src/Gorevlendirme.App/   Bridge, Data (Migrator), Security (Surum), Services, Shell, Sql (gömülü betikler), Ui (üretilir)
+tests/                   Gorevlendirme.Tests (SQL'siz), Gorevlendirme.SqlTests (CI'da SQL Server)
+ui-src/                  arayüz kaynağı; `python build.py ../src/Gorevlendirme.App/Ui/index.html` ile birleşir (index.html depoda yok)
+tools/                   dbo_koruma.py (+ test), sql/ (gorev_kaldir, gorev_sifirla, dbo_iz), kilavuz/ (Dilim 2)
 docs/                    belgeler
-.github/workflows/       guvenlik (gitleaks), dbo-koruma
+.github/workflows/       guvenlik (gitleaks), dbo-koruma, build (derle + test + exe), sql-test (SQL Server konteyneri)
 ```

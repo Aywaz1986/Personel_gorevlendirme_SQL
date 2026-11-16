@@ -7,7 +7,7 @@ Depo yapısı, belgeler, `CLAUDE.md`, gitleaks, dbo koruma denetimi + testi.
 Bitiş: `python3 tools/test_dbo_koruma.py` geçer; CI `dbo-koruma` ve `guvenlik` yeşil.
 
 ## Dilim 1 – Şema çekirdeği ve kabuk (SQL gerekir)
-`gorev_sahip`, `gorev_kullanici`, `gorev` şeması; `sema_surumleri`, `sistem_ayarlari` (`ORTAM`, `MIN_UYGULAMA_SURUMU`), `islem_log` (değiştirilemez); `tools/sql/gorev_sifirla.sql`, `gorev_kaldir.sql`; `Migrator` (kendi kilidi), `Surum`, `SunucuDenetimi`; exe kabuğu (WebView2, bağlantı); `sql-test.yml` (CI'da SQL Server).
+`gorev_sahip`, `gorev_kullanici`, `gorev` şeması; `sema_surumleri`, `sistem_ayarlari` (`ORTAM`, `MIN_UYGULAMA_SURUMU`), `islem_log` (değiştirilemez); `tools/sql/gorev_sifirla.sql`, `gorev_kaldir.sql`; `sp_surum_bilgi`; `Migrator` (kendi kilidi), `Surum`, `SunucuDenetimi`; exe kabuğu (WebView2, bağlantı, sürüm kapısı, şema kurulumu); `sql-test.yml` (CI'da SQL Server); `tools/sql/dbo_iz.sql`. `sp_ortam_canli` yönetici kavramıyla Dilim 2'ye kaldı.
 Bitiş: temiz kurulum/yükseltme tekrarlanabilir; `gorev_kaldir` yalnız gorev nesnelerini kaldırır, `dbo`'ya dokunmadığı CI testiyle kanıtlı; ORTAM=CANLI iken sıfırlama reddedilir.
 
 ## Dilim 2 – Kimlik, kadro, ilk arayüz
