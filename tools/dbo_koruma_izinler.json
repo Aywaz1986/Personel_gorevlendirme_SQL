@@ -1,0 +1,10 @@
+{
+  "_aciklama": "dbo koruma istisnaları. Bu dosyadaki her değişiklik PR'da gözle görülür olmalıdır; ekleme için gerekçe docs/SQL.md'ye yazılır.",
+  "dbo_okuma": [
+    "src/Gorevlendirme.App/Sql/*_kadro_esitleme.sql"
+  ],
+  "dinamik_sql": [
+    "tools/sql/gorev_kaldir.sql",
+    "tools/sql/gorev_sifirla.sql"
+  ]
+}
