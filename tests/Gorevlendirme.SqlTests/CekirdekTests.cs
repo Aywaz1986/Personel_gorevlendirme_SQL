@@ -15,11 +15,11 @@ public class CekirdekTests
 
         Assert.Equal("gorev_sahip", await t.SkalerAsync(
             "SELECT p.name FROM sys.schemas s JOIN sys.database_principals p ON p.principal_id = s.principal_id WHERE s.name = N'gorev'"));
-        Assert.Equal(1, Convert.ToInt32(await t.SkalerAsync("SELECT COUNT(*) FROM gorev.sema_surumleri")));
+        Assert.Equal(TestDb.Hedef, Convert.ToInt32(await t.SkalerAsync("SELECT COUNT(*) FROM gorev.sema_surumleri")));
         Assert.Equal("TEST", await t.SkalerAsync("SELECT deger FROM gorev.sistem_ayarlari WHERE anahtar = N'ORTAM'"));
         Assert.Equal("0.0.0", await t.SkalerAsync("SELECT deger FROM gorev.sistem_ayarlari WHERE anahtar = N'MIN_UYGULAMA_SURUMU'"));
         Assert.Equal(1, Convert.ToInt32(await t.SkalerAsync("SELECT COUNT(*) FROM sys.database_principals WHERE name = N'gorev_kullanici' AND type = 'R'")));
-        Assert.Equal(1, Convert.ToInt32(await t.SkalerAsync("SELECT COUNT(*) FROM gorev.islem_log WHERE islem = N'SEMA'")));
+        Assert.Equal(TestDb.Hedef, Convert.ToInt32(await t.SkalerAsync("SELECT COUNT(*) FROM gorev.islem_log WHERE islem = N'SEMA'")));
     }
 
     [SqlFact]
@@ -30,8 +30,8 @@ public class CekirdekTests
         var d = await t.Migrator.DurumAsync();
         Assert.Empty((System.Collections.IEnumerable)d.GetType().GetProperty("bekleyen")!.GetValue(d)!);
         await t.Migrator.UygulaAsync(false);
-        Assert.Equal(1, Convert.ToInt32(await t.SkalerAsync("SELECT COUNT(*) FROM gorev.sema_surumleri")));
-        Assert.Equal(1, Convert.ToInt32(await t.SkalerAsync("SELECT COUNT(*) FROM gorev.islem_log WHERE islem = N'SEMA'")));
+        Assert.Equal(TestDb.Hedef, Convert.ToInt32(await t.SkalerAsync("SELECT COUNT(*) FROM gorev.sema_surumleri")));
+        Assert.Equal(TestDb.Hedef, Convert.ToInt32(await t.SkalerAsync("SELECT COUNT(*) FROM gorev.islem_log WHERE islem = N'SEMA'")));
     }
 
     [SqlFact]
@@ -77,7 +77,7 @@ public class CekirdekTests
             await using var cmd = new SqlCommand("EXECUTE AS USER = N'gorev_test_kisi'; EXEC gorev.sp_surum_bilgi; REVERT;", cn);
             await using var r = await cmd.ExecuteReaderAsync();
             Assert.True(await r.ReadAsync());
-            Assert.Equal(1, r.GetInt32(r.GetOrdinal("sema_surumu")));
+            Assert.Equal(TestDb.Hedef, r.GetInt32(r.GetOrdinal("sema_surumu")));
             Assert.Equal("TEST", r.GetString(r.GetOrdinal("ortam")));
             Assert.Equal("sa", r.GetString(r.GetOrdinal("hesap")));   // ORIGINAL_LOGIN() gerçek bağlantı hesabı
         }
@@ -112,7 +112,7 @@ public class CekirdekTests
         await t.Migrator.UygulaAsync(false);
         var b = await SurumBilgisi.OkuAsync(t.Servis);
         Assert.NotNull(b);
-        Assert.Equal(1, b!.SemaSurumu);
+        Assert.Equal(TestDb.Hedef, b!.SemaSurumu);
         Assert.Equal("TEST", b.Ortam);
         Assert.Equal(30, b.PollingSaniye);
     }

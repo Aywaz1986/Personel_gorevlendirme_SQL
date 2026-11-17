@@ -32,8 +32,12 @@ public class BridgeTests
         SystemCommands.Register(r);
         BaglantiCommands.Register(r);
         SemaCommands.Register(r);
-        foreach (var k in new[] { "ping", "runtime", "baglantiDene", "baglan", "baglantiKapat", "surumDurum", "semaDurum", "semaUygula", "sunucuDenetimi" })
+        KimlikCommands.Register(r);
+        foreach (var k in new[] { "ping", "runtime", "baglantiDene", "baglan", "baglantiKapat", "surumDurum", "semaDurum", "semaUygula", "sunucuDenetimi",
+                                  "ben", "kadroOzet", "kadroListe", "kadroEsitle", "eslestirmeListe", "eslestirmeKaydet", "istisnaListe", "istisnaKaydet", "istisnaSil" })
             Assert.NotNull(r.Find(k));
+        foreach (var k in new[] { "ben", "kadroListe", "kadroEsitle", "istisnaKaydet" })
+            Assert.True(r.Find(k)!.KapiGerekli);   // iş komutları sürüm kapısına tabidir
     }
 
     [Fact]

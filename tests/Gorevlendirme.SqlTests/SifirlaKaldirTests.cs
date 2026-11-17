@@ -64,9 +64,23 @@ public class SifirlaKaldirTests
         // Ayarlar ve sürüm kaydı korunur
         Assert.Equal("45", await t.SkalerAsync("SELECT deger FROM gorev.sistem_ayarlari WHERE anahtar = N'POLLING_SANIYE'"));
         Assert.Equal("TEST", await t.SkalerAsync("SELECT deger FROM gorev.sistem_ayarlari WHERE anahtar = N'ORTAM'"));
-        Assert.Equal(1, Convert.ToInt32(await t.SkalerAsync("SELECT COUNT(*) FROM gorev.sema_surumleri")));
+        Assert.Equal(TestDb.Hedef, Convert.ToInt32(await t.SkalerAsync("SELECT COUNT(*) FROM gorev.sema_surumleri")));
         // Günlük sıfırlamadan sonra yine değiştirilemez (tetikleyici yeniden etkin)
         Assert.Equal(50010, await t.HataNoAsync("DELETE FROM gorev.islem_log"));
+    }
+
+    [SqlFact]
+    public async Task Sifirla_kadro_kopyasini_siler_yetki_yapilandirmasini_korur()
+    {
+        await using var t = await TestDb.OlusturAsync();
+        await t.Migrator.UygulaAsync(false);
+        await t.ExecAsync(@"INSERT INTO gorev.personel (sicil_no, adi_soyadi) VALUES (N'1', N'A');
+            INSERT INTO gorev.rol_bolum_eslestirme (bolum, rol) VALUES (N'X', N'SAHA');
+            INSERT INTO gorev.kullanici_yetki_istisna (hesap, yonetici_mi) VALUES (N'ALAN\\yon', 1);");
+        await t.ExecAsync(TestDb.Onayli(TestDb.BetikOku("gorev_sifirla.sql"), "SIFIRLA"));
+        Assert.Equal(0, Convert.ToInt32(await t.SkalerAsync("SELECT COUNT(*) FROM gorev.personel")));
+        Assert.Equal(1, Convert.ToInt32(await t.SkalerAsync("SELECT COUNT(*) FROM gorev.rol_bolum_eslestirme")));
+        Assert.Equal(1, Convert.ToInt32(await t.SkalerAsync("SELECT COUNT(*) FROM gorev.kullanici_yetki_istisna WHERE yonetici_mi = 1")));
     }
 
     [SqlFact]

@@ -48,4 +48,31 @@ SELECT CAST(SERVERPROPERTY('ProductVersion') AS nvarchar(50)),
             express = edition.Contains("Express", StringComparison.OrdinalIgnoreCase),
         };
     }
+
+    /// <summary>
+    /// Saklı yordam çağırır (adlandırılmış komutların tek SQL yolu; ham SQL gönderilmez). Satırlar sözlük olarak döner.
+    /// Sunucu hataları (50020-50025, izin) <see cref="GorevException"/>'a çevrilir.
+    /// </summary>
+    public async Task<List<Dictionary<string, object?>>> ProcAsync(string ad, params (string Ad, object? Deger)[] p)
+    {
+        var rows = new List<Dictionary<string, object?>>();
+        try
+        {
+            await using var cn = await OpenAsync();
+            await using var cmd = new SqlCommand(ad, cn) { CommandType = System.Data.CommandType.StoredProcedure };
+            foreach (var (k, v) in p) cmd.Parameters.AddWithValue(k, v ?? DBNull.Value);
+            await using var r = await cmd.ExecuteReaderAsync();
+            while (await r.ReadAsync())
+            {
+                var d = new Dictionary<string, object?>(StringComparer.Ordinal);
+                for (var i = 0; i < r.FieldCount; i++) d[r.GetName(i)] = r.IsDBNull(i) ? null : r.GetValue(i);
+                rows.Add(d);
+            }
+        }
+        catch (SqlException ex)
+        {
+            throw SqlHata.Cevir(ex.Number, ex.Message);
+        }
+        return rows;
+    }
 }

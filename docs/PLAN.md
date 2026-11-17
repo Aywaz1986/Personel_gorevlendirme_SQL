@@ -17,8 +17,8 @@ Ayrıntı: `docs/DILIMLER.md`.
 | # | Dilim | SQL gerekir | Durum |
 |---|---|---|---|
 | 0 | İskelet, belgeler, dbo koruma denetimi | hayır | [x] birleştirildi (PR #1); `main` CI yeşil (ilk koşuda checkout "Repository not found" geçici hatası, yeniden çalıştırmada geçti) |
-| 1 | Şema çekirdeği, ORTAM, kaldır/sıfırla, Migrator, kabuk | evet | [~] dal `dilim-1-sema-cekirdegi`, kodlanıyor |
-| 2 | Kimlik, kadro eşitleme, ilk arayüz, kılavuz aracı | evet | [ ] |
+| 1 | Şema çekirdeği, ORTAM, kaldır/sıfırla, Migrator, kabuk | evet | [x] birleştirildi (PR #2), testler geçti |
+| 2 | Kimlik, kadro eşitleme, ilk arayüz, kılavuz aracı | evet | [~] dal `dilim-2-kimlik-kadro`, kodlandı, sınanmadı (ayrıntı: CHANGELOG devir notu) |
 | 3 | Proje havuzu, akademik takvim | evet | [ ] |
 | 3b | Eski veri aktarımı (erken) | evet | [ ] |
 | 4 | Talep (Proje Sorumlusu) | evet | [ ] |

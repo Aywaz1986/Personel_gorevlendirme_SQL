@@ -34,3 +34,6 @@ secrets*
 # Derleme sırasında ui-src/build.py ile üretilir
 src/Gorevlendirme.App/Ui/index.html
 tools/kilavuz/shots/
+
+# Kılavuz ara çıktıları
+tools/kilavuz/shots/

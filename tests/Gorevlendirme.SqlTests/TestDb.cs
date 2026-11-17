@@ -24,6 +24,10 @@ public sealed class TestDb : IAsyncDisposable
     private static string User => Environment.GetEnvironmentVariable("GOREV_TEST_USER") ?? "sa";
     private static string Password => Environment.GetEnvironmentVariable("GOREV_TEST_PASSWORD") ?? "";
 
+    public static int Hedef => Migrator.Scripts().Max(x => x.Surum);
+    private const string Parola = "Gk_Test_2026_x!";
+    private readonly List<string> _loginler = new();
+
     public string Db { get; } = "gorev_ci_" + Guid.NewGuid().ToString("N")[..8];
     public Migrator Migrator { get; private set; } = null!;
 
@@ -112,6 +116,37 @@ INSERT INTO dbo.ozluk_taklit (sicil_no, adi_soyadi) VALUES (N'1', N'Ayşe Örnek
 CREATE ROLE ozluk_taklit_rol;
 GRANT SELECT ON dbo.ozluk_taklit TO ozluk_taklit_rol;");
 
+    /// <summary>
+    /// Gerçek bir SQL girişi açar (ORIGINAL_LOGIN() = giriş adı) ve gorev_kullanici rolüne ekler; sysadmin değildir.
+    /// ozlukRolu: Özlük'teki ozluk_kullanici rolünü taklit eden role de ekler (dbo.personeller SELECT, dbo.sp_ben EXECUTE).
+    /// </summary>
+    public async Task<(string Hesap, SqlService Servis)> KisiAsync(bool ozlukRolu = false)
+    {
+        var ad = "gk_" + Guid.NewGuid().ToString("N")[..8];
+        await using (var cn = await AcAsync("master"))
+        await using (var cmd = new SqlCommand($"CREATE LOGIN [{ad}] WITH PASSWORD = '{Parola}', CHECK_POLICY = OFF", cn))
+            await cmd.ExecuteNonQueryAsync();
+        _loginler.Add(ad);
+        await ExecAsync($"CREATE USER [{ad}] FOR LOGIN [{ad}]; ALTER ROLE gorev_kullanici ADD MEMBER [{ad}];"
+            + (ozlukRolu ? $" ALTER ROLE ozluk_taklit_rol ADD MEMBER [{ad}];" : ""));
+        return (ad, new SqlService(new ConnInfo(Server, Db, false, ad, Parola, false, true)));
+    }
+
+    /// <summary>Özlük taklidi: dbo.personeller (6 sütun) + dbo.sp_ben (9 sütun, gerçek biçim). rol: yonetici | personel.</summary>
+    public Task OzlukKadroTaklitKurAsync() => ExecAsync(@"
+CREATE TABLE dbo.personeller (id INT IDENTITY(1,1) PRIMARY KEY, sicil_no NVARCHAR(50) NOT NULL UNIQUE, adi_soyadi NVARCHAR(200) NOT NULL,
+    bolum NVARCHAR(500) NULL, gsm_no NVARCHAR(50) NULL, kullanici_adi NVARCHAR(100) NULL, ayrilis_tarihi DATE NULL);
+GRANT SELECT ON dbo.personeller TO ozluk_taklit_rol;");
+
+    public async Task OzlukBenTaklitAsync(string rol, bool olustur = true)
+    {
+        await ExecAsync($@"
+{(olustur ? "CREATE" : "ALTER")} PROCEDURE dbo.sp_ben AS
+SELECT ORIGINAL_LOGIN() AS hesap, N'Test' AS ad, N'{rol}' AS rol, CAST(NULL AS INT) AS kapsam_org_id, CAST(1 AS BIT) AS aktif,
+       CAST(1 AS BIT) AS kayitli, CAST(NULL AS NVARCHAR(MAX)) AS yetkiler, CAST(0 AS BIT) AS kapali, CAST(NULL AS NVARCHAR(MAX)) AS kapali_mesaj;");
+        if (olustur) await ExecAsync("GRANT EXECUTE ON dbo.sp_ben TO ozluk_taklit_rol;");
+    }
+
     public async ValueTask DisposeAsync()
     {
         try
@@ -120,6 +155,11 @@ GRANT SELECT ON dbo.ozluk_taklit TO ozluk_taklit_rol;");
             await using var cn = await AcAsync("master");
             await using var cmd = new SqlCommand($"ALTER DATABASE [{Db}] SET SINGLE_USER WITH ROLLBACK IMMEDIATE; DROP DATABASE [{Db}]", cn);
             await cmd.ExecuteNonQueryAsync();
+            foreach (var l in _loginler)
+            {
+                await using var d = new SqlCommand($"DROP LOGIN [{l}]", cn);
+                await d.ExecuteNonQueryAsync();
+            }
         }
         catch { /* temizlik başarısızsa test sonucunu bozmasın */ }
     }

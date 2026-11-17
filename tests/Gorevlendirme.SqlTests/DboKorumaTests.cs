@@ -47,6 +47,6 @@ public class DboKorumaTests
         await t.Migrator.UygulaAsync(false);
         await t.ExecAsync(TestDb.Onayli(TestDb.BetikOku("gorev_kaldir.sql"), "KALDIR"));
         await t.Migrator.UygulaAsync(false);
-        Assert.Equal(1, Convert.ToInt32(await t.SkalerAsync("SELECT COUNT(*) FROM gorev.sema_surumleri")));
+        Assert.Equal(TestDb.Hedef, Convert.ToInt32(await t.SkalerAsync("SELECT COUNT(*) FROM gorev.sema_surumleri")));
     }
 }

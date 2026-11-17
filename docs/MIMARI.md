@@ -55,3 +55,7 @@ Onay/atama yordamları `SERIALIZABLE` + `UPDLOCK`: aynı personel, aynı gün ve
 - **Kurulum sırası:** `Migrator.UygulaAsync` → (1) sahip kontrolü: `gorev` şeması başka sahiple varsa dur; (2) `CREATE USER gorev_sahip WITHOUT LOGIN`, `CREATE SCHEMA gorev AUTHORIZATION gorev_sahip`, `gorev.sema_surumleri`; (3) bekleyen betikler, her biri ayrı işlemde ve `sp_getapplock 'gorev_sema'` altında.
 - **Sürüm kapısı:** `gorev.sp_surum_bilgi` (herkes çağırır) → `Surum.Denetle(uygulama, MIN_UYGULAMA_SURUMU, şema, hedef)` → engel `AppState.Engel`'e yazılır, `kapiGerekli` komutlar reddedilir.
 - **Okuma/yazma:** `gorev_kullanici` yalnızca `EXECUTE ON SCHEMA::gorev` alır; tablolara doğrudan yetkisi yoktur. Yordamlar `WITH EXECUTE AS OWNER` (= `gorev_sahip`) çalışır; `ORIGINAL_LOGIN()` gerçek bağlanan hesabı verir.
+
+## Dilim 2: kimlik ve arayüz katmanı
+- C#: `KimlikService` (`gorev.sp_ben`), `KadroService` (kadro/eşleştirme/istisna yordamları), `Gorunum` (rol→görünüm listesi ve varsayılan), `SqlHata` (sunucu hata no → arayüz kodu), `SqlService.ProcAsync` (yalnız adlandırılmış yordam), `KimlikCommands` (köprü; hepsi sürüm kapısına tabi).
+- Arayüz (`ui-src/app/`): 001 köprü, 002 ortak (h(), durum, toast), 003 sistem, 004 kadro/eşleştirme/istisna, 005 kabuk (başlık, ORTAM rozeti, görünüm menüsü, menü), 006 başlangıç (sürüm durumu → `ben` → Yetkisiz ya da kabuk). Yetki kararı sunucudadır; arayüzdeki menü yalnızca görünümdür.

@@ -34,7 +34,7 @@ Genel şablon: Özlük deposu `docs/SQL-ORTAK-YAPI.md`. Bu belge o şablondan **
 ## 5. Ortak veritabanında geliştirme: test sıfırlama önlemleri
 Geliştirme ayrı test veritabanı olmadan `SST_Ozluk` üzerinde sürer (karar 16.11.2026). Önlemler:
 1. **dbo koruma denetimi** (§2): yanlışlıkla Özlük nesnesine dokunan betik CI'da düşer.
-2. **ORTAM bayrağı:** `gorev.sistem_ayarlari` anahtarı `ORTAM` = `TEST` | `CANLI`. İlk kurulum `TEST`. Dilim 1'de değeri yalnızca `db_owner` elle değiştirir (`UPDATE gorev.sistem_ayarlari ...`); yönetici kavramı gelince (Dilim 2) `gorev.sp_ortam_canli` (yalnız gorev yöneticisi, tek yönlü) eklenir ve canlıya geçişte (Dilim 10) kullanılır; geri dönüş yalnızca `db_owner`'ın elle SQL'iyle.
+2. **ORTAM bayrağı:** `gorev.sistem_ayarlari` anahtarı `ORTAM` = `TEST` | `CANLI`. İlk kurulum `TEST`. Dilim 1'de değeri yalnızca `db_owner` elle değiştirir (`UPDATE gorev.sistem_ayarlari ...`); `gorev.sp_ortam_canli` (yalnız gorev yöneticisi, tek yönlü) Dilim 10'da (canlıya geçiş) eklenir; geri dönüş yalnızca `db_owner`'ın elle SQL'iyle.
 3. **`tools/sql/gorev_sifirla.sql`** (verileri temizle, şemayı bırak) ve **`tools/sql/gorev_kaldir.sql`** (tüm gorev nesnelerini ve rolleri kaldır): ikisi de dinamik olarak yalnızca `SCHEMA_ID(N'gorev')` altındaki nesneleri bulur; ORTAM `CANLI` ise çalışmayı reddeder; onay için dosya başındaki `@onay` değişkenine açıkça `SIFIRLA`/`KALDIR` yazılması gerekir. Hata kodları: 50011 yapılacak şey yok, 50012 onay yok, 50013 ORTAM TEST değil, 50014 başka şemadan gorev'e yabancı anahtar var. `gorev_sifirla` `sema_surumleri` ve `sistem_ayarlari`'na dokunmaz, IDENTITY sayaçlarını sıfırlamaz (denetim `DBCC`'yi yasaklar). Audit tetikleyicisi `DROP`'u engellemez.
 4. **Yedek:** ilk kurulumdan ve canlıya geçişten önce IT'den `SST_Ozluk` tam yedeği (Özlük gerçek veri içeriyor).
 5. **dbo parmak izi:** `tools/sql/dbo_iz.sql` (yalnız sistem katalogları) kurulum/sıfırla/kaldır öncesi ve sonrası çalıştırılır; sonuç aynı olmalı. CI'da eşdeğeri `DboKorumaTests`.
@@ -64,3 +64,9 @@ Anahtarlar: her tabloda `INT/BIGINT IDENTITY id`, iş anahtarı ayrı `UNIQUE`, 
 - `FROM/JOIN/USING` kaynakları `gorev.`, `#`, `@`, `sys.` veya CTE. `SELECT ... INTO` yalnız `#`/`@` hedefine.
 - `#temp` sütunlarına `COLLATE DATABASE_DEFAULT`.
 - Çakışma kontrolleri `SERIALIZABLE` + `UPDLOCK`; çakışmada hata kodları: 50002 rapor, 50003 izin, 50004 atama (uygulama bunu "çakışan görevden çıkar ve ata" seçeneğine çevirir).
+
+## Dilim 2 notları
+- Tablolar: `personel` (Özlük kopyası, beş alan + aktif), `rol_bolum_eslestirme`, `kullanici_yetki_istisna`. `gorev_sifirla.sql` kadro kopyasını ve günlüğü temizler; `sema_surumleri`, `sistem_ayarlari`, `rol_bolum_eslestirme`, `kullanici_yetki_istisna` KORUNUR (yetki yapılandırması kaybolmasın). IDENTITY sayaçları sıfırlanmaz (DBCC yasak).
+- `sp_ozluk_esitle`: `EXECUTE AS` yok; dbo okuması yalnız `INSERT #geçici ... SELECT/EXEC` ile `003_kadro_esitleme.sql` içinde. Hata kodları: 50020 son yönetici, 50021 eksik okuma (<%80 ya da sıfır satır), 50022 Özlük yetkisi yok, 50023 gorev yöneticisi değil, 50024 doğrulama, 50025 ilk yönetici zaten var.
+- `dbo.sp_ben` çıktı şekli (9 sütun) bağımlılığı kırılgandır: `hesap, ad, rol, kapsam_org_id, aktif, kayitli, yetkiler, kapali, kapali_mesaj`.
+- `tools/sql/gorev_ilk_yonetici.sql`: ilk yönetici betiği.
