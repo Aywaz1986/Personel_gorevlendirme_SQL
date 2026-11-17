@@ -11,7 +11,7 @@ Her değişiklik önce **Yayınlanmamış** bölümüne yazılır; sürüm yüks
 - [x] 4. C#: `SqlHata`, `SqlService.ProcAsync`, `Gorunum`, `KimlikService`, `KadroService`, `KimlikCommands`. Derlenmedi (ortamda dotnet yok; CI'da bakılacak).
 - [x] 5. Arayüz: `ui-src/app/002..006` (ortak, sistem, kadro/eşleştirme/istisna, kabuk, başlangıç + Yetkisiz sayfa). JS sözdizimi denetimi geçti.
 - [x] 6. Testler yazıldı: `tests/Gorevlendirme.SqlTests/KimlikTests.cs`, `tests/Gorevlendirme.Tests/KimlikTests.cs`, `BridgeTests` ve mevcut SQL testleri `TestDb.Hedef`'e uyarlandı. Henüz çalıştırılmadı.
-- [ ] 7. Belgeler: README durum tablosu, PLAN, DILIMLER, ARAYUZ, MIMARI, YETKI, SQL.md, `docs/test-dilim-2.md`.
+- [x] 7. Belgeler yazıldı: README durum tablosu, PLAN, ARAYUZ, MIMARI, YETKI, SQL.md, `docs/test-dilim-2.md` (DILIMLER değişmedi; içerik zaten Dilim 2'yi tanımlıyor).
 - [ ] 8. Kılavuz aracı: `tools/kilavuz/*` + `docs/Kullanma-Kilavuzu.docx`.
 - [ ] 9. Commit + push + PR (`gh api`, 403 nedeniyle `gh pr create` değil) + CI izleme (yalnız hata satırları).
 - [ ] 10. Sohbette sınama listesi (SSMS adımlarıyla) ver.
