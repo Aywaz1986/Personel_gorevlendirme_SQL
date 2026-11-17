@@ -13,7 +13,7 @@ Her değişiklik önce **Yayınlanmamış** bölümüne yazılır; sürüm yüks
 - [x] 6. Testler yazıldı: `tests/Gorevlendirme.SqlTests/KimlikTests.cs`, `tests/Gorevlendirme.Tests/KimlikTests.cs`, `BridgeTests` ve mevcut SQL testleri `TestDb.Hedef`'e uyarlandı. Henüz çalıştırılmadı.
 - [x] 7. Belgeler yazıldı: README durum tablosu, PLAN, ARAYUZ, MIMARI, YETKI, SQL.md, `docs/test-dilim-2.md` (DILIMLER değişmedi; içerik zaten Dilim 2'yi tanımlıyor).
 - [x] 8. Kılavuz aracı: `tools/kilavuz/{README.md,ekran_goruntusu.py,kilavuz.js}` + `docs/Kullanma-Kilavuzu.docx` üretildi (5 ekran görüntüsü, sahte köprü).
-- [~] 9. PR #3 açıldı (dal itildi). CI: derle/guvenlik/dbo-koruma YEŞİL; sql-test ilk koşuda test derleme hatası (CS1656 `_` değişkeni) → düzeltildi, yeniden izleniyor.
+- [x] 9. PR #3 açıldı. CI tamamen YEŞİL (derle, guvenlik, dbo-koruma, sql-test: SQL Server 2019 konteynerinde 34/34 test geçti; ilk koşudaki CS1656 test derleme hatası düzeltildi).
 - [ ] 9b. Commit + push + PR (`gh api`, 403 nedeniyle `gh pr create` değil) + CI izleme (yalnız hata satırları).
 - [ ] 10. Sohbette sınama listesi (SSMS adımlarıyla) ver.
 - Güvenlik notu: dbo.* dokunulmaz; her SQL değişikliğinden sonra `python3 -I tools/dbo_koruma.py`. Özlük verisine zarar riski olan hiçbir adım atlanmaz; sınanmamış T-SQL "sınanmadı" diye işaretlenir.
