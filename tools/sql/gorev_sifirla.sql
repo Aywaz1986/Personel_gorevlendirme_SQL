@@ -1,6 +1,6 @@
 -- gorev_sifirla.sql — gorev şemasındaki VERİYİ siler, yapıyı (tablolar, yordamlar, roller) korur.
 -- Yalnızca SCHEMA_ID(N'gorev') altındaki nesnelere dokunur; dbo.* ve başka şemalara DOKUNMAZ.
--- Korunanlar (yapılandırma): gorev.sema_surumleri, gorev.sistem_ayarlari, gorev.rol_bolum_eslestirme, gorev.kullanici_yetki_istisna
+-- Korunanlar (yapılandırma): gorev.sema_surumleri, gorev.sistem_ayarlari, gorev.rol_bolum_eslestirme, gorev.kullanici_yetki_istisna, gorev.takvim_tatil
 -- (ORTAM ayarı, roller ve yöneticiler kalır; kadro kopyası ve iş verisi silinir, kadro yeniden eşitlenir).
 -- Reddedilir: ORTAM = CANLI ise; ORTAM okunamıyorsa. Kimlik (IDENTITY) sayaçları sıfırlanmaz, numaralar kaldığı yerden sürer.
 --
@@ -32,7 +32,7 @@ INSERT INTO #tablo (ad)
 SELECT t.name
 FROM sys.tables t
 WHERE t.schema_id = SCHEMA_ID(N'gorev')
-  AND t.name NOT IN (N'sema_surumleri', N'sistem_ayarlari', N'rol_bolum_eslestirme', N'kullanici_yetki_istisna');
+  AND t.name NOT IN (N'sema_surumleri', N'sistem_ayarlari', N'rol_bolum_eslestirme', N'kullanici_yetki_istisna', N'takvim_tatil');
 
 BEGIN TRANSACTION;
 
