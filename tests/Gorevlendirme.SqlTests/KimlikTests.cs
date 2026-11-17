@@ -178,7 +178,7 @@ INSERT INTO gorev.rol_bolum_eslestirme (bolum, rol) VALUES (N'Bölüm A', N'SAHA
     public async Task Kadro_esitleme_ekler_gunceller_pasife_alir_hicbir_seyi_silmez()
     {
         var (t, yon) = await EsitlemeHazirAsync();
-        await using var _ = t;
+        await using var _t = t;
         await t.ExecAsync(@"INSERT INTO dbo.personeller (sicil_no, adi_soyadi, bolum, kullanici_adi) VALUES
             (N'1', N'Ayşe Örnek', N'A', N'ayse'), (N'2', N'Ali Örnek', N'B', NULL), (N'3', N'Işık Örnek', N'A', N'isik');");
         var once = await t.DboIzAsync();
@@ -202,15 +202,14 @@ INSERT INTO gorev.rol_bolum_eslestirme (bolum, rol) VALUES (N'Bölüm A', N'SAHA
         Assert.Equal("Ali Yeni", await t.SkalerAsync("SELECT adi_soyadi FROM gorev.personel WHERE sicil_no = N'2'"));
         Assert.Equal(dboSatir, await t.SkalerAsync("SELECT COUNT(*) FROM dbo.personeller"));              // dbo'ya yazılmadı
         Assert.Equal(1, Convert.ToInt32(await t.SkalerAsync("SELECT COUNT(*) FROM gorev.islem_log WHERE islem = N'KADRO_ESITLE' AND ayrinti LIKE N'%\"pasife_alinan\":1%'")));
-        Assert.Equal(await t.DboIzAsync(), await t.DboIzAsync());
-        _ = once;
+        Assert.Equal(once, await t.DboIzAsync());   // dbo parmak izi değişmedi
     }
 
     [SqlFact]
     public async Task Ayrilis_tarihi_gecmisse_pasif_gelecekteyse_aktif()
     {
         var (t, yon) = await EsitlemeHazirAsync();
-        await using var _ = t;
+        await using var _t = t;
         await t.ExecAsync(@"INSERT INTO dbo.personeller (sicil_no, adi_soyadi, ayrilis_tarihi) VALUES
             (N'1', N'Geçmiş', '2000-01-01'), (N'2', N'Gelecek', '2999-01-01'), (N'3', N'Çalışan', NULL);");
         await KadroService.EsitleAsync(yon);
@@ -223,7 +222,7 @@ INSERT INTO gorev.rol_bolum_eslestirme (bolum, rol) VALUES (N'Bölüm A', N'SAHA
     public async Task Guvenlik_kapisi_eksik_okumada_eslemeyi_iptal_eder()
     {
         var (t, yon) = await EsitlemeHazirAsync();
-        await using var _ = t;
+        await using var _t = t;
         await t.ExecAsync("INSERT INTO dbo.personeller (sicil_no, adi_soyadi) VALUES (N'1', N'A'), (N'2', N'B'), (N'3', N'C'), (N'4', N'D');");
         await KadroService.EsitleAsync(yon);
         await t.ExecAsync("DELETE FROM dbo.personeller WHERE sicil_no <> N'1';");                  // dar kapsam benzetimi: 1 / 4 satır
@@ -239,7 +238,7 @@ INSERT INTO gorev.rol_bolum_eslestirme (bolum, rol) VALUES (N'Bölüm A', N'SAHA
     public async Task Ozlukte_yonetici_ya_da_tum_kapsam_yoksa_esitleme_reddedilir()
     {
         var (t, yon) = await EsitlemeHazirAsync();
-        await using var _ = t;
+        await using var _t = t;
         await t.ExecAsync("INSERT INTO dbo.personeller (sicil_no, adi_soyadi) VALUES (N'1', N'A');");
         await t.OzlukBenTaklitAsync("personel", olustur: false);
         var ex = await Assert.ThrowsAsync<GorevException>(() => KadroService.EsitleAsync(yon));
@@ -252,7 +251,7 @@ INSERT INTO gorev.rol_bolum_eslestirme (bolum, rol) VALUES (N'Bölüm A', N'SAHA
     public async Task Gorev_yoneticisi_olmayan_esitleme_yapamaz()
     {
         var (t, _) = await EsitlemeHazirAsync();
-        await using var _t = t;
+        await using var _t2 = t;
         var (_, sade) = await t.KisiAsync(ozlukRolu: true);
         await t.ExecAsync("INSERT INTO dbo.personeller (sicil_no, adi_soyadi) VALUES (N'1', N'A');");
         var ex = await Assert.ThrowsAsync<GorevException>(() => KadroService.EsitleAsync(sade));
