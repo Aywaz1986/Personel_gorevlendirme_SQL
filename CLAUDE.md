@@ -8,6 +8,9 @@ Proje: Merkezi Personel Görevlendirme, Talep ve İzleme Sistemi. Özlük (SQL S
 - `dbo` okuması yalnızca iki yerde: `dbo.personeller` (kadro eşitleme) ve `dbo.sp_ben` (EXEC); yalnızca `*_kadro_esitleme.sql` dosyasında ve yalnızca `INSERT #geçici ... SELECT/EXEC` biçiminde. Sonra işlem geçici tablodan yapılır.
 - Bu kural CI'da `tools/dbo_koruma.py` ile denetlenir (`tools/test_dbo_koruma.py`). Denetimi susturmak için `tools/dbo_koruma_izinler.json`'ı değiştirmek yazılı onay gerektirir.
 
+## Oturum devri (kullanıcı kalıcı kural olarak istedi, 17.11.2026)
+- Her adımı bitince `CHANGELOG.md` içindeki ilgili dilim başlığındaki "Oturum devir notu" listesine işle (yapıldı/yapılacak). Oturum kesilirse yeni oturum ÖNCE oradan devam eder. Özlük veritabanına zarar riski nedeniyle yarım kalan adım tahmin edilmez, kayıttan okunur.
+
 ## Token tasarrufu (kullanıcı ücretsiz planda)
 - Büyük dosyaları baştan sona OKUMA; önce `grep -n`, `sed -n`, kesit.
 - Sohbette kısa yaz. Uzun açıklama `docs/` içine gider.

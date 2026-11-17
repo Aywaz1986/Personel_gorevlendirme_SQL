@@ -21,6 +21,9 @@
     <Compile Include="..\..\src\Gorevlendirme.App\Data\Migrator.cs" />
     <Compile Include="..\..\src\Gorevlendirme.App\Data\SqlService.cs" />
     <Compile Include="..\..\src\Gorevlendirme.App\Data\ConnInfo.cs" />
+    <Compile Include="..\..\src\Gorevlendirme.App\Data\SqlHata.cs" />
+    <Compile Include="..\..\src\Gorevlendirme.App\Services\KimlikService.cs" />
+    <Compile Include="..\..\src\Gorevlendirme.App\Services\KadroService.cs" />
     <Compile Include="..\..\src\Gorevlendirme.App\Bridge\GorevException.cs" />
     <Compile Include="..\..\src\Gorevlendirme.App\Shell\AppInfo.cs" />
     <Compile Include="..\..\src\Gorevlendirme.App\Services\SurumBilgisi.cs" />
