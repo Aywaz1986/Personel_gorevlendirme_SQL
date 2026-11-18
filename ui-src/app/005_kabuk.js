@@ -1,6 +1,6 @@
 // Kabuk: üst çubuk (ortam, görünüm geçişi), rol bazlı menü ve sayfalar.
 const SAYFALAR = {
-  YONETICI: [['kadro', 'Kadro', kadroSayfa], ['eslestirme', 'Bölüm–rol eşleştirme', eslestirmeSayfa], ['istisna', 'Kişi istisnaları', istisnaSayfa], ['sistem', 'Sistem', sistemIcerik]],
+  YONETICI: [['kadro', 'Kadro', kadroSayfa], ['havuz', 'Proje havuzu', havuzSayfa], ['takvim', 'Akademik takvim', takvimSayfa], ['eslestirme', 'Bölüm–rol eşleştirme', eslestirmeSayfa], ['istisna', 'Kişi istisnaları', istisnaSayfa], ['sistem', 'Sistem', sistemIcerik]],
   SORUMLU: [['talep', 'Görev Talep Arayüzü', async () => bosSayfa('Görev Talep Arayüzü', 'Talep listesi ve yeni talep formu Dilim 4\'te gelir.')]],
   SAHA: [['gorevim', 'Görevlerim', async () => bosSayfa('Kişisel görev izleme', 'Görev izleme, izin ve rapor beyanı Dilim 7\'de gelir.')]],
 };

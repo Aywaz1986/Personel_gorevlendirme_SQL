@@ -3,6 +3,18 @@
 Her değişiklik önce **Yayınlanmamış** bölümüne yazılır; sürüm yükselince bölüm sürüm başlığına dönüştürülür.
 
 ## Yayınlanmamış
+### Dilim 3 – Proje havuzu ve akademik takvim (2026-11) — DEVAM EDİYOR (dal `dilim-3-havuz-takvim`; Dilim 2 PR #3 birleşti)
+**Oturum devir notu (her adımda güncelle):**
+- Kararlar (Murat, 17.11.2026): takvim yalnız tatil/kapalı gün (tarih + TAM/OO/OS + tür + ad); tatil gününe atama ENGELLENMEZ, yöneticiye UYARI çıkar (Dilim 5'te uygulanır); toplu yükleme: CSV dosyası + Excel'den yapıştır + .xlsx (C#'ta paketsiz ZipArchive okuyucu).
+- Tasarım: `proje_havuzu` tek tablo, `ust_id` + `seviye` 1..4 (Ana Proje/Alt Proje/Faaliyet/Konum); ad kardeşler arasında tekil; pasife alma altını da pasife alır; birleştirme yumuşak: kaynak pasif + `birlestirildi_id`, çocuklar hedefe taşınır (aynı adlılar özyinelemeli birleşir). Listeleme yordamları her rolde, yazma yalnız yönetici.
+- [x] 1. `004_havuz_takvim.sql` yazıldı (fn_kayitli_mi, proje_havuzu, takvim_tatil, sp_havuz_*, sp_takvim_*; sifirla takvim_tatil'i korur). SINANMADI.
+- [x] 2. C#: `HavuzService`, `TakvimService`, `TakvimCozumleyici`, `XlsxOkuyucu` (paketsiz), `HavuzTakvimCommands`, `SqlHata` 2601/2627. Derlenmedi (CI).
+- [x] 3. Arayüz: `ui-src/app/004_havuz.js`, `004_takvim.js`; menüye eklendi. JS sözdizimi OK.
+- [x] 4. Testler yazıldı (`HavuzTakvimTests` SQL, `TakvimTests` C#). CI ilk koşu: SQL geçici tablo harmanlama çakışması (004 #s/#o → COLLATE DATABASE_DEFAULT) ve 1 C# test beklentisi düzeltildi; 2. koşu izleniyor.
+- [x] 5. Belgeler (README, PLAN, ARAYUZ, MIMARI, YETKI, SQL, test-dilim-3) ve kılavuz (docx: havuz + takvim bölümleri, 7 ekran görüntüsü) güncellendi.
+- **REVİZYON (18.11.2026, Murat `2024_Takvim.xlsx` paylaştı: "takvim çok basit kaldı, standart yapı bu"):** standart: yıllık takvim (12 ay, HFT=ISO hafta no, PT..PZ), renk/işaret: Resmi Tatil (mavi), İdari Tatil (turuncu), Yarım Gün (daire); altında tatil listesi `GG[-GG..] AY GünAdları / N Gün Ad (YILLIK İZİNDEN KESİLECEK)`; en altta "YILLIK İZİNDEN TOPLAM … GÜN KESİLECEK". Karar: tatil artık ARALIK kaydı (başlangıç–bitiş), tür RESMI/IDARI (AKADEMIK kalktı), yarım gün = OO/OS tek günlük kayıt, `yillik_izinden_kesilir` bayrağı + yıl özeti; yıllık izin modülü yok, toplam yalnız bilgi. Yeni `005_takvim_standart.sql` (004'ü değiştirmez; veriyi taşır). Yıl takvimi ekranı + standart .xlsx'i doğrudan okuyan içe aktarma (liste satırlarını ayrıştırır).
+- [x] R1. 005 SQL (SINANMADI) · [x] R2. C# · [x] R3. Arayüz (yıl takvimi, özet, aralıklı form, standart .xlsx içe aktarma) · [x] R4. Testler (SQL + C#, 2024 örnekleriyle) · [x] R5. Belgeler + kılavuz · [x] R6. push + CI yeşil (4/4) + sınama listesi sohbette (açık soru: 28 Ekim 2024 oval mi, "1 Gün yıllık izinden" mi)
+- [x] 6. PR açıldı, CI yeşil (SQL testleri geçti). Murat el sınaması (`docs/test-dilim-3.md`) ve birleştirme bekleniyor.
 ### Dilim 2 – Kimlik, roller, kadro eşitleme (2026-11) — DEVAM EDİYOR (dal `dilim-2-kimlik-kadro`)
 **Oturum devir notu (her adımda güncelle; yeni oturum önce buradan devam eder):**
 - [x] 1. SQL: `002_kimlik.sql` (personel kopyası, bölüm→rol eşleştirme, kişi istisnası, `sp_ben`, yönetim yordamları, son-yönetici tetikleyicisi 50020) yazıldı, dbo koruma denetimi geçti. SQL sunucuda SINANMADI.

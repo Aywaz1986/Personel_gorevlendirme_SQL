@@ -1,0 +1,32 @@
+namespace Gorevlendirme;
+
+/// <summary>Proje havuzu (Ana Proje &gt; Alt Proje &gt; Faaliyet &gt; Konum). Yetki ve kurallar sunucudadır.</summary>
+public static class HavuzService
+{
+    public static async Task<object> ListeAsync(SqlService sql) =>
+        (await sql.ProcAsync("gorev.sp_havuz_listele")).Select(r => new
+        {
+            id = r["id"], ustId = r["ust_id"], seviye = r["seviye"], ad = r["ad"], aktif = r["aktif"], birlestirildiId = r["birlestirildi_id"],
+        }).ToList();
+
+    public static async Task<object> EkleAsync(SqlService sql, int? ustId, string ad)
+    {
+        var r = (await sql.ProcAsync("gorev.sp_havuz_ekle", ("@ust_id", ustId), ("@ad", ad))).First();
+        return new { id = r["id"] };
+    }
+
+    public static Task AdlandirAsync(SqlService sql, int id, string ad) =>
+        sql.ProcAsync("gorev.sp_havuz_adlandir", ("@id", id), ("@ad", ad));
+
+    public static async Task<object> DurumAsync(SqlService sql, int id, bool aktif)
+    {
+        var r = (await sql.ProcAsync("gorev.sp_havuz_durum", ("@id", id), ("@aktif", aktif))).First();
+        return new { etkilenen = r["etkilenen"] };
+    }
+
+    public static async Task<object> BirlestirAsync(SqlService sql, int kaynakId, int hedefId)
+    {
+        var r = (await sql.ProcAsync("gorev.sp_havuz_birlestir", ("@kaynak_id", kaynakId), ("@hedef_id", hedefId))).First();
+        return new { birlesen = r["birlesen"], tasinan = r["tasinan"] };
+    }
+}

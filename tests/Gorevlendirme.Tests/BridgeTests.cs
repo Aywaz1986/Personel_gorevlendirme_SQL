@@ -33,10 +33,13 @@ public class BridgeTests
         BaglantiCommands.Register(r);
         SemaCommands.Register(r);
         KimlikCommands.Register(r);
+        HavuzTakvimCommands.Register(r);
         foreach (var k in new[] { "ping", "runtime", "baglantiDene", "baglan", "baglantiKapat", "surumDurum", "semaDurum", "semaUygula", "sunucuDenetimi",
-                                  "ben", "kadroOzet", "kadroListe", "kadroEsitle", "eslestirmeListe", "eslestirmeKaydet", "istisnaListe", "istisnaKaydet", "istisnaSil" })
+                                  "ben", "kadroOzet", "kadroListe", "kadroEsitle", "eslestirmeListe", "eslestirmeKaydet", "istisnaListe", "istisnaKaydet", "istisnaSil",
+                                  "havuzListe", "havuzEkle", "havuzAdlandir", "havuzDurum", "havuzBirlestir", "takvimListe", "takvimOzet", "takvimKaydet", "takvimSil",
+                                  "takvimMetinOku", "takvimXlsxOku", "takvimOnizle", "takvimUygula" })
             Assert.NotNull(r.Find(k));
-        foreach (var k in new[] { "ben", "kadroListe", "kadroEsitle", "istisnaKaydet" })
+        foreach (var k in new[] { "ben", "kadroListe", "kadroEsitle", "istisnaKaydet", "havuzEkle", "takvimUygula" })
             Assert.True(r.Find(k)!.KapiGerekli);   // iş komutları sürüm kapısına tabidir
     }
 

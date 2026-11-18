@@ -25,7 +25,7 @@ public class KimlikTests
 
     [Theory]
     [InlineData(50020, "dogrulama")] [InlineData(50021, "dogrulama")] [InlineData(50024, "dogrulama")] [InlineData(50025, "dogrulama")]
-    [InlineData(50022, "yetki")] [InlineData(50023, "yetki")] [InlineData(229, "yetki")] [InlineData(547, "hata")]
+    [InlineData(50022, "yetki")] [InlineData(50023, "yetki")] [InlineData(229, "yetki")] [InlineData(547, "hata")] [InlineData(2601, "dogrulama")] [InlineData(2627, "dogrulama")]
     public void Sunucu_hata_numaralari_arayuz_kodlarina_cevrilir(int numara, string kod) =>
         Assert.Equal(kod, SqlHata.Cevir(numara, "x").Code);
 }

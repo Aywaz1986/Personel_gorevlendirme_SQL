@@ -47,7 +47,7 @@ Geliştirme ayrı test veritabanı olmadan `SST_Ozluk` üzerinde sürer (karar 1
 | Rol_Bolum_Eslestirme | `rol_bolum_eslestirme` | Özlük bölüm adı → rol |
 | Kullanici_Yetki_Istisna | `kullanici_yetki_istisna` | anahtar: `hesap` (+ isteğe bağlı `sicil_no`) |
 | Proje_Gorev_Havuzu | `proje_havuzu` | Ana → Alt → Faaliyet → Konum |
-| Akademik_Takvim_Tatiller | `takvim_tatil` | TAM/OO/OS |
+| Akademik_Takvim_Tatiller | `takvim_tatil` | aralık (baslangic–bitis), TAM/OO/OS, RESMI/IDARI, yıllık izinden kesilir |
 | Gorev_Talepleri | `talepler` | |
 | Gorev_Talep_Gunleri | `talep_gunleri` | |
 | Gorev_Atamalari | `atamalar` | çakışma kilidi `sp_atama_onayla` |
@@ -70,3 +70,8 @@ Anahtarlar: her tabloda `INT/BIGINT IDENTITY id`, iş anahtarı ayrı `UNIQUE`, 
 - `sp_ozluk_esitle`: `EXECUTE AS` yok; dbo okuması yalnız `INSERT #geçici ... SELECT/EXEC` ile `003_kadro_esitleme.sql` içinde. Hata kodları: 50020 son yönetici, 50021 eksik okuma (<%80 ya da sıfır satır), 50022 Özlük yetkisi yok, 50023 gorev yöneticisi değil, 50024 doğrulama, 50025 ilk yönetici zaten var.
 - `dbo.sp_ben` çıktı şekli (9 sütun) bağımlılığı kırılgandır: `hesap, ad, rol, kapsam_org_id, aktif, kayitli, yetkiler, kapali, kapali_mesaj`.
 - `tools/sql/gorev_ilk_yonetici.sql`: ilk yönetici betiği.
+
+## Dilim 3 notları
+- `proje_havuzu`, `takvim_tatil`, `fn_kayitli_mi`, `sp_havuz_*`, `sp_takvim_*` (`004_havuz_takvim.sql`; takvim `005_takvim_standart.sql` ile yeniden kuruldu). `gorev_sifirla.sql` havuzu temizler, `takvim_tatil`'i (kurum yapılandırması) KORUR.
+- Geçici tablo sütunları `COLLATE DATABASE_DEFAULT`; Türkçe harmanlamada i/I eşit değildir, kod karşılaştırmalarında `COLLATE Latin1_General_CI_AS` kullanılır (`RESMI`, `OO` …).
+- Takvim kodları ASCII: TAM/OO/OS; arayüz ÖÖ/ÖS gösterir.
