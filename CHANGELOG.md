@@ -10,7 +10,7 @@ Her değişiklik önce **Yayınlanmamış** bölümüne yazılır; sürüm yüks
 - [x] 1. `004_havuz_takvim.sql` yazıldı (fn_kayitli_mi, proje_havuzu, takvim_tatil, sp_havuz_*, sp_takvim_*; sifirla takvim_tatil'i korur). SINANMADI.
 - [x] 2. C#: `HavuzService`, `TakvimService`, `TakvimCozumleyici`, `XlsxOkuyucu` (paketsiz), `HavuzTakvimCommands`, `SqlHata` 2601/2627. Derlenmedi (CI).
 - [x] 3. Arayüz: `ui-src/app/004_havuz.js`, `004_takvim.js`; menüye eklendi. JS sözdizimi OK.
-- [x] 4. Testler yazıldı: `HavuzTakvimTests` (SQL), `TakvimTests` (CözümleyiciXlsx), BridgeTests/KimlikTests güncel. CI sonucu bekleniyor.
+- [x] 4. Testler yazıldı (`HavuzTakvimTests` SQL, `TakvimTests` C#). CI ilk koşu: SQL geçici tablo harmanlama çakışması (004 #s/#o → COLLATE DATABASE_DEFAULT) ve 1 C# test beklentisi düzeltildi; 2. koşu izleniyor.
 - [ ] 5. Belgeler (PLAN, README, DILIMLER, ARAYUZ, MIMARI, YETKI, SQL, test-dilim-3), kılavuz
 - [ ] 6. Commit, push, PR (gh api), CI, sınama listesi
 ### Dilim 2 – Kimlik, roller, kadro eşitleme (2026-11) — DEVAM EDİYOR (dal `dilim-2-kimlik-kadro`)

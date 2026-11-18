@@ -316,8 +316,10 @@ BEGIN
     IF gorev.fn_yonetici_mi() = 0 THROW 50023, N'Bu işlem için Merkez Yönetici yetkisi gerekir.', 1;
     IF @json IS NULL OR ISJSON(@json) = 0 THROW 50024, N'Satır listesi okunamadı.', 1;
     CREATE TABLE #s (
-        sira INT NOT NULL, tarih_m NVARCHAR(30) NULL, zaman_m NVARCHAR(10) NULL, tur_m NVARCHAR(20) NULL, ad_m NVARCHAR(400) NULL,
-        tarih DATE NULL, zaman VARCHAR(3) NULL, tur VARCHAR(10) NULL, ad NVARCHAR(200) NULL, durum VARCHAR(10) NULL, hata NVARCHAR(200) NULL);
+        sira INT NOT NULL, tarih_m NVARCHAR(30) COLLATE DATABASE_DEFAULT NULL, zaman_m NVARCHAR(10) COLLATE DATABASE_DEFAULT NULL,
+        tur_m NVARCHAR(20) COLLATE DATABASE_DEFAULT NULL, ad_m NVARCHAR(400) COLLATE DATABASE_DEFAULT NULL,
+        tarih DATE NULL, zaman VARCHAR(3) COLLATE DATABASE_DEFAULT NULL, tur VARCHAR(10) COLLATE DATABASE_DEFAULT NULL,
+        ad NVARCHAR(200) COLLATE DATABASE_DEFAULT NULL, durum VARCHAR(10) COLLATE DATABASE_DEFAULT NULL, hata NVARCHAR(200) COLLATE DATABASE_DEFAULT NULL);
     INSERT INTO #s (sira, tarih_m, zaman_m, tur_m, ad_m)
     SELECT sira, tarih, zaman, tur, ad
     FROM OPENJSON(@json) WITH (sira INT '$.sira', tarih NVARCHAR(30) '$.tarih', zaman NVARCHAR(10) '$.zaman', tur NVARCHAR(20) '$.tur', ad NVARCHAR(400) '$.ad');
@@ -368,7 +370,8 @@ BEGIN
     SET XACT_ABORT ON;
     SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
     IF gorev.fn_yonetici_mi() = 0 THROW 50023, N'Bu işlem için Merkez Yönetici yetkisi gerekir.', 1;
-    CREATE TABLE #o (sira INT, tarih CHAR(10), zaman VARCHAR(3), tur VARCHAR(10), ad NVARCHAR(200), durum VARCHAR(10), hata NVARCHAR(200));
+    CREATE TABLE #o (sira INT, tarih CHAR(10) COLLATE DATABASE_DEFAULT, zaman VARCHAR(3) COLLATE DATABASE_DEFAULT, tur VARCHAR(10) COLLATE DATABASE_DEFAULT,
+                      ad NVARCHAR(200) COLLATE DATABASE_DEFAULT, durum VARCHAR(10) COLLATE DATABASE_DEFAULT, hata NVARCHAR(200) COLLATE DATABASE_DEFAULT);
     INSERT INTO #o EXEC gorev.sp_takvim_toplu_onizle @json;
     IF EXISTS (SELECT 1 FROM #o WHERE durum = 'HATA')
         THROW 50024, N'Hatalı satırlar var; hiçbir kayıt uygulanmadı. Önizlemedeki hataları düzeltin.', 1;

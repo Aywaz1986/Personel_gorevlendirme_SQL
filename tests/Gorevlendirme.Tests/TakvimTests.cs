@@ -42,8 +42,9 @@ public class TakvimCozumleyiciTests
     public void Tirnakli_hucre_ayrac_ve_bos_satirlar_dogru_islenir()
     {
         var s = TakvimCozumleyici.MetinSatirlari("﻿Tarih,Ad\r\n2026-01-01,\"Yılbaşı, resmi \"\"tatil\"\"\"\r\n\r\n");
-        Assert.Equal(2, s.Count);
+        Assert.Equal(3, s.Count);                       // boş satır da korunur (satır numaraları dosyayla tutsun); Cozumle onu atlar
         Assert.Equal("Yılbaşı, resmi \"tatil\"", s[1][1]);
+        Assert.Single(TakvimCozumleyici.Cozumle(s));
         Assert.Empty(TakvimCozumleyici.MetinSatirlari("  \n "));
     }
 
