@@ -206,7 +206,7 @@ public class HavuzTakvimTests
             new TakvimSatir(11, "2024-12-30", "2025-01-02", "TAM", "RESMI", "Yılbaşını aşar", false),                                             // yıl sınırı
         }).ToArray();
         var onK = await y.ProcAsync("gorev.sp_takvim_toplu_onizle", ("@json", JsonSerializer.Serialize(kotu.Select(x => new { sira = x.Sira, baslangic = x.Baslangic, bitis = x.Bitis, zaman = x.Zaman, tur = x.Tur, ad = x.Ad, yillik = x.Yillik }))));
-        Assert.Equal(5, onK.Count(r => (string)r["durum"]! == "HATA"));
+        Assert.Equal(6, onK.Count(r => (string)r["durum"]! == "HATA"));   // bozuk(1) + A/B tekrar(2) + 29 Ekim TAM/OO dosya içi çakışma(2) + yıl sınırı(1)
         Assert.Equal("dogrulama", await Kod(() => TakvimService.UygulaAsync(y, kotu)));
         Assert.Equal(2, Convert.ToInt32(await t.SkalerAsync("SELECT COUNT(*) FROM gorev.takvim_tatil")));   // hiçbiri uygulanmadı
 
