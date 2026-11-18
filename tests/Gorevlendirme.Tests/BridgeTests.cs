@@ -36,7 +36,7 @@ public class BridgeTests
         HavuzTakvimCommands.Register(r);
         foreach (var k in new[] { "ping", "runtime", "baglantiDene", "baglan", "baglantiKapat", "surumDurum", "semaDurum", "semaUygula", "sunucuDenetimi",
                                   "ben", "kadroOzet", "kadroListe", "kadroEsitle", "eslestirmeListe", "eslestirmeKaydet", "istisnaListe", "istisnaKaydet", "istisnaSil",
-                                  "havuzListe", "havuzEkle", "havuzAdlandir", "havuzDurum", "havuzBirlestir", "takvimListe", "takvimKaydet", "takvimSil",
+                                  "havuzListe", "havuzEkle", "havuzAdlandir", "havuzDurum", "havuzBirlestir", "takvimListe", "takvimOzet", "takvimKaydet", "takvimSil",
                                   "takvimMetinOku", "takvimXlsxOku", "takvimOnizle", "takvimUygula" })
             Assert.NotNull(r.Find(k));
         foreach (var k in new[] { "ben", "kadroListe", "kadroEsitle", "istisnaKaydet", "havuzEkle", "takvimUygula" })
