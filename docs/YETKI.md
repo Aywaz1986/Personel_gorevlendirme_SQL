@@ -38,3 +38,6 @@ Kurulumdan sonra SSMS'te `db_owner` ile `tools/sql/gorev_ilk_yonetici.sql` bir k
 
 ## Kadro eşitleme şartı
 `sp_ozluk_esitle` çağıranın bağlamında çalışır (Özlük satır düzeyi güvenliği geçerli). Çağıran gorev yöneticisi olmalı **ve** Özlük `sp_ben` çıktısında `kayitli=1, aktif=1` ile `rol='yonetici'` ya da (`rol` ik/goruntuleyici ve `kapsam_org_id` NULL) olmalı. Not: `dbo.sp_ben`'in 9 sütunluk çıktı şekline bağımlıyız; Özlük bunu değiştirirse eşitleme kırılır (test `TestDb.OzlukBenTaklitAsync` aynı şekli taklit eder).
+
+## Dilim 3 yetkileri
+Proje havuzu ve takvim: **okuma** her rolde (rolü olan), **yazma** yalnız Merkez Yönetici (`fn_yonetici_mi`). Rolü olmayan kişi okuyamaz (50023). Tatil gününe atama engellenmez; Dilim 5'te yöneticiye uyarı çıkar.

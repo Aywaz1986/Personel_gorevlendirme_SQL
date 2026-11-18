@@ -72,6 +72,7 @@ public class MainForm : Form
             BaglantiCommands.Register(reg);
             SemaCommands.Register(reg);
             KimlikCommands.Register(reg);
+            HavuzTakvimCommands.Register(reg);
             var state = new AppState(loc);
             _bridge = new Bridge(core, state, reg);
             core.WebMessageReceived += async (_, e) =>

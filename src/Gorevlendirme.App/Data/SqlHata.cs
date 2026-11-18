@@ -7,7 +7,7 @@ public static class SqlHata
     public static GorevException Cevir(int numara, string mesaj) => numara switch
     {
         50022 or 50023 => new GorevException("yetki", mesaj),
-        50020 or 50021 or 50024 or 50025 => new GorevException("dogrulama", mesaj),
+        50020 or 50021 or 50024 or 50025 or 2601 or 2627 => new GorevException("dogrulama", mesaj),
         229 or 262 or 297 => new GorevException("yetki", "Bu işlem için SQL Server yetkiniz yok."),
         _ => new GorevException("hata", mesaj),
     };
