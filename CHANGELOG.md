@@ -12,7 +12,7 @@ Her değişiklik önce **Yayınlanmamış** bölümüne yazılır; sürüm yüks
 - [x] 3. Arayüz: `ui-src/app/004_havuz.js`, `004_takvim.js`; menüye eklendi. JS sözdizimi OK.
 - [x] 4. Testler yazıldı (`HavuzTakvimTests` SQL, `TakvimTests` C#). CI ilk koşu: SQL geçici tablo harmanlama çakışması (004 #s/#o → COLLATE DATABASE_DEFAULT) ve 1 C# test beklentisi düzeltildi; 2. koşu izleniyor.
 - [x] 5. Belgeler (README, PLAN, ARAYUZ, MIMARI, YETKI, SQL, test-dilim-3) ve kılavuz (docx: havuz + takvim bölümleri, 7 ekran görüntüsü) güncellendi.
-- [ ] 6. Commit, push, PR (gh api), CI, sınama listesi
+- [x] 6. PR açıldı, CI yeşil (SQL testleri geçti). Murat el sınaması (`docs/test-dilim-3.md`) ve birleştirme bekleniyor.
 ### Dilim 2 – Kimlik, roller, kadro eşitleme (2026-11) — DEVAM EDİYOR (dal `dilim-2-kimlik-kadro`)
 **Oturum devir notu (her adımda güncelle; yeni oturum önce buradan devam eder):**
 - [x] 1. SQL: `002_kimlik.sql` (personel kopyası, bölüm→rol eşleştirme, kişi istisnası, `sp_ben`, yönetim yordamları, son-yönetici tetikleyicisi 50020) yazıldı, dbo koruma denetimi geçti. SQL sunucuda SINANMADI.
