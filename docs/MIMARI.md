@@ -59,3 +59,8 @@ Onay/atama yordamları `SERIALIZABLE` + `UPDLOCK`: aynı personel, aynı gün ve
 ## Dilim 2: kimlik ve arayüz katmanı
 - C#: `KimlikService` (`gorev.sp_ben`), `KadroService` (kadro/eşleştirme/istisna yordamları), `Gorunum` (rol→görünüm listesi ve varsayılan), `SqlHata` (sunucu hata no → arayüz kodu), `SqlService.ProcAsync` (yalnız adlandırılmış yordam), `KimlikCommands` (köprü; hepsi sürüm kapısına tabi).
 - Arayüz (`ui-src/app/`): 001 köprü, 002 ortak (h(), durum, toast), 003 sistem, 004 kadro/eşleştirme/istisna, 005 kabuk (başlık, ORTAM rozeti, görünüm menüsü, menü), 006 başlangıç (sürüm durumu → `ben` → Yetkisiz ya da kabuk). Yetki kararı sunucudadır; arayüzdeki menü yalnızca görünümdür.
+
+## Dilim 3: havuz ve takvim
+- SQL `004_havuz_takvim.sql`: `proje_havuzu` (ağaç, `ust_id` + `seviye` CHECK, kardeşler arası tekil ad: iki filtreli tekil dizin), `takvim_tatil` (tarih+dilim tekil), `fn_kayitli_mi()` (`sp_ben` ile aynı rol çözümü; listeleme yordamlarının kapısı), yazma yordamları `fn_yonetici_mi()` ile kilitli. Geçici tablolar `COLLATE DATABASE_DEFAULT` (tempdb harmanlaması farklı olabilir; CI bunu yakaladı).
+- Birleştirme yumuşaktır: kaynak silinmez, pasif olur ve `birlestirildi_id` hedefi gösterir; Dilim 4+ tabloları eski kimliği buradan çözer.
+- C#: `HavuzService`, `TakvimService`, `TakvimCozumleyici` (CSV/TSV, Türkçe I/İ katlama, tarih/dilim/tür eşleme), `XlsxOkuyucu` (ZipArchive+XDocument, DTD kapalı, 50 MB girdi / 20 000 satır sınırı, tarih biçimli sayıları ISO'ya çevirir). Sunucu yine her satırı doğrular.

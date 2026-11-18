@@ -18,6 +18,25 @@ VERI = {
   "kadroOzet": {"toplam": 4, "aktif": 3, "sonZaman": "2026-11-16T14:20:00", "sonKullanici": "ALAN\\ornek.yonetici", "sonAyrinti": json.dumps({"okunan": 4, "eklenen": 1, "guncellenen": 2, "pasife_alinan": 1, "degismeyen": 0})},
   "kadroListe": KADRO,
   "eslestirmeListe": [{"bolum": "Örnek Bölüm A", "rol": "SORUMLU", "kisi": 14}, {"bolum": "Örnek Bölüm B", "rol": "SAHA", "kisi": 120}, {"bolum": "Örnek Bölüm D", "rol": None, "kisi": 9}],
+  "havuzListe": [
+    {"id": 1, "ustId": None, "seviye": 1, "ad": "Örnek Ana Proje A", "aktif": True, "birlestirildiId": None},
+    {"id": 2, "ustId": 1, "seviye": 2, "ad": "Örnek Alt Proje 1", "aktif": True, "birlestirildiId": None},
+    {"id": 3, "ustId": 2, "seviye": 3, "ad": "Örnek Faaliyet", "aktif": True, "birlestirildiId": None},
+    {"id": 4, "ustId": 3, "seviye": 4, "ad": "Örnek Yerleşke", "aktif": True, "birlestirildiId": None},
+    {"id": 5, "ustId": 1, "seviye": 2, "ad": "Örnek Alt Proje 2", "aktif": True, "birlestirildiId": None},
+    {"id": 6, "ustId": None, "seviye": 1, "ad": "Örnek Ana Proje B", "aktif": True, "birlestirildiId": None},
+  ],
+  "takvimListe": [
+    {"id": 1, "tarih": "2026-10-28", "zaman": "OS", "tur": "RESMI", "ad": "Cumhuriyet Bayramı arifesi"},
+    {"id": 2, "tarih": "2026-10-29", "zaman": "TAM", "tur": "RESMI", "ad": "Cumhuriyet Bayramı"},
+    {"id": 3, "tarih": "2026-12-01", "zaman": "TAM", "tur": "AKADEMIK", "ad": "Örnek akademik kapalı gün"},
+  ],
+  "takvimMetinOku": [{"sira": 2, "tarih": "2026-05-01", "zaman": "TAM", "tur": "RESMI", "ad": "1 Mayıs"}],
+  "takvimOnizle": [
+    {"sira": 2, "tarih": "2026-05-01", "zaman": "TAM", "tur": "RESMI", "ad": "1 Mayıs", "durum": "YENI", "hata": None},
+    {"sira": 3, "tarih": "2026-10-29", "zaman": "TAM", "tur": "RESMI", "ad": "Cumhuriyet Bayramı", "durum": "AYNI", "hata": None},
+    {"sira": 4, "tarih": "", "zaman": "TAM", "tur": "RESMI", "ad": "Bozuk tarihli satır", "durum": "HATA", "hata": "Tarih okunamadı."},
+  ],
   "istisnaListe": [{"hesap": "ALAN\\ornek.yonetici", "adiSoyadi": "Örnek Yönetici", "yonetici": True, "sorumlu": True, "saha": False, "aktif": True, "aciklama": "", "sicilNo": "1000"}],
 }
 def ben(kayitli, y, s, sa, g):
@@ -42,8 +61,11 @@ with sync_playwright() as P:
         pg.goto('file:///tmp/gorev_idx.html'); pg.wait_for_timeout(600); return pg
     pg = ac(ben(True, True, True, False, ["YONETICI", "SORUMLU"]))
     sh(pg, '01_kadro')
-    for i, n in [(1, '02_eslestirme'), (2, '03_istisna')]:
+    for i, n in [(3, '02_eslestirme'), (4, '03_istisna')]:
         pg.locator('nav.menu button').nth(i).click(); sh(pg, n)
+    pg.locator('nav.menu button').nth(1).click(); sh(pg, '06_havuz')
+    pg.locator('nav.menu button').nth(2).click(); pg.wait_for_timeout(300)
+    pg.locator('textarea').fill('Tarih; Ad\n01.05.2026; 1 Mayıs'); pg.get_by_role('button', name='Önizle').click(); sh(pg, '07_takvim')
     pg.locator('nav.menu button').nth(0).click()
     pg.locator('.gorunum button').click(); sh(pg, '04_gorunum')
     sh(ac(ben(False, False, False, False, [])), '05_yetkisiz')

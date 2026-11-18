@@ -23,7 +23,7 @@ button{padding:8px 14px;border:1px solid var(--cizgi);border-radius:6px;backgrou
 button.ana{background:var(--vurgu);border-color:var(--vurgu);color:var(--vurgu-yazi)}
 button:disabled{opacity:.5;cursor:default}
 .rozet{display:inline-block;padding:2px 9px;border-radius:99px;font-size:12px;font-weight:600}
-.rozet.iyi{background:var(--iyi-bg);color:var(--iyi)}.rozet.uyari{background:var(--uyari-bg);color:var(--uyari)}.rozet.kotu{background:var(--kotu-bg);color:var(--kotu)}
+.rozet.iyi{background:var(--iyi-bg);color:var(--iyi)}.rozet.uyari{background:var(--uyari-bg);color:var(--uyari)}.rozet.kotu{background:var(--kotu-bg);color:var(--kotu)}.rozet.bilgi{background:var(--vurgu-bg);color:var(--vurgu)}
 dl{display:grid;grid-template-columns:max-content 1fr;gap:6px 18px;margin:0}
 dt{color:var(--soluk)}dd{margin:0}
 table{width:100%;border-collapse:collapse}

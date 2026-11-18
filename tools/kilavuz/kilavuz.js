@@ -15,7 +15,7 @@ const tbl=(w,rows)=>new Table({width:{size:w.reduce((a,c)=>a+c,0),type:WidthType
 const C=[];
 C.push(new Paragraph({spacing:{before:2400,after:200},alignment:AlignmentType.CENTER,children:[new TextRun({text:"Personel Görevlendirme",bold:true,size:52,color:"1F3A5F"})]}));
 C.push(new Paragraph({alignment:AlignmentType.CENTER,spacing:{after:200},children:[new TextRun({text:"Resimli Kullanma Kılavuzu",size:34,color:"444444"})]}));
-C.push(new Paragraph({alignment:AlignmentType.CENTER,spacing:{after:1200},children:[new TextRun({text:"SQL Server sürümü (Windows, tek exe) – Dilim 2: kimlik, roller, kadro",size:24,color:"666666"})]}));
+C.push(new Paragraph({alignment:AlignmentType.CENTER,spacing:{after:1200},children:[new TextRun({text:"SQL Server sürümü (Windows, tek exe) – Dilim 3: kimlik, roller, kadro, havuz, takvim",size:24,color:"666666"})]}));
 C.push(note("**Bu kılavuzdaki ekran görüntüleri** uydurma örnek verilerle alınmıştır; gerçek personel verisi içermez. Gördüğünüz menüler yetkinize göre değişir. Kılavuz her dilimde güncellenir; henüz gelmemiş ekranlar (atama paneli, talep, haftalık matris, izin/rapor) ilgili dilimlerde eklenecektir.","E8F0FA"));
 C.push(new Paragraph({children:[new PageBreak()]}));
 C.push(new Paragraph({heading:HeadingLevel.HEADING_1,children:[new TextRun("İçindekiler")]}));
@@ -53,14 +53,34 @@ C.push(p("Kadrodan bir kişi seçip Windows hesabına açıkça rol verirsiniz (
 C.push(note("**Son aktif yönetici** kaldırılamaz, silinemez, pasife alınamaz: işlem sunucuda reddedilir (“en az bir aktif Merkez Yönetici bulunmalı”)."));
 C.push(...img("03_istisna","Kişi istisnaları."));
 
-C.push(h1("6. Yetkisiz erişim"));
+C.push(h1("6. Proje havuzu"));
+C.push(p("Görev talepleri bu havuzdan seçilir. Havuz dört seviyelidir: **Ana Proje › Alt Proje › Faaliyet › Konum**. Yalnızca Merkez Yönetici düzenler; rolü olan herkes okur."));
+C.push(b("**Ekle:** üstteki kutudan Ana Proje, satırdaki **+ Alt Proje / + Faaliyet / + Konum** düğmesiyle alt kayıt eklenir. Aynı üstte aynı ad (büyük/küçük harf fark etmez) iki kez olamaz. Konum seviyesinin altına kayıt eklenemez."));
+C.push(b("**Ad değiştir:** satırdaki düğmeyle."));
+C.push(b("**Pasife al / Etkinleştir:** pasife alınan kaydın altındakiler de pasife alınır; etkinleştirmek için üst kaydın aktif olması gerekir. Pasifleri görmek için “Pasifleri göster” işaretlenir."));
+C.push(b("**Birleştir…:** aynı seviyedeki iki kayıt birleştirilir (örn. aynı projenin iki farklı yazılışı). Kaynağın altındakiler hedefe taşınır, aynı adlılar kendi içinde birleşir. Kaynak silinmez; “Birleştirildi” rozetiyle pasif kalır ve hedefi gösterir. İşlem geri alınamaz."));
+C.push(...img("06_havuz","Proje havuzu ağacı."));
+
+C.push(h1("7. Akademik takvim"));
+C.push(p("Resmi tatil, akademik kapalı gün ve idari izin günleri tutulur. Her kayıt bir **tarih**, bir **zaman dilimi** (Tüm gün, Öğleden önce ÖÖ, Öğleden sonra ÖS), bir **tür** (Resmi, Akademik, İdari) ve bir ad içerir. Aynı tarihte “Tüm gün” ile yarım gün birlikte bulunamaz."));
+C.push(note("**Tatil gününe atama engellenmez.** Atama ekranı (sonraki dilim) tatil gününe atama yapılırken yöneticiyi uyarır; karar yöneticinindir."));
+C.push(h2("7.1 Tek tek ekleme"));
+C.push(p("Üstteki formda tarih, zaman dilimi, tür ve adı girip **Kaydet**’e basın. Tablodaki **Düzenle** / **Sil** düğmeleri yıl filtresine göre listelenen kayıtlar içindir."));
+C.push(h2("7.2 Toplu yükleme"));
+C.push(n("Excel’de sütunları şu sırayla hazırlayın: **Tarih; Ad; Zaman dilimi; Tür** (son ikisi boşsa Tüm gün ve Resmi tatil sayılır). İlk satır başlık olabilir; başlık varsa sütunlar adından bulunur.","n7"));
+C.push(n("Hücreleri kopyalayıp kutuya yapıştırın ya da **.csv** / **.xlsx** dosyası seçin. Tarih gg.aa.yyyy, yyyy-aa-gg ya da gerçek Excel tarihi olabilir. Türkçe karakterli CSV (UTF-8 ya da Windows-1254) doğru okunur.","n7"));
+C.push(n("**Önizle**’ye basın. Her satır Yeni, Güncellenecek, Aynı ya da Hata olarak görünür; bu aşamada hiçbir şey kaydedilmez.","n7"));
+C.push(n("Hata yoksa **Uygula**. Hatalı satır varsa hiçbiri uygulanmaz: hatayı düzeltip yeniden önizleyin.","n7"));
+C.push(...img("07_takvim","Toplu yükleme önizlemesi."));
+
+C.push(h1("8. Yetkisiz erişim"));
 C.push(p("Hesabınız kadroda yoksa, pasifse ya da hiçbir rolü çözülmediyse bu sayfa açılır. **Hesap adını kopyala** ile adınızı merkez yöneticisine iletin."));
 C.push(...img("05_yetkisiz","Yetkisiz erişim sayfası."));
 
-C.push(h1("7. Sık sorulan sorular"));
-C.push(tbl([3300,6060],[["Sorun","Çözüm"],["Yetkisiz Erişim görüyorum","Hesabınız kadroda yok/pasif ya da bölümünüze rol eşleştirilmemiş; yöneticiye hesap adınızı iletin."],["Eşitleme “eksik okuma” diye iptal oldu","Özlük’te tüm kurum kapsamı olan bir hesapla çalıştırın."],["Eşitleme “Özlük yetkisi” hatası verdi","Hesabınız Özlük’te yönetici ya da tüm kurum kapsamlı İK/görüntüleyici değil."],["Kendi yöneticiliğimi kaldıramıyorum","Sistemde tek aktif yönetici sizsiniz; önce başka bir yönetici atayın."]]));
+C.push(h1("9. Sık sorulan sorular"));
+C.push(tbl([3300,6060],[["Sorun","Çözüm"],["Yetkisiz Erişim görüyorum","Hesabınız kadroda yok/pasif ya da bölümünüze rol eşleştirilmemiş; yöneticiye hesap adınızı iletin."],["Eşitleme “eksik okuma” diye iptal oldu","Özlük’te tüm kurum kapsamı olan bir hesapla çalıştırın."],["Eşitleme “Özlük yetkisi” hatası verdi","Hesabınız Özlük’te yönetici ya da tüm kurum kapsamlı İK/görüntüleyici değil."],["Kendi yöneticiliğimi kaldıramıyorum","Sistemde tek aktif yönetici sizsiniz; önce başka bir yönetici atayın."],["Takvim yüklemesi “Tarih okunamadı” diyor","Tarihi gg.aa.yyyy ya da yyyy-aa-gg yazın; Excel’de sütunu Tarih biçimine çevirin."],["Havuza aynı adı ekleyemiyorum","Aynı üstte aynı ad (pasif olsa da) vardır; pasifi etkinleştirin ya da birleştirin."]]));
 
-C.push(h1("8. Sorun giderme (BT için)"));
+C.push(h1("10. Sorun giderme (BT için)"));
 C.push(b("**Bağlantı izni:** Özlük’teki `NT AUTHORITY\\Authenticated Users` girişi bağlanmayı sağlar; veriye erişimi `gorev` tablolarındaki kayıt belirler."));
 C.push(b("**Şema sürümü:** `SELECT TOP 5 * FROM gorev.sema_surumleri ORDER BY surum DESC;`"));
 C.push(b("**Özlük dokunulmazlığı:** `tools/sql/dbo_iz.sql` çıktısı kurulumdan önce ve sonra aynı olmalıdır."));
@@ -72,7 +92,7 @@ const doc=new Document({
   {id:"Heading1",name:"Heading 1",basedOn:"Normal",next:"Normal",quickFormat:true,run:{font:FONT,size:34,bold:true,color:"1F3A5F"},paragraph:{spacing:{before:360,after:160},keepNext:true,outlineLevel:0}},
   {id:"Heading2",name:"Heading 2",basedOn:"Normal",next:"Normal",quickFormat:true,run:{font:FONT,size:26,bold:true,color:"2D5B8C"},paragraph:{spacing:{before:240,after:100},keepNext:true,outlineLevel:1}}]},
  numbering:{config:[{reference:"bul",levels:[{level:0,format:LevelFormat.BULLET,text:"•",alignment:AlignmentType.LEFT,style:{paragraph:{indent:{left:720,hanging:360}}}}]},
-  ...["num1","n2","n3","n4","n5"].map(r=>({reference:r,levels:[{level:0,format:LevelFormat.DECIMAL,text:"%1.",alignment:AlignmentType.LEFT,style:{paragraph:{indent:{left:720,hanging:360}}}}]}))]},
+  ...["num1","n2","n3","n4","n5","n7"].map(r=>({reference:r,levels:[{level:0,format:LevelFormat.DECIMAL,text:"%1.",alignment:AlignmentType.LEFT,style:{paragraph:{indent:{left:720,hanging:360}}}}]}))]},
  sections:[{properties:{page:{size:{width:11906,height:16838},margin:{top:1300,right:1273,bottom:1300,left:1273}}},
   footers:{default:new Footer({children:[new Paragraph({alignment:AlignmentType.CENTER,children:[new TextRun({text:"Personel Görevlendirme – Kullanma Kılavuzu   |   Sayfa ",size:18,color:"777777"}),new TextRun({children:[PageNumber.CURRENT],size:18,color:"777777"})]})]})},
   children:C}]});

@@ -25,3 +25,21 @@ Arayüz ham SQL göndermez; `window.chrome.webview.postMessage({id, cmd, args})`
 | `istisnaSil` | `hesap` | `{tamam}` | ✔ | son yönetici silinemez |
 
 Yeni hata eşlemesi: sunucu 50022/50023 → `yetki`; 50020/50021/50024/50025 → `dogrulama`.
+
+## Dilim 3 komutları (proje havuzu, takvim)
+| Komut | Bağımsız değişken | Sonuç | Kapı | Not |
+|---|---|---|---|---|
+| `havuzListe` | – | `[{id, ustId, seviye, ad, aktif, birlestirildiId}]` | ✔ | her rolde (rolü olan) okur |
+| `havuzEkle` | `ustId?, ad` | `{id}` | ✔ | yalnız yönetici; seviye üstten türer (1 Ana Proje … 4 Konum); kardeşler arasında ad tekil |
+| `havuzAdlandir` | `id, ad` | `{tamam}` | ✔ | birleştirilmiş kayıt değişmez |
+| `havuzDurum` | `id, aktif` | `{etkilenen}` | ✔ | pasife alma altını da alır; etkinleştirme için üst aktif olmalı |
+| `havuzBirlestir` | `kaynakId, hedefId` | `{birlesen, tasinan}` | ✔ | aynı seviye; çocuklar taşınır, aynı adlılar birleşir; kaynak pasif + `birlestirildiId` |
+| `takvimListe` | `yil?` | `[{id, tarih(ISO), zaman, tur, ad}]` | ✔ | her rolde okur |
+| `takvimKaydet` | `id?, tarih(ISO), zaman(TAM/OO/OS), tur(RESMI/AKADEMIK/IDARI), ad` | `{id}` | ✔ | yalnız yönetici; aynı tarihte TAM ile OO/OS birlikte olamaz |
+| `takvimSil` | `id` | `{tamam}` | ✔ | yalnız yönetici |
+| `takvimMetinOku` | `metin` | `[{sira, tarih, zaman, tur, ad}]` | – | CSV/TSV/Excel yapıştırma → satırlar (sunucuya gitmez) |
+| `takvimXlsxOku` | `base64` | aynı | – | .xlsx (≤10 MB), ilk sayfa; paketsiz okuyucu |
+| `takvimOnizle` | `satirlar[]` | `[{sira, tarih, zaman, tur, ad, durum(YENI/GUNCELLE/AYNI/HATA), hata}]` | ✔ | yazmaz |
+| `takvimUygula` | `satirlar[]` | `{eklenen, guncellenen, ayni}` | ✔ | ya hepsi ya hiçbiri; hatalı satır varsa `dogrulama` |
+
+Girdi sütunları (başlık yoksa sıra): Tarih; Ad; Zaman dilimi; Tür (son ikisi isteğe bağlı: Tüm gün, Resmi tatil). Başlık varsa sütunlar adından bulunur. Tarih biçimleri: gg.aa.yyyy, yyyy-aa-gg, gg/aa/yyyy.
