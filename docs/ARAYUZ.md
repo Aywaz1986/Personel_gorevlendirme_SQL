@@ -34,12 +34,13 @@ Yeni hata eşlemesi: sunucu 50022/50023 → `yetki`; 50020/50021/50024/50025 →
 | `havuzAdlandir` | `id, ad` | `{tamam}` | ✔ | birleştirilmiş kayıt değişmez |
 | `havuzDurum` | `id, aktif` | `{etkilenen}` | ✔ | pasife alma altını da alır; etkinleştirme için üst aktif olmalı |
 | `havuzBirlestir` | `kaynakId, hedefId` | `{birlesen, tasinan}` | ✔ | aynı seviye; çocuklar taşınır, aynı adlılar birleşir; kaynak pasif + `birlestirildiId` |
-| `takvimListe` | `yil?` | `[{id, tarih(ISO), zaman, tur, ad}]` | ✔ | her rolde okur |
-| `takvimKaydet` | `id?, tarih(ISO), zaman(TAM/OO/OS), tur(RESMI/AKADEMIK/IDARI), ad` | `{id}` | ✔ | yalnız yönetici; aynı tarihte TAM ile OO/OS birlikte olamaz |
+| `takvimListe` | `yil?` | `[{id, baslangic(ISO), bitis(ISO), zaman, tur, ad, yillik, gun, kesilen}]` | ✔ | her rolde okur; `gun` takvim günü (yarım gün 0.5), `kesilen` yıllık izinden düşecek iş günü |
+| `takvimOzet` | `yil` | `{kayit, resmiGun, idariGun, kesilenGun}` | ✔ | her rolde okur; "kesilen" yalnız bilgi (yıllık izin modülü yok) |
+| `takvimKaydet` | `id?, baslangic(ISO), bitis?(ISO; boşsa tek gün), zaman(TAM/OO/OS), tur(RESMI/IDARI), ad, yillik(bool)` | `{id}` | ✔ | yalnız yönetici; kayıt tek yıl içinde ve <60 gün; yarım gün yalnız tek günde; TAM ile yarım gün çakışamaz, ÖÖ+ÖS aynı güne konabilir |
 | `takvimSil` | `id` | `{tamam}` | ✔ | yalnız yönetici |
-| `takvimMetinOku` | `metin` | `[{sira, tarih, zaman, tur, ad}]` | – | CSV/TSV/Excel yapıştırma → satırlar (sunucuya gitmez) |
-| `takvimXlsxOku` | `base64` | aynı | – | .xlsx (≤10 MB), ilk sayfa; paketsiz okuyucu |
-| `takvimOnizle` | `satirlar[]` | `[{sira, tarih, zaman, tur, ad, durum(YENI/GUNCELLE/AYNI/HATA), hata}]` | ✔ | yazmaz |
+| `takvimMetinOku` | `metin, yil?` | `{satirlar:[{sira, baslangic, bitis, zaman, tur, ad, yillik}], yil, mod(STANDART/TABLO)}` | – | CSV/TSV/Excel yapıştırma ya da standart takvim liste satırları ("10-11-12 NİSAN … / 3 Gün Ramazan Bayramı (YILLIK İZİNDEN KESİLECEK)") → satırlar (sunucuya gitmez). STANDART modda yıl: sayfadaki 20xx hücresi, yoksa `yil`, yoksa `dogrulama` |
+| `takvimXlsxOku` | `base64, yil?` | aynı | – | .xlsx (≤10 MB), ilk sayfa; paketsiz okuyucu |
+| `takvimOnizle` | `satirlar[]` | `[{sira, baslangic, bitis, zaman, tur, ad, yillik, gun, durum(YENI/GUNCELLE/AYNI/HATA), hata}]` | ✔ | yazmaz; eşleşme anahtarı baslangic+bitis+zaman |
 | `takvimUygula` | `satirlar[]` | `{eklenen, guncellenen, ayni}` | ✔ | ya hepsi ya hiçbiri; hatalı satır varsa `dogrulama` |
 
 Girdi sütunları (başlık yoksa sıra): Tarih; Ad; Zaman dilimi; Tür (son ikisi isteğe bağlı: Tüm gün, Resmi tatil). Başlık varsa sütunlar adından bulunur. Tarih biçimleri: gg.aa.yyyy, yyyy-aa-gg, gg/aa/yyyy.
