@@ -1,7 +1,7 @@
 const fs=require('fs');const d=require('docx');
 const {Document,Packer,Paragraph,TextRun,ImageRun,HeadingLevel,AlignmentType,Table,TableRow,TableCell,WidthType,ShadingType,BorderStyle,LevelFormat,PageBreak,TableOfContents,Footer,PageNumber}=d;
 const FONT="Calibri";
-let FIG=0;const img=(n,c0)=>{const cap="Şekil "+(++FIG)+" – "+c0;return [new Paragraph({alignment:AlignmentType.CENTER,spacing:{before:120,after:60},keepNext:true,children:[new ImageRun({type:"png",data:fs.readFileSync(`shots/${n}.png`),transformation:{width:560,height:373},altText:{title:cap,description:cap,name:n}})]}),
+let FIG=0;const img=(n,c0,hh)=>{const cap="Şekil "+(++FIG)+" – "+c0;return [new Paragraph({alignment:AlignmentType.CENTER,spacing:{before:120,after:60},keepNext:true,children:[new ImageRun({type:"png",data:fs.readFileSync(`shots/${n}.png`),transformation:{width:560,height:hh||373},altText:{title:cap,description:cap,name:n}})]}),
  new Paragraph({alignment:AlignmentType.CENTER,spacing:{after:200},children:[new TextRun({text:cap,italics:true,size:18,color:"555555"})]})];};
 const h1=t=>new Paragraph({heading:HeadingLevel.HEADING_1,children:[new TextRun(t)]});
 const h2=t=>new Paragraph({heading:HeadingLevel.HEADING_2,children:[new TextRun(t)]});
@@ -62,16 +62,18 @@ C.push(b("**Birleştir…:** aynı seviyedeki iki kayıt birleştirilir (örn. a
 C.push(...img("06_havuz","Proje havuzu ağacı."));
 
 C.push(h1("7. Akademik takvim"));
-C.push(p("Resmi tatil, akademik kapalı gün ve idari izin günleri tutulur. Her kayıt bir **tarih**, bir **zaman dilimi** (Tüm gün, Öğleden önce ÖÖ, Öğleden sonra ÖS), bir **tür** (Resmi, Akademik, İdari) ve bir ad içerir. Aynı tarihte “Tüm gün” ile yarım gün birlikte bulunamaz."));
-C.push(note("**Tatil gününe atama engellenmez.** Atama ekranı (sonraki dilim) tatil gününe atama yapılırken yöneticiyi uyarır; karar yöneticinindir."));
-C.push(h2("7.1 Tek tek ekleme"));
-C.push(p("Üstteki formda tarih, zaman dilimi, tür ve adı girip **Kaydet**’e basın. Tablodaki **Düzenle** / **Sil** düğmeleri yıl filtresine göre listelenen kayıtlar içindir."));
-C.push(h2("7.2 Toplu yükleme"));
-C.push(n("Excel’de sütunları şu sırayla hazırlayın: **Tarih; Ad; Zaman dilimi; Tür** (son ikisi boşsa Tüm gün ve Resmi tatil sayılır). İlk satır başlık olabilir; başlık varsa sütunlar adından bulunur.","n7"));
-C.push(n("Hücreleri kopyalayıp kutuya yapıştırın ya da **.csv** / **.xlsx** dosyası seçin. Tarih gg.aa.yyyy, yyyy-aa-gg ya da gerçek Excel tarihi olabilir. Türkçe karakterli CSV (UTF-8 ya da Windows-1254) doğru okunur.","n7"));
+C.push(p("Resmi ve idari tatil günleri tutulur. Her kayıt bir **başlangıç** ve isteğe bağlı **bitiş** tarihi (boşsa tek gün), bir **zaman dilimi** (Tüm gün, Öğleden önce ÖÖ, Öğleden sonra ÖS), bir **tür** (Resmi tatil, İdari tatil), bir ad ve **Yıllık izinden kesilir** işareti içerir. Yarım gün yalnız tek günde olur; bir kayıt tek yıl içinde ve 60 günden kısa olmalıdır. Aynı güne “Tüm gün” ile yarım gün birlikte girilemez; ÖÖ + ÖS birlikte girilebilir."));
+C.push(note("**Tatil gününe atama engellenmez.** Atama ekranı (sonraki dilim) tatil gününe atama yapılırken yöneticiyi uyarır; karar yöneticinindir. Yıllık izin hesabı bu sürümde yoktur: “Yıllık izinden kesilecek” toplamı yalnız bilgidir."));
+C.push(h2("7.1 Yıl görünümü"));
+C.push(p("Sayfanın üstünde yıl seçilir. Özet kutuları o yılın resmi tatil gününü, idari tatil gününü ve yıllık izinden kesilecek iş gününü gösterir. Altında 12 aylık yıl takvimi vardır: mavi **resmi**, turuncu **idari** tatil, daire **yarım gün**, gri hafta sonudur; soldaki HFT sütunu ISO hafta numarasıdır. Kayıtlar listesinde her tatil “10.04.2024 – 12.04.2024 · 3 gün” biçiminde görünür."));
+C.push(h2("7.2 Tek tek ekleme"));
+C.push(p("Formda başlangıç (ve çok günlüyse bitiş) tarihini, zaman dilimini, türü ve adı girip **Kaydet**’e basın. Bayram gibi ardışık günler tek kayıttır. Listedeki **Düzenle** / **Sil** düğmeleri seçili yıla aittir."));
+C.push(h2("7.3 Toplu yükleme"));
+C.push(n("**Standart takvim dosyası:** resmi takvim tablosunu (ör. 2024_Takvim.xlsx) **.xlsx** olarak seçin ya da altındaki liste satırlarını (“10-11-12 NİSAN Çarşamba-Perşembe-Cuma / 3 Gün Ramazan Bayramı”) kutuya yapıştırın. Yıl, sayfadaki 20xx hücresinden alınır; yoksa seçili yıl kullanılır. “YILLIK İZİNDEN KESİLECEK” yazan satırlar idari tatil ve yıllık izinden kesilir olarak okunur; “½ Gün” yarım gün (ÖS) olur.","n7"));
+C.push(n("**Sütunlu dosya:** Başlangıç; Bitiş; Ad; Tür; Zaman dilimi; Yıllık sırasıyla (CSV, Excel’den yapıştırma ya da .xlsx). İlk satır başlık olabilir.","n7"));
 C.push(n("**Önizle**’ye basın. Her satır Yeni, Güncellenecek, Aynı ya da Hata olarak görünür; bu aşamada hiçbir şey kaydedilmez.","n7"));
 C.push(n("Hata yoksa **Uygula**. Hatalı satır varsa hiçbiri uygulanmaz: hatayı düzeltip yeniden önizleyin.","n7"));
-C.push(...img("07_takvim","Toplu yükleme önizlemesi."));
+C.push(...img("07_takvim","Akademik takvim: yıl görünümü, kayıtlar, form ve toplu yükleme önizlemesi.",1073));
 
 C.push(h1("8. Yetkisiz erişim"));
 C.push(p("Hesabınız kadroda yoksa, pasifse ya da hiçbir rolü çözülmediyse bu sayfa açılır. **Hesap adını kopyala** ile adınızı merkez yöneticisine iletin."));

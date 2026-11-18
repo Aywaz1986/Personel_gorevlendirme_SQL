@@ -7,44 +7,58 @@ namespace Gorevlendirme.Tests;
 
 public class TakvimCozumleyiciTests
 {
-    private static List<TakvimSatir> Metin(string m) => TakvimCozumleyici.Cozumle(TakvimCozumleyici.MetinSatirlari(m));
+    private static List<TakvimSatir> Metin(string m, int? yil = null) => TakvimCozumleyici.Oku(TakvimCozumleyici.MetinSatirlari(m), yil).Satirlar;
+    private static List<TakvimSatir> Satirlar(int? yil, params string[] satirlar) => TakvimCozumleyici.Oku(satirlar.Select(x => new[] { x }).ToList(), yil).Satirlar;
 
     [Fact]
     public void Basliksiz_noktalivirgul_siralama_tarih_ad_zaman_tur()
     {
         var l = Metin("29.10.2026; Cumhuriyet Bayramı\n28.10.2026; Arife; ÖS; Resmi\n");
         Assert.Equal(2, l.Count);
-        Assert.Equal(new TakvimSatir(1, "2026-10-29", "TAM", "RESMI", "Cumhuriyet Bayramı"), l[0]);
-        Assert.Equal(new TakvimSatir(2, "2026-10-28", "OS", "RESMI", "Arife"), l[1]);
+        Assert.Equal(new TakvimSatir(1, "2026-10-29", "", "TAM", "RESMI", "Cumhuriyet Bayramı", false), l[0]);
+        Assert.Equal(new TakvimSatir(2, "2026-10-28", "", "OS", "RESMI", "Arife", false), l[1]);
+    }
+
+    [Fact]
+    public void Basliksiz_baslangic_bitis_ad_tur_zaman_yillik_siralamasi()
+    {
+        var l = Metin("10.04.2024; 12.04.2024; Ramazan Bayramı; Resmi; Tüm gün; Evet\n08.04.2024;; İdari izin; İdari; ; yıllık izinden kesilir\n");
+        Assert.Equal(new TakvimSatir(1, "2024-04-10", "2024-04-12", "TAM", "RESMI", "Ramazan Bayramı", true), l[0]);
+        Assert.Equal(new TakvimSatir(2, "2024-04-08", "", "TAM", "IDARI", "İdari izin", true), l[1]);
     }
 
     [Fact]
     public void Basliklu_excel_yapistirma_sekme_ayracli_sutunlari_adindan_bulur()
     {
-        var l = Metin("Tür\tTarih\tZaman dilimi\tAçıklama\nAkademik\t2026-12-01\tÖğleden önce\tSenato günü\n");
-        Assert.Single(l);
-        Assert.Equal(new TakvimSatir(2, "2026-12-01", "OO", "AKADEMIK", "Senato günü"), l[0]);
+        var l = Metin("Tür\tBaşlangıç\tBitiş\tZaman dilimi\tAçıklama\tYıllık izinden kesilir\nİdari\t2026-12-01\t\tÖğleden önce\tSenato günü\thayır\nResmi\t2026-04-13\t2026-04-15\t\tBayram\tevet\n");
+        Assert.Equal(2, l.Count);
+        Assert.Equal(new TakvimSatir(2, "2026-12-01", "", "OO", "IDARI", "Senato günü", false), l[0]);
+        Assert.Equal(new TakvimSatir(3, "2026-04-13", "2026-04-15", "TAM", "RESMI", "Bayram", true), l[1]);
     }
 
     [Theory]
-    [InlineData("TAM", "TAM")] [InlineData("Tüm gün", "TAM")] [InlineData("", "TAM")] [InlineData("ÖÖ", "OO")] [InlineData("öö", "OO")] [InlineData("Öğleden Sonra", "OS")] [InlineData("os", "OS")] [InlineData("bilinmez", "bilinmez")]
+    [InlineData("TAM", "TAM")] [InlineData("Tüm gün", "TAM")] [InlineData("", "TAM")] [InlineData("ÖÖ", "OO")] [InlineData("öö", "OO")] [InlineData("Öğleden Sonra", "OS")] [InlineData("os", "OS")] [InlineData("Yarım gün", "OS")] [InlineData("bilinmez", "bilinmez")]
     public void Zaman_dilimi_turkce_karsiliklari_kodlara_cevrilir(string girdi, string beklenen) => Assert.Equal(beklenen, TakvimCozumleyici.ZamanCevir(girdi));
 
     [Theory]
-    [InlineData("Resmi", "RESMI")] [InlineData("RESMİ TATİL", "RESMI")] [InlineData("resmi", "RESMI")] [InlineData("Akademik", "AKADEMIK")] [InlineData("İdari", "IDARI")] [InlineData("idari izin", "IDARI")] [InlineData("", "RESMI")] [InlineData("Diger", "Diger")]
-    public void Tur_turkce_karsiliklari_kodlara_cevrilir(string girdi, string beklenen) => Assert.Equal(beklenen, TakvimCozumleyici.TurCevir(girdi));
+    [InlineData("Resmi", "RESMI")] [InlineData("RESMİ TATİL", "RESMI")] [InlineData("resmi", "RESMI")] [InlineData("Akademik", "Akademik")] [InlineData("İdari", "IDARI")] [InlineData("idari izin", "IDARI")] [InlineData("Kurumsal", "IDARI")] [InlineData("", "RESMI")] [InlineData("Diger", "Diger")]
+    public void Tur_turkce_karsiliklari_kodlara_cevrilir_akademik_artik_tanimsiz(string girdi, string beklenen) => Assert.Equal(beklenen, TakvimCozumleyici.TurCevir(girdi));
 
     [Theory]
     [InlineData("29.10.2026", "2026-10-29")] [InlineData("9.5.2026", "2026-05-09")] [InlineData("2026-05-09", "2026-05-09")] [InlineData("09/05/2026", "2026-05-09")] [InlineData("29.10.2026 00:00", "2026-10-29")] [InlineData("bozuk", "bozuk")]
     public void Tarih_bicimleri_isoya_cevrilir_okunamayan_ham_kalir(string girdi, string beklenen) => Assert.Equal(beklenen, TakvimCozumleyici.TarihCevir(girdi));
 
+    [Theory]
+    [InlineData("evet", true)] [InlineData("E", true)] [InlineData("1", true)] [InlineData("x", true)] [InlineData("YILLIK İZİNDEN KESİLECEK", true)] [InlineData("hayır", false)] [InlineData("", false)] [InlineData("0", false)]
+    public void Yillik_isareti_okunur(string girdi, bool beklenen) => Assert.Equal(beklenen, TakvimCozumleyici.EvetMi(girdi));
+
     [Fact]
     public void Tirnakli_hucre_ayrac_ve_bos_satirlar_dogru_islenir()
     {
-        var s = TakvimCozumleyici.MetinSatirlari("﻿Tarih,Ad\r\n2026-01-01,\"Yılbaşı, resmi \"\"tatil\"\"\"\r\n\r\n");
-        Assert.Equal(3, s.Count);                       // boş satır da korunur (satır numaraları dosyayla tutsun); Cozumle onu atlar
+        var s = TakvimCozumleyici.MetinSatirlari("\uFEFFTarih,Ad\r\n2026-01-01,\"Yılbaşı, resmi \"\"tatil\"\"\"\r\n\r\n");
+        Assert.Equal(3, s.Count);                       // boş satır da korunur (satır numaraları dosyayla tutsun); Oku onu atlar
         Assert.Equal("Yılbaşı, resmi \"tatil\"", s[1][1]);
-        Assert.Single(TakvimCozumleyici.Cozumle(s));
+        Assert.Single(TakvimCozumleyici.Oku(s).Satirlar);
         Assert.Empty(TakvimCozumleyici.MetinSatirlari("  \n "));
     }
 
@@ -53,8 +67,47 @@ public class TakvimCozumleyiciTests
     {
         var l = Metin("sadece-metin\n");
         Assert.Single(l);
-        Assert.Equal("sadece-metin", l[0].Tarih);   // sunucu "Tarih okunamadı" der
+        Assert.Equal("sadece-metin", l[0].Baslangic);   // sunucu "Başlangıç tarihi okunamadı" der
         Assert.Empty(Metin(""));
+    }
+
+    [Fact]
+    public void Standart_takvim_satirlari_aralik_tek_gun_yarim_gun_ve_yillik_izin_okunur()
+    {
+        var o = TakvimCozumleyici.Oku(new List<string[]>
+        {
+            new[] { "", "", "", "", "2024" },
+            new[] { "TAKVİM" },
+            new[] { "08 NİSAN Pazartesi / 1 Gün (YILLIK İZİNDEN KESİLECEK)" },
+            new[] { "09 NİSAN Salı", "/ 0,5 Gün Arife" },
+            new[] { "10-11-12 NİSAN Çarşamba-Perşembe-Cuma / 3 Gün Ramazan Bayramı" },
+            new[] { "20-21 MAYIS Pazartesi-Salı / 2 Gün Örnek" },
+            new[] { "05-09-10 TEMMUZ Cuma-Salı-Çarşamba / 3 Gün Ayrık" },
+            new[] { "29 EKİM Salı / 1 Gün Kurumsal tatil" },
+            new[] { "30 ŞUBAT Cuma / 1 Gün Bozuk gün" },
+        });
+        Assert.Equal("STANDART", o.Mod);
+        Assert.Equal(2024, o.Yil);
+        var l = o.Satirlar;
+        Assert.Equal(new TakvimSatir(3, "2024-04-08", "", "TAM", "IDARI", "İdari izin", true), l[0]);
+        Assert.Equal(new TakvimSatir(4, "2024-04-09", "", "OS", "RESMI", "Arife", false), l[1]);
+        Assert.Equal(new TakvimSatir(5, "2024-04-10", "2024-04-12", "TAM", "RESMI", "Ramazan Bayramı", false), l[2]);
+        Assert.Equal(new TakvimSatir(6, "2024-05-20", "2024-05-21", "TAM", "RESMI", "Örnek", false), l[3]);
+        Assert.Equal(new TakvimSatir(7, "2024-07-05", "", "TAM", "RESMI", "Ayrık", false), l[4]);   // ardışık olmayan günler ayrı kayıt
+        Assert.Equal(new TakvimSatir(7, "2024-07-09", "2024-07-10", "TAM", "RESMI", "Ayrık", false), l[5]);
+        Assert.Equal("IDARI", l[6].Tur);
+        Assert.Equal("Kurumsal tatil", l[6].Ad);
+        Assert.Equal("30 ŞUBAT Cuma / 1 Gün Bozuk gün", l[7].Baslangic);                              // geçersiz gün: ham metin, sunucu hata verir
+        Assert.Equal(8, l.Count);
+    }
+
+    [Fact]
+    public void Standart_modda_yil_dosyadan_yoksa_parametreden_ikisi_de_yoksa_hata()
+    {
+        Assert.Equal("2025-05-01", Satirlar(2025, "01 MAYIS Perşembe / 1 Gün Emek ve Dayanışma Günü")[0].Baslangic);
+        Assert.Equal(2024, TakvimCozumleyici.Oku(new List<string[]> { new[] { "2024" }, new[] { "01 MAYIS Çarşamba / 1 Gün Emek" } }, 2030).Yil);   // dosyadaki yıl önceliklidir
+        var ex = Assert.Throws<GorevException>(() => Satirlar(null, "01 MAYIS Çarşamba / 1 Gün Emek"));
+        Assert.Equal("dogrulama", ex.Code);
     }
 }
 
@@ -99,8 +152,19 @@ public class XlsxOkuyucuTests
         var stil = "<cellXfs count=\"2\"><xf numFmtId=\"0\"/><xf numFmtId=\"14\"/></cellXfs>";
         var sayfa = "<row r=\"1\"><c r=\"A1\" t=\"inlineStr\"><is><t>Tarih</t></is></c><c r=\"B1\" t=\"inlineStr\"><is><t>Ad</t></is></c></row>"
                   + "<row r=\"2\"><c r=\"A2\" s=\"1\"><v>46324</v></c><c r=\"B2\" t=\"inlineStr\"><is><t>Bayram</t></is></c></row>";
-        var l = TakvimCozumleyici.Cozumle(XlsxOkuyucu.Oku(Xlsx(sayfa, null, stil)));
-        Assert.Equal(new TakvimSatir(2, "2026-10-29", "TAM", "RESMI", "Bayram"), Assert.Single(l));
+        var l = TakvimCozumleyici.Oku(XlsxOkuyucu.Oku(Xlsx(sayfa, null, stil))).Satirlar;
+        Assert.Equal(new TakvimSatir(2, "2026-10-29", "", "TAM", "RESMI", "Bayram", false), Assert.Single(l));
+    }
+
+    [Fact]
+    public void Xlsxten_standart_takvim_sayfasi_yil_hucresiyle_okunur()
+    {
+        var sayfa = "<row r=\"1\"><c r=\"E1\"><v>2024</v></c></row>"
+                  + "<row r=\"3\"><c r=\"A3\" t=\"inlineStr\"><is><t>10-11-12 NİSAN Çarşamba-Perşembe-Cuma / 3 Gün Ramazan Bayramı</t></is></c></row>";
+        var o = TakvimCozumleyici.Oku(XlsxOkuyucu.Oku(Xlsx(sayfa)));
+        Assert.Equal(2024, o.Yil);
+        var x = Assert.Single(o.Satirlar);
+        Assert.Equal(("2024-04-10", "2024-04-12", "Ramazan Bayramı"), (x.Baslangic, x.Bitis, x.Ad));
     }
 
     [Fact]

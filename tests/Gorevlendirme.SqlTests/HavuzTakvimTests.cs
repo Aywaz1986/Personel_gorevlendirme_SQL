@@ -108,28 +108,59 @@ public class HavuzTakvimTests
         Assert.Equal("dogrulama", await Kod(() => y.ProcAsync("gorev.sp_havuz_birlestir", ("@kaynak_id", a3), ("@hedef_id", a2))));  // pasif hedef
     }
 
+    private static List<Dictionary<string, object?>> Liste(object o) =>
+        ((System.Collections.IEnumerable)o).Cast<object>().Select(x => x.GetType().GetProperties().ToDictionary(pr => pr.Name, pr => pr.GetValue(x))).ToList();
+
     [SqlFact]
-    public async Task Takvim_kaydet_listele_sil_ve_kurallar()
+    public async Task Takvim_aralik_yarim_gun_cakisma_ve_sayimlar()
     {
         var (t, y) = await YoneticiAsync();
         await using var _t = t;
-        var id = Id(await TakvimService.KaydetAsync(y, null, "2026-10-29", "TAM", "RESMI", "Cumhuriyet Bayramı"));
-        await TakvimService.KaydetAsync(y, null, "2026-10-30", "OS", "idari", "Yarım gün");
-        Assert.Equal(2, Convert.ToInt32(await t.SkalerAsync("SELECT COUNT(*) FROM gorev.takvim_tatil")));
-        Assert.Equal("IDARI", await t.SkalerAsync("SELECT tur FROM gorev.takvim_tatil WHERE tarih = '2026-10-30'"));   // tür büyük harfe çevrilir (Türkçe i sorunu yok)
-        Assert.Equal("dogrulama", await Kod(() => TakvimService.KaydetAsync(y, null, "2026-10-29", "TAM", "RESMI", "Yine")));  // aynı tarih+dilim
-        Assert.Equal("dogrulama", await Kod(() => TakvimService.KaydetAsync(y, null, "2026-10-29", "OO", "RESMI", "Çakışır"))); // TAM varken yarım gün
-        Assert.Equal("dogrulama", await Kod(() => TakvimService.KaydetAsync(y, null, "2026-10-30", "TAM", "RESMI", "Çakışır"))); // yarım gün varken TAM
-        Assert.Equal("dogrulama", await Kod(() => TakvimService.KaydetAsync(y, null, "2026-11-01", "XX", "RESMI", "x")));
-        Assert.Equal("dogrulama", await Kod(() => TakvimService.KaydetAsync(y, null, "2026-11-01", "TAM", "YOK", "x")));
-        Assert.Equal("dogrulama", await Kod(() => TakvimService.KaydetAsync(y, null, "1999-01-01", "TAM", "RESMI", "x")));
-        Assert.Equal("dogrulama", await Kod(() => TakvimService.KaydetAsync(y, null, "bozuk", "TAM", "RESMI", "x")));
-        await TakvimService.KaydetAsync(y, id, "2026-10-29", "TAM", "AKADEMIK", "Düzeltildi");           // güncelleme
-        Assert.Equal("Düzeltildi", await t.SkalerAsync("SELECT ad FROM gorev.takvim_tatil WHERE id = " + id));
-        Assert.Equal(2, ((System.Collections.IEnumerable)await TakvimService.ListeAsync(y, 2026)).Cast<object>().Count());
-        Assert.Empty(((System.Collections.IEnumerable)await TakvimService.ListeAsync(y, 2027)).Cast<object>());
-        await TakvimService.SilAsync(y, id);
-        Assert.Equal("dogrulama", await Kod(() => TakvimService.SilAsync(y, id)));
+        var bayram = Id(await TakvimService.KaydetAsync(y, null, "2024-04-10", "2024-04-12", "TAM", "RESMI", "Ramazan Bayramı", false));   // Çar-Cum
+        await TakvimService.KaydetAsync(y, null, "2024-04-08", null, "TAM", "idari", "İdari izin", true);                                   // Pzt, tek gün
+        await TakvimService.KaydetAsync(y, null, "2024-04-09", null, "OS", "RESMI", "Arife", false);                                         // Salı ÖS
+        await TakvimService.KaydetAsync(y, null, "2024-04-09", "2024-04-09", "OO", "IDARI", "Sabah izni", true);                             // aynı güne ÖÖ serbest
+        await TakvimService.KaydetAsync(y, null, "2024-06-15", "2024-06-21", "TAM", "RESMI", "Kurban Bayramı", true);                        // Cmt-Cum, 5 iş günü
+        Assert.Equal("IDARI", await t.SkalerAsync("SELECT tur FROM gorev.takvim_tatil WHERE baslangic = '2024-04-08'"));                   // Türkçe i sorunu yok
+
+        // çakışmalar ve kurallar
+        Assert.Equal("dogrulama", await Kod(() => TakvimService.KaydetAsync(y, null, "2024-04-11", null, "TAM", "RESMI", "Çakışır", false)));        // bayramın içi
+        Assert.Equal("dogrulama", await Kod(() => TakvimService.KaydetAsync(y, null, "2024-04-12", "2024-04-14", "TAM", "RESMI", "Taşar", false)));  // aralık kesişir
+        Assert.Equal("dogrulama", await Kod(() => TakvimService.KaydetAsync(y, null, "2024-04-09", null, "TAM", "RESMI", "Yarım varken TAM", false)));
+        Assert.Equal("dogrulama", await Kod(() => TakvimService.KaydetAsync(y, null, "2024-04-09", null, "OS", "RESMI", "Aynı dilim", false)));
+        Assert.Equal("dogrulama", await Kod(() => TakvimService.KaydetAsync(y, null, "2024-04-11", null, "OO", "RESMI", "TAM varken yarım", false)));
+        Assert.Equal("dogrulama", await Kod(() => TakvimService.KaydetAsync(y, null, "2024-07-01", "2024-07-03", "OS", "RESMI", "Yarım gün aralık olmaz", false)));
+        Assert.Equal("dogrulama", await Kod(() => TakvimService.KaydetAsync(y, null, "2024-12-30", "2025-01-02", "TAM", "RESMI", "Yılbaşını aşar", false)));
+        Assert.Equal("dogrulama", await Kod(() => TakvimService.KaydetAsync(y, null, "2024-01-01", "2024-03-30", "TAM", "RESMI", "60 günden uzun", false)));
+        Assert.Equal("dogrulama", await Kod(() => TakvimService.KaydetAsync(y, null, "2024-08-05", "2024-08-01", "TAM", "RESMI", "Bitiş önce", false)));
+        Assert.Equal("dogrulama", await Kod(() => TakvimService.KaydetAsync(y, null, "2024-08-01", null, "XX", "RESMI", "x", false)));
+        Assert.Equal("dogrulama", await Kod(() => TakvimService.KaydetAsync(y, null, "2024-08-01", null, "TAM", "AKADEMIK", "x", false)));       // tür kaldırıldı
+        Assert.Equal("dogrulama", await Kod(() => TakvimService.KaydetAsync(y, null, "2024-08-01", null, "TAM", "RESMI", " ", false)));
+        Assert.Equal("dogrulama", await Kod(() => TakvimService.KaydetAsync(y, null, "bozuk", null, "TAM", "RESMI", "x", false)));
+
+        // sayımlar
+        var l = Liste(await TakvimService.ListeAsync(y, 2024));
+        Assert.Equal(5, l.Count);
+        var by = l.Single(x => (int)x["id"]! == bayram);
+        Assert.Equal(3m, Convert.ToDecimal(by["gun"]));
+        Assert.Equal(0m, Convert.ToDecimal(by["kesilen"]));            // yıllık işareti yok
+        var kurban = l.Single(x => (string)x["ad"]! == "Kurban Bayramı");
+        Assert.Equal(7m, Convert.ToDecimal(kurban["gun"]));
+        Assert.Equal(5m, Convert.ToDecimal(kurban["kesilen"]));        // hafta sonu düşülür
+        Assert.Equal(0.5m, Convert.ToDecimal(l.Single(x => (string)x["ad"]! == "Sabah izni")["kesilen"]));
+        Assert.Equal(1m, Convert.ToDecimal(l.Single(x => (string)x["ad"]! == "İdari izin")["kesilen"]));
+        var oz = await TakvimService.OzetAsync(y, 2024);
+        Assert.Equal(5, Convert.ToInt32(oz.GetType().GetProperty("kayit")!.GetValue(oz)));
+        Assert.Equal(10.5m, Convert.ToDecimal(oz.GetType().GetProperty("resmiGun")!.GetValue(oz)));   // 3 + 0.5 + 7
+        Assert.Equal(1.5m, Convert.ToDecimal(oz.GetType().GetProperty("idariGun")!.GetValue(oz)));    // 1 + 0.5
+        Assert.Equal(6.5m, Convert.ToDecimal(oz.GetType().GetProperty("kesilenGun")!.GetValue(oz)));  // 1 + 0.5 + 5
+        Assert.Empty(Liste(await TakvimService.ListeAsync(y, 2025)));
+
+        // güncelleme kendi kendini çakıştırmaz; silme
+        await TakvimService.KaydetAsync(y, bayram, "2024-04-10", "2024-04-12", "TAM", "RESMI", "Düzeltildi", true);
+        Assert.Equal("Düzeltildi", await t.SkalerAsync("SELECT ad FROM gorev.takvim_tatil WHERE id = " + bayram));
+        await TakvimService.SilAsync(y, bayram);
+        Assert.Equal("dogrulama", await Kod(() => TakvimService.SilAsync(y, bayram)));
     }
 
     [SqlFact]
@@ -137,13 +168,14 @@ public class HavuzTakvimTests
     {
         var (t, y) = await YoneticiAsync();
         await using var _t = t;
-        await TakvimService.KaydetAsync(y, null, "2026-10-29", "TAM", "RESMI", "Bayram");
+        await TakvimService.KaydetAsync(y, null, "2026-10-29", null, "TAM", "RESMI", "Bayram", false);
         var (hesap, sorumlu) = await t.KisiAsync();
         await t.ExecAsync($"INSERT INTO gorev.kullanici_yetki_istisna (hesap, sorumlu_mu) VALUES (N'{hesap}', 1);");
-        Assert.Single(((System.Collections.IEnumerable)await TakvimService.ListeAsync(sorumlu, null)).Cast<object>());
-        Assert.Equal("yetki", await Kod(() => TakvimService.KaydetAsync(sorumlu, null, "2026-10-31", "TAM", "RESMI", "x")));
+        Assert.Single(Liste(await TakvimService.ListeAsync(sorumlu, null)));
+        Assert.NotNull(await TakvimService.OzetAsync(sorumlu, 2026));
+        Assert.Equal("yetki", await Kod(() => TakvimService.KaydetAsync(sorumlu, null, "2026-10-31", null, "TAM", "RESMI", "x", false)));
         Assert.Equal("yetki", await Kod(() => TakvimService.SilAsync(sorumlu, 1)));
-        Assert.Equal("yetki", await Kod(() => TakvimService.OnizleAsync(sorumlu, new[] { new TakvimSatir(1, "2026-10-31", "TAM", "RESMI", "x") })));
+        Assert.Equal("yetki", await Kod(() => TakvimService.OnizleAsync(sorumlu, new[] { new TakvimSatir(1, "2026-10-31", "", "TAM", "RESMI", "x", false) })));
     }
 
     [SqlFact]
@@ -151,37 +183,37 @@ public class HavuzTakvimTests
     {
         var (t, y) = await YoneticiAsync();
         await using var _t = t;
-        await TakvimService.KaydetAsync(y, null, "2026-10-29", "TAM", "RESMI", "Cumhuriyet Bayramı");
-        await TakvimService.KaydetAsync(y, null, "2026-05-01", "TAM", "RESMI", "Emek ve Dayanışma Günü");
+        await TakvimService.KaydetAsync(y, null, "2024-10-29", null, "TAM", "RESMI", "Cumhuriyet Bayramı", false);
+        await TakvimService.KaydetAsync(y, null, "2024-04-10", "2024-04-12", "TAM", "RESMI", "Bayram", false);
 
         var iyi = new[]
         {
-            new TakvimSatir(2, "2026-10-29", "TAM", "RESMI", "Cumhuriyet Bayramı"),       // aynı
-            new TakvimSatir(3, "2026-05-01", "TAM", "RESMI", "1 Mayıs"),                   // güncelle
-            new TakvimSatir(4, "2026-10-28", "OS", "RESMI", "Arife"),                      // yeni
-            new TakvimSatir(5, "2026-04-23", "TAM", "resmi", "23 Nisan"),                  // küçük harf tür: yeni
+            new TakvimSatir(2, "2024-10-29", "", "TAM", "RESMI", "Cumhuriyet Bayramı", false),        // aynı
+            new TakvimSatir(3, "2024-04-10", "2024-04-12", "TAM", "resmi", "Ramazan Bayramı", true),  // güncelle (ad, yıllık)
+            new TakvimSatir(4, "2024-10-28", "", "OS", "RESMI", "Arife", false),                       // yeni
+            new TakvimSatir(5, "2024-04-23", "", "TAM", "RESMI", "23 Nisan", false),                   // yeni
+            new TakvimSatir(6, "2024-06-15", "2024-06-21", "TAM", "RESMI", "Kurban Bayramı", true),    // yeni aralık
         };
-        var json = JsonSerializer.Serialize(iyi.Select(x => new { sira = x.Sira, tarih = x.Tarih, zaman = x.Zaman, tur = x.Tur, ad = x.Ad }));
-        var on = await y.ProcAsync("gorev.sp_takvim_toplu_onizle", ("@json", json));
-        Assert.Equal(new[] { "AYNI", "GUNCELLE", "YENI", "YENI" }, on.Select(r => (string)r["durum"]!).ToArray());
+        var on = await y.ProcAsync("gorev.sp_takvim_toplu_onizle", ("@json", JsonSerializer.Serialize(iyi.Select(x => new { sira = x.Sira, baslangic = x.Baslangic, bitis = x.Bitis, zaman = x.Zaman, tur = x.Tur, ad = x.Ad, yillik = x.Yillik }))));
+        Assert.Equal(new[] { "AYNI", "GUNCELLE", "YENI", "YENI", "YENI" }, on.Select(r => (string)r["durum"]!).ToArray());
         Assert.Equal(2, Convert.ToInt32(await t.SkalerAsync("SELECT COUNT(*) FROM gorev.takvim_tatil")));   // önizleme yazmadı
 
         var kotu = iyi.Concat(new[]
         {
-            new TakvimSatir(6, "yok", "TAM", "RESMI", "Bozuk tarih"),
-            new TakvimSatir(7, "2026-12-01", "TAM", "RESMI", "A"), new TakvimSatir(8, "2026-12-01", "TAM", "RESMI", "B"),   // dosyada tekrar
-            new TakvimSatir(9, "2026-10-29", "OO", "RESMI", "TAM ile çakışır"),                                              // veritabanındaki TAM ile
-            new TakvimSatir(10, "2026-12-05", "TAM", "RESMI", "Gün"), new TakvimSatir(11, "2026-12-05", "OS", "RESMI", "Yarım"), // dosya içinde TAM+OS
+            new TakvimSatir(7, "yok", "", "TAM", "RESMI", "Bozuk tarih", false),
+            new TakvimSatir(8, "2024-12-01", "", "TAM", "RESMI", "A", false), new TakvimSatir(9, "2024-12-01", "", "TAM", "RESMI", "B", false),    // dosyada tekrar (2 hata)
+            new TakvimSatir(10, "2024-10-29", "", "OO", "RESMI", "TAM ile çakışır", false),                                                     // veritabanındaki TAM ile
+            new TakvimSatir(11, "2024-12-30", "2025-01-02", "TAM", "RESMI", "Yılbaşını aşar", false),                                             // yıl sınırı
         }).ToArray();
-        var onK = await y.ProcAsync("gorev.sp_takvim_toplu_onizle", ("@json", JsonSerializer.Serialize(kotu.Select(x => new { sira = x.Sira, tarih = x.Tarih, zaman = x.Zaman, tur = x.Tur, ad = x.Ad }))));
-        Assert.Equal(7, onK.Count(r => (string)r["durum"]! == "HATA"));
+        var onK = await y.ProcAsync("gorev.sp_takvim_toplu_onizle", ("@json", JsonSerializer.Serialize(kotu.Select(x => new { sira = x.Sira, baslangic = x.Baslangic, bitis = x.Bitis, zaman = x.Zaman, tur = x.Tur, ad = x.Ad, yillik = x.Yillik }))));
+        Assert.Equal(5, onK.Count(r => (string)r["durum"]! == "HATA"));
         Assert.Equal("dogrulama", await Kod(() => TakvimService.UygulaAsync(y, kotu)));
         Assert.Equal(2, Convert.ToInt32(await t.SkalerAsync("SELECT COUNT(*) FROM gorev.takvim_tatil")));   // hiçbiri uygulanmadı
 
         var r2 = await TakvimService.UygulaAsync(y, iyi);
-        Assert.Equal(4, Convert.ToInt32(await t.SkalerAsync("SELECT COUNT(*) FROM gorev.takvim_tatil")));
-        Assert.Equal("1 Mayıs", await t.SkalerAsync("SELECT ad FROM gorev.takvim_tatil WHERE tarih = '2026-05-01'"));
-        Assert.Equal(1, Convert.ToInt32(await t.SkalerAsync("SELECT COUNT(*) FROM gorev.islem_log WHERE islem = N'TAKVIM_TOPLU' AND ayrinti LIKE N'eklenen=2 guncellenen=1 ayni=1'")));
+        Assert.Equal(5, Convert.ToInt32(await t.SkalerAsync("SELECT COUNT(*) FROM gorev.takvim_tatil")));
+        Assert.Equal("Ramazan Bayramı", await t.SkalerAsync("SELECT ad FROM gorev.takvim_tatil WHERE baslangic = '2024-04-10'"));
+        Assert.Equal(1, Convert.ToInt32(await t.SkalerAsync("SELECT COUNT(*) FROM gorev.islem_log WHERE islem = N'TAKVIM_TOPLU' AND ayrinti LIKE N'eklenen=3 guncellenen=1 ayni=1'")));
         Assert.NotNull(r2);
         Assert.Equal("dogrulama", await Kod(() => TakvimService.OnizleAsync(y, Array.Empty<TakvimSatir>())));
     }
@@ -192,7 +224,7 @@ public class HavuzTakvimTests
         var (t, y) = await YoneticiAsync();
         await using var _t = t;
         var a = await Ekle(y, null, "Ana 1"); await Ekle(y, a, "Alt 1");
-        await TakvimService.KaydetAsync(y, null, "2026-10-29", "TAM", "RESMI", "Bayram");
+        await TakvimService.KaydetAsync(y, null, "2026-10-29", null, "TAM", "RESMI", "Bayram", false);
         await t.ExecAsync(TestDb.Onayli(TestDb.BetikOku("gorev_sifirla.sql"), "SIFIRLA"));
         Assert.Equal(0, Convert.ToInt32(await t.SkalerAsync("SELECT COUNT(*) FROM gorev.proje_havuzu")));
         Assert.Equal(1, Convert.ToInt32(await t.SkalerAsync("SELECT COUNT(*) FROM gorev.takvim_tatil")));

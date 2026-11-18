@@ -27,15 +27,24 @@ VERI = {
     {"id": 6, "ustId": None, "seviye": 1, "ad": "Örnek Ana Proje B", "aktif": True, "birlestirildiId": None},
   ],
   "takvimListe": [
-    {"id": 1, "tarih": "2026-10-28", "zaman": "OS", "tur": "RESMI", "ad": "Cumhuriyet Bayramı arifesi"},
-    {"id": 2, "tarih": "2026-10-29", "zaman": "TAM", "tur": "RESMI", "ad": "Cumhuriyet Bayramı"},
-    {"id": 3, "tarih": "2026-12-01", "zaman": "TAM", "tur": "AKADEMIK", "ad": "Örnek akademik kapalı gün"},
+    {"id": 1, "baslangic": "2024-04-08", "bitis": "2024-04-08", "zaman": "TAM", "tur": "IDARI", "ad": "İdari izin", "yillik": True, "gun": 1, "kesilen": 1},
+    {"id": 2, "baslangic": "2024-04-09", "bitis": "2024-04-09", "zaman": "OS", "tur": "RESMI", "ad": "Ramazan Bayramı arifesi", "yillik": False, "gun": 0.5, "kesilen": 0},
+    {"id": 3, "baslangic": "2024-04-10", "bitis": "2024-04-12", "zaman": "TAM", "tur": "RESMI", "ad": "Ramazan Bayramı", "yillik": False, "gun": 3, "kesilen": 0},
+    {"id": 4, "baslangic": "2024-05-01", "bitis": "2024-05-01", "zaman": "TAM", "tur": "RESMI", "ad": "Emek ve Dayanışma Günü", "yillik": False, "gun": 1, "kesilen": 0},
+    {"id": 5, "baslangic": "2024-06-15", "bitis": "2024-06-21", "zaman": "TAM", "tur": "RESMI", "ad": "Kurban Bayramı", "yillik": False, "gun": 7, "kesilen": 0},
   ],
-  "takvimMetinOku": [{"sira": 2, "tarih": "2026-05-01", "zaman": "TAM", "tur": "RESMI", "ad": "1 Mayıs"}],
+  "takvimOzet": {"kayit": 5, "resmiGun": 11.5, "idariGun": 1, "kesilenGun": 1},
+  "takvimMetinOku": {"satirlar": [
+    {"sira": 5, "baslangic": "2024-05-01", "bitis": "", "zaman": "TAM", "tur": "RESMI", "ad": "Emek ve Dayanışma Günü", "yillik": False},
+    {"sira": 6, "baslangic": "2024-04-08", "bitis": "", "zaman": "TAM", "tur": "IDARI", "ad": "İdari izin", "yillik": True},
+    {"sira": 7, "baslangic": "2024-04-10", "bitis": "2024-04-12", "zaman": "TAM", "tur": "RESMI", "ad": "Ramazan Bayramı", "yillik": False},
+    {"sira": 8, "baslangic": "2024-02-30", "bitis": "", "zaman": "TAM", "tur": "RESMI", "ad": "Bozuk tarihli satır", "yillik": False},
+  ], "yil": 2024, "mod": "STANDART"},
   "takvimOnizle": [
-    {"sira": 2, "tarih": "2026-05-01", "zaman": "TAM", "tur": "RESMI", "ad": "1 Mayıs", "durum": "YENI", "hata": None},
-    {"sira": 3, "tarih": "2026-10-29", "zaman": "TAM", "tur": "RESMI", "ad": "Cumhuriyet Bayramı", "durum": "AYNI", "hata": None},
-    {"sira": 4, "tarih": "", "zaman": "TAM", "tur": "RESMI", "ad": "Bozuk tarihli satır", "durum": "HATA", "hata": "Tarih okunamadı."},
+    {"sira": 5, "baslangic": "2024-05-01", "bitis": "2024-05-01", "zaman": "TAM", "tur": "RESMI", "ad": "Emek ve Dayanışma Günü", "yillik": False, "gun": 1, "durum": "AYNI", "hata": None},
+    {"sira": 6, "baslangic": "2024-04-08", "bitis": "2024-04-08", "zaman": "TAM", "tur": "IDARI", "ad": "İdari izin", "yillik": True, "gun": 1, "durum": "AYNI", "hata": None},
+    {"sira": 7, "baslangic": "2024-04-10", "bitis": "2024-04-12", "zaman": "TAM", "tur": "RESMI", "ad": "Ramazan Bayramı", "yillik": False, "gun": 3, "durum": "GUNCELLE", "hata": None},
+    {"sira": 8, "baslangic": "2024-02-30", "bitis": "", "zaman": "TAM", "tur": "RESMI", "ad": "Bozuk tarihli satır", "yillik": False, "gun": None, "durum": "HATA", "hata": "Tarih okunamadı."},
   ],
   "istisnaListe": [{"hesap": "ALAN\\ornek.yonetici", "adiSoyadi": "Örnek Yönetici", "yonetici": True, "sorumlu": True, "saha": False, "aktif": True, "aciklama": "", "sicilNo": "1000"}],
 }
@@ -65,7 +74,7 @@ with sync_playwright() as P:
         pg.locator('nav.menu button').nth(i).click(); sh(pg, n)
     pg.locator('nav.menu button').nth(1).click(); sh(pg, '06_havuz')
     pg.locator('nav.menu button').nth(2).click(); pg.wait_for_timeout(300)
-    pg.locator('textarea').fill('Tarih; Ad\n01.05.2026; 1 Mayıs'); pg.get_by_role('button', name='Önizle').click(); sh(pg, '07_takvim')
+    pg.locator('textarea').fill('08 NİSAN Pazartesi / 1 Gün (YILLIK İZİNDEN KESİLECEK)\n10-11-12 NİSAN Çarşamba-Perşembe-Cuma / 3 Gün Ramazan Bayramı\n01 MAYIS Çarşamba / 1 Gün Emek ve Dayanışma Günü'); pg.get_by_role('button', name='Önizle').click(); pg.wait_for_timeout(500); pg.evaluate('window.scrollTo(0,0)'); pg.set_viewport_size({'width': 1200, 'height': 2300}); sh(pg, '07_takvim'); pg.set_viewport_size({'width': 1200, 'height': 800})
     pg.locator('nav.menu button').nth(0).click()
     pg.locator('.gorunum button').click(); sh(pg, '04_gorunum')
     sh(ac(ben(False, False, False, False, [])), '05_yetkisiz')
