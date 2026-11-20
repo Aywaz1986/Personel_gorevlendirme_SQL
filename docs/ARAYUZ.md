@@ -42,5 +42,6 @@ Yeni hata eşlemesi: sunucu 50022/50023 → `yetki`; 50020/50021/50024/50025 →
 | `takvimXlsxOku` | `base64, yil?` | aynı | – | .xlsx (≤10 MB), ilk sayfa; paketsiz okuyucu |
 | `takvimOnizle` | `satirlar[]` | `[{sira, baslangic, bitis, zaman, tur, ad, yillik, gun, durum(YENI/GUNCELLE/AYNI/HATA), hata}]` | ✔ | yazmaz; eşleşme anahtarı baslangic+bitis+zaman |
 | `takvimUygula` | `satirlar[]` | `{eklenen, guncellenen, ayni}` | ✔ | ya hepsi ya hiçbiri; hatalı satır varsa `dogrulama` |
+| `eskiVeriDenetle` | `maskele?` (varsayılan true) | `{iptal:true}` ya da `{iptal:false, dosya, sayilar, metin}` | ✔ | Dilim 3b. Yalnız Merkez Yönetici (kadro listesi sunucuda reddeder). STA dosya seçim penceresi açar, `.db`yi SALT OKUNUR okur, hiçbir şey yazmaz. `metin` düz rapor, `sayilar` ekran özeti |
 
 Girdi sütunları (başlık yoksa sıra): Tarih; Ad; Zaman dilimi; Tür (son ikisi isteğe bağlı: Tüm gün, Resmi tatil). Başlık varsa sütunlar adından bulunur. Tarih biçimleri: gg.aa.yyyy, yyyy-aa-gg, gg/aa/yyyy.
