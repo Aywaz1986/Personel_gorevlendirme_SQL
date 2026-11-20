@@ -24,6 +24,7 @@
     <Compile Include="..\..\src\Gorevlendirme.App\Data\SqlHata.cs" />
     <Compile Include="..\..\src\Gorevlendirme.App\Services\KimlikService.cs" />
     <Compile Include="..\..\src\Gorevlendirme.App\Services\KadroService.cs" />
+    <Compile Include="..\..\src\Gorevlendirme.App\Services\KadroHavuzModel.cs" />
     <Compile Include="..\..\src\Gorevlendirme.App\Services\HavuzService.cs" />
     <Compile Include="..\..\src\Gorevlendirme.App\Services\TakvimService.cs" />
     <Compile Include="..\..\src\Gorevlendirme.App\Services\TakvimCozumleyici.cs" />
