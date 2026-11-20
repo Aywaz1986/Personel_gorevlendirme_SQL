@@ -16,6 +16,11 @@ public static class KadroService
             kullaniciAdi = r["kullanici_adi"], aktif = r["aktif"], rol = r["rol"],
         }).ToList();
 
+    /// <summary>Eski veri denetimi için: kadro satırları (yalnız Merkez Yönetici okur; yetki sunucuda).</summary>
+    public static async Task<List<KadroKisi>> KisilerAsync(SqlService sql) =>
+        (await sql.ProcAsync("gorev.sp_kadro_listele")).Select(r =>
+            new KadroKisi(Convert.ToString(r["sicil_no"]) ?? "", Convert.ToString(r["adi_soyadi"]) ?? "", r["aktif"] is not (false or 0))).ToList();
+
     public static async Task<object> EsitleAsync(SqlService sql)
     {
         var r = (await sql.ProcAsync("gorev.sp_ozluk_esitle")).First();

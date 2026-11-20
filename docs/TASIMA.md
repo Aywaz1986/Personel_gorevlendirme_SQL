@@ -1,4 +1,6 @@
-# Eski veri taşıma (`gorevlendirme.db` → `gorev.*`) – taslak
+# Eski veri taşıma (`gorevlendirme.db` → `gorev.*`)
+
+**Durum (19.11.2026):** Dilim 3b yalnız 1–2. adımı (kuru çalıştırma raporu) uygular: menüde **Eski veri** ekranı. Hedef tablolar (talep, atama, izin, rapor) Dilim 4–7'de geldiği için gerçek aktarım (3. adım) rapor incelendikten sonra, hedef tablolar varken yapılır. Okuma `Microsoft.Data.Sqlite` ile salt okunurdur; rapor ad/sicil maskelemeyi (varsayılan açık) destekler.
 
 Neden erken (Dilim 3b): "hangi personel hangi göreve gitti" bilgisi ilk talepten itibaren gerekir (sistem tavsiye listesi, Ana Proje takibi, sorumlunun geçmişi). Taşınmazsa gelen talepler elle uğraştırır.
 Kapsam dışı: fazla mesai, yıllık izin tabloları (`fazla_mesai`, `izin_fm_hareket`, `yillik_izin_*`) taşınmaz.
@@ -7,7 +9,7 @@ Kapsam dışı: fazla mesai, yıllık izin tabloları (`fazla_mesai`, `izin_fm_h
 `personel`, `projeler` (`parentId` ağacı, `lokasyon`), `sorumlular`, `haftalar` (`haftaBaslangic`), `atamalar` (`personelId`, `gunler` JSON pzt..paz, `durum` görevli/izinli/raporlu/müsait, `projeId`, `projeAdi`, `gorevMetni`, `sorumlu` metin).
 
 ## Yöntem
-1. Exe'de yönetici ekranı "Eski veriyi aktar": `gorevlendirme.db` seçilir (salt okunur açılır).
+1. Exe'de yönetici ekranı "Eski veri" (denetim): `gorevlendirme.db` seçilir (salt okunur açılır).
 2. **Kuru çalıştırma raporu** (hiçbir şey yazmaz): kayıt sayıları, personel eşleşmesi (eşleşen/eşleşmeyen ad listesi), proje ağacı önizlemesi, sorumlu metin eşleşmesi, uyarılar. Kullanıcı raporu inceler/gönderir; depoya veri girmez.
 3. **Aktarım:** tek işlemde, her kayıt `kaynak='ESKI_ARAC'` ile işaretlenir (gerekirse yalnız bunlar kaldırılabilir).
 

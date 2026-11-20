@@ -19,8 +19,8 @@ Ayrıntı: `docs/DILIMLER.md`.
 | 0 | İskelet, belgeler, dbo koruma denetimi | hayır | [x] birleştirildi (PR #1); `main` CI yeşil (ilk koşuda checkout "Repository not found" geçici hatası, yeniden çalıştırmada geçti) |
 | 1 | Şema çekirdeği, ORTAM, kaldır/sıfırla, Migrator, kabuk | evet | [x] birleştirildi (PR #2), testler geçti |
 | 2 | Kimlik, kadro eşitleme, ilk arayüz, kılavuz aracı | evet | [x] birleştirildi (PR #3) |
-| 3 | Proje havuzu, akademik takvim | evet | [~] dal `dilim-3-havuz-takvim` (ayrıntı: CHANGELOG devir notu) |
-| 3b | Eski veri aktarımı (erken) | evet | [ ] |
+| 3 | Proje havuzu, akademik takvim | evet | [x] birleştirildi (PR #4) |
+| 3b | Eski veri: kuru çalıştırma raporu (aktarım rapordan sonra) | hayır | [~] dal `dilim-3b-eski-veri-rapor` |
 | 4 | Talep (Proje Sorumlusu) | evet | [ ] |
 | 5 | Atama (Yönetici), çakışma kararı | evet | [ ] |
 | 6 | Haftalık matris | evet | [ ] |
