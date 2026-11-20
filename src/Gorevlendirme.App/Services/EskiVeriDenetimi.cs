@@ -163,7 +163,12 @@ public static class EskiVeriDenetimi
         if (min != null) Satir($"Tarih aralığı: {min:yyyy-MM-dd} – {max:yyyy-MM-dd}");
         if (haftaBozuk > 0) Sorun($"Hafta başlangıcı okunamayan kayıt: {haftaBozuk}");
         if (haftaPzt > 0) Sorun($"Pazartesi olmayan hafta başlangıcı: {haftaPzt} (gün tarihleri kayabilir)");
-        if (haftasiz > 0) Sorun($"Haftası bulunamayan atama: {haftasiz} (aktarılamaz)");
+        if (haftasiz > 0)
+        {
+            var tg = haftasizListe.Count(x => x.Durum == "gorevli");
+            Sorun($"Haftası bulunamayan atama: {haftasiz} → görevli {tg}: TARİHSİZ geçmiş olarak aktarılır (kim hangi projeye gitti; tarih yok) · izinli/müsait {haftasiz - tg}: aktarılmaz");
+            sayi["tarihsizGorevli"] = tg;
+        }
         if (gunBozuk > 0) Sorun($"Gün bilgisi (JSON) bozuk atama: {gunBozuk} (aktarılamaz)");
         if (gunYok > 0) Sorun($"Hiç günü işaretli olmayan atama: {gunYok} (aktarılmaz)");
         foreach (var b in bilinmeyenDurum) Sorun($"Bilinmeyen durum \"{b.Key}\": {b.Value} atama (aktarılmaz)");

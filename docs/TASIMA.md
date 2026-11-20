@@ -19,12 +19,17 @@ Kapsam dışı: fazla mesai, yıllık izin tabloları (`fazla_mesai`, `izin_fm_h
 | `personel` (sicil) | `gorev.personel` ile `sicil_no` üzerinden eşleşir; sicil yoksa normalize ad (büyük/küçük, Türkçe karakter, çoklu boşluk); eşleşmeyen raporlanır, aktarılmaz |
 | `projeler` ağacı | `proje_havuzu`: kök = Ana Proje, alt = Alt Proje, `lokasyon`/yerleşke = Konum; eksik seviyeler için varsayılan metin (rapor önizler); eski aktif/pasif bilgisi korunur |
 | `atamalar` durum=görevli | geçmiş talep (`talep_kodu` `ESKI-<id>`, durum TAMAMLANDI) + `talep_gunleri` (her `gunler` günü için TAM) + `atamalar` (AKTIF, `eski_kayit`) |
+| durum=görevli, **haftası kayıp** (299 atamanın 179'u; haftaId 2–25, 28–30 Ağustos 2026 öncesi) | **TARİHSİZ geçmiş** (karar Murat, 20.11.2026: "ağustos öncesi için proje ağacı ve kim gittiği yeter"): hangi personel hangi projeye (ve sorumlu/metin) gitti bilgisi korunur; `tarih` yok (hedefte NULL), `kaynak='ESKI_ARAC_TARIHSIZ'`; tavsiye listesi ve Ana Proje takibine girer, dönem/rapor/çakışma sorgularına GİRMEZ. Hedef tablo biçimi Dilim 4 tasarımında kesinleşir |
+| durum=izinli / müsait, **haftası kayıp** | aktarılmaz (izin tarihsiz anlamsız; müsait zaten aktarılmaz) |
 | durum=izinli | `izin_talepleri` ONAYLANDI + `izin_gunleri` ONAYLI (TAM) |
 | durum=raporlu | `raporlar` `eski_kayit=1`, evrak yok (kısıt: `eski_kayit=1 OR evrak IS NOT NULL`) |
 | durum=müsait | kayıt açılmaz (müsaitlik türetilir) |
 | `sorumlu` (metin) | `gorev.personel` ile ad eşleşirse `sorumlu_sicil_no`, yoksa metin olarak saklanır (`sorumlu_adi_eski`) |
 | yarım gün | eski araçta yok; hepsi TAM |
 Çakışma: eski araç aynı personel+gün çakışmasını önlediği için beklenmez; rapor çakışan kayıt bulursa raporlar.
+
+## Haftasız atamalar (rapor sonucu, 20.11.2026)
+299 atama (24 haftaId, 2–25) `haftalar` tablosunda karşılıksız; kopya değil, tarih çıkarımı (id sırası tarih sırasında değil) ve fazla mesai kanıtı yok. Ağustos öncesi yedek aranmadı; Murat tarihsiz aktarımı seçti (yukarıdaki tablo). Dönem raporları yalnız tarihli (haftası olan) kayıtları sayar.
 
 ## Açık noktalar
 - Eski projelerde "Faaliyet" karşılığı yok (varsayılan metin).

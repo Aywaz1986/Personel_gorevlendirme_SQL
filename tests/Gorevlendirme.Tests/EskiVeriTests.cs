@@ -112,6 +112,8 @@ public class EskiVeriTests : IDisposable
         Assert.Equal(1, s["atama_musait"]);           // müsait sayılır ama aktarılmaz
         Assert.Equal(1, s["cakisma"]);                // Ali: salı hem görevli hem izinli
         Assert.Equal(1, s["haftasiz"]);
+        Assert.Equal(1, s["tarihsizGorevli"]);       // #5 görevli, haftasız → tarihsiz geçmiş
+        Assert.Contains("TARİHSİZ geçmiş olarak aktarılır", r.Metin, StringComparison.Ordinal);
         Assert.Equal(1, s["haftasizFarkliId"]);
         Assert.Contains("2a. Haftasız atamaların tanısı", r.Metin, StringComparison.Ordinal);
         Assert.Contains("haftaId 5: 1 atama", r.Metin, StringComparison.Ordinal);
