@@ -191,9 +191,10 @@ public static class EskiVeriDenetimi
         {
             Baslik("2b. Hafta kimliği – tarih düzeni (haftasız atamaların tarihini çıkarmak için)");
             var sirali = hafta.OrderBy(kv => kv.Key).ToList();
-            Satir($"Hafta kayıtları (id→başlangıç), {sirali.Count} adet:");
-            for (var i = 0; i < sirali.Count; i += 6)
-                Satir("   " + string.Join("  ", sirali.Skip(i).Take(6).Select(kv => $"{kv.Key}→{kv.Value:yyyy-MM-dd}")));
+            var haftaAtamaSay = v.Atamalar.GroupBy(a => a.HaftaId).ToDictionary(g => g.Key, g => g.Count());
+            Satir($"Hafta kayıtları (id→başlangıç (atama sayısı)), {sirali.Count} adet:");
+            for (var i = 0; i < sirali.Count; i += 5)
+                Satir("   " + string.Join("  ", sirali.Skip(i).Take(5).Select(kv => $"{kv.Key}→{kv.Value:yyyy-MM-dd}({haftaAtamaSay.GetValueOrDefault(kv.Key)})")));
             int ters = 0, uyumsuz = 0;
             for (var i = 1; i < sirali.Count; i++)
             {

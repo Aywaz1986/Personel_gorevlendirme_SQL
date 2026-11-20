@@ -187,6 +187,7 @@ public class EskiVeriTests : IDisposable
         Assert.Equal(0, r.Sayilar["cikarimCakisma"]);
         Assert.Equal(0, r.Sayilar["cikarimCarpisma"]);
         Assert.Contains("Boşluk 1→4: id farkı 3, takvimde 3 hafta · UYUMLU", r.Metin, StringComparison.Ordinal);
+        Assert.Contains("1→2026-03-02(1)", r.Metin, StringComparison.Ordinal);
         Assert.Contains("en erken 2026-03-09, en geç 2026-03-16", r.Metin, StringComparison.Ordinal);
     }
 
