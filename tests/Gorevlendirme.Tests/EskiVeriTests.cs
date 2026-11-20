@@ -112,6 +112,12 @@ public class EskiVeriTests : IDisposable
         Assert.Equal(1, s["atama_musait"]);           // müsait sayılır ama aktarılmaz
         Assert.Equal(1, s["cakisma"]);                // Ali: salı hem görevli hem izinli
         Assert.Equal(1, s["haftasiz"]);
+        Assert.Equal(1, s["tarihsizGorevli"]);       // #5 görevli, haftasız → tarihsiz geçmiş
+        Assert.Contains("TARİHSİZ geçmiş olarak aktarılır", r.Metin, StringComparison.Ordinal);
+        Assert.Equal(1, s["haftasizFarkliId"]);
+        Assert.Contains("2a. Haftasız atamaların tanısı", r.Metin, StringComparison.Ordinal);
+        Assert.Contains("haftaId 5: 1 atama", r.Metin, StringComparison.Ordinal);
+        Assert.Equal((0, 1), (s["kardesAyrisan"], s["kardesBirebir"]));   // "Aynı"/"aynı" ikisi de lokasyonsuz: gerçek tekrar
         Assert.Equal(1, s["gunBozuk"]);
         Assert.Equal(1, s["yokAtama"]);
         Assert.Equal((1, 2, 1), (s["projeYetim"], s["projeDongu"], s["projeAsiri"]));
@@ -160,5 +166,75 @@ public class EskiVeriTests : IDisposable
         var r = EskiVeriDenetimi.Raporla(v, Kadro, Havuz, false);
         Assert.Equal(1, r.Sayilar["personelSicil"]);
         Assert.Contains("ad farklı", r.Metin, StringComparison.Ordinal);
+    }
+
+    private static EskiVeri HaftaliVeri(string id4Baslangic)
+    {
+        var v = new EskiVeri();
+        v.Personel.Add(new EskiPersonel(1, "Ali Veli", "100", true));
+        v.Haftalar.Add(new EskiHafta(1, "2026-03-02")); v.Haftalar.Add(new EskiHafta(4, id4Baslangic));
+        v.Atamalar.Add(new EskiAtama(1, 1, 1, "Ali Veli", "{\"pzt\":true}", "gorevli", null, "P", "", ""));
+        v.Atamalar.Add(new EskiAtama(2, 2, 1, "Ali Veli", "{\"pzt\":true,\"sal\":true}", "gorevli", null, "P", "", ""));   // haftasız (id 2)
+        v.Atamalar.Add(new EskiAtama(3, 3, 1, "Ali Veli", "{\"cum\":true}", "izinli", null, "", "", ""));                    // haftasız (id 3)
+        v.Atamalar.Add(new EskiAtama(4, 4, 1, "Ali Veli", "{\"pzt\":true}", "gorevli", null, "P", "", ""));
+        return v;
+    }
+
+    [Fact]
+    public void Haftasiz_atamalar_kimlik_tarih_duzeni_uyumluysa_tarihe_cikarilir()
+    {
+        var r = EskiVeriDenetimi.Raporla(HaftaliVeri("2026-03-23"), Kadro, Havuz, true);   // id 1→4 = 3 hafta: uyumlu
+        Assert.Equal(1, r.Sayilar["idTarihUyumlu"]);
+        Assert.Equal(2, r.Sayilar["cikarimAtama"]);
+        Assert.Equal(0, r.Sayilar["cikarimCakisma"]);
+        Assert.Equal(0, r.Sayilar["cikarimCarpisma"]);
+        Assert.Contains("Boşluk 1→4: id farkı 3, takvimde 3 hafta · UYUMLU", r.Metin, StringComparison.Ordinal);
+        Assert.Contains("1→2026-03-02(1)", r.Metin, StringComparison.Ordinal);
+        Assert.Contains("en erken 2026-03-09, en geç 2026-03-16", r.Metin, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void Haftasiz_atamalar_kimlik_tarih_duzeni_uyumsuzsa_tarih_cikarilmaz()
+    {
+        var r = EskiVeriDenetimi.Raporla(HaftaliVeri("2026-03-30"), Kadro, Havuz, true);   // id 1→4 = 4 hafta: bir hafta atlanmış
+        Assert.Equal(0, r.Sayilar["idTarihUyumlu"]);
+        Assert.False(r.Sayilar.ContainsKey("cikarimAtama"));
+        Assert.Contains("YAPILMADI", r.Metin, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void Cikarilan_tarih_mevcut_kayitla_cakisirsa_uyari_verir()
+    {
+        var v = HaftaliVeri("2026-03-23");
+        v.Atamalar.Add(new EskiAtama(5, 4, 1, "Ali Veli", "{\"pzt\":true}", "gorevli", null, "P", "", ""));   // aynı haftada ikinci kayıt (çakışma 2026-03-23)
+        v.Atamalar.Add(new EskiAtama(6, 3, 1, "Ali Veli", "{\"cum\":true}", "izinli", null, "", "", ""));     // haftasız id 3, aynı kişi/gün (cuma 03-20) → çıkarım çakışması
+        var r = EskiVeriDenetimi.Raporla(v, Kadro, Havuz, true);
+        Assert.Equal(1, r.Sayilar["cikarimCakisma"]);
+        Assert.Equal(1, r.Sayilar["cakisma"]);
+    }
+
+    [Fact]
+    public void Haftasiz_hafta_mevcut_haftanin_kopyasiysa_ve_fazla_mesai_tarih_veriyorsa_raporlanir()
+    {
+        var v = new EskiVeri();
+        v.Personel.Add(new EskiPersonel(1, "Ali Veli", "100", true));
+        v.Haftalar.Add(new EskiHafta(26, "2026-07-20"));
+        v.Atamalar.Add(new EskiAtama(1, 26, 1, "Ali Veli", "{\"pzt\":true,\"sal\":true}", "gorevli", null, "Proje A", "", "Ayşe Kaya", 1788000000000));
+        v.Atamalar.Add(new EskiAtama(2, 2, 1, "Ali Veli", "{\"pzt\":true,\"sal\":true}", "gorevli", null, "PROJE A", "", "ayşe kaya", 1788000000000));   // haftasız, aynı imza
+        v.Atamalar.Add(new EskiAtama(3, 3, 1, "Ali Veli", "{\"cum\":true}", "gorevli", null, "Başka", "", ""));            // haftasız, benzeri yok
+        v.FazlaMesai.Add(new EskiFm(3, "2026-03-13 00:00:00"));                                                              // cuma → hafta pazartesi 2026-03-09
+        var r = EskiVeriDenetimi.Raporla(v, Kadro, Havuz, true);
+        Assert.Equal(1, r.Sayilar["kopyaHafta"]);
+        Assert.Equal(1, r.Sayilar["fmTarihliHafta"]);
+        Assert.Contains("haftaId 2: 1 atama → en benzer id 26 (2026-07-20) %100", r.Metin, StringComparison.Ordinal);
+        Assert.Contains("FM kanıtı: haftaId 3 → 2026-03-09", r.Metin, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void Okuyucu_fazla_mesai_tablosu_yoksa_uyari_vermez()
+    {
+        var v = EskiVeriOkuyucu.Oku(DbYap(Ornek));
+        Assert.Empty(v.FazlaMesai);
+        Assert.Empty(v.Uyarilar);
     }
 }
