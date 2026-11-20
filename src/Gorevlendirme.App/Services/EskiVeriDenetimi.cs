@@ -83,6 +83,7 @@ public static class EskiVeriDenetimi
         var kisiGun = new Dictionary<(string, DateOnly), long>();
         var kisiAtama = new Dictionary<string, int>();   // anahtar -> atama sayısı (eşleşmeyenler için)
         DateOnly? min = null, max = null;
+        var haftasizListe = new List<(EskiAtama A, string Durum)>();
         var sorumluSay = new Dictionary<string, int>();
         var sorumluAd = new Dictionary<string, string>();
 
@@ -91,7 +92,7 @@ public static class EskiVeriDenetimi
             var durum = TakvimCozumleyici.Katla(a.Durum);
             if (durum is not ("gorevli" or "izinli" or "raporlu" or "musait"))
             { bilinmeyenDurum[a.Durum.Length == 0 ? "(boş)" : a.Durum] = bilinmeyenDurum.GetValueOrDefault(a.Durum.Length == 0 ? "(boş)" : a.Durum) + 1; continue; }
-            if (!hafta.TryGetValue(a.HaftaId, out var pzt)) { haftasiz++; continue; }
+            if (!hafta.TryGetValue(a.HaftaId, out var pzt)) { haftasiz++; haftasizListe.Add((a, durum)); continue; }
 
             var gunler = new List<int>();
             try
@@ -163,6 +164,20 @@ public static class EskiVeriDenetimi
         if (cakismaSay > 0) { Sorun($"Aynı kişi + aynı gün çakışması: {cakismaSay}"); foreach (var c in cakisma) Satir("   " + c); }
         sayi["cakisma"] = cakismaSay; sayi["haftasiz"] = haftasiz; sayi["gunBozuk"] = gunBozuk;
 
+        if (haftasizListe.Count > 0)
+        {
+            Baslik("2a. Haftasız atamaların tanısı");
+            var eksik = haftasizListe.GroupBy(x => x.A.HaftaId).OrderBy(g => g.Key).ToList();
+            var mevcutIds = v.Haftalar.Select(h => h.Id).DefaultIfEmpty(0).ToList();
+            Satir($"Farklı eksik haftaId: {eksik.Count} (en küçük {eksik.First().Key}, en büyük {eksik.Last().Key}) · mevcut hafta kaydı: {v.Haftalar.Count} (id {mevcutIds.Min()}–{mevcutIds.Max()})");
+            Satir("Durum dağılımı: " + string.Join(", ", haftasizListe.GroupBy(x => x.Durum).OrderByDescending(g => g.Count()).Select(g => $"{g.Key} {g.Count()}")));
+            var gm = haftasizListe.Where(x => x.A.Guncelleme is > 946684800000L and < 4102444800000L).Select(x => x.A.Guncelleme!.Value).ToList();
+            if (gm.Count > 0) Satir($"Son güncelleme zamanı: {DateTimeOffset.FromUnixTimeMilliseconds(gm.Min()):yyyy-MM-dd} – {DateTimeOffset.FromUnixTimeMilliseconds(gm.Max()):yyyy-MM-dd} ({gm.Count} atamada var)");
+            foreach (var g in eksik.Take(Ornek)) Satir($"   haftaId {g.Key}: {g.Count()} atama");
+            if (eksik.Count > Ornek) Satir($"   … ve {eksik.Count - Ornek} haftaId daha");
+            sayi["haftasizFarkliId"] = eksik.Count;
+        }
+
         // eşleşmeyen personelin atamaları
         var yokId = yokP.Select(p => p.Id).ToHashSet();
         Baslik("3. Eşleşmeyen personel (aktarılmaz; kararınızı bekler)");
@@ -226,7 +241,15 @@ public static class EskiVeriDenetimi
         if (kardesTekrar.Count > 0)
         {
             Sorun($"Aynı üstte aynı adlı kardeş proje grubu: {kardesTekrar.Count} (aktarımda birleştirilir)");
-            foreach (var g in kardesTekrar.Take(Ornek)) Satir($"   \"{g.First().Ad}\" × {g.Count()}  (eski#{string.Join(",", g.Select(x => x.Id))})");
+            int ayrisan = 0, birebir = 0;
+            foreach (var g in kardesTekrar)
+            {
+                var lok = g.Select(x => TakvimCozumleyici.Katla(x.Lokasyon)).ToList();
+                if (lok.Distinct().Count() == lok.Count) ayrisan++; else birebir++;
+            }
+            Satir($"   Lokasyonlarıyla ayrışan: {ayrisan} grup (birleştirilince her lokasyon Konum olur) · lokasyonu da aynı olan: {birebir} grup (gerçek tekrar)");
+            foreach (var g in kardesTekrar.Take(Ornek)) Satir($"   \"{g.First().Ad}\" × {g.Count()}  (eski#{string.Join(",", g.Select(x => x.Id))}) lokasyon: {string.Join(" | ", g.Select(x => x.Lokasyon.Length == 0 ? "(boş)" : x.Lokasyon))}");
+            sayi["kardesAyrisan"] = ayrisan; sayi["kardesBirebir"] = birebir;
         }
         var havuzKok = havuz.Where(h => h.UstId == null).Select(h => TakvimCozumleyici.Katla(h.Ad)).ToHashSet();
         var kokler = proje.Values.Where(p => p.ParentId == null).ToList();

@@ -112,6 +112,10 @@ public class EskiVeriTests : IDisposable
         Assert.Equal(1, s["atama_musait"]);           // müsait sayılır ama aktarılmaz
         Assert.Equal(1, s["cakisma"]);                // Ali: salı hem görevli hem izinli
         Assert.Equal(1, s["haftasiz"]);
+        Assert.Equal(1, s["haftasizFarkliId"]);
+        Assert.Contains("2a. Haftasız atamaların tanısı", r.Metin, StringComparison.Ordinal);
+        Assert.Contains("haftaId 5: 1 atama", r.Metin, StringComparison.Ordinal);
+        Assert.Equal((0, 1), (s["kardesAyrisan"], s["kardesBirebir"]));   // "Aynı"/"aynı" ikisi de lokasyonsuz: gerçek tekrar
         Assert.Equal(1, s["gunBozuk"]);
         Assert.Equal(1, s["yokAtama"]);
         Assert.Equal((1, 2, 1), (s["projeYetim"], s["projeDongu"], s["projeAsiri"]));

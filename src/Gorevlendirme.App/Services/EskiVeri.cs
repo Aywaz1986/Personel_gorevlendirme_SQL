@@ -6,7 +6,7 @@ public sealed record EskiPersonel(long Id, string Ad, string Sicil, bool Aktif);
 public sealed record EskiProje(long Id, string Ad, string Lokasyon, bool Aktif, long? ParentId);
 public sealed record EskiSorumlu(long Id, string Ad, bool Aktif);
 public sealed record EskiHafta(long Id, string Baslangic);
-public sealed record EskiAtama(long Id, long HaftaId, long? PersonelId, string PersonelAdi, string GunlerJson, string Durum, long? ProjeId, string ProjeAdi, string GorevMetni, string Sorumlu);
+public sealed record EskiAtama(long Id, long HaftaId, long? PersonelId, string PersonelAdi, string GunlerJson, string Durum, long? ProjeId, string ProjeAdi, string GorevMetni, string Sorumlu, long? Guncelleme = null);
 
 /// <summary>Eski aracın (gorevlendirme.db) bellekteki kopyası; yalnız denetim raporu için gereken alanlar.</summary>
 public sealed class EskiVeri
@@ -42,7 +42,7 @@ public static class EskiVeriOkuyucu
                 v.Haftalar.Add(new EskiHafta(L(r, "id") ?? 0, S(r, "haftaBaslangic")));
             foreach (var r in Satirlar(cn, "atamalar", v))
                 v.Atamalar.Add(new EskiAtama(L(r, "id") ?? 0, L(r, "haftaId") ?? 0, L(r, "personelId"), S(r, "personelAdi"), S(r, "gunler"), S(r, "durum"),
-                    L(r, "projeId"), S(r, "projeAdi"), S(r, "gorevMetni"), S(r, "sorumlu")));
+                    L(r, "projeId"), S(r, "projeAdi"), S(r, "gorevMetni"), S(r, "sorumlu"), L(r, "guncelleme")));
         }
         catch (SqliteException ex)
         {

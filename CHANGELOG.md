@@ -12,7 +12,9 @@ Her değişiklik önce **Yayınlanmamış** bölümüne yazılır; sürüm yüks
 - [x] 2. Testler yazıldı (tests/Gorevlendirme.Tests/EskiVeriTests.cs, geçici SQLite dosyasıyla; BridgeTests komut listesi)
 - [x] 3. Belgeler (TASIMA, ARAYUZ, MIMARI, PLAN, README, test-dilim-3b). Kılavuz bölümü: aktarım gerçekleşince eklenecek (ekran geçici denetim aracı).
 - [x] CI: faturalama düzeldi; ilk koşuda iki derleme hatam çıktı (KadroKisi/HavuzKaydi SqlTests csproj dışında, EskiVeriTests using Xunit eksik) düzeltildi; 4/4 yeşil (20.11.2026).
-- [x] 4. PR açıldı, sınama listesi sohbette. Sıradaki: Murat raporu çalıştırıp maskeli metni gönderir → gerçek aktarım dilimi.
+- [x] İLK GERÇEK RAPOR (20.11.2026, Murat, maskeli): 9 eski personel hepsi sicille eşleşti (kadro 265); 765 atama (görevli 284, izinli 45, raporlu 5, müsait 132 işlenen 466) · **299 atama haftasız** (haftaId haftalar tablosunda yok; eski araç hafta silmez → tanı gerek) · 3 görevli atamada projeId kayıp · 41 hafta, 2025-12-22–2026-11-20 · sorumlu 32 farklı metin (2 eşleşmez: boş 13, bir eski sorumlu) · proje 138 (58 kök, 80 alt; derinlik ≤2, 102 lokasyonlu; 15 kardeş-tekrar grubu — büyük olasılıkla lokasyonla ayrışıyor, Konum olarak birleştirilecek).
+- [ ] 5. Tanı sürümü: rapora "2a. Haftasız atamaların tanısı" (eksik haftaId aralığı, durum dağılımı, güncelleme tarihi) ve kardeş-tekrar gruplarında lokasyon listesi eklendi; CI sonrası Murat raporu yeniden çalıştırır. Haftasız 299 atama çözülmeden aktarım dilimi başlamaz.
+- [x] 4. PR açıldı (#5), sınama listesi sohbette. Sıradaki: Murat raporu çalıştırıp maskeli metni gönderir → gerçek aktarım dilimi.
 ### Dilim 3 – Proje havuzu ve akademik takvim (2026-11) (dal `dilim-3-havuz-takvim`; Dilim 2 PR #3 birleşti)
 **Oturum devir notu (her adımda güncelle):**
 - Kararlar (Murat, 17.11.2026): takvim yalnız tatil/kapalı gün (tarih + TAM/OO/OS + tür + ad); tatil gününe atama ENGELLENMEZ, yöneticiye UYARI çıkar (Dilim 5'te uygulanır); toplu yükleme: CSV dosyası + Excel'den yapıştır + .xlsx (C#'ta paketsiz ZipArchive okuyucu).
