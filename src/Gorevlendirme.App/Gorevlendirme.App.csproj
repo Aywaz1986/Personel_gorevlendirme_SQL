@@ -27,6 +27,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.*" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="7.*" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="10.*" />
     <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="10.*" />
     <PackageReference Include="SonarAnalyzer.CSharp" Version="10.*" PrivateAssets="all" />
   </ItemGroup>

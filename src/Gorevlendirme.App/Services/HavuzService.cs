@@ -9,6 +9,10 @@ public static class HavuzService
             id = r["id"], ustId = r["ust_id"], seviye = r["seviye"], ad = r["ad"], aktif = r["aktif"], birlestirildiId = r["birlestirildi_id"],
         }).ToList();
 
+    public static async Task<List<HavuzKaydi>> DuzListeAsync(SqlService sql) =>
+        (await sql.ProcAsync("gorev.sp_havuz_listele")).Select(r =>
+            new HavuzKaydi(Convert.ToInt32(r["id"]), r["ust_id"] == null ? null : Convert.ToInt32(r["ust_id"]), Convert.ToInt32(r["seviye"]), Convert.ToString(r["ad"]) ?? "")).ToList();
+
     public static async Task<object> EkleAsync(SqlService sql, int? ustId, string ad)
     {
         var r = (await sql.ProcAsync("gorev.sp_havuz_ekle", ("@ust_id", ustId), ("@ad", ad))).First();
