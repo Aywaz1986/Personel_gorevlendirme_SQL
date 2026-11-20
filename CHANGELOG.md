@@ -10,8 +10,9 @@ Her değişiklik önce **Yayınlanmamış** bölümüne yazılır; sürüm yüks
 - Tasarım: `Microsoft.Data.Sqlite` (salt okunur, `Mode=ReadOnly`); `EskiVeriOkuyucu` (SQLite→bellek modeli, eksik tablo/sütuna dayanıklı), `EskiVeriDenetimi` (saf rapor mantığı, birim testli), komut `eskiVeriDenetle` (STA OpenFileDialog; ad/sicil maskeleme seçeneği, varsayılan açık), ekran "Eski veri".
 - [x] 1. Kod yazıldı (EskiVeri.cs, EskiVeriDenetimi.cs, EskiVeriCommands.cs, ui-src/app/004_eski_veri.js, menü "Eski veri"; derlenmedi, CI)
 - [x] 2. Testler yazıldı (tests/Gorevlendirme.Tests/EskiVeriTests.cs, geçici SQLite dosyasıyla; BridgeTests komut listesi)
-- [ ] 3. Belgeler (TASIMA, ARAYUZ, MIMARI, PLAN, README, test-dilim-3b, kılavuz bölümü)
-- [ ] 4. push + PR (`gh api`) + CI + sohbette sınama listesi
+- [x] 3. Belgeler (TASIMA, ARAYUZ, MIMARI, PLAN, README, test-dilim-3b). Kılavuz bölümü: aktarım gerçekleşince eklenecek (ekran geçici denetim aracı).
+- [!] CI ENGELLİ (20.11.2026): 4 denetim de "recent account payments have failed or your spending limit needs to be increased" (GitHub Billing) nedeniyle 1 sn içinde başlamadan düştü; kod hatası değil. Murat faturalama/harcama sınırını düzeltince Actions "Re-run all jobs" (dal `dilim-3b-eski-veri-rapor`, son commit 8ff898f). Derleme ve testler HİÇ koşmadı: C# ve testler SINANMADI.
+- [ ] 4. CI yeşil olunca PR (`gh api`) + sohbette sınama listesi (docs/test-dilim-3b.md)
 ### Dilim 3 – Proje havuzu ve akademik takvim (2026-11) (dal `dilim-3-havuz-takvim`; Dilim 2 PR #3 birleşti)
 **Oturum devir notu (her adımda güncelle):**
 - Kararlar (Murat, 17.11.2026): takvim yalnız tatil/kapalı gün (tarih + TAM/OO/OS + tür + ad); tatil gününe atama ENGELLENMEZ, yöneticiye UYARI çıkar (Dilim 5'te uygulanır); toplu yükleme: CSV dosyası + Excel'den yapıştır + .xlsx (C#'ta paketsiz ZipArchive okuyucu).
