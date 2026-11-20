@@ -8,6 +8,8 @@ public sealed record EskiSorumlu(long Id, string Ad, bool Aktif);
 public sealed record EskiHafta(long Id, string Baslangic);
 public sealed record EskiAtama(long Id, long HaftaId, long? PersonelId, string PersonelAdi, string GunlerJson, string Durum, long? ProjeId, string ProjeAdi, string GorevMetni, string Sorumlu, long? Guncelleme = null);
 
+public sealed record EskiFm(long? AtamaId, string Tarih);
+
 /// <summary>Eski aracın (gorevlendirme.db) bellekteki kopyası; yalnız denetim raporu için gereken alanlar.</summary>
 public sealed class EskiVeri
 {
@@ -16,6 +18,8 @@ public sealed class EskiVeri
     public List<EskiSorumlu> Sorumlular { get; } = new();
     public List<EskiHafta> Haftalar { get; } = new();
     public List<EskiAtama> Atamalar { get; } = new();
+    /// <summary>Yalnız tarih kanıtı olarak (haftasız atamaların tarihini çıkarmak için); aktarılmaz.</summary>
+    public List<EskiFm> FazlaMesai { get; } = new();
     /// <summary>Okuma sırasında görülen yapı sorunları (eksik tablo/sütun vb.).</summary>
     public List<string> Uyarilar { get; } = new();
 }
@@ -43,6 +47,8 @@ public static class EskiVeriOkuyucu
             foreach (var r in Satirlar(cn, "atamalar", v))
                 v.Atamalar.Add(new EskiAtama(L(r, "id") ?? 0, L(r, "haftaId") ?? 0, L(r, "personelId"), S(r, "personelAdi"), S(r, "gunler"), S(r, "durum"),
                     L(r, "projeId"), S(r, "projeAdi"), S(r, "gorevMetni"), S(r, "sorumlu"), L(r, "guncelleme")));
+            foreach (var r in Satirlar(cn, "fazla_mesai", v, zorunlu: false))
+                v.FazlaMesai.Add(new EskiFm(L(r, "atamaId"), S(r, "tarih")));
         }
         catch (SqliteException ex)
         {
@@ -51,14 +57,14 @@ public static class EskiVeriOkuyucu
         return v;
     }
 
-    private static List<Dictionary<string, object?>> Satirlar(SqliteConnection cn, string tablo, EskiVeri v)
+    private static List<Dictionary<string, object?>> Satirlar(SqliteConnection cn, string tablo, EskiVeri v, bool zorunlu = true)
     {
         var liste = new List<Dictionary<string, object?>>();
         using (var kontrol = cn.CreateCommand())
         {
             kontrol.CommandText = "SELECT 1 FROM sqlite_master WHERE type='table' AND name = $t";
             kontrol.Parameters.AddWithValue("$t", tablo);
-            if (kontrol.ExecuteScalar() == null) { v.Uyarilar.Add("Tablo yok: " + tablo); return liste; }
+            if (kontrol.ExecuteScalar() == null) { if (zorunlu) v.Uyarilar.Add("Tablo yok: " + tablo); return liste; }
         }
         using var cmd = cn.CreateCommand();
         cmd.CommandText = "SELECT * FROM \"" + tablo + "\"";   // tablo adı sabit listeden gelir

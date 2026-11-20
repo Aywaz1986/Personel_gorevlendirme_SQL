@@ -22,6 +22,15 @@ public static class EskiVeriDenetimi
         return string.Join(' ', ad.Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(k => char.ToUpper(k[0], CultureInfo.GetCultureInfo("tr-TR")) + "***"));
     }
 
+    private static double Benzerlik(Dictionary<string, int> x, Dictionary<string, int> y)
+    {
+        int min = 0, max = 0;
+        foreach (var k in x.Keys.Union(y.Keys)) { var a = x.GetValueOrDefault(k); var b = y.GetValueOrDefault(k); min += Math.Min(a, b); max += Math.Max(a, b); }
+        return max == 0 ? 0 : (double)min / max;
+    }
+
+    private static DateOnly PazartesiOf(DateOnly d) => d.AddDays(-(((int)d.DayOfWeek + 6) % 7));
+
     internal static string SicilMaske(string? s) => string.IsNullOrWhiteSpace(s) ? "(yok)" : s.Length <= 2 ? "***" : "***" + s[^2..];
     private static string SicilAnahtar(string? s) => (s ?? "").Trim().TrimStart('0').ToUpperInvariant();
 
@@ -243,6 +252,74 @@ public static class EskiVeriDenetimi
                 else Satir("Çıkarılan tarihlerle mevcut kayıtlar arasında çakışma YOK (çıkarımı destekler).");
                 sayi["cikarimAtama"] = cAtama; sayi["cikarimCakisma"] = cCakisma; sayi["cikarimCarpisma"] = carpisma;
             }
+        }
+
+        if (haftasizListe.Count > 0)
+        {
+            Baslik("2c. Haftasız atamalar: kopya mı, başka kanıt var mı?");
+            // 1) güncelleme zamanı dağılımı (haftalı atamalar ile karşılaştırma)
+            var haftali = v.Atamalar.Where(a => hafta.ContainsKey(a.HaftaId) && a.Guncelleme is > 946684800000L and < 4102444800000L).ToList();
+            if (haftali.Count > 0)
+            {
+                var ag = haftali.Select(a => DateTimeOffset.FromUnixTimeMilliseconds(a.Guncelleme!.Value).UtcDateTime).ToList();
+                var ayniGun = ag.Count(d => d >= new DateTime(2026, 8, 28) && d < new DateTime(2026, 8, 31));
+                Satir($"Haftası olan atamaların güncelleme zamanı: {ag.Min():yyyy-MM-dd} – {ag.Max():yyyy-MM-dd}; 28–30 Ağustos'a düşen: {ayniGun}/{haftali.Count}");
+            }
+
+            // 2) kimlik imzası: kişi + günler + durum + proje + metin + sorumlu
+            string Anahtar(EskiAtama a)
+            {
+                if (a.PersonelId is long pid && personelIds.ContainsKey(pid)) return esle.TryGetValue(pid, out var sc) && sc != null ? "S:" + sc : "E:" + pid;
+                return kadroAd.TryGetValue(TakvimCozumleyici.Katla(a.PersonelAdi), out var kk) && kk.Count == 1 ? "S:" + kk[0].Sicil : "A:" + TakvimCozumleyici.Katla(a.PersonelAdi);
+            }
+            string Imza(EskiAtama a, string durum)
+            {
+                var gl = new List<int>();
+                try
+                {
+                    using var doc = JsonDocument.Parse(string.IsNullOrWhiteSpace(a.GunlerJson) ? "{}" : a.GunlerJson);
+                    if (doc.RootElement.ValueKind == JsonValueKind.Object)
+                        for (var i = 0; i < 7; i++) if (doc.RootElement.TryGetProperty(GunAnahtarlari[i], out var xx) && xx.ValueKind == JsonValueKind.True) gl.Add(i);
+                }
+                catch (JsonException) { /* imzada boş gün */ }
+                var proje = a.ProjeAdi.Length > 0 ? a.ProjeAdi : (a.ProjeId is long pj && v.Projeler.FirstOrDefault(p => p.Id == pj) is { } pr ? pr.Ad : "");
+                return string.Join("|", Anahtar(a), string.Join(",", gl), durum, TakvimCozumleyici.Katla(proje), TakvimCozumleyici.Katla(a.GorevMetni), TakvimCozumleyici.Katla(a.Sorumlu));
+            }
+            Dictionary<string, int> Set(IEnumerable<(EskiAtama A, string Durum)> l)
+            {
+                var d = new Dictionary<string, int>();
+                foreach (var (a, du) in l) { if (du == "musait") continue; var k = Imza(a, du); d[k] = d.GetValueOrDefault(k) + 1; }
+                return d;
+            }
+            var mevcutSet = new Dictionary<long, Dictionary<string, int>>();
+            foreach (var g in v.Atamalar.Where(a => hafta.ContainsKey(a.HaftaId)).GroupBy(a => a.HaftaId))
+                mevcutSet[g.Key] = Set(g.Select(a => (a, TakvimCozumleyici.Katla(a.Durum))));
+            int kopya = 0, yarim = 0;
+            Satir("Her haftasız haftaId için en benzer mevcut hafta (imza benzerliği; 100% = aynı görevlendirmeler):");
+            foreach (var g in haftasizListe.GroupBy(x => x.A.HaftaId).OrderBy(g => g.Key))
+            {
+                var set = Set(g);
+                if (set.Count == 0) { Satir($"   haftaId {g.Key}: yalnız müsait kayıt"); continue; }
+                var en = mevcutSet.Select(kv => (Id: kv.Key, Sk: Benzerlik(set, kv.Value))).OrderByDescending(x => x.Sk).First();
+                if (en.Sk >= 0.8) kopya++; else if (en.Sk >= 0.5) yarim++;
+                Satir($"   haftaId {g.Key}: {set.Values.Sum()} atama → en benzer id {en.Id} ({hafta[en.Id]:yyyy-MM-dd}) %{(int)Math.Round(en.Sk * 100)}");
+            }
+            Satir($"Özet: %80 ve üzeri benzeyen haftasız hafta: {kopya} · %50–80: {yarim} · toplam {haftasizListe.Select(x => x.A.HaftaId).Distinct().Count()}");
+            sayi["kopyaHafta"] = kopya; sayi["yarimKopyaHafta"] = yarim;
+
+            // 3) fazla mesai kayıtlarından tarih kanıtı
+            var fmGun = v.FazlaMesai.Where(f => f.AtamaId != null && DateOnly.TryParseExact(f.Tarih.Length >= 10 ? f.Tarih[..10] : f.Tarih, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out _))
+                .Select(f => (f.AtamaId!.Value, T: DateOnly.ParseExact(f.Tarih[..10], "yyyy-MM-dd", CultureInfo.InvariantCulture))).ToList();
+            var atamaHafta = haftasizListe.ToDictionary(x => x.A.Id, x => x.A.HaftaId);
+            int kesin = 0, celiski = 0;
+            foreach (var g in fmGun.Where(f => atamaHafta.ContainsKey(f.Item1)).GroupBy(f => atamaHafta[f.Item1]).OrderBy(g => g.Key))
+            {
+                var pazartesiler = g.Select(f => PazartesiOf(f.T)).Distinct().OrderBy(d => d).ToList();
+                if (pazartesiler.Count == 1) { kesin++; Satir($"   FM kanıtı: haftaId {g.Key} → {pazartesiler[0]:yyyy-MM-dd} ({g.Count()} kayıt)"); }
+                else { celiski++; Satir($"   FM kanıtı ÇELİŞKİLİ: haftaId {g.Key} → {string.Join(", ", pazartesiler.Select(d => d.ToString("yyyy-MM-dd")))}"); }
+            }
+            Satir($"Fazla mesai kayıtlarından tarihi belli olan haftasız hafta: {kesin} (çelişkili {celiski})");
+            sayi["fmTarihliHafta"] = kesin; sayi["fmCeliskili"] = celiski;
         }
 
         // eşleşmeyen personelin atamaları
