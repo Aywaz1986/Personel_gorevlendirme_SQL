@@ -178,6 +178,73 @@ public static class EskiVeriDenetimi
             sayi["haftasizFarkliId"] = eksik.Count;
         }
 
+        if (hafta.Count > 0)
+        {
+            Baslik("2b. Hafta kimliği – tarih düzeni (haftasız atamaların tarihini çıkarmak için)");
+            var sirali = hafta.OrderBy(kv => kv.Key).ToList();
+            Satir($"Hafta kayıtları (id→başlangıç), {sirali.Count} adet:");
+            for (var i = 0; i < sirali.Count; i += 6)
+                Satir("   " + string.Join("  ", sirali.Skip(i).Take(6).Select(kv => $"{kv.Key}→{kv.Value:yyyy-MM-dd}")));
+            int ters = 0, uyumsuz = 0;
+            for (var i = 1; i < sirali.Count; i++)
+            {
+                var a0 = sirali[i - 1]; var b0 = sirali[i];
+                var gunFark = b0.Value.DayNumber - a0.Value.DayNumber;
+                var beklenen = (int)(b0.Key - a0.Key);
+                var tamUyum = gunFark > 0 && gunFark % 7 == 0 && gunFark / 7 == beklenen;
+                if (gunFark <= 0) ters++; else if (!tamUyum) uyumsuz++;
+                if (beklenen > 1) Satir($"   Boşluk {a0.Key}→{b0.Key}: id farkı {beklenen}, takvimde {(gunFark > 0 ? gunFark / 7.0 : 0):0.#} hafta · " + (tamUyum ? "UYUMLU" : "UYUMSUZ"));
+            }
+            var uyumlu = ters == 0 && uyumsuz == 0;
+            Satir($"Kimlik sırası tarih sırasıyla {(uyumlu ? "TAM UYUMLU (her id bir sonraki haftadır)" : $"uyumsuz (ters {ters}, kaymış {uyumsuz}); tarih çıkarımı güvenilmez, YAPILMADI")}.");
+            sayi["idTarihUyumlu"] = uyumlu ? 1 : 0;
+
+            if (uyumlu && haftasizListe.Count > 0)
+            {
+                var cikarim = new Dictionary<long, DateOnly>();
+                foreach (var id in haftasizListe.Select(x => x.A.HaftaId).Distinct())
+                {
+                    var onceki = sirali.Where(kv => kv.Key < id).Select(kv => (KeyValuePair<long, DateOnly>?)kv).LastOrDefault();
+                    if (onceki is { } o) cikarim[id] = o.Value.AddDays(7 * (int)(id - o.Key));
+                    else { var sonraki = sirali.Where(kv => kv.Key > id).Select(kv => (KeyValuePair<long, DateOnly>?)kv).FirstOrDefault(); if (sonraki is { } sn) cikarim[id] = sn.Value.AddDays(-7 * (int)(sn.Key - id)); }
+                }
+                var carpisma = cikarim.Values.Count(d => hafta.ContainsValue(d));
+                Satir($"Çıkarım: {cikarim.Count} haftaId için tarih; en erken {(cikarim.Count > 0 ? cikarim.Values.Min() : default):yyyy-MM-dd}, en geç {(cikarim.Count > 0 ? cikarim.Values.Max() : default):yyyy-MM-dd}; var olan haftalarla çakışan tarih: {carpisma}");
+                int cAtama = 0, cCakisma = 0; var cDurum = new Dictionary<string, int>(); var cOrnek = new List<string>();
+                var cGun = new Dictionary<(string, DateOnly), long>();
+                foreach (var (a, durum) in haftasizListe)
+                {
+                    if (!cikarim.TryGetValue(a.HaftaId, out var pzt2)) continue;
+                    var gl = new List<int>();
+                    try
+                    {
+                        using var doc = JsonDocument.Parse(string.IsNullOrWhiteSpace(a.GunlerJson) ? "{}" : a.GunlerJson);
+                        if (doc.RootElement.ValueKind != JsonValueKind.Object) continue;
+                        for (var i = 0; i < 7; i++) if (doc.RootElement.TryGetProperty(GunAnahtarlari[i], out var xx) && xx.ValueKind == JsonValueKind.True) gl.Add(i);
+                    }
+                    catch (JsonException) { continue; }
+                    if (gl.Count == 0) continue;
+                    cAtama++; cDurum[durum] = cDurum.GetValueOrDefault(durum) + gl.Count;
+                    if (durum == "musait") continue;
+                    string anahtar2;
+                    if (a.PersonelId is long pid2 && personelIds.ContainsKey(pid2)) anahtar2 = esle.TryGetValue(pid2, out var sc) && sc != null ? "S:" + sc : "E:" + pid2;
+                    else if (kadroAd.TryGetValue(TakvimCozumleyici.Katla(a.PersonelAdi), out var kk2) && kk2.Count == 1) anahtar2 = "S:" + kk2[0].Sicil;
+                    else anahtar2 = "A:" + TakvimCozumleyici.Katla(a.PersonelAdi);
+                    foreach (var g in gl)
+                    {
+                        var t = pzt2.AddDays(g);
+                        if (kisiGun.ContainsKey((anahtar2, t)) || (cGun.TryGetValue((anahtar2, t), out var once) && once != a.Id))
+                        { cCakisma++; if (cOrnek.Count < 10) cOrnek.Add($"{t:yyyy-MM-dd} haftaId {a.HaftaId} atama#{a.Id}"); }
+                        else cGun[(anahtar2, t)] = a.Id;
+                    }
+                }
+                Satir($"Tarihi çıkarılabilen atama: {cAtama} (kişi-gün: " + string.Join(", ", cDurum.OrderByDescending(kv => kv.Value).Select(kv => $"{kv.Key} {kv.Value}")) + ")");
+                if (cCakisma > 0) { Sorun($"Çıkarılan tarihlerle aynı kişi+gün çakışması: {cCakisma} (çıkarım yanlış olabilir)"); foreach (var o2 in cOrnek) Satir("   " + o2); }
+                else Satir("Çıkarılan tarihlerle mevcut kayıtlar arasında çakışma YOK (çıkarımı destekler).");
+                sayi["cikarimAtama"] = cAtama; sayi["cikarimCakisma"] = cCakisma; sayi["cikarimCarpisma"] = carpisma;
+            }
+        }
+
         // eşleşmeyen personelin atamaları
         var yokId = yokP.Select(p => p.Id).ToHashSet();
         Baslik("3. Eşleşmeyen personel (aktarılmaz; kararınızı bekler)");
