@@ -12,7 +12,7 @@ Her değişiklik önce **Yayınlanmamış** bölümüne yazılır; sürüm yüks
 - [x] 3. Arayüz: `ui-src/app/004_talep.js` (liste + form), menü: Sorumlu "Görev Talep Arayüzü", Yönetici "Talepler". JS sözdizimi OK.
 - [x] 4. SQL testleri `TalepTests.cs` (8 test), BridgeTests komut listesi.
 - [x] 5. Belgeler (ARAYUZ, MIMARI, YETKI, SQL, PLAN, README, DILIMLER, TASIMA, `docs/test-dilim-4.md`); kılavuz Bölüm 8 + ekran görüntüleri 08/09 (menü sırası değiştiği için ekran betiği adla seçer).
-- [ ] 6. Commit, push, CI (yalnız hata satırları), PR; sınama listesi sohbette.
+- [x] 6. Push, CI 4/4 yeşil (ilk koşuda 006'da islem_log SEMA kaydı eksikti, düzeltildi), PR açıldı; sınama listesi sohbette. Sıradaki: Murat sınar → birleştirme → Dilim 5 (Atama).
 ### Dilim 3b – Eski veri: kuru çalıştırma raporu (2026-11) — DEVAM EDİYOR (dal `dilim-3b-eski-veri-rapor`; Dilim 3 PR #4 birleşti)
 **Oturum devir notu (her adımda güncelle; yeni oturum önce buradan devam eder):**
 - Kapsam kararı (19.11.2026, Claude): hedef tabloları (talep, atama, izin, rapor) Dilim 4–7'de geliyor; bu yüzden 3b = YALNIZ salt okunur "Eski veriyi denetle" raporu (hiçbir şey yazmaz). Gerçek aktarım (kaynak='ESKI_ARAC') hedef tablolar varken, Murat raporu inceledikten sonra (Dilim 4+ içinde) yapılır. `docs/TASIMA.md` buna göre güncellenir.
