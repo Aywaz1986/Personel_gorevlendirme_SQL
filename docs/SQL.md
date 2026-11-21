@@ -47,6 +47,7 @@ Geliştirme ayrı test veritabanı olmadan `SST_Ozluk` üzerinde sürer (karar 1
 | Rol_Bolum_Eslestirme | `rol_bolum_eslestirme` | Özlük bölüm adı → rol |
 | Kullanici_Yetki_Istisna | `kullanici_yetki_istisna` | anahtar: `hesap` (+ isteğe bağlı `sicil_no`) |
 | Proje_Gorev_Havuzu | `proje_havuzu` | Ana → Alt → Faaliyet → Konum |
+| Gorev_Talepleri / _Gunleri | `talepler` / `talep_gunleri` | Dilim 4; + `talep_oneri` (önerilen personel), `gecmis_gorev` (tarihsiz eski geçmiş) |
 | Akademik_Takvim_Tatiller | `takvim_tatil` | aralık (baslangic–bitis), TAM/OO/OS, RESMI/IDARI, yıllık izinden kesilir |
 | Gorev_Talepleri | `talepler` | |
 | Gorev_Talep_Gunleri | `talep_gunleri` | |
@@ -75,3 +76,9 @@ Anahtarlar: her tabloda `INT/BIGINT IDENTITY id`, iş anahtarı ayrı `UNIQUE`, 
 - `proje_havuzu`, `takvim_tatil`, `fn_kayitli_mi`, `sp_havuz_*`, `sp_takvim_*` (`004_havuz_takvim.sql`; takvim `005_takvim_standart.sql` ile yeniden kuruldu). `gorev_sifirla.sql` havuzu temizler, `takvim_tatil`'i (kurum yapılandırması) KORUR.
 - Geçici tablo sütunları `COLLATE DATABASE_DEFAULT`; Türkçe harmanlamada i/I eşit değildir, kod karşılaştırmalarında `COLLATE Latin1_General_CI_AS` kullanılır (`RESMI`, `OO` …).
 - Takvim kodları ASCII: TAM/OO/OS; arayüz ÖÖ/ÖS gösterir.
+
+## Dilim 4 notları
+- `006_talep.sql`: talep yazan tek yer `sp_talep_kaydet` (+ `sp_talep_geri_cek`). Havuzda olmayan ad `proje_havuzu`'na `kaynak='TALEP'` ile eklenir (Yönetici havuz ekranından birleştirir/pasife alır). Alt Proje boşsa "Genel".
+- Hafta sonu ve tatil günü engellenmez; yordam `uyari` metni döner (Dilim 3 kararıyla uyumlu).
+- `gecmis_gorev`: eski araçtan tarihsiz geçmiş; tarih sütunu yoktur, dönem/çakışma sorgularına girmez. `gorev_sifirla.sql` yeni tabloları da siler (yapılandırma tablosu değiller).
+- `STRING_AGG` yerine `FOR XML PATH` kullanıldı (SQL Server 2016 SP2 uyumu).

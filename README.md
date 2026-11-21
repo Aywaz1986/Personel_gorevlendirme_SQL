@@ -23,7 +23,8 @@ Ayrıntı: [`docs/PLAN.md`](docs/PLAN.md), dilim içerikleri: [`docs/DILIMLER.md
 | 2 | Kimlik, roller, kadro eşitleme, ilk arayüz, kılavuz aracı | birleştirildi (PR #3) |
 | 3 | Proje havuzu + akademik takvim | dal `dilim-3-havuz-takvim` (kodlandı; CI, el sınaması bekliyor) |
 | 3b | **Eski veri: kuru çalıştırma raporu** | kodlandı, CI/el sınaması bekliyor |
-| 4–10 | Talep, atama, haftalık matris, izin/rapor, revize/ikame, analiz, canlıya geçiş | bekliyor |
+| 4 | **Talep (Proje Sorumlusu)**: talep formu, liste, kopyala, revize, geri çek, önerilen personel | dal `dilim-4-talep` (kodlandı; CI, el sınaması bekliyor) |
+| 5–10 | Atama, haftalık matris, izin/rapor, revize/ikame, analiz, canlıya geçiş | bekliyor |
 
 ## Belgeler
 | Dosya | İçerik |

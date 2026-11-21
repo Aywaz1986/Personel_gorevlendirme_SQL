@@ -21,7 +21,7 @@ Bitiş: yetkisiz kişi hiçbir veri görmez; yönetici kadroyu eşitler; güvenl
 `docs/TASIMA.md`: kuru çalıştırma raporu, aktarım, `ESKI_ARAC` işareti. Bitiş: kullanıcı raporu onaylar; aktarım sonrası geçmiş görevler ve proje havuzu dolu.
 
 ## Dilim 4 – Talep (Proje Sorumlusu)
-`talepler`, `talep_gunleri`; form (havuzdan veya yeni hiyerarşi yazımı), kopyalama, geri çekme, canlı rozetler.
+`talepler`, `talep_gunleri`, `talep_oneri`, `gecmis_gorev` (tarihsiz eski geçmiş; doldurma eski veri aktarımında); form (havuzdan veya yeni hiyerarşi yazımı; Alt Proje boşsa "Genel"), talep düzeyinde saat aralığı, önerilen personel (bağlayıcı değil), kopyalama, revize (onaydan önce), geri çekme, durum rozetleri. Test listesi: `docs/test-dilim-4.md`.
 
 ## Dilim 5 – Atama (Yönetici)
 `atamalar`, `sp_atama_onayla` (`SERIALIZABLE`+`UPDLOCK`); kısmi ve gün bazlı bölünmüş atama; çakışmada yönetici kararı (vazgeç / çakışandan çıkar ve ata); Ana Proje geçmişinden tavsiye listesi; ret nedeni zorunlu.
