@@ -37,14 +37,16 @@ public class BridgeTests
         EskiVeriCommands.Register(r);
         TalepCommands.Register(r);
         AtamaCommands.Register(r);
+        MatrisCommands.Register(r);
         foreach (var k in new[] { "ping", "runtime", "baglantiDene", "baglan", "baglantiKapat", "surumDurum", "semaDurum", "semaUygula", "sunucuDenetimi",
                                   "ben", "kadroOzet", "kadroListe", "kadroEsitle", "eslestirmeListe", "eslestirmeKaydet", "istisnaListe", "istisnaKaydet", "istisnaSil",
                                   "havuzListe", "havuzEkle", "havuzAdlandir", "havuzDurum", "havuzBirlestir", "takvimListe", "takvimOzet", "takvimKaydet", "takvimSil",
                                   "takvimMetinOku", "takvimXlsxOku", "takvimOnizle", "takvimUygula", "eskiVeriDenetle",
                                   "personelAra", "talepListe", "talepGetir", "talepKaydet", "talepGeriCek",
-                                  "atamaAdaylar", "atamaCakismaKontrol", "atamaOnayla", "talepReddet", "bildirimListe", "bildirimOkundu" })
+                                  "atamaAdaylar", "atamaCakismaKontrol", "atamaOnayla", "talepReddet", "bildirimListe", "bildirimOkundu",
+                                  "matrisHafta", "matrisSurum", "matrisBolumler", "matrisExcel" })
             Assert.NotNull(r.Find(k));
-        foreach (var k in new[] { "ben", "kadroListe", "kadroEsitle", "istisnaKaydet", "havuzEkle", "takvimUygula", "eskiVeriDenetle", "talepKaydet", "talepGeriCek", "atamaOnayla", "talepReddet" })
+        foreach (var k in new[] { "ben", "kadroListe", "kadroEsitle", "istisnaKaydet", "havuzEkle", "takvimUygula", "eskiVeriDenetle", "talepKaydet", "talepGeriCek", "atamaOnayla", "talepReddet", "matrisHafta", "matrisExcel" })
             Assert.True(r.Find(k)!.KapiGerekli);   // iş komutları sürüm kapısına tabidir
     }
 
