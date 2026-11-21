@@ -3,6 +3,16 @@
 Her değişiklik önce **Yayınlanmamış** bölümüne yazılır; sürüm yükselince bölüm sürüm başlığına dönüştürülür.
 
 ## Yayınlanmamış
+### Dilim 6 – Haftalık matris (2026-11) — DEVAM EDİYOR (dal `dilim-6-matris`; Dilim 5 PR #9 CI yeşil, birleştirme Murat'ta)
+**Oturum devir notu (her adımda güncelle; yeni oturum önce buradan devam eder):**
+- Tasarım önizlemesi Murat'a gönderildi (21.11.2026, matris_onizleme.png); itiraz gelmedi. Kararlar: tüm roller görür (YETKI matrisi), yalnız okuma; hücre ÖÖ üst / ÖS alt / TAM tek blok; renk Ana Proje; 30 sn'de yalnız sürüm sorgusu; Excel sunucu tarafında paketsiz xlsx; izin/rapor Dilim 7'de.
+- [x] 1. `008_matris.sql`: atamalar.surum, fn_hafta_basi, sp_matris_hafta/surum/bolumler
+- [x] 2. C#: MatrisService, MatrisExcel, MatrisCommands (matrisHafta/Surum/Bolumler/Excel), MainForm kaydı, BridgeTests, SqlTests cs
+- [x] 3. Arayüz `004_matris.js` + menü (3 rol); ekran görüntüsü 11
+- [x] 4. Testler: `MatrisTests` (3 SQL), `MatrisExcelTests` (2, SQL'siz)
+- [x] 5. Belgeler (README, PLAN, DILIMLER, ARAYUZ, MIMARI, SQL, test-dilim-6.md) ve kılavuz Bölüm 8.4
+- [ ] 6. Push, CI, PR, Murat'ın el sınaması (`docs/test-dilim-6.md`)
+
 ### Dilim 5 – Atama (Yönetici) (2026-11) — DEVAM EDİYOR (dal `dilim-5-atama`; Dilim 4 PR #7/#8 birleşti)
 **Oturum devir notu (her adımda güncelle; yeni oturum önce buradan devam eder):**
 - Kararlar: atama gün+dilim (TAM/OO/OS) bazlıdır; kısmi atama serbest; talep durumu atanana göre (ONAY_BEKLIYOR/KISMEN_ATANDI/TAMAMEN_ATANDI). Çakışmada varsayılan REDDET (hata 50030 → arayüzde karar kutusu); karar CIKAR ise çakışan atama CIKARILDI olur, o talebin sorumlusuna bildirim + günlük ATAMA_CIKAR. TAM, OO ve OS ile çakışır; OO/OS birbiriyle çakışmaz. İzin/rapor çakışması Dilim 7'de (her zaman red). Ret nedeni zorunlu (≥3 karakter), yalnız ONAY_BEKLIYOR talep reddedilir.

@@ -26,6 +26,9 @@ VERI = {
     {"id": 5, "ustId": 1, "seviye": 2, "ad": "Örnek Alt Proje 2", "aktif": True, "birlestirildiId": None},
     {"id": 6, "ustId": None, "seviye": 1, "ad": "Örnek Ana Proje B", "aktif": True, "birlestirildiId": None},
   ],
+  "matrisHafta": [{"sicil": "1002", "ad": "Örnek Personel 2", "bolum": "Örnek Bölüm B", "hucreler": [{"tarih": "2026-11-23", "zaman": "TAM", "talepId": 1, "kod": "TLP-0001", "ana": "Örnek Ana Proje A", "alt": "Genel", "faaliyet": "Örnek Faaliyet", "konum": "Örnek Yerleşke", "saat": "07:30 - 16:35", "sorumlu": "Örnek Personel 1"}, {"tarih": "2026-11-24", "zaman": "TAM", "talepId": 1, "kod": "TLP-0001", "ana": "Örnek Ana Proje A", "alt": "Genel", "faaliyet": "Örnek Faaliyet", "konum": "Örnek Yerleşke", "saat": "07:30 - 16:35", "sorumlu": "Örnek Personel 1"}, {"tarih": "2026-11-25", "zaman": "OO", "talepId": 1, "kod": "TLP-0002", "ana": "Örnek Ana Proje B", "alt": "Genel", "faaliyet": "Kayıt", "konum": "Salon", "saat": "07:30 - 16:35", "sorumlu": "Örnek Personel 1"}]}, {"sicil": "1004", "ad": "Örnek Personel 4", "bolum": "Örnek Bölüm B", "hucreler": [{"tarih": "2026-11-25", "zaman": "OO", "talepId": 1, "kod": "TLP-0001", "ana": "Örnek Ana Proje A", "alt": "Genel", "faaliyet": "Örnek Faaliyet", "konum": "Örnek Yerleşke", "saat": "07:30 - 16:35", "sorumlu": "Örnek Personel 1"}, {"tarih": "2026-11-25", "zaman": "OS", "talepId": 1, "kod": "TLP-0002", "ana": "Örnek Ana Proje B", "alt": "Genel", "faaliyet": "Kayıt", "konum": "Salon", "saat": "07:30 - 16:35", "sorumlu": "Örnek Personel 1"}, {"tarih": "2026-11-27", "zaman": "TAM", "talepId": 1, "kod": "TLP-0002", "ana": "Örnek Ana Proje B", "alt": "Genel", "faaliyet": "Kayıt", "konum": "Örnek Yerleşke", "saat": "07:30 - 16:35", "sorumlu": "Örnek Personel 1"}]}, {"sicil": "1005", "ad": "Örnek Personel 5", "bolum": "Örnek Bölüm C", "hucreler": [{"tarih": "2026-11-24", "zaman": "TAM", "talepId": 1, "kod": "TLP-0002", "ana": "Örnek Ana Proje B", "alt": "Genel", "faaliyet": "Kayıt", "konum": "Örnek Yerleşke", "saat": "07:30 - 16:35", "sorumlu": "Örnek Personel 1"}, {"tarih": "2026-11-26", "zaman": "TAM", "talepId": 1, "kod": "TLP-0001", "ana": "Örnek Ana Proje A", "alt": "Genel", "faaliyet": "Örnek Faaliyet", "konum": "Örnek Yerleşke", "saat": "07:30 - 16:35", "sorumlu": "Örnek Personel 1"}]}],
+  "matrisSurum": {"surum": "1-7"},
+  "matrisBolumler": ["Örnek Bölüm A", "Örnek Bölüm B", "Örnek Bölüm C"],
   "atamaAdaylar": [
     {"sicil": "1002", "ad": "Örnek Personel 2", "bolum": "Örnek Bölüm B", "onerildi": True, "gecmis": 6, "buTalepte": 0, "cakisanGun": 1},
     {"sicil": "1004", "ad": "Örnek Personel 4", "bolum": "Örnek Bölüm B", "onerildi": False, "gecmis": 3, "buTalepte": 0, "cakisanGun": 0},
@@ -112,4 +115,8 @@ with sync_playwright() as P:
     py.locator('input[type=checkbox]').nth(1).check(); py.locator('input[type=checkbox]').nth(2).check()
     py.get_by_role('button', name='Seçili günlere ata').nth(1).click(); py.wait_for_timeout(200)
     py.set_viewport_size({'width': 1200, 'height': 1250}); sh(py, '10_atama_paneli')
+    pm = ac(ben(True, False, False, True, ["SAHA"]))
+    pm.get_by_label('Haftaya git (tarih)').fill(''); pm.get_by_label('Haftaya git (tarih)').press_sequentially('23112026'); pm.wait_for_timeout(500)
+    pm.get_by_role('button', name='Örnek Ana Proje A', exact=False).first.click(); pm.wait_for_timeout(200)
+    pm.set_viewport_size({'width': 1200, 'height': 900}); sh(pm, '11_matris')
     b.close()

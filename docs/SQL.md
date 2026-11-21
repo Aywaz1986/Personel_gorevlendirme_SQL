@@ -77,6 +77,9 @@ Anahtarlar: her tabloda `INT/BIGINT IDENTITY id`, iş anahtarı ayrı `UNIQUE`, 
 - Geçici tablo sütunları `COLLATE DATABASE_DEFAULT`; Türkçe harmanlamada i/I eşit değildir, kod karşılaştırmalarında `COLLATE Latin1_General_CI_AS` kullanılır (`RESMI`, `OO` …).
 - Takvim kodları ASCII: TAM/OO/OS; arayüz ÖÖ/ÖS gösterir.
 
+## Dilim 6 notları
+- `008_matris.sql`: matris yalnız okur. `atamalar.surum ROWVERSION` eklendi (insert ve CIKARILDI güncellemesi sürümü değiştirir). Hafta başı `1900-01-01` pazartesisinden hesaplanır. Geçici tablo sütunları `COLLATE DATABASE_DEFAULT`. Sınanmadı: CI `MatrisTests` doğrular.
+
 ## Dilim 5 notları
 - `007_atama.sql`: atama yazan tek yer `sp_atama_onayla`. Hata kodu 50030 = atama çakışması (arayüzde `cakisma`). `ATAMA_CIKAR` ve `TALEP_ATAMA`, `TALEP_RED` log kayıtları. Reddedilen/çıkarılan bilgi `bildirimler` tablosuna yazılır; yalnız sahibi okur.
 - Atama sırasında tatil/hafta sonu engellenmez, `uyari` döner (Dilim 3 kararı).
