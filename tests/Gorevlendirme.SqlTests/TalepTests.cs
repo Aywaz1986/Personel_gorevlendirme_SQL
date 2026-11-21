@@ -53,7 +53,7 @@ public class TalepTests
         var t = await TalepService.GetirAsync(o.Sorumlu, Id(r));
         Assert.Equal("Erdem Efe", Ozellik(t, "sorumluAdi"));
         Assert.Equal("07:30", Ozellik(t, "saatBaslangic"));
-        Assert.Equal("Ahmet Sümbül", System.Text.Json.JsonSerializer.Serialize(t.GetType().GetProperty("oneri")!.GetValue(t)).Contains("Ahmet Sümbül") ? "Ahmet Sümbül" : "");
+        Assert.Contains("Ahmet Sümbül", Convert.ToString(t.GetType().GetProperty("oneri")!.GetValue(t)));
         // ikinci talep aynı yolu yeniden kullanır (havuza yeni kayıt eklenmez)
         await Ac(o.Sorumlu, false);
         Assert.Equal(4, Convert.ToInt32(await o.T.SkalerAsync("SELECT COUNT(*) FROM gorev.proje_havuzu")));

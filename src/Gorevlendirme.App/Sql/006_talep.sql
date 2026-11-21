@@ -342,3 +342,8 @@ BEGIN
     WHERE t.id = @id;
 END;
 GO
+
+-- Şema kaydı
+INSERT INTO gorev.islem_log (islem, nesne, nesne_id, ayrinti)
+VALUES (N'SEMA', N'sema_surumleri', N'6', N'006_talep uygulandı');
+GO
