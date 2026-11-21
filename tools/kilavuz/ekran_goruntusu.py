@@ -26,6 +26,12 @@ VERI = {
     {"id": 5, "ustId": 1, "seviye": 2, "ad": "Örnek Alt Proje 2", "aktif": True, "birlestirildiId": None},
     {"id": 6, "ustId": None, "seviye": 1, "ad": "Örnek Ana Proje B", "aktif": True, "birlestirildiId": None},
   ],
+  "personelAra": [{"sicil": "1002", "ad": "Örnek Personel 2", "bolum": "Örnek Bölüm B"}],
+  "talepListe": [
+    {"id": 3, "kod": "TLP-0003", "durum": "ONAY_BEKLIYOR", "sorumluSicil": "1001", "sorumluAdi": "Örnek Personel 1", "ilkTarih": "2026-11-23", "sonTarih": "2026-11-27", "ana": "Örnek Ana Proje A", "alt": "Genel", "faaliyet": "Örnek Faaliyet", "konum": "Örnek Yerleşke", "gorevMetni": "Örnek görev açıklaması.", "nitelik": None, "saatBaslangic": "07:30", "saatBitis": "16:35", "gunSayisi": 5, "kisiGun": 5.0, "oneri": "Örnek Personel 2", "guncelleme": "2026-11-20 10:00"},
+    {"id": 2, "kod": "TLP-0002", "durum": "TAMAMEN_ATANDI", "sorumluSicil": "1001", "sorumluAdi": "Örnek Personel 1", "ilkTarih": "2026-11-16", "sonTarih": "2026-11-20", "ana": "Örnek Ana Proje B", "alt": "Genel", "faaliyet": "Örnek Faaliyet", "konum": "Örnek Yerleşke", "gorevMetni": "Örnek ikinci görev.", "nitelik": None, "saatBaslangic": "08:00", "saatBitis": "17:00", "gunSayisi": 5, "kisiGun": 10.0, "oneri": None, "guncelleme": "2026-11-13 09:00"},
+    {"id": 1, "kod": "TLP-0001", "durum": "GERI_CEKILDI", "sorumluSicil": "1001", "sorumluAdi": "Örnek Personel 1", "ilkTarih": "2026-11-09", "sonTarih": "2026-11-09", "ana": "Örnek Ana Proje A", "alt": "Örnek Alt Proje 1", "faaliyet": "Örnek Faaliyet", "konum": "Örnek Yerleşke", "gorevMetni": "Geri çekilen örnek.", "nitelik": None, "saatBaslangic": "07:30", "saatBitis": "16:35", "gunSayisi": 1, "kisiGun": 1.0, "oneri": None, "guncelleme": "2026-11-05 15:30"},
+  ],
   "takvimListe": [
     {"id": 1, "baslangic": "2024-04-08", "bitis": "2024-04-08", "zaman": "TAM", "tur": "IDARI", "ad": "İdari izin", "yillik": True, "gun": 1, "kesilen": 1},
     {"id": 2, "baslangic": "2024-04-09", "bitis": "2024-04-09", "zaman": "OS", "tur": "RESMI", "ad": "Ramazan Bayramı arifesi", "yillik": False, "gun": 0.5, "kesilen": 0},
@@ -69,13 +75,24 @@ with sync_playwright() as P:
         pg = b.new_page(viewport={'width': 1200, 'height': 800}); pg.add_init_script(mock(benv))
         pg.goto('file:///tmp/gorev_idx.html'); pg.wait_for_timeout(600); return pg
     pg = ac(ben(True, True, True, False, ["YONETICI", "SORUMLU"]))
-    sh(pg, '01_kadro')
-    for i, n in [(3, '02_eslestirme'), (4, '03_istisna')]:
-        pg.locator('nav.menu button').nth(i).click(); sh(pg, n)
-    pg.locator('nav.menu button').nth(1).click(); sh(pg, '06_havuz')
-    pg.locator('nav.menu button').nth(2).click(); pg.wait_for_timeout(300)
+    def menu(ad): pg.locator('nav.menu button', has_text=ad).first.click()
+    menu('Kadro'); sh(pg, '01_kadro')
+    for ad, n in [('Bölüm–rol', '02_eslestirme'), ('Kişi istisna', '03_istisna')]:
+        menu(ad); sh(pg, n)
+    menu('Proje havuzu'); sh(pg, '06_havuz')
+    menu('Akademik takvim'); pg.wait_for_timeout(300)
     pg.locator('textarea').fill('08 NİSAN Pazartesi / 1 Gün (YILLIK İZİNDEN KESİLECEK)\n10-11-12 NİSAN Çarşamba-Perşembe-Cuma / 3 Gün Ramazan Bayramı\n01 MAYIS Çarşamba / 1 Gün Emek ve Dayanışma Günü'); pg.get_by_role('button', name='Önizle').click(); pg.wait_for_timeout(500); pg.evaluate('window.scrollTo(0,0)'); pg.set_viewport_size({'width': 1200, 'height': 2300}); sh(pg, '07_takvim'); pg.set_viewport_size({'width': 1200, 'height': 800})
-    pg.locator('nav.menu button').nth(0).click()
+    menu('Kadro')
     pg.locator('.gorunum button').click(); sh(pg, '04_gorunum')
     sh(ac(ben(False, False, False, False, [])), '05_yetkisiz')
+    ps = ac(ben(True, False, True, False, ["SORUMLU"]))
+    sh(ps, '08_talep_liste')
+    ps.get_by_role('button', name='Yeni talep').click(); ps.wait_for_timeout(300)
+    ti = ps.locator('input.metin')
+    ti.nth(0).fill('Örnek Ana Proje A'); ti.nth(1).fill('Örnek Alt Proje 1'); ti.nth(2).fill('Örnek Faaliyet'); ti.nth(3).fill('Örnek Yerleşke')
+    ps.get_by_label('Başlangıç tarihi').fill('2026-11-23'); ps.get_by_label('Bitiş tarihi').fill('2026-11-27')
+    ps.get_by_role('button', name='Günleri oluştur').click(); ps.wait_for_timeout(300)
+    ps.locator('textarea').fill('Örnek görev açıklaması.')
+    ps.locator('select').nth(2).select_option('OO')
+    ps.set_viewport_size({'width': 1200, 'height': 1700}); sh(ps, '09_talep_form')
     b.close()

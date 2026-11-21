@@ -42,6 +42,11 @@ Yeni hata eşlemesi: sunucu 50022/50023 → `yetki`; 50020/50021/50024/50025 →
 | `takvimXlsxOku` | `base64, yil?` | aynı | – | .xlsx (≤10 MB), ilk sayfa; paketsiz okuyucu |
 | `takvimOnizle` | `satirlar[]` | `[{sira, baslangic, bitis, zaman, tur, ad, yillik, gun, durum(YENI/GUNCELLE/AYNI/HATA), hata}]` | ✔ | yazmaz; eşleşme anahtarı baslangic+bitis+zaman |
 | `takvimUygula` | `satirlar[]` | `{eklenen, guncellenen, ayni}` | ✔ | ya hepsi ya hiçbiri; hatalı satır varsa `dogrulama` |
+| `personelAra` | `q` (≥2 harf) | `[{sicil, ad, bolum}]` (en çok 20, yalnız aktif) | ✔ | Sorumlu/Yönetici; Saha `yetki` |
+| `talepListe` | `durum?` | `[{id, kod, durum, sorumluSicil, sorumluAdi, ilkTarih, sonTarih, ana, alt, faaliyet, konum, gorevMetni, nitelik, saatBaslangic, saatBitis, gunSayisi, kisiGun, oneri, guncelleme}]` | ✔ | Yönetici hepsini, Sorumlu yalnız kendisininkini görür |
+| `talepGetir` | `id` | başlık alanları + `gunler[{tarih, zaman, kisi}]`, `oneri[{sicil, ad}]` | ✔ | form doldurma / kopyalama |
+| `talepKaydet` | `id?, sorumluSicil?, ana, alt?, faaliyet, konum, saatBaslangic, saatBitis (ss:dd), gorevMetni, nitelik?, gunler[{tarih(yyyy-aa-gg), zaman(TAM/OO/OS), kisi}], oneri[sicil], gonder` | `{id, kod, durum, uyari}` | ✔ | yeni ya da (TASLAK/ONAY_BEKLIYOR iken) değiştir; `gonder` → ONAY_BEKLIYOR; havuzda olmayan ad `kaynak='TALEP'` ile eklenir; hafta sonu/tatil → `uyari` (engellemez); `sorumluSicil` yalnız Yönetici için |
+| `talepGeriCek` | `id` | `{tamam}` | ✔ | yalnız TASLAK/ONAY_BEKLIYOR; sahibi ya da Yönetici |
 | `eskiVeriDenetle` | `maskele?` (varsayılan true) | `{iptal:true}` ya da `{iptal:false, dosya, sayilar, metin}` | ✔ | Dilim 3b. Yalnız Merkez Yönetici (kadro listesi sunucuda reddeder). STA dosya seçim penceresi açar, `.db`yi SALT OKUNUR okur, hiçbir şey yazmaz. `metin` düz rapor, `sayilar` ekran özeti |
 
 Girdi sütunları (başlık yoksa sıra): Tarih; Ad; Zaman dilimi; Tür (son ikisi isteğe bağlı: Tüm gün, Resmi tatil). Başlık varsa sütunlar adından bulunur. Tarih biçimleri: gg.aa.yyyy, yyyy-aa-gg, gg/aa/yyyy.

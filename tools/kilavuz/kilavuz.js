@@ -15,7 +15,7 @@ const tbl=(w,rows)=>new Table({width:{size:w.reduce((a,c)=>a+c,0),type:WidthType
 const C=[];
 C.push(new Paragraph({spacing:{before:2400,after:200},alignment:AlignmentType.CENTER,children:[new TextRun({text:"Personel Görevlendirme",bold:true,size:52,color:"1F3A5F"})]}));
 C.push(new Paragraph({alignment:AlignmentType.CENTER,spacing:{after:200},children:[new TextRun({text:"Resimli Kullanma Kılavuzu",size:34,color:"444444"})]}));
-C.push(new Paragraph({alignment:AlignmentType.CENTER,spacing:{after:1200},children:[new TextRun({text:"SQL Server sürümü (Windows, tek exe) – Dilim 3: kimlik, roller, kadro, havuz, takvim",size:24,color:"666666"})]}));
+C.push(new Paragraph({alignment:AlignmentType.CENTER,spacing:{after:1200},children:[new TextRun({text:"SQL Server sürümü (Windows, tek exe) – Dilim 4: kimlik, roller, kadro, havuz, takvim, talep",size:24,color:"666666"})]}));
 C.push(note("**Bu kılavuzdaki ekran görüntüleri** uydurma örnek verilerle alınmıştır; gerçek personel verisi içermez. Gördüğünüz menüler yetkinize göre değişir. Kılavuz her dilimde güncellenir; henüz gelmemiş ekranlar (atama paneli, talep, haftalık matris, izin/rapor) ilgili dilimlerde eklenecektir.","E8F0FA"));
 C.push(new Paragraph({children:[new PageBreak()]}));
 C.push(new Paragraph({heading:HeadingLevel.HEADING_1,children:[new TextRun("İçindekiler")]}));
@@ -25,7 +25,7 @@ C.push(new Paragraph({children:[new PageBreak()]}));
 C.push(h1("1. Uygulama nedir?"));
 C.push(p("Personel Görevlendirme; personelin projelere görevlendirilmesini, görev taleplerini ve izlenmesini tek yerde yürüten Windows uygulamasıdır. Tek bir .exe dosyasıdır, kurulum gerekmez. Veriler Özlük ile aynı SQL Server veritabanında (SST_Ozluk), yalnızca `gorev` şemasında tutulur. Özlük verisine hiçbir şey yazılmaz; yalnızca kadro bilgisi okunur."));
 C.push(h2("1.1 Roller"));
-C.push(tbl([2300,7060],[["Rol","Ne yapar"],["Merkez Yönetici","Kadro eşitleme, bölüm–rol eşleştirme, kişi istisnaları, atama (sonraki dilimler)."],["Proje Sorumlusu","Görev talebi açar ve izler (Dilim 4)."],["Saha Personeli","Kendi görevlerini izler, izin/rapor beyan eder (Dilim 7)."]]));
+C.push(tbl([2300,7060],[["Rol","Ne yapar"],["Merkez Yönetici","Kadro eşitleme, bölüm–rol eşleştirme, kişi istisnaları, atama (sonraki dilimler)."],["Proje Sorumlusu","Görev talebi açar, değiştirir, geri çeker ve izler (Bölüm 8)."],["Saha Personeli","Kendi görevlerini izler, izin/rapor beyan eder (Dilim 7)."]]));
 C.push(sp());
 C.push(p("Rol, kişinin Özlük bölümünden gelir (Bölüm 4). Kişi bazlı istisna bölüm kuralının üzerine yazar. Birden fazla rolü olan kişi üst menüden **Görünüm** değiştirir; son seçim hatırlanır."));
 C.push(note("**Bağlanabilmek yetki değildir.** Hesabınızın rolü çözülemiyorsa hiçbir veri görünmez ve “Yetkisiz Erişim” sayfası açılır."));
@@ -75,14 +75,29 @@ C.push(n("**Önizle**’ye basın. Her satır Yeni, Güncellenecek, Aynı ya da 
 C.push(n("Hata yoksa **Uygula**. Hatalı satır varsa hiçbiri uygulanmaz: hatayı düzeltip yeniden önizleyin.","n7"));
 C.push(...img("07_takvim","Akademik takvim: yıl görünümü, kayıtlar, form ve toplu yükleme önizlemesi.",1073));
 
-C.push(h1("8. Yetkisiz erişim"));
+C.push(h1("8. Görev talebi (Proje Sorumlusu)"));
+C.push(p("Proje Sorumlusu menüde **Görev Talep Arayüzü**'nü görür; Merkez Yönetici aynı ekranı **Talepler** adıyla görür ve tüm talepleri izler, talepleri vekâleten açabilir."));
+C.push(h2("8.1 Taleplerim listesi"));
+C.push(p("Her talep bir kart olarak görünür: kod (TLP-NNNN), tarih aralığı, mesai saati, proje yolu, konum, önerilen personel, gün ve kişi-gün sayısı ve **durum rozeti**. Üstteki düğmelerle Bekleyen / Atanmış / Kapalı süzülür."));
+C.push(tbl([2400,6960],[["Rozet","Anlamı"],["Taslak","Kaydedildi, henüz gönderilmedi; serbestçe değiştirilir."],["Onay bekliyor","Gönderildi; Yönetici henüz karar vermedi. Revize ve geri çekme serbesttir."],["Kısmen / Tamamen atandı","Atama başladı (Yönetici atama ekranı sonraki dilimde gelir)."],["Reddedildi, Geri çekildi, İptal","Kapalı talep; yalnızca **Kopyala** yapılabilir."]]));
+C.push(...img("08_talep_liste","Taleplerim: durum rozetleri, Kopyala / Revize / Geri çek.",560));
+C.push(h2("8.2 Yeni talep"));
+C.push(n("**Yeni talep**'e basın. **1. Proje:** Ana Proje, Alt Proje (boşsa “Genel”), Faaliyet ve Konum'u yazın; yazdıkça proje havuzundaki adlar önerilir. Havuzda olmayan ad yazarsanız ekranda uyarı çıkar ve talep kaydedilince ad havuza yeni kayıt olarak eklenir.","n8"));
+C.push(n("**2. Tarih, saat ve kişi sayısı:** başlangıç/bitiş tarihini, mesai saatini (varsayılan 07:30–16:35) ve günlük kişi sayısını girip **Günleri oluştur**'a basın. Hafta sonları ve akademik takvimdeki tam gün tatiller atlanır (ekranda not düşülür). Her günün zaman dilimini (Tüm gün / ÖÖ / ÖS) ve kişi sayısını değiştirebilir, günü kaldırabilir ya da **Tek gün ekle** ile ekleyebilirsiniz.","n8"));
+C.push(n("**3. Görev tanımı:** görev metni ve isteğe bağlı aranan nitelik.","n8"));
+C.push(n("**4. Önerilen personel (isteğe bağlı):** adın ilk harflerini yazıp çıkan kişiye basın. Öneri bağlayıcı değildir; atamayı Merkez Yönetici yapar.","n8"));
+C.push(n("**Talebi gönder** (Onay bekliyor olur) ya da **Taslak olarak kaydet** deyin. Hafta sonu ya da tatile denk gelen gün varsa kayıt yine yapılır, ekranda uyarı görünür.","n8"));
+C.push(...img("09_talep_form","Yeni görev talebi formu.",1700));
+C.push(note("**Revize, Kopyala, Geri çek.** Taslak ve onay bekleyen talepte **Revize** formu mevcut bilgilerle açar. **Kopyala** aynı bilgilerle yeni bir form açar (günler boş gelir). **Geri çek** talebi kapatır. Onaylanmış talepte revize ve iptal sonraki dilimde gelir. Yönetici talep sahibini form başındaki aramadan seçerek başka bir Sorumlu adına talep açabilir."));
+
+C.push(h1("9. Yetkisiz erişim"));
 C.push(p("Hesabınız kadroda yoksa, pasifse ya da hiçbir rolü çözülmediyse bu sayfa açılır. **Hesap adını kopyala** ile adınızı merkez yöneticisine iletin."));
 C.push(...img("05_yetkisiz","Yetkisiz erişim sayfası."));
 
-C.push(h1("9. Sık sorulan sorular"));
+C.push(h1("10. Sık sorulan sorular"));
 C.push(tbl([3300,6060],[["Sorun","Çözüm"],["Yetkisiz Erişim görüyorum","Hesabınız kadroda yok/pasif ya da bölümünüze rol eşleştirilmemiş; yöneticiye hesap adınızı iletin."],["Eşitleme “eksik okuma” diye iptal oldu","Özlük’te tüm kurum kapsamı olan bir hesapla çalıştırın."],["Eşitleme “Özlük yetkisi” hatası verdi","Hesabınız Özlük’te yönetici ya da tüm kurum kapsamlı İK/görüntüleyici değil."],["Kendi yöneticiliğimi kaldıramıyorum","Sistemde tek aktif yönetici sizsiniz; önce başka bir yönetici atayın."],["Takvim yüklemesi “Tarih okunamadı” diyor","Tarihi gg.aa.yyyy ya da yyyy-aa-gg yazın; Excel’de sütunu Tarih biçimine çevirin."],["Havuza aynı adı ekleyemiyorum","Aynı üstte aynı ad (pasif olsa da) vardır; pasifi etkinleştirin ya da birleştirin."]]));
 
-C.push(h1("10. Sorun giderme (BT için)"));
+C.push(h1("11. Sorun giderme (BT için)"));
 C.push(b("**Bağlantı izni:** Özlük’teki `NT AUTHORITY\\Authenticated Users` girişi bağlanmayı sağlar; veriye erişimi `gorev` tablolarındaki kayıt belirler."));
 C.push(b("**Şema sürümü:** `SELECT TOP 5 * FROM gorev.sema_surumleri ORDER BY surum DESC;`"));
 C.push(b("**Özlük dokunulmazlığı:** `tools/sql/dbo_iz.sql` çıktısı kurulumdan önce ve sonra aynı olmalıdır."));
@@ -94,7 +109,7 @@ const doc=new Document({
   {id:"Heading1",name:"Heading 1",basedOn:"Normal",next:"Normal",quickFormat:true,run:{font:FONT,size:34,bold:true,color:"1F3A5F"},paragraph:{spacing:{before:360,after:160},keepNext:true,outlineLevel:0}},
   {id:"Heading2",name:"Heading 2",basedOn:"Normal",next:"Normal",quickFormat:true,run:{font:FONT,size:26,bold:true,color:"2D5B8C"},paragraph:{spacing:{before:240,after:100},keepNext:true,outlineLevel:1}}]},
  numbering:{config:[{reference:"bul",levels:[{level:0,format:LevelFormat.BULLET,text:"•",alignment:AlignmentType.LEFT,style:{paragraph:{indent:{left:720,hanging:360}}}}]},
-  ...["num1","n2","n3","n4","n5","n7"].map(r=>({reference:r,levels:[{level:0,format:LevelFormat.DECIMAL,text:"%1.",alignment:AlignmentType.LEFT,style:{paragraph:{indent:{left:720,hanging:360}}}}]}))]},
+  ...["num1","n2","n3","n4","n5","n7","n8"].map(r=>({reference:r,levels:[{level:0,format:LevelFormat.DECIMAL,text:"%1.",alignment:AlignmentType.LEFT,style:{paragraph:{indent:{left:720,hanging:360}}}}]}))]},
  sections:[{properties:{page:{size:{width:11906,height:16838},margin:{top:1300,right:1273,bottom:1300,left:1273}}},
   footers:{default:new Footer({children:[new Paragraph({alignment:AlignmentType.CENTER,children:[new TextRun({text:"Personel Görevlendirme – Kullanma Kılavuzu   |   Sayfa ",size:18,color:"777777"}),new TextRun({children:[PageNumber.CURRENT],size:18,color:"777777"})]})]})},
   children:C}]});

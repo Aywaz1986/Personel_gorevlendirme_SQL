@@ -15,6 +15,7 @@ Bağlanabilmek yetki değildir. `gorev.personel`'de aktif kaydı olmayan veya hi
 | İşlem | Yönetici | Sorumlu | Saha |
 |---|---|---|---|
 | Talep aç / revize / geri çek / iptal | vekaleten | kendi taleplerinde | – |
+| Talep listesi, personel arama (öneri için) | hepsi | yalnız kendi talepleri | yok (`yetki`) |
 | Talep onay/ret, atama, ikame, sorumlu devri | ✔ | – | – |
 | Çakışmada karar (vazgeç / çakışandan çıkar ve ata) | ✔ | – | – |
 | Havuz yönetimi, akademik takvim/tatil | ✔ | – | – |
