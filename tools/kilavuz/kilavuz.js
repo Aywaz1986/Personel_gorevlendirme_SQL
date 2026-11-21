@@ -15,7 +15,7 @@ const tbl=(w,rows)=>new Table({width:{size:w.reduce((a,c)=>a+c,0),type:WidthType
 const C=[];
 C.push(new Paragraph({spacing:{before:2400,after:200},alignment:AlignmentType.CENTER,children:[new TextRun({text:"Personel Görevlendirme",bold:true,size:52,color:"1F3A5F"})]}));
 C.push(new Paragraph({alignment:AlignmentType.CENTER,spacing:{after:200},children:[new TextRun({text:"Resimli Kullanma Kılavuzu",size:34,color:"444444"})]}));
-C.push(new Paragraph({alignment:AlignmentType.CENTER,spacing:{after:1200},children:[new TextRun({text:"SQL Server sürümü (Windows, tek exe) – Dilim 4: kimlik, roller, kadro, havuz, takvim, talep",size:24,color:"666666"})]}));
+C.push(new Paragraph({alignment:AlignmentType.CENTER,spacing:{after:1200},children:[new TextRun({text:"SQL Server sürümü (Windows, tek exe) – Dilim 5: kimlik, roller, kadro, havuz, takvim, talep, atama",size:24,color:"666666"})]}));
 C.push(note("**Bu kılavuzdaki ekran görüntüleri** uydurma örnek verilerle alınmıştır; gerçek personel verisi içermez. Gördüğünüz menüler yetkinize göre değişir. Kılavuz her dilimde güncellenir; henüz gelmemiş ekranlar (atama paneli, talep, haftalık matris, izin/rapor) ilgili dilimlerde eklenecektir.","E8F0FA"));
 C.push(new Paragraph({children:[new PageBreak()]}));
 C.push(new Paragraph({heading:HeadingLevel.HEADING_1,children:[new TextRun("İçindekiler")]}));
@@ -90,6 +90,16 @@ C.push(p("Sağdaki **Özet** kartı yazdıkça güncellenir: 📍 Konum, 🕣 Sa
 C.push(n("**Talebi gönder** (Onay bekliyor olur) ya da **Taslak olarak kaydet** deyin. Hafta sonu ya da tatile denk gelen gün varsa kayıt yine yapılır, ekranda uyarı görünür.","n8"));
 C.push(...img("09_talep_form","Yeni görev talebi formu.",1700));
 C.push(note("**Revize, Kopyala, Geri çek.** Taslak ve onay bekleyen talepte **Revize** formu mevcut bilgilerle açar. **Kopyala** aynı bilgilerle yeni bir form açar (günler boş gelir). **Geri çek** talebi kapatır. Onaylanmış talepte revize ve iptal sonraki dilimde gelir. Yönetici talep sahibini form başındaki aramadan seçerek başka bir Sorumlu adına talep açabilir."));
+
+C.push(h2("8.3 Atama paneli (Yönetici)"));
+C.push(p("Onay bekleyen ya da kısmen atanmış talebin kartındaki **Ata** düğmesi atama panelini açar. Solda her gün/dilim için **atanan / istenen** görülür, altta adaylar, sağda talep özeti ve **Karar** kartı bulunur."));
+C.push(n("Soldaki tabloda atama yapmak istediğiniz satırları işaretleyin (dolu satırlar seçilemez).","n8"));
+C.push(n("Adaylar listesinde **Önerilen** kişi ve o Ana Projede daha önce çalışanlar üsttedir; çakışması olana “Çakışma: N gün”, olmayana “Müsait” yazar. Adın yanındaki **Seçili günlere ata** düğmesi kişiyi işaretli satırlara bekleme listesine ekler (Karar kartında görünür, × ile çıkarılır).","n8"));
+C.push(n("**Atamayı onayla**'ya basın. Kısmi atama serbesttir: talep **Kısmen atandı** olur; istenen sayıya ulaşılınca **Tamamen atandı**.","n8"));
+C.push(...img("10_atama_paneli","Atama paneli: gün/dilim tablosu, adaylar, talep özeti ve karar kartı.",1250));
+C.push(note("**Çakışma kararı.** Seçilen kişi aynı gün (tam gün ya da örtüşen dilim) başka bir görevdeyse sistem kendi başına karar vermez; çakışan görev ve sorumlusu gösterilir. **Vazgeç** hiçbir şey yazmaz. **Çakışan görevden çıkar ve bu göreve ata** çakışan atamayı çıkarır, o talebin sorumlusuna bildirim gider ve işlem denetim kaydına yazılır. Öğleden önce ile öğleden sonra birbirini çakıştırmaz. İzin ve rapor çakışmasında çıkarma seçeneği olmayacaktır (atama reddedilir; sonraki dilim)."));
+C.push(note("**Reddetme.** Onay bekleyen talepte **Reddet…** ile ret nedeni (zorunlu) yazılır; Sorumlu kartında nedeni ve bir bildirim görür. Atama başlamış talep reddedilemez."));
+C.push(note("**Sorumlu tarafı.** Taleplerim sayfasının üstünde yeni bildirimler görünür (atandı, reddedildi, görevden çıkarıldı); **Tümünü okundu say** ile kapanır. Atama yapılmış talepte **Atananlar** düğmesi gün gün kimin atandığını gösterir."));
 
 C.push(h1("9. Yetkisiz erişim"));
 C.push(p("Hesabınız kadroda yoksa, pasifse ya da hiçbir rolü çözülmediyse bu sayfa açılır. **Hesap adını kopyala** ile adınızı merkez yöneticisine iletin."));

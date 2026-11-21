@@ -55,11 +55,11 @@ function talepGunleriUret(bas, bit, kisi, tatiller) {
 
 async function talepSayfa() {
   const yonetici = S.gorunum === 'YONETICI';
-  const durum = { gorunum: 'liste', filtre: '', liste: [], havuz: [], tatiller: [], f: null };
+  const durum = { gorunum: 'liste', filtre: '', liste: [], havuz: [], tatiller: [], f: null, bildirim: [], atama: null, atananAcik: {} };
   const kap = h('div', { style: 'display:flex;flex-direction:column;gap:14px' });
 
   async function yukle() {
-    try { durum.liste = await Kopru.cagir('talepListe', {}); ciz(); } catch (e) { hata(e); }
+    try { durum.liste = await Kopru.cagir('talepListe', {}); durum.bildirim = await Kopru.cagir('bildirimListe', {}); ciz(); } catch (e) { hata(e); }
   }
 
   async function formAc(t, kopya) {
@@ -83,6 +83,21 @@ async function talepSayfa() {
     } catch (e) { hata(e); }
   }
 
+  async function atamaAc(id) {
+    try { durum.atama = await atamaPaneli(id, async (yenile) => { durum.atama = null; durum.gorunum = 'liste'; if (yenile) await yukle(); else ciz(); }); durum.gorunum = 'atama'; ciz(); } catch (e) { hata(e); }
+  }
+  function atananBlok(t) {
+    const satirlar = t.gunler.filter((g) => g.atananlar && g.atananlar.length).map((g) => h('div', { class: 'alt' }, takvimTarihYaz(g.tarih) + ' ' + takvimGun(g.tarih) + ' · ' + atamaTamAd(g.zaman) + ': ' + g.atananlar.map((a) => a.ad).join(', ')));
+    return h('div', { style: 'margin-top:6px;padding:8px 10px;background:var(--vurgu-bg);border-radius:8px' }, h('b', { style: 'font-size:13px' }, 'Atananlar'), satirlar);
+  }
+  function bildirimBandi() {
+    if (!durum.bildirim.length) return null;
+    return h('section', { class: 'mesaj bilgi', style: 'margin:0' },
+      h('div', { class: 'satir', style: 'align-items:center' }, h('b', null, durum.bildirim.length + ' yeni bildirim'), h('span', { style: 'flex:1' }),
+        h('button', { type: 'button', onclick: async () => { try { await Kopru.cagir('bildirimOkundu', {}); durum.bildirim = []; ciz(); } catch (e) { hata(e); } } }, 'Tümünü okundu say')),
+      h('ul', { style: 'margin:6px 0 0;padding-left:18px' }, durum.bildirim.map((b) => h('li', null, b.mesaj + ' ', h('span', { class: 'alt', style: 'color:inherit;opacity:.8' }, b.tarih)))));
+  }
+
   function liste() {
     const f = durum.filtre;
     const goster = durum.liste.filter((x) => !f || (f === 'BEKLEYEN' ? ['TASLAK', 'ONAY_BEKLIYOR'].includes(x.durum) : f === 'ATANMIS' ? ['KISMEN_ATANDI', 'TAMAMEN_ATANDI'].includes(x.durum) : ['REDDEDILDI', 'GERI_CEKILDI', 'IPTAL'].includes(x.durum)));
@@ -93,9 +108,13 @@ async function talepSayfa() {
       h('div', { style: 'font-size:16px;font-weight:600;margin:3px 0' }, x.ana + (x.alt && x.alt !== 'Genel' ? ' › ' + x.alt : '') + ' › ' + x.faaliyet),
       h('div', { class: 'alt' }, 'Konum: ' + x.konum + ' · ' + x.gorevMetni),
       x.oneri ? h('div', { class: 'alt' }, 'Önerilen: ' + x.oneri) : null,
+      x.retNedeni ? h('div', { class: 'mesaj kotu', style: 'margin-top:6px' }, 'Ret nedeni: ' + x.retNedeni) : null,
+      durum.atananAcik[x.id] ? atananBlok(durum.atananAcik[x.id]) : null,
       h('div', { class: 'satir', style: 'margin-top:8px;align-items:center' },
-        rozet(talepDurumAd(x.durum), talepDurumTur(x.durum)), h('span', { class: 'alt' }, x.gunSayisi + ' gün · ' + talepKisiGun(x.kisiGun)),
+        rozet(talepDurumAd(x.durum), talepDurumTur(x.durum)), h('span', { class: 'alt' }, x.gunSayisi + ' gün · ' + talepKisiGun(x.kisiGun) + (x.atanan > 0 ? ' · atanan ' + x.atanan + '/' + x.istenen : '')),
         h('span', { style: 'flex:1' }),
+        yonetici && ['ONAY_BEKLIYOR', 'KISMEN_ATANDI'].includes(x.durum) ? h('button', { class: 'ana', onclick: () => atamaAc(x.id) }, 'Ata') : null,
+        x.atanan > 0 ? h('button', { onclick: async () => { try { if (durum.atananAcik[x.id]) delete durum.atananAcik[x.id]; else durum.atananAcik[x.id] = await Kopru.cagir('talepGetir', { id: x.id }); ciz(); } catch (e) { hata(e); } } }, 'Atananlar') : null,
         h('button', { onclick: async () => { try { await formAc(await Kopru.cagir('talepGetir', { id: x.id }), true); } catch (e) { hata(e); } } }, 'Kopyala'),
         talepDegistirilebilir(x.durum) ? h('button', { onclick: async () => { try { await formAc(await Kopru.cagir('talepGetir', { id: x.id }), false); } catch (e) { hata(e); } } }, 'Revize') : null,
         talepDegistirilebilir(x.durum) ? h('button', { onclick: async () => {
@@ -103,6 +122,7 @@ async function talepSayfa() {
           try { await Kopru.cagir('talepGeriCek', { id: x.id }); toast('Talep geri çekildi.'); await yukle(); } catch (e) { hata(e); }
         } }, 'Geri çek') : null)));
     return h('div', { style: 'display:flex;flex-direction:column;gap:12px' },
+      bildirimBandi(),
       h('div', { class: 'satir', style: 'align-items:center' },
         chip('', 'Tümü', durum.liste.length), chip('BEKLEYEN', 'Bekleyen', sayi((x) => talepDegistirilebilir(x.durum))),
         chip('ATANMIS', 'Atanmış', sayi((x) => ['KISMEN_ATANDI', 'TAMAMEN_ATANDI'].includes(x.durum))), chip('KAPALI', 'Kapalı', sayi((x) => ['REDDEDILDI', 'GERI_CEKILDI', 'IPTAL'].includes(x.durum))),
@@ -234,7 +254,7 @@ async function talepSayfa() {
     return el;
   }
 
-  function ciz() { kap.replaceChildren(h('h1', null, yonetici ? 'Talepler' : 'Görev Talep Arayüzü'), durum.gorunum === 'form' ? form() : liste()); }
+  function ciz() { kap.replaceChildren(h('h1', null, yonetici ? 'Talepler' : 'Görev Talep Arayüzü'), durum.gorunum === 'form' ? form() : durum.gorunum === 'atama' ? durum.atama : liste()); }
 
   await yukle();
   if (!kap.childNodes.length) ciz();
