@@ -9,6 +9,7 @@
 | 3 | Sorumlu | Tarih 23.11.2026–27.11.2026, saat 07:30–16:35, günlük kişi 1 → **Günleri oluştur** | Pzt–Cum 5 satır (Tam gün, 1 kişi); hafta sonu satırı yok. Toplam "5 kişi-gün". |
 | 4 | Sorumlu | Bir günü **Öğleden önce** yap, kişi 2 yap; bir günü **Kaldır** | Toplam kişi-gün güncellenir (ÖÖ/ÖS = 0,5 × kişi). |
 | 5 | Sorumlu | Görev metni yaz; Önerilen personel kutusuna 2+ harf (ör. "Ahmet") yaz, çıkan kişiye bas | Kişi rozet olarak eklenir; × ile kaldırılır; kadroda olmayan/pasif kişi aramada çıkmaz. |
+| 5b | Sorumlu | Formu doldururken sağdaki **Özet** kartına bak | 📍 Konum, 🕣 Saat (07.30 - 16.35), 📅 Tarih (ör. 23-27 Kasım 2026 - 5 gün), 📑 Proje, 📡 Faaliyet, 🙋‍♀️ Önerilen Personel, 🧍‍♂️ Proje sorumlusu yazdıkça güncellenir; Gönder/Taslak düğmeleri bu kartta, altında Kurallar notu. |
 | 6 | Sorumlu | **Taslak olarak kaydet** | "TLP-NNNN taslak olarak kaydedildi"; listede **Taslak** rozeti. |
 | 7 | Sorumlu | Taslakta **Revize** → bir şey değiştir → **Talebi gönder** | Aynı kod korunur; rozet **Onay bekliyor**; günler/öneriler yeni halini gösterir. |
 | 8 | Sorumlu | Yeni talepte tarih aralığına bir tatil günü (Akademik takvimde TAM kayıtlı) dahil et | "Günleri oluştur" o günü atlar ve "Tatil nedeniyle atlanan: …" notu çıkar. **Tek gün ekle** ile elle eklenirse kayıtta uyarı döner (engellenmez). Cumartesi elle eklenince "hafta sonuna denk geliyor" uyarısı. |
