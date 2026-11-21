@@ -53,6 +53,10 @@ Yeni hata eşlemesi: sunucu 50022/50023 → `yetki`; 50020/50021/50024/50025 →
 | `talepReddet` | `id, neden` (zorunlu) | `{tamam}` | ✔ | yalnız ONAY_BEKLIYOR; sorumluya bildirim |
 | `bildirimListe` | `hepsi?` | `[{id, tur, mesaj, talepId, tarih, okundu}]` | ✔ | yalnız kendi bildirimleri (varsayılan okunmamışlar) |
 | `bildirimOkundu` | `id?` (boşsa hepsi) | `{tamam}` | ✔ | |
+| `matrisHafta` | `bas (yyyy-aa-gg; sunucu pazartesiye çeker), bolum?, ana?, q?, sadeceGorevli? (varsayılan true)` | `[{sicil, ad, bolum, hucreler[{tarih, zaman, talepId, kod, ana, alt, faaliyet, konum, saat, sorumlu}]}]` | ✔ | kayıtlı her rol; yalnız AKTIF atamalar; `ana` filtresi görevli şartı getirir |
+| `matrisSurum` | `bas` | `{surum}` | ✔ | haftanın atama `rowversion` + satır sayısı; arayüz 30 sn'de bir sorar |
+| `matrisBolumler` | – | `[bolum]` | ✔ | filtre listesi |
+| `matrisExcel` | `bas, bolum?, ana?, q?, sadeceGorevli?` | `{iptal, yol?, satir?}` | ✔ | kayıt penceresi açar; `.xlsx` (Sicil, Personel, Bölüm, 7 gün) yazar; iptalde `iptal:true` |
 | `eskiVeriDenetle` | `maskele?` (varsayılan true) | `{iptal:true}` ya da `{iptal:false, dosya, sayilar, metin}` | ✔ | Dilim 3b. Yalnız Merkez Yönetici (kadro listesi sunucuda reddeder). STA dosya seçim penceresi açar, `.db`yi SALT OKUNUR okur, hiçbir şey yazmaz. `metin` düz rapor, `sayilar` ekran özeti |
 
 Girdi sütunları (başlık yoksa sıra): Tarih; Ad; Zaman dilimi; Tür (son ikisi isteğe bağlı: Tüm gün, Resmi tatil). Başlık varsa sütunlar adından bulunur. Tarih biçimleri: gg.aa.yyyy, yyyy-aa-gg, gg/aa/yyyy.

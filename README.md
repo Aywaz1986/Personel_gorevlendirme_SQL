@@ -25,7 +25,8 @@ Ayrıntı: [`docs/PLAN.md`](docs/PLAN.md), dilim içerikleri: [`docs/DILIMLER.md
 | 3b | **Eski veri: kuru çalıştırma raporu** | kodlandı, CI/el sınaması bekliyor |
 | 4 | **Talep (Proje Sorumlusu)**: talep formu, liste, kopyala, revize, geri çek, önerilen personel | dal `dilim-4-talep` (kodlandı; CI, el sınaması bekliyor) |
 | 5 | **Atama (Yönetici)**: gün/dilim bazlı atama, kısmi atama, çakışma kararı, ret nedeni, bildirim, aday önerisi | dal `dilim-5-atama` (kodlandı; CI, el sınaması bekliyor) |
-| 6–10 | haftalık matris, izin/rapor, revize/ikame, analiz, canlıya geçiş | bekliyor |
+| 6 | **Haftalık matris**: 7 günlük ortak tablo (ÖÖ/ÖS bölünmüş hücre), filtreler, hafta geçişi, 30 sn yenileme, Excel çıktısı | dal `dilim-6-matris` (kodlandı; CI, el sınaması bekliyor) |
+| 7–10 | izin/rapor, revize/ikame, analiz, canlıya geçiş | bekliyor |
 
 ## Belgeler
 | Dosya | İçerik |

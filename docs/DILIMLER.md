@@ -31,6 +31,8 @@ Test listesi: `docs/test-dilim-5.md`. Uygulanan: `atamalar` (gün+dilim satırı
 ## Dilim 6 – Haftalık matris
 7 günlük ortak tablo (ÖÖ/ÖS bölünmüş hücre), filtreler, hafta geçişi, 30 sn yenileme (`rowversion`), Excel çıktısı.
 
+Test listesi: `docs/test-dilim-6.md`. Uygulanan: `008_matris.sql`, `matrisHafta/Surum/Bolumler/Excel`, `004_matris.js`; tüm roller görür. İzin/rapor hücreleri Dilim 7'de eklenecek.
+
 ## Dilim 7 – İzin ve rapor
 `izin_talepleri/_gunleri`, `raporlar` (varbinary, ≤10 MB, PDF/JPG/PNG), rapor–izin çakışma önceliği, vekaleten giriş, ikame uyarıları.
 
