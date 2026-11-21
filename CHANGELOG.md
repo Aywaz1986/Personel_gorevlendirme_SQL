@@ -11,6 +11,7 @@ Her değişiklik önce **Yayınlanmamış** bölümüne yazılır; sürüm yüks
 - [x] 3. Arayüz: `004_atama.js` (atama paneli), `004_talep.js` (Ata/Atananlar/bildirim bandı/ret nedeni), menüden "yakında" düğmesi kaldırıldı
 - [x] 4. SQL testleri `AtamaTests.cs` (7 test; yerelde çalıştırılamadı, CI doğrular)
 - [x] 5. Belgeler (README, PLAN, DILIMLER, ARAYUZ, MIMARI, SQL, test-dilim-5.md) ve kılavuz Bölüm 8.3 (resim 10)
+- [x] 5b. Talep formu ilk tasarıma döndürüldü (Murat, 21.11.2026): sıra 1 Talep sahibi (Windows oturumundan; Yönetici vekâleten listeden), 2 Proje ve görev tanımı (havuz ComboBox, yoksa elle yaz ve otomatik havuza), 3 Gün ve zaman dilimi (GG.AA.YYYY, günler kendiliğinden, Tam/ÖÖ/ÖS düğmeleri, −/+ kişi), 4 Önerilen personel; Özet etiket:değer yan yana, geniş. Yalnız `004_talep.js`; sunucu değişmedi.
 - [ ] 6. Push, CI (4 iş), PR, Murat'ın el sınaması (`docs/test-dilim-5.md`)
 
 ### Dilim 4 – Talep (Proje Sorumlusu) (2026-11) — DEVAM EDİYOR (dal `dilim-4-talep`; Dilim 3 ve 3b PR #4/#5/#6 birleşti)
