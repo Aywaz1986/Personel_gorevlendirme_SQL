@@ -12,6 +12,7 @@ Her değişiklik önce **Yayınlanmamış** bölümüne yazılır; sürüm yüks
 - [x] 3. Arayüz: `ui-src/app/004_talep.js` (liste + form), menü: Sorumlu "Görev Talep Arayüzü", Yönetici "Talepler". JS sözdizimi OK.
 - [x] 4. SQL testleri `TalepTests.cs` (8 test), BridgeTests komut listesi.
 - [x] 5. Belgeler (ARAYUZ, MIMARI, YETKI, SQL, PLAN, README, DILIMLER, TASIMA, `docs/test-dilim-4.md`); kılavuz Bölüm 8 + ekran görüntüleri 08/09 (menü sırası değiştiği için ekran betiği adla seçer).
+- [x] 5b. (21.11.2026, Murat isteği) Formda tasarım önizlemesindeki sağ Özet kartı ve Kurallar notu: başlıklar 📍 Konum, 🕣 Saat, 📅 Tarih, 📑 Proje, 📡 Faaliyet, 🙋‍♀️ Önerilen Personel, 🧍‍♂️ Proje sorumlusu; canlı güncellenir, gönder/taslak düğmeleri kartın içinde. Kılavuz ve görüntü yenilendi.
 - [x] 6. Push, CI 4/4 yeşil (ilk koşuda 006'da islem_log SEMA kaydı eksikti, düzeltildi), PR açıldı; sınama listesi sohbette. Sıradaki: Murat sınar → birleştirme → Dilim 5 (Atama).
 ### Dilim 3b – Eski veri: kuru çalıştırma raporu (2026-11) — DEVAM EDİYOR (dal `dilim-3b-eski-veri-rapor`; Dilim 3 PR #4 birleşti)
 **Oturum devir notu (her adımda güncelle; yeni oturum önce buradan devam eder):**

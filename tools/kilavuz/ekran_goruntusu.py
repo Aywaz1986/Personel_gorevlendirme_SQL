@@ -94,5 +94,6 @@ with sync_playwright() as P:
     ps.get_by_role('button', name='Günleri oluştur').click(); ps.wait_for_timeout(300)
     ps.locator('textarea').fill('Örnek görev açıklaması.')
     ps.locator('select').nth(2).select_option('OO')
-    ps.set_viewport_size({'width': 1200, 'height': 1700}); sh(ps, '09_talep_form')
+    ps.locator('input[type=search]').fill('Örnek'); ps.wait_for_timeout(600); ps.get_by_role('button', name='Örnek Personel 2 (1002)').click(); ps.wait_for_timeout(200)
+    ps.set_viewport_size({'width': 1200, 'height': 1500}); sh(ps, '09_talep_form')
     b.close()

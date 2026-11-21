@@ -8,6 +8,17 @@ function talepDurumTur(d) {
 function talepDegistirilebilir(d) { return d === 'TASLAK' || d === 'ONAY_BEKLIYOR'; }
 function talepNorm(s) { return String(s || '').trim().toLocaleLowerCase('tr-TR'); }
 function talepAralik(x) { return x.ilkTarih === x.sonTarih ? takvimTarihYaz(x.ilkTarih) : takvimTarihYaz(x.ilkTarih) + ' – ' + takvimTarihYaz(x.sonTarih); }
+function talepTarihOzet(gunler) {
+  const ay = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
+  const t = [...new Set(gunler.map((g) => g.tarih))].sort();
+  if (!t.length) return '—';
+  const a = t[0].split('-').map(Number), b = t[t.length - 1].split('-').map(Number);
+  const aralik = t.length === 1 || t[0] === t[t.length - 1] ? a[2] + ' ' + ay[a[1] - 1] + ' ' + a[0]
+    : a[0] === b[0] && a[1] === b[1] ? a[2] + '-' + b[2] + ' ' + ay[a[1] - 1] + ' ' + a[0]
+    : a[0] === b[0] ? a[2] + ' ' + ay[a[1] - 1] + ' – ' + b[2] + ' ' + ay[b[1] - 1] + ' ' + a[0]
+    : a[2] + ' ' + ay[a[1] - 1] + ' ' + a[0] + ' – ' + b[2] + ' ' + ay[b[1] - 1] + ' ' + b[0];
+  return aralik + ' - ' + t.length + ' gün';
+}
 function talepKisiGun(n) { return String(n).replace('.', ',') + ' kişi-gün'; }
 
 // Personel arama kutusu (en az 2 harf); seçilince onSec({sicil, ad}) çağrılır.
@@ -120,12 +131,27 @@ async function talepSayfa() {
       if (r.konum.value.trim() && !(c && bul(c.id, 4, r.konum.value))) yeni.push('Konum');
       r.yeni.textContent = yeni.length ? 'Havuzda olmayan ad(lar) yazıldı (' + yeni.join(', ') + '); talep gönderilince havuza yeni kayıt olarak eklenir.' : 'Adlar havuzdaki kayıtlarla eşleşiyor.';
     }
+    const OZ = [['konum', '📍', 'Konum'], ['saat', '🕣', 'Saat'], ['tarih', '📅', 'Tarih'], ['proje', '📑', 'Proje'], ['faaliyet', '📡', 'Faaliyet'], ['oneri', '🙋‍♀️', 'Önerilen Personel'], ['sorumlu', '🧍‍♂️', 'Proje sorumlusu']];
+    r.oz = {};
+    function ozetGuncelle() {
+      const v = (x) => String(x || '').trim() || '—';
+      const alt = r.alt.value.trim();
+      const sorumlu = yonetici ? (f.sorumlu ? f.sorumlu.ad : 'Seçilmedi') : S.kimlik.adiSoyadi;
+      const d = {
+        konum: v(r.konum.value), saat: r.sb.value && r.sbt.value ? r.sb.value.replace(':', '.') + ' - ' + r.sbt.value.replace(':', '.') : '—',
+        tarih: talepTarihOzet(f.gunler), proje: v(r.ana.value) + (alt ? ' › ' + alt : ''), faaliyet: v(r.faaliyet.value),
+        oneri: f.oneri.length ? f.oneri.map((p) => p.ad).join(', ') : '—', sorumlu,
+      };
+      for (const [k] of OZ) r.oz[k].textContent = d[k];
+    }
+    const ozetSatirlari = OZ.map(([k, em, ad]) => { r.oz[k] = h('span', { style: 'font-weight:500' }); return h('div', { style: 'display:flex;flex-direction:column;gap:1px;padding:6px 0;border-bottom:1px solid var(--cizgi)' }, h('span', { style: 'font-size:12px;color:var(--soluk)' }, em + ' ' + ad), r.oz[k]); });
     const alan = (ad, el) => h('label', { style: 'display:flex;flex-direction:column;gap:4px;font-size:13px;flex:1 1 220px' }, ad, el);
-    const metin = (anahtar, ph, dl, max) => { const e = h('input', { type: 'text', class: 'metin', maxlength: String(max || 300), list: dl, placeholder: ph || '', value: f[anahtar === 'ana' ? 'ana' : anahtar] || '' }); e.addEventListener('input', havuzIpucu); return e; };
+    const metin = (anahtar, ph, dl, max) => { const e = h('input', { type: 'text', class: 'metin', maxlength: String(max || 300), list: dl, placeholder: ph || '', value: f[anahtar === 'ana' ? 'ana' : anahtar] || '' }); e.addEventListener('input', () => { havuzIpucu(); ozetGuncelle(); }); return e; };
     r.dlAna = h('datalist', { id: 'dl-ana' }); r.dlAlt = h('datalist', { id: 'dl-alt' }); r.dlFaaliyet = h('datalist', { id: 'dl-faaliyet' }); r.dlKonum = h('datalist', { id: 'dl-konum' });
     r.ana = metin('ana', '', 'dl-ana'); r.alt = metin('alt', 'Genel', 'dl-alt'); r.faaliyet = metin('faaliyet', '', 'dl-faaliyet'); r.konum = metin('konum', '', 'dl-konum');
     r.yeni = h('div', { class: 'alt', style: 'margin-top:6px' });
     r.sb = h('input', { type: 'time', class: 'metin', value: f.sb, 'aria-label': 'Başlangıç saati' }); r.sbt = h('input', { type: 'time', class: 'metin', value: f.sbt, 'aria-label': 'Bitiş saati' });
+    r.sb.addEventListener('input', () => ozetGuncelle()); r.sbt.addEventListener('input', () => ozetGuncelle());
     r.metin = h('textarea', { class: 'metin', rows: '3', maxlength: '1000', style: 'width:100%' }, f.metin);
     r.nitelik = h('input', { type: 'text', class: 'metin', maxlength: '300', value: f.nitelik, placeholder: 'ör. kaynakçı, forklift ehliyetli' });
     r.bas = h('input', { type: 'date', class: 'metin', value: f.bas, 'aria-label': 'Başlangıç tarihi' }); r.bit = h('input', { type: 'date', class: 'metin', value: f.bit, 'aria-label': 'Bitiş tarihi' });
@@ -162,6 +188,8 @@ async function talepSayfa() {
     const el = h('div', { style: 'display:flex;flex-direction:column;gap:14px' },
       h('div', { class: 'satir', style: 'align-items:center' }, h('h2', { style: 'margin:0;font-size:18px' }, f.id ? f.kod + ' talebini revize et' : 'Yeni görev talebi'), h('span', { style: 'flex:1' }),
         h('button', { type: 'button', onclick: () => { durum.gorunum = 'liste'; durum.f = null; ciz(); } }, 'Vazgeç')),
+      h('div', { style: 'display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start' },
+      h('div', { style: 'flex:999 1 560px;min-width:0;display:flex;flex-direction:column;gap:14px' },
       yonetici ? h('section', { class: 'kart' }, h('h2', null, 'Talep sahibi (Proje Sorumlusu)'),
         h('div', null, f.sorumlu ? rozet(f.sorumlu.ad + ' (' + f.sorumlu.sicil + ')', 'bilgi') : h('span', { class: 'alt' }, 'Seçilmedi: Yönetici vekâleten açıyorsa talep sahibini seçin.')),
         talepPersonelAra('Ad yazarak ara…', (p) => { oku(); f.sorumlu = { sicil: p.sicil, ad: p.ad }; ciz(); })) : null,
@@ -192,8 +220,17 @@ async function talepSayfa() {
         h('div', { class: 'satir', style: 'margin-bottom:6px' }, oneriChip.length ? oneriChip : [h('span', { class: 'alt' }, 'Öneri yok.')]),
         talepPersonelAra('Ad yazarak ara…', (p) => { oku(); if (!f.oneri.some((x) => x.sicil === p.sicil)) f.oneri.push({ sicil: p.sicil, ad: p.ad }); ciz(); }),
         h('p', { class: 'alt', style: 'margin:6px 0 0' }, 'Atamayı Merkez Yönetici yapar; öneri yalnız yol göstericidir.')),
-      h('div', { class: 'satir' }, h('button', { class: 'ana', type: 'button', onclick: () => kaydet(true) }, 'Talebi gönder'), h('button', { type: 'button', onclick: () => kaydet(false) }, 'Taslak olarak kaydet')));
-    setTimeout(havuzIpucu, 0);
+      ),
+      h('aside', { style: 'flex:1 1 300px;min-width:0;display:flex;flex-direction:column;gap:14px;position:sticky;top:12px' },
+        h('section', { class: 'kart' }, h('h2', null, 'Özet'), h('div', null, ozetSatirlari),
+          h('div', { style: 'margin:10px 0' }, rozet('Gönderilince: Onay bekliyor', 'bilgi')),
+          h('div', { style: 'display:flex;flex-direction:column;gap:8px' },
+            h('button', { class: 'ana', type: 'button', onclick: () => kaydet(true) }, 'Talebi gönder'), h('button', { type: 'button', onclick: () => kaydet(false) }, 'Taslak olarak kaydet'))),
+        h('section', { class: 'kart', style: 'font-size:13px;line-height:1.5;color:var(--soluk);display:flex;flex-direction:column;gap:6px' }, h('h2', { style: 'color:var(--yazi)' }, 'Kurallar'),
+          h('div', null, 'Talebi yalnız açan Sorumlu (ve Yönetici vekâleten) değiştirir veya geri çeker.'),
+          h('div', null, 'Onaydan önce serbestçe revize edilir; onaydan sonra revize yeni onay gerektirir (sonraki dilim).'),
+          h('div', null, 'Sorumlu personel atamaz; öneri bağlayıcı değildir, atamayı Merkez Yönetici yapar.')))));
+    setTimeout(() => { havuzIpucu(); ozetGuncelle(); }, 0);
     return el;
   }
 

@@ -69,7 +69,7 @@ Onay/atama yordamları `SERIALIZABLE` + `UPDLOCK`: aynı personel, aynı gün ve
 ## Talep (Dilim 4)
 - SQL `006_talep.sql`: `talepler` (`kod` = TLP-NNNN hesaplı sütun, `sorumlu_sicil_no`, `havuz_id` = Konum yaprağı; üst zinciri Ana Proje › Alt Proje › Faaliyet), `talep_gunleri` (PK talep+tarih+dilim; kişi sayısı 1–500), `talep_oneri`, `gecmis_gorev` (tarihsiz eski geçmiş; şimdilik boş). Durumlar CHECK'te hepsi tanımlı; bu dilim yalnız TASLAK/ONAY_BEKLIYOR/GERI_CEKILDI üretir.
 - Yordamlar `WITH EXECUTE AS OWNER`: `sp_talep_kaydet` (SERIALIZABLE; gün/öneri JSON'u OPENJSON; havuz yolunu çözer/oluşturur; logu yazar), `sp_talep_geri_cek`, `sp_talep_listele`, `sp_talep_getir` (gün ve öneriler JSON sütunu: tek sonuç kümesi), `sp_personel_ara`. Yardımcı işlevler: `fn_ben_sicil`, `fn_sorumlu_mu` (sp_ben ile aynı çözüm).
-- C#: `TalepService`, `TalepCommands`. Arayüz: `ui-src/app/004_talep.js` (liste + form; form alanları kontrolsüz girdi, durum değişiminde önce `oku()` ile DOM'dan alınır).
+- C#: `TalepService`, `TalepCommands`. Arayüz: `ui-src/app/004_talep.js` (liste + form; form sağda yazdıkça güncellenen Özet kartı (📍🕣📅📑📡🙋‍♀️🧍‍♂️) taşır; form alanları kontrolsüz girdi, durum değişiminde önce `oku()` ile DOM'dan alınır).
 
 ## Eski veri denetimi (Dilim 3b)
 `EskiVeriOkuyucu` (Microsoft.Data.Sqlite, `Mode=ReadOnly`, eksik tablo/sütuna dayanıklı) → `EskiVeri` bellek modeli → `EskiVeriDenetimi.Raporla` (saf mantık: personel eşleşmesi sicil→ad, atama çözümleme, kişi+gün çakışması, sorumlu eşleşmesi, proje ağacı derinlik/yetim/döngü/kardeş tekrarı) → `EskiVeriRaporu` (sayılar + düz metin). Komut `eskiVeriDenetle` dosyayı STA iş parçacığında seçtirir; kadro ve havuz bilgisi `sp_kadro_listele` / `sp_havuz_listele` ile okunur (SQL'e yazılmaz).
