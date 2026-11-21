@@ -3,6 +3,17 @@
 Her değişiklik önce **Yayınlanmamış** bölümüne yazılır; sürüm yükselince bölüm sürüm başlığına dönüştürülür.
 
 ## Yayınlanmamış
+### Dilim 5 – Atama (Yönetici) (2026-11) — DEVAM EDİYOR (dal `dilim-5-atama`; Dilim 4 PR #7/#8 birleşti)
+**Oturum devir notu (her adımda güncelle; yeni oturum önce buradan devam eder):**
+- Kararlar: atama gün+dilim (TAM/OO/OS) bazlıdır; kısmi atama serbest; talep durumu atanana göre (ONAY_BEKLIYOR/KISMEN_ATANDI/TAMAMEN_ATANDI). Çakışmada varsayılan REDDET (hata 50030 → arayüzde karar kutusu); karar CIKAR ise çakışan atama CIKARILDI olur, o talebin sorumlusuna bildirim + günlük ATAMA_CIKAR. TAM, OO ve OS ile çakışır; OO/OS birbiriyle çakışmaz. İzin/rapor çakışması Dilim 7'de (her zaman red). Ret nedeni zorunlu (≥3 karakter), yalnız ONAY_BEKLIYOR talep reddedilir.
+- [x] 1. `007_atama.sql`: atamalar, bildirimler, fn_atama_cakisma, sp_atama_adaylar/cakisma_kontrol/onayla, sp_talep_reddet, sp_bildirim_listele/okundu; sp_talep_listele/getir yeniden tanımlandı
+- [x] 2. C#: AtamaService, AtamaCommands (atamaAdaylar, atamaCakismaKontrol, atamaOnayla, talepReddet, bildirimListe, bildirimOkundu), SqlHata 50030, BridgeTests, SqlTests cs
+- [x] 3. Arayüz: `004_atama.js` (atama paneli), `004_talep.js` (Ata/Atananlar/bildirim bandı/ret nedeni), menüden "yakında" düğmesi kaldırıldı
+- [x] 4. SQL testleri `AtamaTests.cs` (7 test; yerelde çalıştırılamadı, CI doğrular)
+- [x] 5. Belgeler (README, PLAN, DILIMLER, ARAYUZ, MIMARI, SQL, test-dilim-5.md) ve kılavuz Bölüm 8.3 (resim 10)
+- [x] 5b. Talep formu ilk tasarıma döndürüldü (Murat, 21.11.2026): sıra 1 Talep sahibi (Windows oturumundan; Yönetici vekâleten listeden), 2 Proje ve görev tanımı (havuz ComboBox, yoksa elle yaz ve otomatik havuza), 3 Gün ve zaman dilimi (GG.AA.YYYY, günler kendiliğinden, Tam/ÖÖ/ÖS düğmeleri, −/+ kişi), 4 Önerilen personel; Özet etiket:değer yan yana, geniş. Yalnız `004_talep.js`; sunucu değişmedi.
+- [ ] 6. Push, CI (4 iş), PR, Murat'ın el sınaması (`docs/test-dilim-5.md`)
+
 ### Dilim 4 – Talep (Proje Sorumlusu) (2026-11) — DEVAM EDİYOR (dal `dilim-4-talep`; Dilim 3 ve 3b PR #4/#5/#6 birleşti)
 **Oturum devir notu (her adımda güncelle; yeni oturum önce buradan devam eder):**
 - Tasarım önizlemesi (Claude Design, 20.11.2026) Murat'a gösterildi: "ilk izlenim gayet güzel". Murat'ın örnek talebi: Konum Ankara İvedik, saat 07:30-16:35, 23-27 Kasım 2026 (5 gün), Proje Toroman, Faaliyet AY Kabul, Önerilen Personel Ahmet Sümbül, Proje sorumlusu Erdem Efe → modele eklendi: talep düzeyinde saat aralığı, önerilen personel (bağlayıcı değil), talep sahibi (Sorumlu; Yönetici vekâleten seçer). Alt Proje boşsa "Genel".

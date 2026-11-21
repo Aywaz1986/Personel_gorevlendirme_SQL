@@ -22,7 +22,7 @@ Ayrıntı: `docs/DILIMLER.md`.
 | 3 | Proje havuzu, akademik takvim | evet | [x] birleştirildi (PR #4) |
 | 3b | Eski veri: kuru çalıştırma raporu (aktarım rapordan sonra) | hayır | [x] birleştirildi (PR #5, #6) |
 | 4 | Talep (Proje Sorumlusu) | evet | [~] dal `dilim-4-talep` (kodlandı; CI/el sınaması bekliyor) |
-| 5 | Atama (Yönetici), çakışma kararı | evet | [ ] |
+| 5 | Atama (Yönetici), çakışma kararı | evet | [~] dal `dilim-5-atama` (kodlandı; CI/el sınaması bekliyor) |
 | 6 | Haftalık matris | evet | [ ] |
 | 7 | İzin ve rapor | evet | [ ] |
 | 8 | Revize, iptal, ikame, devir | evet | [ ] |

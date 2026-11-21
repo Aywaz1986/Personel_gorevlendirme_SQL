@@ -19,7 +19,7 @@ public static class TalepService
             id = r["id"], kod = r["kod"], durum = r["durum"], sorumluSicil = r["sorumlu_sicil_no"], sorumluAdi = r["sorumlu_adi"],
             ilkTarih = r["ilk_tarih"], sonTarih = r["son_tarih"], ana = r["ana"], alt = r["alt"], faaliyet = r["faaliyet"], konum = r["konum"],
             gorevMetni = r["gorev_metni"], nitelik = r["nitelik"], saatBaslangic = r["saat_baslangic"], saatBitis = r["saat_bitis"],
-            gunSayisi = r["gun_sayisi"], kisiGun = r["kisi_gun"], oneri = r["oneri"], guncelleme = r["guncelleme"],
+            gunSayisi = r["gun_sayisi"], kisiGun = r["kisi_gun"], oneri = r["oneri"], atanan = r["atanan"], istenen = r["istenen"], retNedeni = r["ret_nedeni"], guncelleme = r["guncelleme"],
         }).ToList();
 
     public static async Task<object> GetirAsync(SqlService sql, int id)
@@ -29,7 +29,7 @@ public static class TalepService
         {
             id = r["id"], kod = r["kod"], durum = r["durum"], sorumluSicil = r["sorumlu_sicil_no"], sorumluAdi = r["sorumlu_adi"],
             ana = r["ana"], alt = r["alt"], faaliyet = r["faaliyet"], konum = r["konum"],
-            gorevMetni = r["gorev_metni"], nitelik = r["nitelik"], saatBaslangic = r["saat_baslangic"], saatBitis = r["saat_bitis"],
+            gorevMetni = r["gorev_metni"], nitelik = r["nitelik"], saatBaslangic = r["saat_baslangic"], saatBitis = r["saat_bitis"], retNedeni = r["ret_nedeni"],
             gunler = JsonOku(r["gunler_json"] as string), oneri = JsonOku(r["oneri_json"] as string),
         };
     }

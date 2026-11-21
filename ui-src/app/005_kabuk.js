@@ -15,7 +15,6 @@ async function kabukCiz() {
   const icerik = h('div', { class: 'icerik' });
   const menu = h('nav', { class: 'menu', 'aria-label': 'Ana menü' });
   for (const [id, ad] of sayfalar) menu.append(h('button', { class: id === S.sayfa ? 'secili' : '', onclick: () => { S.sayfa = id; kabukCiz(); } }, ad));
-  if (S.gorunum === 'YONETICI') menu.append(h('button', { disabled: true }, 'Atama paneli (yakında)'));
   let acilir = null;
   const ust = h('div', { class: 'ust' }, h('div', { class: 'sol' }, h('strong', { style: 'font-size:17px' }, 'Personel Görevlendirme'),
     S.surum && S.surum.ortam ? rozet(S.surum.ortam, S.surum.ortam === 'CANLI' ? 'kotu' : 'iyi') : null),

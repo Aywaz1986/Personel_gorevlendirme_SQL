@@ -26,6 +26,15 @@ VERI = {
     {"id": 5, "ustId": 1, "seviye": 2, "ad": "Örnek Alt Proje 2", "aktif": True, "birlestirildiId": None},
     {"id": 6, "ustId": None, "seviye": 1, "ad": "Örnek Ana Proje B", "aktif": True, "birlestirildiId": None},
   ],
+  "atamaAdaylar": [
+    {"sicil": "1002", "ad": "Örnek Personel 2", "bolum": "Örnek Bölüm B", "onerildi": True, "gecmis": 6, "buTalepte": 0, "cakisanGun": 1},
+    {"sicil": "1004", "ad": "Örnek Personel 4", "bolum": "Örnek Bölüm B", "onerildi": False, "gecmis": 3, "buTalepte": 0, "cakisanGun": 0},
+    {"sicil": "1005", "ad": "Örnek Personel 5", "bolum": "Örnek Bölüm C", "onerildi": False, "gecmis": 0, "buTalepte": 0, "cakisanGun": 0},
+  ],
+  "talepGetir": {"id": 3, "kod": "TLP-0003", "durum": "ONAY_BEKLIYOR", "sorumluSicil": "1001", "sorumluAdi": "Örnek Personel 1", "ana": "Örnek Ana Proje A", "alt": "Genel", "faaliyet": "Örnek Faaliyet", "konum": "Örnek Yerleşke", "gorevMetni": "Örnek görev açıklaması.", "nitelik": None, "saatBaslangic": "07:30", "saatBitis": "16:35", "retNedeni": None,
+    "gunler": [{"tarih": "2026-11-23", "zaman": "TAM", "kisi": 2, "atananlar": [{"id": 1, "sicil": "1004", "ad": "Örnek Personel 4"}]}, {"tarih": "2026-11-24", "zaman": "TAM", "kisi": 2, "atananlar": []}, {"tarih": "2026-11-25", "zaman": "OO", "kisi": 1, "atananlar": []}],
+    "oneri": [{"sicil": "1002", "ad": "Örnek Personel 2"}]},
+  "bildirimListe": [],
   "personelAra": [{"sicil": "1002", "ad": "Örnek Personel 2", "bolum": "Örnek Bölüm B"}],
   "talepListe": [
     {"id": 3, "kod": "TLP-0003", "durum": "ONAY_BEKLIYOR", "sorumluSicil": "1001", "sorumluAdi": "Örnek Personel 1", "ilkTarih": "2026-11-23", "sonTarih": "2026-11-27", "ana": "Örnek Ana Proje A", "alt": "Genel", "faaliyet": "Örnek Faaliyet", "konum": "Örnek Yerleşke", "gorevMetni": "Örnek görev açıklaması.", "nitelik": None, "saatBaslangic": "07:30", "saatBitis": "16:35", "gunSayisi": 5, "kisiGun": 5.0, "oneri": "Örnek Personel 2", "guncelleme": "2026-11-20 10:00"},
@@ -88,12 +97,19 @@ with sync_playwright() as P:
     ps = ac(ben(True, False, True, False, ["SORUMLU"]))
     sh(ps, '08_talep_liste')
     ps.get_by_role('button', name='Yeni talep').click(); ps.wait_for_timeout(300)
-    ti = ps.locator('input.metin')
-    ti.nth(0).fill('Örnek Ana Proje A'); ti.nth(1).fill('Örnek Alt Proje 1'); ti.nth(2).fill('Örnek Faaliyet'); ti.nth(3).fill('Örnek Yerleşke')
-    ps.get_by_label('Başlangıç tarihi').fill('2026-11-23'); ps.get_by_label('Bitiş tarihi').fill('2026-11-27')
-    ps.get_by_role('button', name='Günleri oluştur').click(); ps.wait_for_timeout(300)
+    ps.get_by_label('Ana Proje', exact=True).select_option('Örnek Ana Proje A'); ps.wait_for_timeout(100)
+    ps.get_by_label('Alt Proje', exact=True).select_option('Örnek Alt Proje 1'); ps.wait_for_timeout(100)
+    ps.get_by_label('Faaliyet', exact=True).select_option('Örnek Faaliyet'); ps.wait_for_timeout(100)
+    ps.get_by_label('Konum', exact=True).select_option('Örnek Yerleşke')
+    ps.get_by_label('Başlangıç tarihi').press_sequentially('23112026'); ps.get_by_label('Bitiş tarihi').press_sequentially('27112026'); ps.wait_for_timeout(300)
     ps.locator('textarea').fill('Örnek görev açıklaması.')
-    ps.locator('select').nth(2).select_option('OO')
+    ps.get_by_role('button', name='Öğleden önce').nth(2).click()
     ps.locator('input[type=search]').fill('Örnek'); ps.wait_for_timeout(600); ps.get_by_role('button', name='Örnek Personel 2 (1002)').click(); ps.wait_for_timeout(200)
     ps.set_viewport_size({'width': 1200, 'height': 1500}); sh(ps, '09_talep_form')
+    py = ac(ben(True, False, False, False, ["YONETICI"]))
+    py.locator('nav.menu button', has_text='Talepler').first.click(); py.wait_for_timeout(200)
+    py.get_by_role('button', name='Ata', exact=True).first.click(); py.wait_for_timeout(400)
+    py.locator('input[type=checkbox]').nth(1).check(); py.locator('input[type=checkbox]').nth(2).check()
+    py.get_by_role('button', name='Seçili günlere ata').nth(1).click(); py.wait_for_timeout(200)
+    py.set_viewport_size({'width': 1200, 'height': 1250}); sh(py, '10_atama_paneli')
     b.close()

@@ -5,14 +5,14 @@
 | # | Kim | Yap | Beklenen |
 |---|---|---|---|
 | 1 | Sorumlu | Menü → **Görev Talep Arayüzü** | Boş liste "Henüz talep yok" ve **Yeni talep** düğmesi. Menüde yalnız bu sayfa vardır. |
-| 2 | Sorumlu | Yeni talep → Ana Proje: Toroman, Alt Proje boş, Faaliyet: AY Kabul, Konum: Ankara İvedik | Havuzda yoksa altta "Havuzda olmayan ad(lar) yazıldı…" uyarısı; havuzda varsa yazdıkça öneri listesi gelir. |
-| 3 | Sorumlu | Tarih 23.11.2026–27.11.2026, saat 07:30–16:35, günlük kişi 1 → **Günleri oluştur** | Pzt–Cum 5 satır (Tam gün, 1 kişi); hafta sonu satırı yok. Toplam "5 kişi-gün". |
+| 2 | Sorumlu | Yeni talep → 1. Talep sahibi kendi adınızla gelir. 2. Ana Proje listesinden bir proje seç; alttakiler daralır. Sonra **➕ Listede yok, yeni yaz…** ile Ana Proje: Toroman, Faaliyet: AY Kabul, Konum: Ankara İvedik yaz | Seçilen proje alt listeleri daraltır; elle yazılan adlar için "Listede olmayan ad(lar) yazıldı… otomatik olarak listeye eklenir" notu çıkar; **Listeden seç** geri döndürür. Gönderince yeni adlar havuz ekranında görünür. |
+| 3 | Sorumlu | Başlangıç kutusuna 23112026, bitişe 27112026 yaz (noktalar kendiliğinden gelir: 23.11.2026), saat 07:30–16:35 | Düğmeye gerek kalmadan Pzt–Cum 5 satır (Tam gün, 1 kişi) gelir; hafta sonu satırı yok. Tarih her yerde GG.AA.YYYY. Toplam "5 kişi-gün". |
 | 4 | Sorumlu | Bir günü **Öğleden önce** yap, kişi 2 yap; bir günü **Kaldır** | Toplam kişi-gün güncellenir (ÖÖ/ÖS = 0,5 × kişi). |
 | 5 | Sorumlu | Görev metni yaz; Önerilen personel kutusuna 2+ harf (ör. "Ahmet") yaz, çıkan kişiye bas | Kişi rozet olarak eklenir; × ile kaldırılır; kadroda olmayan/pasif kişi aramada çıkmaz. |
 | 5b | Sorumlu | Formu doldururken sağdaki **Özet** kartına bak | 📍 Konum, 🕣 Saat (07.30 - 16.35), 📅 Tarih (ör. 23-27 Kasım 2026 - 5 gün), 📑 Proje, 📡 Faaliyet, 🙋‍♀️ Önerilen Personel, 🧍‍♂️ Proje sorumlusu yazdıkça güncellenir; Gönder/Taslak düğmeleri bu kartta, altında Kurallar notu. |
 | 6 | Sorumlu | **Taslak olarak kaydet** | "TLP-NNNN taslak olarak kaydedildi"; listede **Taslak** rozeti. |
 | 7 | Sorumlu | Taslakta **Revize** → bir şey değiştir → **Talebi gönder** | Aynı kod korunur; rozet **Onay bekliyor**; günler/öneriler yeni halini gösterir. |
-| 8 | Sorumlu | Yeni talepte tarih aralığına bir tatil günü (Akademik takvimde TAM kayıtlı) dahil et | "Günleri oluştur" o günü atlar ve "Tatil nedeniyle atlanan: …" notu çıkar. **Tek gün ekle** ile elle eklenirse kayıtta uyarı döner (engellenmez). Cumartesi elle eklenince "hafta sonuna denk geliyor" uyarısı. |
+| 8 | Sorumlu | Yeni talepte tarih aralığına bir tatil günü (Akademik takvimde TAM kayıtlı) dahil et | Günler o günü atlar ve "Tatil nedeniyle atlanan: …" notu çıkar. **Tek gün ekle** ile elle eklenirse kayıtta uyarı döner (engellenmez). Cumartesi elle eklenince "hafta sonuna denk geliyor" uyarısı. |
 | 9 | Sorumlu | Bir talepte **Kopyala** | Aynı proje/saat/metin/öneriyle yeni form açılır, **günler boş**; kaydedince yeni kod alır. |
 | 10 | Sorumlu | **Geri çek** (onay sorusuna Evet) | Rozet **Geri çekildi**; Revize/Geri çek düğmeleri kaybolur, **Kopyala** kalır. |
 | 11 | Sorumlu | Yeni talepte Ana Proje boş / saat ters / günsüz gönder | Anlamlı hata mesajı (örn. "Ana Proje, Faaliyet ve Konum boş olamaz", "Saat aralığı geçersiz", "En az bir gün ekleyin"). |

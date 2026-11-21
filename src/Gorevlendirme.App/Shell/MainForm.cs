@@ -75,6 +75,7 @@ public class MainForm : Form
             HavuzTakvimCommands.Register(reg);
             EskiVeriCommands.Register(reg);
             TalepCommands.Register(reg);
+            AtamaCommands.Register(reg);
             var state = new AppState(loc);
             _bridge = new Bridge(core, state, reg);
             core.WebMessageReceived += async (_, e) =>

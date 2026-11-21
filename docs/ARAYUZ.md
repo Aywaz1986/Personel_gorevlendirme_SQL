@@ -44,9 +44,15 @@ Yeni hata eşlemesi: sunucu 50022/50023 → `yetki`; 50020/50021/50024/50025 →
 | `takvimUygula` | `satirlar[]` | `{eklenen, guncellenen, ayni}` | ✔ | ya hepsi ya hiçbiri; hatalı satır varsa `dogrulama` |
 | `personelAra` | `q` (≥2 harf) | `[{sicil, ad, bolum}]` (en çok 20, yalnız aktif) | ✔ | Sorumlu/Yönetici; Saha `yetki` |
 | `talepListe` | `durum?` | `[{id, kod, durum, sorumluSicil, sorumluAdi, ilkTarih, sonTarih, ana, alt, faaliyet, konum, gorevMetni, nitelik, saatBaslangic, saatBitis, gunSayisi, kisiGun, oneri, guncelleme}]` | ✔ | Yönetici hepsini, Sorumlu yalnız kendisininkini görür |
-| `talepGetir` | `id` | başlık alanları + `gunler[{tarih, zaman, kisi}]`, `oneri[{sicil, ad}]` | ✔ | form doldurma / kopyalama |
+| `talepGetir` | `id` | başlık alanları + `retNedeni`, `gunler[{tarih, zaman, kisi, atananlar[{id, sicil, ad}]}]`, `oneri[{sicil, ad}]` | ✔ | form doldurma / kopyalama |
 | `talepKaydet` | `id?, sorumluSicil?, ana, alt?, faaliyet, konum, saatBaslangic, saatBitis (ss:dd), gorevMetni, nitelik?, gunler[{tarih(yyyy-aa-gg), zaman(TAM/OO/OS), kisi}], oneri[sicil], gonder` | `{id, kod, durum, uyari}` | ✔ | yeni ya da (TASLAK/ONAY_BEKLIYOR iken) değiştir; `gonder` → ONAY_BEKLIYOR; havuzda olmayan ad `kaynak='TALEP'` ile eklenir; hafta sonu/tatil → `uyari` (engellemez); `sorumluSicil` yalnız Yönetici için |
 | `talepGeriCek` | `id` | `{tamam}` | ✔ | yalnız TASLAK/ONAY_BEKLIYOR; sahibi ya da Yönetici |
+| `atamaAdaylar` | `talepId, q?` | `[{sicil, ad, bolum, onerildi, gecmis, buTalepte, cakisanGun}]` (en çok 60; önerilen › proje geçmişi › az çakışma) | ✔ | yalnız Yönetici |
+| `atamaCakismaKontrol` | `talepId, atamalar[{sicil, tarih, zaman}]` | `[{sicil, ad, tarih, zaman, cakisanTalepId, cakisanKod, cakisanZaman, cakisanSorumlu}]` | ✔ | kaydetmez; karar kutusunu doldurur |
+| `atamaOnayla` | `talepId, atamalar[], karar` (`REDDET` varsayılan / `CIKAR`) | `{talepId, durum, atanan, cikarilan, uyari}` | ✔ | çakışmada `REDDET` → hata kodu `cakisma` (50030); `CIKAR` çakışan atamaları çıkarır, o talebin sorumlusuna bildirim yazar |
+| `talepReddet` | `id, neden` (zorunlu) | `{tamam}` | ✔ | yalnız ONAY_BEKLIYOR; sorumluya bildirim |
+| `bildirimListe` | `hepsi?` | `[{id, tur, mesaj, talepId, tarih, okundu}]` | ✔ | yalnız kendi bildirimleri (varsayılan okunmamışlar) |
+| `bildirimOkundu` | `id?` (boşsa hepsi) | `{tamam}` | ✔ | |
 | `eskiVeriDenetle` | `maskele?` (varsayılan true) | `{iptal:true}` ya da `{iptal:false, dosya, sayilar, metin}` | ✔ | Dilim 3b. Yalnız Merkez Yönetici (kadro listesi sunucuda reddeder). STA dosya seçim penceresi açar, `.db`yi SALT OKUNUR okur, hiçbir şey yazmaz. `metin` düz rapor, `sayilar` ekran özeti |
 
 Girdi sütunları (başlık yoksa sıra): Tarih; Ad; Zaman dilimi; Tür (son ikisi isteğe bağlı: Tüm gün, Resmi tatil). Başlık varsa sütunlar adından bulunur. Tarih biçimleri: gg.aa.yyyy, yyyy-aa-gg, gg/aa/yyyy.

@@ -26,6 +26,8 @@ Bitiş: yetkisiz kişi hiçbir veri görmez; yönetici kadroyu eşitler; güvenl
 ## Dilim 5 – Atama (Yönetici)
 `atamalar`, `sp_atama_onayla` (`SERIALIZABLE`+`UPDLOCK`); kısmi ve gün bazlı bölünmüş atama; çakışmada yönetici kararı (vazgeç / çakışandan çıkar ve ata); Ana Proje geçmişinden tavsiye listesi; ret nedeni zorunlu.
 
+Test listesi: `docs/test-dilim-5.md`. Uygulanan: `atamalar` (gün+dilim satırı, AKTIF/CIKARILDI), `bildirimler`, `sp_atama_adaylar`, `sp_atama_cakisma_kontrol`, `sp_atama_onayla`, `sp_talep_reddet`; hata kodu 50030 (çakışma).
+
 ## Dilim 6 – Haftalık matris
 7 günlük ortak tablo (ÖÖ/ÖS bölünmüş hücre), filtreler, hafta geçişi, 30 sn yenileme (`rowversion`), Excel çıktısı.
 

@@ -15,7 +15,7 @@ const tbl=(w,rows)=>new Table({width:{size:w.reduce((a,c)=>a+c,0),type:WidthType
 const C=[];
 C.push(new Paragraph({spacing:{before:2400,after:200},alignment:AlignmentType.CENTER,children:[new TextRun({text:"Personel Görevlendirme",bold:true,size:52,color:"1F3A5F"})]}));
 C.push(new Paragraph({alignment:AlignmentType.CENTER,spacing:{after:200},children:[new TextRun({text:"Resimli Kullanma Kılavuzu",size:34,color:"444444"})]}));
-C.push(new Paragraph({alignment:AlignmentType.CENTER,spacing:{after:1200},children:[new TextRun({text:"SQL Server sürümü (Windows, tek exe) – Dilim 4: kimlik, roller, kadro, havuz, takvim, talep",size:24,color:"666666"})]}));
+C.push(new Paragraph({alignment:AlignmentType.CENTER,spacing:{after:1200},children:[new TextRun({text:"SQL Server sürümü (Windows, tek exe) – Dilim 5: kimlik, roller, kadro, havuz, takvim, talep, atama",size:24,color:"666666"})]}));
 C.push(note("**Bu kılavuzdaki ekran görüntüleri** uydurma örnek verilerle alınmıştır; gerçek personel verisi içermez. Gördüğünüz menüler yetkinize göre değişir. Kılavuz her dilimde güncellenir; henüz gelmemiş ekranlar (atama paneli, talep, haftalık matris, izin/rapor) ilgili dilimlerde eklenecektir.","E8F0FA"));
 C.push(new Paragraph({children:[new PageBreak()]}));
 C.push(new Paragraph({heading:HeadingLevel.HEADING_1,children:[new TextRun("İçindekiler")]}));
@@ -82,14 +82,24 @@ C.push(p("Her talep bir kart olarak görünür: kod (TLP-NNNN), tarih aralığı
 C.push(tbl([2400,6960],[["Rozet","Anlamı"],["Taslak","Kaydedildi, henüz gönderilmedi; serbestçe değiştirilir."],["Onay bekliyor","Gönderildi; Yönetici henüz karar vermedi. Revize ve geri çekme serbesttir."],["Kısmen / Tamamen atandı","Atama başladı (Yönetici atama ekranı sonraki dilimde gelir)."],["Reddedildi, Geri çekildi, İptal","Kapalı talep; yalnızca **Kopyala** yapılabilir."]]));
 C.push(...img("08_talep_liste","Taleplerim: durum rozetleri, Kopyala / Revize / Geri çek.",560));
 C.push(h2("8.2 Yeni talep"));
-C.push(n("**Yeni talep**'e basın. **1. Proje:** Ana Proje, Alt Proje (boşsa “Genel”), Faaliyet ve Konum'u yazın; yazdıkça proje havuzundaki adlar önerilir. Havuzda olmayan ad yazarsanız ekranda uyarı çıkar ve talep kaydedilince ad havuza yeni kayıt olarak eklenir.","n8"));
-C.push(n("**2. Tarih, saat ve kişi sayısı:** başlangıç/bitiş tarihini, mesai saatini (varsayılan 07:30–16:35) ve günlük kişi sayısını girip **Günleri oluştur**'a basın. Hafta sonları ve akademik takvimdeki tam gün tatiller atlanır (ekranda not düşülür). Her günün zaman dilimini (Tüm gün / ÖÖ / ÖS) ve kişi sayısını değiştirebilir, günü kaldırabilir ya da **Tek gün ekle** ile ekleyebilirsiniz.","n8"));
-C.push(n("**3. Görev tanımı:** görev metni ve isteğe bağlı aranan nitelik.","n8"));
+C.push(n("**Yeni talep**'e basın. **1. Talep sahibi (Proje Sorumlusu):** Windows oturumunuzdan otomatik gelir. Yönetici başkası adına (vekâleten) açıyorsa kutuya adın ilk harflerini yazıp listeden talep sahibini seçer.","n8"));
+C.push(n("**2. Proje ve görev tanımı:** Ana Proje, Alt Proje, Faaliyet ve Konum açılır listelerden (ComboBox) seçilir; üstteki seçim alttakileri daraltır. Listede yoksa **➕ Listede yok, yeni yaz…** seçilip ad elle yazılır; talep gönderilince yeni ad otomatik olarak listeye eklenir (**Listeden seç** ile geri dönülür). Altında görev metni ve isteğe bağlı aranan nitelik yazılır.","n8"));
+C.push(n("**3. Gün ve zaman dilimi:** başlangıç ve bitiş tarihini **GG.AA.YYYY** biçiminde yazın (noktalar kendiliğinden gelir); mesai saati varsayılan 07:30–16:35'tir. Günler kendiliğinden listelenir; hafta sonları ve akademik takvimdeki tam gün tatiller atlanır (not düşülür). Her gün için **Tam gün / Öğleden önce / Öğleden sonra** düğmesine basın, kişi sayısını − / + ile ayarlayın; ✕ günü kaldırır, **Tek gün ekle** listede olmayan günü ekler. “Günlük kişi” kutusu tüm günlerin kişi sayısını birlikte değiştirir.","n8"));
 C.push(n("**4. Önerilen personel (isteğe bağlı):** adın ilk harflerini yazıp çıkan kişiye basın. Öneri bağlayıcı değildir; atamayı Merkez Yönetici yapar.","n8"));
-C.push(p("Sağdaki **Özet** kartı yazdıkça güncellenir: 📍 Konum, 🕣 Saat, 📅 Tarih (gün sayısıyla), 📑 Proje, 📡 Faaliyet, 🙋‍♀️ Önerilen Personel, 🧍‍♂️ Proje sorumlusu. Gönder ve Taslak düğmeleri de bu kartın içindedir; altında kısa **Kurallar** notu vardır."));
+C.push(p("Sağdaki (dar pencerede en alttaki) **Özet** kartı yazdıkça güncellenir; etiket ve değer yan yana görünür: 📍 Konum, 🕣 Saat, 📅 Tarih (gün sayısıyla), 📑 Proje, 📡 Faaliyet, 🙋‍♀️ Önerilen Personel, 🧍‍♂️ Proje sorumlusu. Gönder ve Taslak düğmeleri de bu kartın içindedir; altında kısa **Kurallar** notu vardır."));
 C.push(n("**Talebi gönder** (Onay bekliyor olur) ya da **Taslak olarak kaydet** deyin. Hafta sonu ya da tatile denk gelen gün varsa kayıt yine yapılır, ekranda uyarı görünür.","n8"));
 C.push(...img("09_talep_form","Yeni görev talebi formu.",1700));
-C.push(note("**Revize, Kopyala, Geri çek.** Taslak ve onay bekleyen talepte **Revize** formu mevcut bilgilerle açar. **Kopyala** aynı bilgilerle yeni bir form açar (günler boş gelir). **Geri çek** talebi kapatır. Onaylanmış talepte revize ve iptal sonraki dilimde gelir. Yönetici talep sahibini form başındaki aramadan seçerek başka bir Sorumlu adına talep açabilir."));
+C.push(note("**Revize, Kopyala, Geri çek.** Taslak ve onay bekleyen talepte **Revize** formu mevcut bilgilerle açar. **Kopyala** aynı bilgilerle yeni bir form açar (günler boş gelir). **Geri çek** talebi kapatır. Onaylanmış talepte revize ve iptal sonraki dilimde gelir. Yönetici talep sahibini formun başındaki listeden seçerek başka bir Sorumlu adına talep açabilir."));
+
+C.push(h2("8.3 Atama paneli (Yönetici)"));
+C.push(p("Onay bekleyen ya da kısmen atanmış talebin kartındaki **Ata** düğmesi atama panelini açar. Solda her gün/dilim için **atanan / istenen** görülür, altta adaylar, sağda talep özeti ve **Karar** kartı bulunur."));
+C.push(n("Soldaki tabloda atama yapmak istediğiniz satırları işaretleyin (dolu satırlar seçilemez).","n8"));
+C.push(n("Adaylar listesinde **Önerilen** kişi ve o Ana Projede daha önce çalışanlar üsttedir; çakışması olana “Çakışma: N gün”, olmayana “Müsait” yazar. Adın yanındaki **Seçili günlere ata** düğmesi kişiyi işaretli satırlara bekleme listesine ekler (Karar kartında görünür, × ile çıkarılır).","n8"));
+C.push(n("**Atamayı onayla**'ya basın. Kısmi atama serbesttir: talep **Kısmen atandı** olur; istenen sayıya ulaşılınca **Tamamen atandı**.","n8"));
+C.push(...img("10_atama_paneli","Atama paneli: gün/dilim tablosu, adaylar, talep özeti ve karar kartı.",1250));
+C.push(note("**Çakışma kararı.** Seçilen kişi aynı gün (tam gün ya da örtüşen dilim) başka bir görevdeyse sistem kendi başına karar vermez; çakışan görev ve sorumlusu gösterilir. **Vazgeç** hiçbir şey yazmaz. **Çakışan görevden çıkar ve bu göreve ata** çakışan atamayı çıkarır, o talebin sorumlusuna bildirim gider ve işlem denetim kaydına yazılır. Öğleden önce ile öğleden sonra birbirini çakıştırmaz. İzin ve rapor çakışmasında çıkarma seçeneği olmayacaktır (atama reddedilir; sonraki dilim)."));
+C.push(note("**Reddetme.** Onay bekleyen talepte **Reddet…** ile ret nedeni (zorunlu) yazılır; Sorumlu kartında nedeni ve bir bildirim görür. Atama başlamış talep reddedilemez."));
+C.push(note("**Sorumlu tarafı.** Taleplerim sayfasının üstünde yeni bildirimler görünür (atandı, reddedildi, görevden çıkarıldı); **Tümünü okundu say** ile kapanır. Atama yapılmış talepte **Atananlar** düğmesi gün gün kimin atandığını gösterir."));
 
 C.push(h1("9. Yetkisiz erişim"));
 C.push(p("Hesabınız kadroda yoksa, pasifse ya da hiçbir rolü çözülmediyse bu sayfa açılır. **Hesap adını kopyala** ile adınızı merkez yöneticisine iletin."));

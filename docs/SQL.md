@@ -77,6 +77,10 @@ Anahtarlar: her tabloda `INT/BIGINT IDENTITY id`, iş anahtarı ayrı `UNIQUE`, 
 - Geçici tablo sütunları `COLLATE DATABASE_DEFAULT`; Türkçe harmanlamada i/I eşit değildir, kod karşılaştırmalarında `COLLATE Latin1_General_CI_AS` kullanılır (`RESMI`, `OO` …).
 - Takvim kodları ASCII: TAM/OO/OS; arayüz ÖÖ/ÖS gösterir.
 
+## Dilim 5 notları
+- `007_atama.sql`: atama yazan tek yer `sp_atama_onayla`. Hata kodu 50030 = atama çakışması (arayüzde `cakisma`). `ATAMA_CIKAR` ve `TALEP_ATAMA`, `TALEP_RED` log kayıtları. Reddedilen/çıkarılan bilgi `bildirimler` tablosuna yazılır; yalnız sahibi okur.
+- Atama sırasında tatil/hafta sonu engellenmez, `uyari` döner (Dilim 3 kararı).
+
 ## Dilim 4 notları
 - `006_talep.sql`: talep yazan tek yer `sp_talep_kaydet` (+ `sp_talep_geri_cek`). Havuzda olmayan ad `proje_havuzu`'na `kaynak='TALEP'` ile eklenir (Yönetici havuz ekranından birleştirir/pasife alır). Alt Proje boşsa "Genel".
 - Hafta sonu ve tatil günü engellenmez; yordam `uyari` metni döner (Dilim 3 kararıyla uyumlu).
