@@ -18,7 +18,7 @@ CREATE OR ALTER PROCEDURE gorev.sp_talep_kaydet
     @saat_baslangic VARCHAR(5),
     @saat_bitis     VARCHAR(5),
     @gorev_metni    NVARCHAR(1000),
-    @nitelik        NVARCHAR(1000) = NULL,
+    @nitelik        NVARCHAR(MAX) = NULL,
     @gunler_json    NVARCHAR(MAX),
     @oneri_json     NVARCHAR(MAX) = NULL,
     @gonder         BIT = 0
@@ -191,7 +191,7 @@ GO
 CREATE OR ALTER PROCEDURE gorev.sp_revize_iste
     @talep_id       INT,
     @gorev_metni    NVARCHAR(1000) = NULL,
-    @nitelik        NVARCHAR(1000) = NULL,
+    @nitelik        NVARCHAR(MAX) = NULL,
     @saat_baslangic VARCHAR(5) = NULL,
     @saat_bitis     VARCHAR(5) = NULL,
     @gunler_json    NVARCHAR(MAX) = NULL,
@@ -205,6 +205,7 @@ BEGIN
     IF @yon = 0 AND gorev.fn_sorumlu_mu() = 0 THROW 50023, N'Bu işlem için yetkiniz yok.', 1;
     SET @gorev_metni = NULLIF(LTRIM(RTRIM(ISNULL(@gorev_metni, N''))), N'');
     SET @nitelik = NULLIF(LTRIM(RTRIM(ISNULL(@nitelik, N''))), N'');
+    IF LEN(ISNULL(@nitelik, N'')) > 1000 THROW 50024, N'Saha / Operasyon Notu 1000 karakteri geçemez.', 1;
     SET @saat_baslangic = NULLIF(LTRIM(RTRIM(ISNULL(@saat_baslangic, ''))), '');
     SET @saat_bitis = NULLIF(LTRIM(RTRIM(ISNULL(@saat_bitis, ''))), '');
     SET @gunler_json = NULLIF(LTRIM(RTRIM(ISNULL(@gunler_json, N''))), N'');
