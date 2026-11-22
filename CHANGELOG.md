@@ -10,7 +10,7 @@ Her değişiklik önce **Yayınlanmamış** bölümüne yazılır; sürüm yüks
 - [x] 2. C#: SenaryoService/Commands (3 komut), aday/analiz/matris/evrak alanları, testler
 - [x] 3. Arayüz: saha notu, iletişim, ikame kutusu, rozetler, yenileme, yerleşke süzgeci, analiz sütunları
 - [x] 4. Belgeler, test-dilim-11.md, kılavuz
-- [ ] 5. Push, CI, PR (taban dilim-10-canli-gecis); Murat'ın el sınaması (`docs/test-dilim-11.md`)
+- [x] 5. Push, CI yeşil (4/4), PR açıldı (taban dilim-10-canli-gecis); Murat'ın el sınaması (`docs/test-dilim-11.md`)
 
 ### Dilim 10 – Canlıya geçiş (2026-11) — DEVAM EDİYOR (dal `dilim-10-canli-gecis`, Dilim 9 dalından; PR sırası #12 → #13 → #14 → bu; Murat testleri Pazartesi 23.11.2026 toplu yapacak)
 **Oturum devir notu (her adımda güncelle; yeni oturum önce buradan devam eder):**
