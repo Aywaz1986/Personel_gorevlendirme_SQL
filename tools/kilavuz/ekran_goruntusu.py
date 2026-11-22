@@ -40,6 +40,12 @@ VERI = {
   ],
   "revizeListe": [{"id": 1, "kod": "REV-0001", "talepId": 3, "talepKod": "TLP-0003", "durum": "BEKLIYOR", "isteyen": "Örnek Personel 1", "neden": "Ek personel gerekti", "gorevMetni": None, "nitelik": None, "saatBaslangic": None, "saatBitis": None, "gunler": [{"tarih": "2026-11-23", "zaman": "TAM", "kisi": 3}], "tarih": "2026-11-21T10:00:00", "retNedeni": None}],
   "sorumluDevirListe": [],
+  "analizAnaProjeler": ["Örnek Ana Proje A", "Örnek Ana Proje B"],
+  "analizProje": [
+    {"ana": "Örnek Ana Proje A", "alt": "Örnek Alt Proje 1", "faaliyet": "Örnek Faaliyet", "adamGun": 7.5, "kisi": 3, "gun": 5, "talep": 2, "ilk": "2026-11-02", "son": "2026-11-13"},
+    {"ana": "Örnek Ana Proje A", "alt": "Genel", "faaliyet": "Örnek Faaliyet 2", "adamGun": 2.0, "kisi": 1, "gun": 2, "talep": 1, "ilk": "2026-11-16", "son": "2026-11-17"},
+    {"ana": "Örnek Ana Proje B", "alt": "Genel", "faaliyet": "Örnek Faaliyet", "adamGun": 5.0, "kisi": 2, "gun": 5, "talep": 1, "ilk": "2026-11-09", "son": "2026-11-13"},
+  ],
   "matrisSurum": {"surum": "1-7"},
   "matrisBolumler": ["Örnek Bölüm A", "Örnek Bölüm B", "Örnek Bölüm C"],
   "atamaAdaylar": [
@@ -142,4 +148,7 @@ with sync_playwright() as P:
     py2.get_by_role('button', name='Yönet…').first.click(); py2.wait_for_timeout(500)
     py2.get_by_role('button', name='Erken bitir…').click(); py2.wait_for_timeout(200)
     py2.set_viewport_size({'width': 1200, 'height': 1250}); sh(py2, '13_yonet')
+    pa = ac(ben(True, False, False, False, ["YONETICI"]))
+    pa.locator('nav.menu button', has_text='Analiz').first.click(); pa.wait_for_timeout(500)
+    pa.set_viewport_size({'width': 1200, 'height': 700}); sh(pa, '14_analiz')
     b.close()

@@ -3,6 +3,16 @@
 Her değişiklik önce **Yayınlanmamış** bölümüne yazılır; sürüm yükselince bölüm sürüm başlığına dönüştürülür.
 
 ## Yayınlanmamış
+### Dilim 9 – Analiz ve arşiv (2026-11) — DEVAM EDİYOR (dal `dilim-9-analiz`, Dilim 8 dalından; PR #12 → #13 → bu sırayla birleşecek; Murat testleri Pazartesi 23.11.2026 toplu yapacak)
+**Oturum devir notu (her adımda güncelle; yeni oturum önce buradan devam eder):**
+- Varsayılanlar (Murat'a sorulmadı; Pazartesi teyit): yalnız AKTIF atamalar; Yönetici tümü / Sorumlu kendi talepleri / Saha yok; izin-rapor sütunları yalnız Yönetici; rapor günü = takvim günü; arşiv = tarihsiz eski görevler + tarih aralığı sorgusu.
+- [x] 1. `011_analiz.sql` (5 salt okuma yordamı) — sunucuda sınanmadı
+- [x] 2. C#: AnalizService (+ Excel tabloları), AnalizCommands (6 komut), MatrisExcel.Xlsx sayısal hücre/dondurma, BridgeTests
+- [x] 3. Testler: AnalizTests (2 SQL), AnalizTabloTests (3 birim)
+- [x] 4. Arayüz `004_analiz.js` (Analiz sayfası, menü Yönetici+Sorumlu); ekran görüntüsü 14
+- [x] 5. Belgeler, test-dilim-9.md, kılavuz 8.7
+- [ ] 6. Push, CI, PR (taban dilim-8-revize-ikame), Murat'ın el sınaması (`docs/test-dilim-9.md`)
+
 ### Dilim 8 – Revize, iptal, ikame, devir (2026-11) — DEVAM EDİYOR (dal `dilim-8-revize-ikame`; Dilim 7 PR #12 CI yeşil, birleştirme Murat'ta; Murat testleri Pazartesi 23.11.2026 toplu yapacak)
 **Oturum devir notu (her adımda güncelle; yeni oturum önce buradan devam eder):**
 - Kararlar (Murat'a sorulmadı, varsayılan; Pazartesi teyit): iptal yalnız hiç günü geçmemiş atanmış talepte, başlamışsa erken bitiş; ikame çakışmada Dilim 5/7 karar kutusu; revize Sorumlu ister / Yönetici onaylar (Yönetici doğrudan uygular); atanmış kişiden az kişi sayısı onaylanamaz.

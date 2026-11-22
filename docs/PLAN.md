@@ -26,5 +26,5 @@ Ayrıntı: `docs/DILIMLER.md`.
 | 6 | Haftalık matris | evet | [~] dal `dilim-6-matris` (kodlandı; CI/el sınaması bekliyor) |
 | 7 | İzin ve rapor | evet | `[~]` kodlandı, CI/el sınaması bekliyor |
 | 8 | Revize, iptal, ikame, devir | evet | [~] kodlandı, CI/el sınaması bekliyor |
-| 9 | Analiz ve arşiv | evet | [ ] |
+| 9 | Analiz ve arşiv | evet | [~] kodlandı, CI/el sınaması bekliyor |
 | 10 | Canlıya geçiş | evet | [ ] |

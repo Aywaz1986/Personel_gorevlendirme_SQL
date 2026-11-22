@@ -126,6 +126,13 @@ C.push(n("**Revize…:** görev metni, nitelik, saat ve gün başına kişi say�
 C.push(n("**Sorumlu devret…** (Yönetici): talebin Proje Sorumlusu başka kişiye geçer; eski ve yeni sorumluya bildirim gider, geçmiş sayfanın altında görünür.","n8"));
 C.push(...img("13_yonet","Yönet sayfası: atananlar, ikame/çıkarma, erken bitiş formu ve revizeler.",1500));
 
+C.push(h2("8.7 Analiz ve arşiv"));
+C.push(p("Menüdeki **Analiz** sayfası Yönetici ve Proje Sorumlusu içindir (Sorumlu yalnız kendi taleplerini görür). Üç sekmesi vardır; her sekmede **Excel'e aktar** düğmesi bulunur."));
+C.push(n("**Proje adam-gün:** başlangıç ve bitiş tarihini GG.AA.YYYY yazıp **Uygula** deyin (ya da Bu ay / Son 3 ay / Bu yıl / Geçen yıl düğmeleri). Ana proje, alt proje ve faaliyet bazında adam-gün görünür; tam gün 1,0, öğleden önce/sonra 0,5 sayılır. Ana proje listesinden süzebilirsiniz.","n8"));
+C.push(n("**Personel:** kişi başına adam-gün, görev günü, proje sayısı ve (Yönetici için) izin ile rapor günleri; hangi ana projede kaç adam-gün çalıştığı yanında yazar. Bir satıra tıklayınca o kişinin gün gün görev, izin ve rapor dökümü açılır. Ad/sicil ve bölüm süzgeci vardır.","n8"));
+C.push(n("**Arşiv (geçmiş görevler):** eski araçtan aktarılan, tarihi bilinmeyen \"kim hangi projeye gitti\" kayıtları; kişi, proje ya da görev metniyle aranır. Geçmiş dönemler için Proje ve Personel sekmelerinde tarih aralığını geriye alın.","n8"));
+C.push(...img("14_analiz","Analiz: ana proje bazlı adam-gün.",1500));
+
 C.push(h1("9. Yetkisiz erişim"));
 C.push(p("Hesabınız kadroda yoksa, pasifse ya da hiçbir rolü çözülmediyse bu sayfa açılır. **Hesap adını kopyala** ile adınızı merkez yöneticisine iletin."));
 C.push(...img("05_yetkisiz","Yetkisiz erişim sayfası."));

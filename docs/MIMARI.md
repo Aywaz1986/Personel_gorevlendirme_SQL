@@ -95,3 +95,7 @@ Onay/atama yordamları `SERIALIZABLE` + `UPDLOCK`: aynı personel, aynı gün ve
 - `revize_talepleri` (tek bekleyen revize/talep), `sorumlu_devir` (geçmiş). Yazma `EXECUTE AS OWNER` yordamlarla; `sp_revize_uygula` içsel ortak uygulama mantığıdır.
 - İkame, eski kişinin atamalarını kapatıp `sp_atama_onayla`yı çağırır; kapasite, çakışma kararı ve izin/rapor tetikleyicisi tek yerde kalır. `REDDET` çakışması iç yordam çağrılmadan önce 50030 ile denetlenir.
 - İptal yalnız hiç günü geçmemiş talepte; başlamış görev "erken bitiş" ile kısaltılır. Atamalar silinmez, `CIKARILDI` olur (neden ve çıkaran kaydıyla).
+
+## Analiz ve arşiv (Dilim 9)
+- `011_analiz.sql` yalnız okuma yordamlarıdır (tablo eklemez). Kapsam sunucuda uygulanır: Yönetici tümü, Sorumlu `talepler.sorumlu_sicil_no = ben`, Saha 50023.
+- Adam-gün hesabı SQL'dedir (`TAM → 1,0`, diğer `0,5`); arayüz yalnız gruplar ve toplar. Excel tabloları `AnalizService.*Tablo` ile (saf, birim testli); `MatrisExcel.Xlsx` sayısal hücre ve sütun dondurma parametresi aldı.

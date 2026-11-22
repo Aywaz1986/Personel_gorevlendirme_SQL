@@ -100,3 +100,8 @@ Anahtarlar: her tabloda `INT/BIGINT IDENTITY id`, iş anahtarı ayrı `UNIQUE`, 
 - `010_revize_ikame.sql` sınanmadı (sunucu yok); CI SQL testleri (`RevizeTests`) doğrular.
 - `sp_atama_ikame`, `sp_atama_onayla` sonucunu `INSERT #r EXEC` ile yakalar (iç yordam INSERT EXEC kullanmaz).
 - Yeni bildirim türleri: GOREV_IPTAL, TALEP_IPTAL, ERKEN_BITIS, GOREV_CIKARILDI, IKAME_CIKTI, IKAME_ATANDI, IKAME, SORUMLU_DEVIR, REVIZE_TALEP, REVIZE_ONAY, REVIZE_RET.
+
+## Dilim 9 notları
+- `011_analiz.sql` sınanmadı (sunucu yok); CI SQL testleri (`AnalizTests`) doğrular.
+- Rapor günü = dönemle kesişen takvim günü sayısı (hafta sonu dahil); izin günü = onaylı izin gün/dilim ağırlığı.
+- Kişi detayında rapor günleri `sys.all_objects` üzerinden sayı üretilerek açılır (en çok 366 gün).

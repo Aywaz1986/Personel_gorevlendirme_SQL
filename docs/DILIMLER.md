@@ -46,5 +46,7 @@ Test listesi: `docs/test-dilim-8.md`. Uygulanan: `010_revize_ikame.sql`, 11 komu
 ## Dilim 9 – Analiz ve arşiv
 Ana Proje bazlı adam-gün (TAM=1,0, ÖÖ/ÖS=0,5), personel detay analizi, arşiv, Excel.
 
+Test listesi: `docs/test-dilim-9.md`. Uygulanan: `011_analiz.sql` (salt okuma yordamları), 6 komut (`analizProje` … `analizExcel`), `004_analiz.js` (menüde **Analiz**: Proje adam-gün / Personel / Arşiv sekmeleri). Varsayılanlar (Pazartesi sınamasında teyit): yalnız AKTIF atamalar sayılır; Yönetici tümünü, Sorumlu yalnız kendi taleplerini görür, Saha göremez; izin/rapor sütunları yalnız Yönetici'de; rapor günü takvim günü olarak sayılır; "arşiv" = tarihsiz eski görevler + geçmiş dönemleri tarih aralığıyla sorgulama.
+
 ## Dilim 10 – Canlıya geçiş
 Son aktarım, `sp_ortam_canli`, Özlük ile birlikte yayın, geri dönüş planı, tam fonksiyon testi.
