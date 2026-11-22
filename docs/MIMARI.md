@@ -99,3 +99,9 @@ Onay/atama yordamları `SERIALIZABLE` + `UPDLOCK`: aynı personel, aynı gün ve
 ## Analiz ve arşiv (Dilim 9)
 - `011_analiz.sql` yalnız okuma yordamlarıdır (tablo eklemez). Kapsam sunucuda uygulanır: Yönetici tümü, Sorumlu `talepler.sorumlu_sicil_no = ben`, Saha 50023.
 - Adam-gün hesabı SQL'dedir (`TAM → 1,0`, diğer `0,5`); arayüz yalnız gruplar ve toplar. Excel tabloları `AnalizService.*Tablo` ile (saf, birim testli); `MatrisExcel.Xlsx` sayısal hücre ve sütun dondurma parametresi aldı.
+
+## Canlıya geçiş ve aktarım (Dilim 10)
+- `012_canli_aktarim.sql`: `fn_canli_kontrol` (8 madde; 1–4 zorunlu: ortam TEST, yönetici var, kadro dolu, havuzda konum var), `sp_ortam_canli` (onay `CANLI`, kontrol eksikse 50024, ORTAM=CANLI + isteğe bağlı asgari sürüm, log), `sp_eski_aktar` / `sp_eski_aktar_durum` / `sp_eski_aktar_geri_al`. Hepsi `EXECUTE AS OWNER`, yetki `fn_yonetici_mi()`.
+- Aktarım planı C#'ta (`EskiAktarim.Planla`, saf mantık, birim testli) JSON üretir; SQL tek işlemde doğrular ve yazar. Her kayıt `kaynak='ESKI_ARAC'` (tarihsiz geçmiş `ESKI_ARAC_TARIHSIZ`). Geri alma yalnız bunları ve kullanılmayan aktarım havuz satırlarını siler (alt seviyeden üste).
+- Aktarım ve geri alma yalnız `ORTAM='TEST'`; canlıda reddedilir. Canlıdan TEST'e dönüş uygulamada yoktur: `tools/sql/gorev_geri_donus.sql` (db_owner, elle).
+

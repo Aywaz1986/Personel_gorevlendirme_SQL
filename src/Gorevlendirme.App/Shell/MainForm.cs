@@ -80,6 +80,7 @@ public class MainForm : Form
             IzinRaporCommands.Register(reg);
             RevizeCommands.Register(reg);
             AnalizCommands.Register(reg);
+            CanliCommands.Register(reg);
             var state = new AppState(loc);
             _bridge = new Bridge(core, state, reg);
             core.WebMessageReceived += async (_, e) =>

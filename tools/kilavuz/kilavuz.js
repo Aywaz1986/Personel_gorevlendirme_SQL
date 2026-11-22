@@ -133,6 +133,13 @@ C.push(n("**Personel:** kişi başına adam-gün, görev günü, proje sayısı 
 C.push(n("**Arşiv (geçmiş görevler):** eski araçtan aktarılan, tarihi bilinmeyen \"kim hangi projeye gitti\" kayıtları; kişi, proje ya da görev metniyle aranır. Geçmiş dönemler için Proje ve Personel sekmelerinde tarih aralığını geriye alın.","n8"));
 C.push(...img("14_analiz","Analiz: ana proje bazlı adam-gün.",1500));
 
+C.push(h2("8.8 Eski veri aktarımı ve canlıya geçiş"));
+C.push(p("Bu bölüm yalnız Merkez Yönetici içindir. Canlıya geçmeden önce veritabanının tam yedeği alınmış olmalıdır."));
+C.push(n("**Eski veri aktarımı:** Eski veri sayfasında önce **Dosya seç ve denetle** ile kuru çalıştırma raporunu okuyun. Sonra Aktarım kartında kutuya `AKTAR` yazıp **Dosya seç ve aktar** deyin. Görevliler talep ve atama, izinliler onaylı izin, raporlular evraksız rapor olur; haftası bilinmeyen ya da kadroda eşleşmeyen kişilerin görevleri tarihsiz geçmişe (Arşiv) yazılır. Özet satırındaki sayıları rapordakilerle karşılaştırın.","n9"));
+C.push(n("**Aktarımı geri al:** yanlış aktarıldıysa kutuya `GERIAL` yazıp **Aktarımı geri al** deyin; yalnız eski araçtan gelen kayıtlar silinir, elle girdikleriniz kalır. Sonra düzeltip yeniden aktarabilirsiniz. Canlıya geçildikten sonra aktarım ve geri alma kapanır.","n9"));
+C.push(n("**Canlıya geçiş:** Sistem sayfasındaki Canlıya geçiş kartı 8 maddelik kontrol listesi gösterir. İlk dört madde zorunludur (ortam TEST, yönetici var, kadro dolu, havuzda konum var); eksikse düğme pasif kalır. Asgari sürüm kutusuna dağıttığınız sürümü yazın (eski exe bağlanamasın), `CANLI` yazıp **Canlıya geç** deyin. Geçiş tek yönlüdür; acil geri dönüş yalnız veritabanı yöneticisinin `gorev_geri_donus.sql` betiğiyle yapılır (`docs/CANLIYA-GECIS.md`).","n9"));
+C.push(...img("15_canli","Sistem sayfası: canlıya geçiş kontrol listesi.",1500));
+
 C.push(h1("9. Yetkisiz erişim"));
 C.push(p("Hesabınız kadroda yoksa, pasifse ya da hiçbir rolü çözülmediyse bu sayfa açılır. **Hesap adını kopyala** ile adınızı merkez yöneticisine iletin."));
 C.push(...img("05_yetkisiz","Yetkisiz erişim sayfası."));
@@ -152,7 +159,7 @@ const doc=new Document({
   {id:"Heading1",name:"Heading 1",basedOn:"Normal",next:"Normal",quickFormat:true,run:{font:FONT,size:34,bold:true,color:"1F3A5F"},paragraph:{spacing:{before:360,after:160},keepNext:true,outlineLevel:0}},
   {id:"Heading2",name:"Heading 2",basedOn:"Normal",next:"Normal",quickFormat:true,run:{font:FONT,size:26,bold:true,color:"2D5B8C"},paragraph:{spacing:{before:240,after:100},keepNext:true,outlineLevel:1}}]},
  numbering:{config:[{reference:"bul",levels:[{level:0,format:LevelFormat.BULLET,text:"•",alignment:AlignmentType.LEFT,style:{paragraph:{indent:{left:720,hanging:360}}}}]},
-  ...["num1","n2","n3","n4","n5","n7","n8"].map(r=>({reference:r,levels:[{level:0,format:LevelFormat.DECIMAL,text:"%1.",alignment:AlignmentType.LEFT,style:{paragraph:{indent:{left:720,hanging:360}}}}]}))]},
+  ...["num1","n2","n3","n4","n5","n7","n8","n9"].map(r=>({reference:r,levels:[{level:0,format:LevelFormat.DECIMAL,text:"%1.",alignment:AlignmentType.LEFT,style:{paragraph:{indent:{left:720,hanging:360}}}}]}))]},
  sections:[{properties:{page:{size:{width:11906,height:16838},margin:{top:1300,right:1273,bottom:1300,left:1273}}},
   footers:{default:new Footer({children:[new Paragraph({alignment:AlignmentType.CENTER,children:[new TextRun({text:"Personel Görevlendirme – Kullanma Kılavuzu   |   Sayfa ",size:18,color:"777777"}),new TextRun({children:[PageNumber.CURRENT],size:18,color:"777777"})]})]})},
   children:C}]});

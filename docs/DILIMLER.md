@@ -50,3 +50,5 @@ Test listesi: `docs/test-dilim-9.md`. Uygulanan: `011_analiz.sql` (salt okuma yo
 
 ## Dilim 10 – Canlıya geçiş
 Son aktarım, `sp_ortam_canli`, Özlük ile birlikte yayın, geri dönüş planı, tam fonksiyon testi.
+
+Test listesi: `docs/test-dilim-10.md`; geçiş adımları: `docs/CANLIYA-GECIS.md`. Uygulanan: `012_canli_aktarim.sql` (`fn_canli_kontrol`, `sp_canli_kontrol`, `sp_ortam_canli`, `sp_eski_aktar`, `sp_eski_aktar_durum`, `sp_eski_aktar_geri_al`), 5 komut (`canliKontrol`, `canliyaGec`, `eskiAktarDurum`, `eskiAktar`, `eskiAktarGeriAl`), Sistem sayfasında **Canlıya geçiş** kartı, Eski veri sayfasında **Aktarım** kartı, `tools/sql/gorev_geri_donus.sql`. Varsayılanlar (Pazartesi sınamasında teyit): eşleşmeyen sorumlu → aktarımı yapan Yönetici sorumlu olur (eski ad talep metnine eklenir); kadroda eşleşmeyen kişinin görevleri tarihsiz geçmişe adıyla gider; eski görevlere varsayılan saat 07:30–16:35; aynı kişi+gün çakışmasında öncelik rapor > görev > izin; canlıya geçişten sonra uygulama içinden geri dönüş yok.

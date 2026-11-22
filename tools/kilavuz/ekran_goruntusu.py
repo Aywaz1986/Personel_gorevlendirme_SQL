@@ -83,6 +83,17 @@ VERI = {
     {"sira": 7, "baslangic": "2024-04-10", "bitis": "2024-04-12", "zaman": "TAM", "tur": "RESMI", "ad": "Ramazan Bayramı", "yillik": False, "gun": 3, "durum": "GUNCELLE", "hata": None},
     {"sira": 8, "baslangic": "2024-02-30", "bitis": "", "zaman": "TAM", "tur": "RESMI", "ad": "Bozuk tarihli satır", "yillik": False, "gun": None, "durum": "HATA", "hata": "Tarih okunamadı."},
   ],
+  "canliKontrol": [
+    {"sira": 1, "kontrol": "Ortam şu an TEST", "zorunlu": True, "tamam": True, "ayrinti": "ORTAM = TEST"},
+    {"sira": 2, "kontrol": "En az bir aktif Merkez Yönetici", "zorunlu": True, "tamam": True, "ayrinti": "Yönetici sayısı: 1"},
+    {"sira": 3, "kontrol": "Kadro dolu (aktif personel)", "zorunlu": True, "tamam": True, "ayrinti": "Aktif personel: 120"},
+    {"sira": 4, "kontrol": "Proje havuzu dolu (en az bir konum)", "zorunlu": True, "tamam": True, "ayrinti": "Aktif konum: 12"},
+    {"sira": 5, "kontrol": "Akademik takvim girilmiş", "zorunlu": False, "tamam": True, "ayrinti": "Takvim kaydı: 30"},
+    {"sira": 6, "kontrol": "Asgari uygulama sürümü ayarlı (eski exe bağlanamasın)", "zorunlu": False, "tamam": False, "ayrinti": "MIN_UYGULAMA_SURUMU = 0.0.0"},
+    {"sira": 7, "kontrol": "Eski araç verisi aktarılmış", "zorunlu": False, "tamam": True, "ayrinti": "Eski talep: 180, tarihsiz geçmiş: 179"},
+    {"sira": 8, "kontrol": "Pilotta girilmiş deneme talebi yok", "zorunlu": False, "tamam": True, "ayrinti": "Eski aktarım dışı talep: 0"},
+  ],
+  "eskiAktarDurum": {"talep": 180, "atama": 640, "izin": 25, "rapor": 6, "gecmis": 179, "havuz": 31, "ortam": "TEST"},
   "istisnaListe": [{"hesap": "ALAN\\ornek.yonetici", "adiSoyadi": "Örnek Yönetici", "yonetici": True, "sorumlu": True, "saha": False, "aktif": True, "aciklama": "", "sicilNo": "1000"}],
 }
 def ben(kayitli, y, s, sa, g):
@@ -151,4 +162,7 @@ with sync_playwright() as P:
     pa = ac(ben(True, False, False, False, ["YONETICI"]))
     pa.locator('nav.menu button', has_text='Analiz').first.click(); pa.wait_for_timeout(500)
     pa.set_viewport_size({'width': 1200, 'height': 700}); sh(pa, '14_analiz')
+    pc = ac(ben(True, False, False, False, ["YONETICI"]))
+    pc.locator('nav.menu button', has_text='Sistem').first.click(); pc.wait_for_timeout(500)
+    pc.set_viewport_size({'width': 1200, 'height': 1100}); sh(pc, '15_canli')
     b.close()

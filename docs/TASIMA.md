@@ -34,3 +34,7 @@ Kapsam dışı: fazla mesai, yıllık izin tabloları (`fazla_mesai`, `izin_fm_h
 ## Açık noktalar
 - Eski projelerde "Faaliyet" karşılığı yok (varsayılan metin).
 - Eşleşmeyen personelin geçmişi (ayrılmış kişiler): `gorev.personel`'e "pasif, Özlük'te yok" kaydı mı açılsın? Rapordan sonra karar.
+
+## Gerçek aktarım (Dilim 10)
+Eski veri sayfasında **Aktarım** kartı: dosya seçilir, `EskiAktarim.Planla` kadroyla eşleştirip JSON üretir, `sp_eski_aktar` tek işlemde yazar (yalnız TEST). Eşleme: görevli+haftalı+kadroda eşleşen kişi → talep (TAMAMEN_ATANDI, 07:30–16:35) + atama; görevli haftasız ya da kişi eşleşmeyen → `gecmis_gorev` (tarihsiz); izinli → onaylı izin; raporlu → evraksız rapor; müsait aktarılmaz. Sorumlu kadroda adla eşleşmezse aktarımı yapan Yönetici sorumlu olur, eski ad talep metnine eklenir. Aynı kişi+gün çakışmasında rapor > görev > izin. "Aktarımı geri al" yalnız `kaynak='ESKI_ARAC'` kayıtlarını siler. Hafta tarihi çıkarımı (2b) yapılmaz.
+

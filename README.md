@@ -29,7 +29,7 @@ Ayrıntı: [`docs/PLAN.md`](docs/PLAN.md), dilim içerikleri: [`docs/DILIMLER.md
 | 7 | **İzin ve rapor**: izin talebi/onay/ret/kısaltma, vekaleten giriş, rapor evrakı (veritabanında), rapor kazanır, matriste izin/rapor hücreleri, Saha "Görevlerim" | dal `dilim-7-izin-rapor` (kodlandı; CI, el sınaması bekliyor) |
 | 8 | **Revize, iptal, ikame, devir**: görev iptali, erken bitiş, atamadan çıkarma, ikame (personel değiştirme), revize isteği/onayı (metin, saat, kişi sayısı), sorumlu devri | dal `dilim-8-revize-ikame` (kodlandı; CI, el sınaması bekliyor) |
 | 9 | **Analiz ve arşiv**: ana proje bazlı adam-gün, personel analizi (izin/rapor dahil), kişi detayı, tarihsiz geçmiş görevler arşivi, Excel'e aktarma | dal `dilim-9-analiz` (kodlandı; CI, el sınaması bekliyor) |
-| 10 | canlıya geçiş | bekliyor |
+| 10 | **Canlıya geçiş**: canlı kontrol listesi + tek yönlü `sp_ortam_canli`, eski veri gerçek aktarımı (geri alınabilir), geri dönüş betiği, tam fonksiyon testi | dal `dilim-10-canli-gecis` (kodlandı; CI, el sınaması bekliyor) |
 
 ## Belgeler
 | Dosya | İçerik |
@@ -49,7 +49,7 @@ Ayrıntı: [`docs/PLAN.md`](docs/PLAN.md), dilim içerikleri: [`docs/DILIMLER.md
 src/Gorevlendirme.App/   Bridge, Data (Migrator), Security (Surum), Services, Shell, Sql (gömülü betikler), Ui (üretilir)
 tests/                   Gorevlendirme.Tests (SQL'siz), Gorevlendirme.SqlTests (CI'da SQL Server)
 ui-src/                  arayüz kaynağı; `python build.py ../src/Gorevlendirme.App/Ui/index.html` ile birleşir (index.html depoda yok)
-tools/                   dbo_koruma.py (+ test), sql/ (gorev_kaldir, gorev_sifirla, dbo_iz), kilavuz/ (Dilim 2)
+tools/                   dbo_koruma.py (+ test), sql/ (gorev_kaldir, gorev_sifirla, gorev_geri_donus, dbo_iz), kilavuz/ (Dilim 2)
 docs/                    belgeler
 .github/workflows/       guvenlik (gitleaks), dbo-koruma, build (derle + test + exe), sql-test (SQL Server konteyneri)
 ```
