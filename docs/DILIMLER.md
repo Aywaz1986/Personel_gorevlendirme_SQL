@@ -41,6 +41,8 @@ Test listesi: `docs/test-dilim-7.md`. Uygulanan: `009_izin_rapor.sql`, 12 komut 
 ## Dilim 8 – Revize, iptal, ikame
 `revize_talepleri`, `sorumlu_devir`; erken bitiş, görev iptali, personel değiştirme, kişi sayısı değişimi.
 
+Test listesi: `docs/test-dilim-8.md`. Uygulanan: `010_revize_ikame.sql`, 11 komut (`talepIptal` … `revizeListe`), `004_revize.js` (talep listesinde atanmış taleplerde **Yönet…**). Kararlar (Murat'a sorulmadan varsayılan; Pazartesi sınamasında teyit): iptal yalnız atama başlamış ve **hiçbir günü geçmemiş** talepte; başlamışsa erken bitiş. İkame çakışmada Dilim 5/7'deki karar kutusunu kullanır (izin/rapor her zaman red). Revize: Sorumlu ister, Yönetici onaylar (Yönetici doğrudan uygular); atanmış kişiden az kişi sayısı ya da atanmış günün kaldırılması onaylanamaz (önce çıkarılır).
+
 ## Dilim 9 – Analiz ve arşiv
 Ana Proje bazlı adam-gün (TAM=1,0, ÖÖ/ÖS=0,5), personel detay analizi, arşiv, Excel.
 

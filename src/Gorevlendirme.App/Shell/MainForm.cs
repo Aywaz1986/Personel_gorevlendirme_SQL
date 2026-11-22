@@ -78,6 +78,7 @@ public class MainForm : Form
             AtamaCommands.Register(reg);
             MatrisCommands.Register(reg);
             IzinRaporCommands.Register(reg);
+            RevizeCommands.Register(reg);
             var state = new AppState(loc);
             _bridge = new Bridge(core, state, reg);
             core.WebMessageReceived += async (_, e) =>

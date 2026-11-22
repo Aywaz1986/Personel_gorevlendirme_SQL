@@ -38,6 +38,8 @@ VERI = {
     {"tarih": "2026-11-24", "zaman": "TAM", "talepId": 1, "kod": "TLP-0001", "ana": "Örnek Ana Proje A", "alt": "Örnek Alt Proje 1", "faaliyet": "Örnek Faaliyet", "konum": "Örnek Yerleşke", "saat": "07:30 - 16:35", "sorumlu": "Örnek Personel 2", "gorevMetni": "Örnek"},
     {"tarih": "2026-11-25", "zaman": "OO", "talepId": 1, "kod": "TLP-0001", "ana": "Örnek Ana Proje A", "alt": "Örnek Alt Proje 1", "faaliyet": "Örnek Faaliyet", "konum": "Örnek Yerleşke", "saat": "07:30 - 12:30", "sorumlu": "Örnek Personel 2", "gorevMetni": "Örnek"},
   ],
+  "revizeListe": [{"id": 1, "kod": "REV-0001", "talepId": 3, "talepKod": "TLP-0003", "durum": "BEKLIYOR", "isteyen": "Örnek Personel 1", "neden": "Ek personel gerekti", "gorevMetni": None, "nitelik": None, "saatBaslangic": None, "saatBitis": None, "gunler": [{"tarih": "2026-11-23", "zaman": "TAM", "kisi": 3}], "tarih": "2026-11-21T10:00:00", "retNedeni": None}],
+  "sorumluDevirListe": [],
   "matrisSurum": {"surum": "1-7"},
   "matrisBolumler": ["Örnek Bölüm A", "Örnek Bölüm B", "Örnek Bölüm C"],
   "atamaAdaylar": [
@@ -134,4 +136,10 @@ with sync_playwright() as P:
     pi.locator('nav.menu button', has_text='Görevlerim').first.click(); pi.wait_for_timeout(400)
     pi.get_by_label('İzin başlangıç').fill('07.12.2026'); pi.get_by_label('İzin bitiş').fill('11.12.2026')
     pi.set_viewport_size({'width': 1200, 'height': 1300}); sh(pi, '12_izin_rapor')
+    py2 = ac(ben(True, False, False, False, ["YONETICI"]))
+    py2.evaluate("window.__V.talepGetir.durum='KISMEN_ATANDI'")
+    py2.locator('nav.menu button', has_text='Talepler').first.click(); py2.wait_for_timeout(300)
+    py2.get_by_role('button', name='Yönet…').first.click(); py2.wait_for_timeout(500)
+    py2.get_by_role('button', name='Erken bitir…').click(); py2.wait_for_timeout(200)
+    py2.set_viewport_size({'width': 1200, 'height': 1250}); sh(py2, '13_yonet')
     b.close()

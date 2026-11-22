@@ -94,6 +94,9 @@ async function talepSayfa() {
   async function atamaAc(id) {
     try { durum.atama = await atamaPaneli(id, async (yenile) => { durum.atama = null; durum.gorunum = 'liste'; if (yenile) await yukle(); else ciz(); }); durum.gorunum = 'atama'; ciz(); } catch (e) { hata(e); }
   }
+  async function yonetAc(id) {
+    try { durum.atama = await talepYonetPaneli(id, async (yenile) => { durum.atama = null; durum.gorunum = 'liste'; if (yenile) await yukle(); else ciz(); }); durum.gorunum = 'atama'; ciz(); } catch (e) { hata(e); }
+  }
   function atananBlok(t) {
     const satirlar = t.gunler.filter((g) => g.atananlar && g.atananlar.length).map((g) => h('div', { class: 'alt' }, takvimTarihYaz(g.tarih) + ' ' + takvimGun(g.tarih) + ' · ' + atamaTamAd(g.zaman) + ': ' + g.atananlar.map((a) => a.ad).join(', ')));
     return h('div', { style: 'margin-top:6px;padding:8px 10px;background:var(--vurgu-bg);border-radius:8px' }, h('b', { style: 'font-size:13px' }, 'Atananlar'), satirlar);
@@ -123,6 +126,7 @@ async function talepSayfa() {
         h('span', { style: 'flex:1' }),
         yonetici && ['ONAY_BEKLIYOR', 'KISMEN_ATANDI'].includes(x.durum) ? h('button', { class: 'ana', onclick: () => atamaAc(x.id) }, 'Ata') : null,
         x.atanan > 0 ? h('button', { onclick: async () => { try { if (durum.atananAcik[x.id]) delete durum.atananAcik[x.id]; else durum.atananAcik[x.id] = await Kopru.cagir('talepGetir', { id: x.id }); ciz(); } catch (e) { hata(e); } } }, 'Atananlar') : null,
+        ['KISMEN_ATANDI', 'TAMAMEN_ATANDI'].includes(x.durum) ? h('button', { onclick: () => yonetAc(x.id) }, 'Yönet…') : null,
         h('button', { onclick: async () => { try { await formAc(await Kopru.cagir('talepGetir', { id: x.id }), true); } catch (e) { hata(e); } } }, 'Kopyala'),
         talepDegistirilebilir(x.durum) ? h('button', { onclick: async () => { try { await formAc(await Kopru.cagir('talepGetir', { id: x.id }), false); } catch (e) { hata(e); } } }, 'Revize') : null,
         talepDegistirilebilir(x.durum) ? h('button', { onclick: async () => {

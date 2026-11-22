@@ -118,6 +118,14 @@ C.push(n("**Yönetici:** bekleyen izinleri **Onayla** ya da nedenle **Reddet…*
 C.push(...img("12_izin_rapor","Görevlerim: kişisel görevler, izin talebi ve rapor beyanı.",1500));
 C.push(note("**Matriste görünüm.** Haftalık matriste izin gri blok (kesikli çerçeve: onay bekliyor), rapor kırmızı blok olarak görünür; yarım gün izin yalnız ilgili yarıyı kaplar."));
 
+C.push(h2("8.6 Atanmış talepte iptal, erken bitiş, ikame, revize ve devir"));
+C.push(p("Talep listesinde **Kısmen/Tamamen atandı** durumundaki taleplerde **Yönet…** düğmesi çıkar. Açılan sayfada talebin günleri ve atananlar listelenir."));
+C.push(n("**Yönetici:** atanan kişinin yanındaki **Çıkar** o günkü atamayı kaldırır (neden zorunlu); **İkame…** kişinin yerine başkasını atar (yeni kişi seçilir, isterseniz başlangıç tarihi yazılır; boşsa bugünden itibaren). Yeni kişi başka görevdeyse **Çakışma kararı** kutusu çıkar; izin ya da raporluysa işlem reddedilir.","n8"));
+C.push(n("**Erken bitir…:** yeni son günü yazın; sonraki günler ve atamalar kalkar. **Görevi iptal et…:** tüm atamalar kalkar, talep İptal olur (görev başlamışsa iptal yerine erken bitiş kullanılır). Her ikisinde de etkilenen kişilere bildirim gider.","n8"));
+C.push(n("**Revize…:** görev metni, nitelik, saat ve gün başına kişi sayısı değiştirilir. Proje Sorumlusu **Revize iste** der, Yönetici **Onayla** ya da nedenle **Reddet…** der; Yönetici revizeyi doğrudan uygulayabilir. Atanmış kişiden az kişi sayısı yazılamaz; önce kişi çıkarılır.","n8"));
+C.push(n("**Sorumlu devret…** (Yönetici): talebin Proje Sorumlusu başka kişiye geçer; eski ve yeni sorumluya bildirim gider, geçmiş sayfanın altında görünür.","n8"));
+C.push(...img("13_yonet","Yönet sayfası: atananlar, ikame/çıkarma, erken bitiş formu ve revizeler.",1500));
+
 C.push(h1("9. Yetkisiz erişim"));
 C.push(p("Hesabınız kadroda yoksa, pasifse ya da hiçbir rolü çözülmediyse bu sayfa açılır. **Hesap adını kopyala** ile adınızı merkez yöneticisine iletin."));
 C.push(...img("05_yetkisiz","Yetkisiz erişim sayfası."));

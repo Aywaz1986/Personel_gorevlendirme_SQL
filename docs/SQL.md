@@ -95,3 +95,8 @@ Anahtarlar: her tabloda `INT/BIGINT IDENTITY id`, iş anahtarı ayrı `UNIQUE`, 
 - İç içe yordamda ROLLBACK yazılmaz; THROW + `XACT_ABORT ON` işlemi geri alır (`sp_izin_isle` 50030).
 - `sp_matris_hafta` / `sp_matris_surum` 009'da `ALTER` edildi (izin/rapor eklendi).
 - Hata kodu 50031 → `GorevException("izin_rapor")`.
+
+## Dilim 8 notları
+- `010_revize_ikame.sql` sınanmadı (sunucu yok); CI SQL testleri (`RevizeTests`) doğrular.
+- `sp_atama_ikame`, `sp_atama_onayla` sonucunu `INSERT #r EXEC` ile yakalar (iç yordam INSERT EXEC kullanmaz).
+- Yeni bildirim türleri: GOREV_IPTAL, TALEP_IPTAL, ERKEN_BITIS, GOREV_CIKARILDI, IKAME_CIKTI, IKAME_ATANDI, IKAME, SORUMLU_DEVIR, REVIZE_TALEP, REVIZE_ONAY, REVIZE_RET.
