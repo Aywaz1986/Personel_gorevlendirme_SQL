@@ -60,7 +60,7 @@ public static class MatrisExcel
     private static string S(JsonElement e, string ad) => e.TryGetProperty(ad, out var v) && v.ValueKind == JsonValueKind.String ? v.GetString() ?? "" : "";
 
     /// <summary>Tabloyu tek sayfalık .xlsx baytlarına çevirir (ilk satır kalın, hücrelerde satır sarma).</summary>
-    public static byte[] Xlsx(List<List<string>> tablo, string sayfaAdi = "Haftalık matris")
+    public static byte[] Xlsx(List<List<string>> tablo, string sayfaAdi = "Haftalık matris", int dondur = 3, ISet<int>? sayiSutunlari = null)
     {
         using var ms = new MemoryStream();
         using (var z = new ZipArchive(ms, ZipArchiveMode.Create, true))
@@ -70,12 +70,17 @@ public static class MatrisExcel
             Yaz(z, "xl/workbook.xml", "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><workbook xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><sheets><sheet name=\"" + Kac(sayfaAdi) + "\" sheetId=\"1\" r:id=\"rId1\"/></sheets></workbook>");
             Yaz(z, "xl/_rels/workbook.xml.rels", "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\"><Relationship Id=\"rId1\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet\" Target=\"worksheets/sheet1.xml\"/><Relationship Id=\"rId2\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles\" Target=\"styles.xml\"/></Relationships>");
             Yaz(z, "xl/styles.xml", "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><styleSheet xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><fonts count=\"2\"><font><sz val=\"11\"/><name val=\"Calibri\"/></font><font><b/><sz val=\"11\"/><name val=\"Calibri\"/></font></fonts><fills count=\"2\"><fill><patternFill patternType=\"none\"/></fill><fill><patternFill patternType=\"gray125\"/></fill></fills><borders count=\"1\"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count=\"1\"><xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\"/></cellStyleXfs><cellXfs count=\"3\"><xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" xfId=\"0\"/><xf numFmtId=\"0\" fontId=\"1\" fillId=\"0\" borderId=\"0\" xfId=\"0\" applyFont=\"1\"><alignment vertical=\"top\" wrapText=\"1\"/></xf><xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" xfId=\"0\" applyAlignment=\"1\"><alignment vertical=\"top\" wrapText=\"1\"/></xf></cellXfs></styleSheet>");
-            var sb = new StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><worksheet xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><sheetViews><sheetView workbookViewId=\"0\"><pane xSplit=\"3\" ySplit=\"1\" topLeftCell=\"D2\" activePane=\"bottomRight\" state=\"frozen\"/></sheetView></sheetViews><cols><col min=\"1\" max=\"1\" width=\"10\" customWidth=\"1\"/><col min=\"2\" max=\"2\" width=\"28\" customWidth=\"1\"/><col min=\"3\" max=\"3\" width=\"24\" customWidth=\"1\"/><col min=\"4\" max=\"10\" width=\"34\" customWidth=\"1\"/></cols><sheetData>");
+            var sb = new StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><worksheet xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><sheetViews><sheetView workbookViewId=\"0\"><pane " + (dondur > 0 ? "xSplit=\"" + dondur + "\" " : "") + "ySplit=\"1\" topLeftCell=\"" + Sutun(dondur) + "2\" activePane=\"" + (dondur > 0 ? "bottomRight" : "bottomLeft") + "\" state=\"frozen\"/></sheetView></sheetViews><cols><col min=\"1\" max=\"1\" width=\"10\" customWidth=\"1\"/><col min=\"2\" max=\"2\" width=\"28\" customWidth=\"1\"/><col min=\"3\" max=\"3\" width=\"24\" customWidth=\"1\"/><col min=\"4\" max=\"10\" width=\"34\" customWidth=\"1\"/></cols><sheetData>");
             for (var r = 0; r < tablo.Count; r++)
             {
                 sb.Append("<row r=\"").Append(r + 1).Append("\">");
                 for (var c = 0; c < tablo[r].Count; c++)
-                    sb.Append("<c r=\"").Append(Sutun(c)).Append(r + 1).Append("\" t=\"inlineStr\" s=\"").Append(r == 0 ? 1 : 2).Append("\"><is><t xml:space=\"preserve\">").Append(Kac(tablo[r][c])).Append("</t></is></c>");
+                    {
+                    if (r > 0 && sayiSutunlari != null && sayiSutunlari.Contains(c) && decimal.TryParse(tablo[r][c], System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture, out var sayi))
+                        sb.Append("<c r=\"").Append(Sutun(c)).Append(r + 1).Append("\" s=\"2\"><v>").Append(sayi.ToString(System.Globalization.CultureInfo.InvariantCulture)).Append("</v></c>");
+                    else
+                        sb.Append("<c r=\"").Append(Sutun(c)).Append(r + 1).Append("\" t=\"inlineStr\" s=\"").Append(r == 0 ? 1 : 2).Append("\"><is><t xml:space=\"preserve\">").Append(Kac(tablo[r][c])).Append("</t></is></c>");
+                }
                 sb.Append("</row>");
             }
             sb.Append("</sheetData></worksheet>");

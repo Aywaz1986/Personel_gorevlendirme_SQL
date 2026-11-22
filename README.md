@@ -28,7 +28,8 @@ Ayrıntı: [`docs/PLAN.md`](docs/PLAN.md), dilim içerikleri: [`docs/DILIMLER.md
 | 6 | **Haftalık matris**: 7 günlük ortak tablo (ÖÖ/ÖS bölünmüş hücre), filtreler, hafta geçişi, 30 sn yenileme, Excel çıktısı | dal `dilim-6-matris` (kodlandı; CI, el sınaması bekliyor) |
 | 7 | **İzin ve rapor**: izin talebi/onay/ret/kısaltma, vekaleten giriş, rapor evrakı (veritabanında), rapor kazanır, matriste izin/rapor hücreleri, Saha "Görevlerim" | dal `dilim-7-izin-rapor` (kodlandı; CI, el sınaması bekliyor) |
 | 8 | **Revize, iptal, ikame, devir**: görev iptali, erken bitiş, atamadan çıkarma, ikame (personel değiştirme), revize isteği/onayı (metin, saat, kişi sayısı), sorumlu devri | dal `dilim-8-revize-ikame` (kodlandı; CI, el sınaması bekliyor) |
-| 9–10 | analiz, canlıya geçiş | bekliyor |
+| 9 | **Analiz ve arşiv**: ana proje bazlı adam-gün, personel analizi (izin/rapor dahil), kişi detayı, tarihsiz geçmiş görevler arşivi, Excel'e aktarma | dal `dilim-9-analiz` (kodlandı; CI, el sınaması bekliyor) |
+| 10 | canlıya geçiş | bekliyor |
 
 ## Belgeler
 | Dosya | İçerik |

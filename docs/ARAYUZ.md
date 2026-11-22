@@ -93,3 +93,13 @@ Girdi sütunları (başlık yoksa sıra): Tarih; Ad; Zaman dilimi; Tür (son iki
 | `revizeReddet` | `id, neden` (≥3) | `{tamam}` | Yönetici | |
 | `revizeGeriCek` | `id` | `{tamam}` | isteyen Sorumlu / Yönetici | |
 | `revizeListe` | `talepId?, durum?` | `[{id, kod, talepId, talepKod, durum, isteyen, neden, gorevMetni, nitelik, saatBaslangic, saatBitis, gunler[], tarih, retNedeni}]` | Yönetici hepsi; Sorumlu kendi talepleri | |
+
+## Dilim 9 komutları (analiz ve arşiv)
+| Komut | Girdi | Çıktı | Yetki | Not |
+|---|---|---|---|---|
+| `analizAnaProjeler` | – | `[ad]` | Yönetici, Sorumlu | filtre listesi |
+| `analizProje` | `bas, bit, ana?` | `[{ana, alt, faaliyet, adamGun, kisi, gun, talep, ilk, son}]` | Yönetici (tümü), Sorumlu (kendi talepleri) | en çok 3 yıl; TAM=1,0 ÖÖ/ÖS=0,5 |
+| `analizPersonel` | `bas, bit, bolum?, q?` | `[{sicil, ad, bolum, adamGun, gun, proje, izinGun?, raporGun?, projeler[{ana, adam_gun}]}]` | aynı | `izinGun/raporGun` yalnız Yönetici (Sorumlu'da null); görevi ya da izni/raporu olanlar |
+| `analizPersonelDetay` | `sicil, bas, bit` | `[{tarih, zaman, tur (GOREV/IZIN/RAPOR), ana, alt, faaliyet, konum, kod, sorumlu}]` | aynı | izin türü `faaliyet` alanında gelir; izin/rapor satırları yalnız Yönetici |
+| `arsivGecmis` | `q?, ana?` | `[{id, personel, bolum, proje, gorevMetni, sorumlu, kaynak, aktarim}]` | Yönetici, Sorumlu | tarihsiz eski görevler, en çok 2000 satır |
+| `analizExcel` | `tur` (`proje`/`personel`/`detay`/`arsiv`), `bas, bit`, filtreler, `sicil` (detay) | `{iptal, yol?, satir?}` | aynı | kayıt penceresi; sayı sütunları sayısal hücre |

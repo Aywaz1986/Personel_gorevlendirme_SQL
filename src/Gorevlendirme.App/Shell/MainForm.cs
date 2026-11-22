@@ -79,6 +79,7 @@ public class MainForm : Form
             MatrisCommands.Register(reg);
             IzinRaporCommands.Register(reg);
             RevizeCommands.Register(reg);
+            AnalizCommands.Register(reg);
             var state = new AppState(loc);
             _bridge = new Bridge(core, state, reg);
             core.WebMessageReceived += async (_, e) =>

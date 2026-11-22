@@ -33,6 +33,7 @@
     <Compile Include="..\..\src\Gorevlendirme.App\Services\MatrisService.cs" />
     <Compile Include="..\..\src\Gorevlendirme.App\Services\IzinRaporService.cs" />
     <Compile Include="..\..\src\Gorevlendirme.App\Services\RevizeService.cs" />
+    <Compile Include="..\..\src\Gorevlendirme.App\Services\AnalizService.cs" />
     <Compile Include="..\..\src\Gorevlendirme.App\Bridge\GorevException.cs" />
     <Compile Include="..\..\src\Gorevlendirme.App\Shell\AppInfo.cs" />
     <Compile Include="..\..\src\Gorevlendirme.App\Services\SurumBilgisi.cs" />
