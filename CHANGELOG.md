@@ -11,7 +11,7 @@ Her değişiklik önce **Yayınlanmamış** bölümüne yazılır; sürüm yüks
 - [x] 3. Testler: IzinRaporTests (4 SQL), EvrakTests, MatrisExcelIzinTests, BridgeTests
 - [x] 4. Arayüz `004_izin_rapor.js`, matris izin/rapor hücreleri, menü; ekran görüntüsü 12
 - [x] 5. Belgeler, test-dilim-7.md, kılavuz 8.5
-- [ ] 6. Push, CI, PR, Murat'ın el sınaması (`docs/test-dilim-7.md`)
+- [x] 6. Push, CI yeşil (4/4), PR açıldı. Murat el sınaması (`docs/test-dilim-7.md`) Pazartesi 23.11.2026
 
 ### Dilim 6 – Haftalık matris (2026-11) — DEVAM EDİYOR (dal `dilim-6-matris`; Dilim 5 PR #9 CI yeşil, birleştirme Murat'ta)
 **Oturum devir notu (her adımda güncelle; yeni oturum önce buradan devam eder):**
