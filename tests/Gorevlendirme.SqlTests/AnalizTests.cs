@@ -50,7 +50,7 @@ public class AnalizTests
         await Ata(o, t1, "1002", D(40), "TAM"); await Ata(o, t1, "1002", D(41), "OO"); await Ata(o, t1, "1006", D(41), "OS");
         var t2 = await TalepAsync(o, "Başka Proje", (D(42), "TAM"));
         await Ata(o, t2, "1006", D(42), "TAM");
-        await IzinRaporService.IzinKaydetAsync(o.Yonetici, "1002", "Mazeret", null, new[] { new IzinRaporService.GunGirdisi(D(43)) }, "REDDET");
+        await IzinRaporService.IzinKaydetAsync(o.Yonetici, "1002", "Mazeret", null, new[] { new IzinRaporService.GunGirdisi(D(43), "TAM") }, "REDDET");
 
         var proje = Liste(await AnalizService.ProjeAsync(o.Yonetici, D(40), D(45), null));
         Assert.Equal(2, proje.Count);
