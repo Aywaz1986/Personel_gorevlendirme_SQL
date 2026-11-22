@@ -83,3 +83,10 @@ Onay/atama yordamları `SERIALIZABLE` + `UPDLOCK`: aynı personel, aynı gün ve
 
 ## Eski veri denetimi (Dilim 3b)
 `EskiVeriOkuyucu` (Microsoft.Data.Sqlite, `Mode=ReadOnly`, eksik tablo/sütuna dayanıklı) → `EskiVeri` bellek modeli → `EskiVeriDenetimi.Raporla` (saf mantık: personel eşleşmesi sicil→ad, atama çözümleme, kişi+gün çakışması, sorumlu eşleşmesi, proje ağacı derinlik/yetim/döngü/kardeş tekrarı) → `EskiVeriRaporu` (sayılar + düz metin). Komut `eskiVeriDenetle` dosyayı STA iş parçacığında seçtirir; kadro ve havuz bilgisi `sp_kadro_listele` / `sp_havuz_listele` ile okunur (SQL'e yazılmaz).
+
+## İzin ve rapor (Dilim 7)
+- Tablolar `izin_talepleri`, `izin_gunleri` (gün/dilim bazlı), `raporlar` (evrak `varbinary(max)`). Yazma `EXECUTE AS OWNER` yordamlarla; `sp_izin_isle` içsel ortak onay mantığıdır.
+- `tr_atamalar_izin_rapor`: onaylı izinli ya da raporlu güne atama eklenirse 50031 (`izin_rapor`) ile reddedilir; sunucu son savunmadır.
+- Rapor kazanır: kayıt anında aralıktaki izin günleri IPTAL olur. Çakışan atamalar otomatik silinmez; Yöneticiye "ikame gerekli" bildirimi gider.
+- Evrak yolu: arayüz dosya yolunu (`raporEvrakSec`) taşır, baytları C# okur (`IzinRaporService.EvrakTuru`: uzantı + dosya imzası + boyut).
+- `matrisSurum` izin/rapor değişimini de içerir; matris izinleri gri, raporu kırmızı blok gösterir.

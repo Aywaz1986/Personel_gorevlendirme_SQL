@@ -24,7 +24,7 @@ Ayrıntı: `docs/DILIMLER.md`.
 | 4 | Talep (Proje Sorumlusu) | evet | [~] dal `dilim-4-talep` (kodlandı; CI/el sınaması bekliyor) |
 | 5 | Atama (Yönetici), çakışma kararı | evet | [~] dal `dilim-5-atama` (kodlandı; CI/el sınaması bekliyor) |
 | 6 | Haftalık matris | evet | [~] dal `dilim-6-matris` (kodlandı; CI/el sınaması bekliyor) |
-| 7 | İzin ve rapor | evet | [ ] |
+| 7 | İzin ve rapor | evet | `[~]` kodlandı, CI/el sınaması bekliyor |
 | 8 | Revize, iptal, ikame, devir | evet | [ ] |
 | 9 | Analiz ve arşiv | evet | [ ] |
 | 10 | Canlıya geçiş | evet | [ ] |

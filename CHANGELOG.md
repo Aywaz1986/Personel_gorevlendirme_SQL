@@ -3,6 +3,16 @@
 Her değişiklik önce **Yayınlanmamış** bölümüne yazılır; sürüm yükselince bölüm sürüm başlığına dönüştürülür.
 
 ## Yayınlanmamış
+### Dilim 7 – İzin ve rapor (2026-11) — DEVAM EDİYOR (dal `dilim-7-izin-rapor`; Dilim 6 PR #11 birleştirme Murat'ta)
+**Oturum devir notu (her adımda güncelle; yeni oturum önce buradan devam eder):**
+- Kararlar (Murat, 21.11.2026): rapor kaydedilir, çakışan atama durur + Yönetici uyarılır; izin onayında çakışmayı Yönetici seçer (vazgeç / çakışandan çıkar). Rapor izinden önceliklidir. Murat testleri Pazartesi (23.11.2026) toplu yapacak.
+- [x] 1. `009_izin_rapor.sql` (tablolar, tetikleyici 50031, 12 yordam, matris ALTER) — sunucuda sınanmadı
+- [x] 2. C#: IzinRaporService, IzinRaporCommands (12 komut), SqlHata 50031, MatrisService/Excel izin eklemesi
+- [x] 3. Testler: IzinRaporTests (4 SQL), EvrakTests, MatrisExcelIzinTests, BridgeTests
+- [x] 4. Arayüz `004_izin_rapor.js`, matris izin/rapor hücreleri, menü; ekran görüntüsü 12
+- [x] 5. Belgeler, test-dilim-7.md, kılavuz 8.5
+- [x] 6. Push, CI yeşil (4/4), PR açıldı. Murat el sınaması (`docs/test-dilim-7.md`) Pazartesi 23.11.2026
+
 ### Dilim 6 – Haftalık matris (2026-11) — DEVAM EDİYOR (dal `dilim-6-matris`; Dilim 5 PR #9 CI yeşil, birleştirme Murat'ta)
 **Oturum devir notu (her adımda güncelle; yeni oturum önce buradan devam eder):**
 - Tasarım önizlemesi Murat'a gönderildi (21.11.2026, matris_onizleme.png); itiraz gelmedi. Kararlar: tüm roller görür (YETKI matrisi), yalnız okuma; hücre ÖÖ üst / ÖS alt / TAM tek blok; renk Ana Proje; 30 sn'de yalnız sürüm sorgusu; Excel sunucu tarafında paketsiz xlsx; izin/rapor Dilim 7'de.

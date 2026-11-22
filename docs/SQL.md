@@ -89,3 +89,9 @@ Anahtarlar: her tabloda `INT/BIGINT IDENTITY id`, iş anahtarı ayrı `UNIQUE`, 
 - Hafta sonu ve tatil günü engellenmez; yordam `uyari` metni döner (Dilim 3 kararıyla uyumlu).
 - `gecmis_gorev`: eski araçtan tarihsiz geçmiş; tarih sütunu yoktur, dönem/çakışma sorgularına girmez. `gorev_sifirla.sql` yeni tabloları da siler (yapılandırma tablosu değiller).
 - `STRING_AGG` yerine `FOR XML PATH` kullanıldı (SQL Server 2016 SP2 uyumu).
+
+## Dilim 7 notları
+- `009_izin_rapor.sql` sınanmadı (sunucu yok); CI SQL testleri (`IzinRaporTests`) doğrular.
+- İç içe yordamda ROLLBACK yazılmaz; THROW + `XACT_ABORT ON` işlemi geri alır (`sp_izin_isle` 50030).
+- `sp_matris_hafta` / `sp_matris_surum` 009'da `ALTER` edildi (izin/rapor eklendi).
+- Hata kodu 50031 → `GorevException("izin_rapor")`.

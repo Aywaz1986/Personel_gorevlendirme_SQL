@@ -27,6 +27,17 @@ VERI = {
     {"id": 6, "ustId": None, "seviye": 1, "ad": "Örnek Ana Proje B", "aktif": True, "birlestirildiId": None},
   ],
   "matrisHafta": [{"sicil": "1002", "ad": "Örnek Personel 2", "bolum": "Örnek Bölüm B", "hucreler": [{"tarih": "2026-11-23", "zaman": "TAM", "talepId": 1, "kod": "TLP-0001", "ana": "Örnek Ana Proje A", "alt": "Genel", "faaliyet": "Örnek Faaliyet", "konum": "Örnek Yerleşke", "saat": "07:30 - 16:35", "sorumlu": "Örnek Personel 1"}, {"tarih": "2026-11-24", "zaman": "TAM", "talepId": 1, "kod": "TLP-0001", "ana": "Örnek Ana Proje A", "alt": "Genel", "faaliyet": "Örnek Faaliyet", "konum": "Örnek Yerleşke", "saat": "07:30 - 16:35", "sorumlu": "Örnek Personel 1"}, {"tarih": "2026-11-25", "zaman": "OO", "talepId": 1, "kod": "TLP-0002", "ana": "Örnek Ana Proje B", "alt": "Genel", "faaliyet": "Kayıt", "konum": "Salon", "saat": "07:30 - 16:35", "sorumlu": "Örnek Personel 1"}]}, {"sicil": "1004", "ad": "Örnek Personel 4", "bolum": "Örnek Bölüm B", "hucreler": [{"tarih": "2026-11-25", "zaman": "OO", "talepId": 1, "kod": "TLP-0001", "ana": "Örnek Ana Proje A", "alt": "Genel", "faaliyet": "Örnek Faaliyet", "konum": "Örnek Yerleşke", "saat": "07:30 - 16:35", "sorumlu": "Örnek Personel 1"}, {"tarih": "2026-11-25", "zaman": "OS", "talepId": 1, "kod": "TLP-0002", "ana": "Örnek Ana Proje B", "alt": "Genel", "faaliyet": "Kayıt", "konum": "Salon", "saat": "07:30 - 16:35", "sorumlu": "Örnek Personel 1"}, {"tarih": "2026-11-27", "zaman": "TAM", "talepId": 1, "kod": "TLP-0002", "ana": "Örnek Ana Proje B", "alt": "Genel", "faaliyet": "Kayıt", "konum": "Örnek Yerleşke", "saat": "07:30 - 16:35", "sorumlu": "Örnek Personel 1"}]}, {"sicil": "1005", "ad": "Örnek Personel 5", "bolum": "Örnek Bölüm C", "hucreler": [{"tarih": "2026-11-24", "zaman": "TAM", "talepId": 1, "kod": "TLP-0002", "ana": "Örnek Ana Proje B", "alt": "Genel", "faaliyet": "Kayıt", "konum": "Örnek Yerleşke", "saat": "07:30 - 16:35", "sorumlu": "Örnek Personel 1"}, {"tarih": "2026-11-26", "zaman": "TAM", "talepId": 1, "kod": "TLP-0001", "ana": "Örnek Ana Proje A", "alt": "Genel", "faaliyet": "Örnek Faaliyet", "konum": "Örnek Yerleşke", "saat": "07:30 - 16:35", "sorumlu": "Örnek Personel 1"}]}],
+  "izinListe": [
+    {"id": 1, "kod": "IZN-0001", "sicil": "1000", "ad": "Örnek Kullanıcı", "bolum": "Örnek Bölüm A", "durum": "ONAY_BEKLIYOR", "tur": "Yıllık izin", "aciklama": None, "vekaleten": None, "retNedeni": None, "ilkTarih": "2026-12-07", "sonTarih": "2026-12-11", "gunSayisi": 5, "cakisanAtama": 0, "gunler": []},
+    {"id": 2, "kod": "IZN-0002", "sicil": "1000", "ad": "Örnek Kullanıcı", "bolum": "Örnek Bölüm A", "durum": "ONAYLANDI", "tur": "Mazeret izni", "aciklama": "Örnek", "vekaleten": None, "retNedeni": None, "ilkTarih": "2026-11-26", "sonTarih": "2026-11-26", "gunSayisi": 1, "cakisanAtama": 0, "gunler": [{"tarih": "2026-11-26", "zaman": "OS", "durum": "ONAYLI"}]},
+  ],
+  "raporListe": [
+    {"id": 1, "kod": "RPR-0001", "sicil": "1000", "ad": "Örnek Kullanıcı", "bolum": "Örnek Bölüm A", "ilkTarih": "2026-11-16", "sonTarih": "2026-11-18", "aciklama": None, "durum": "AKTIF", "evrakAdi": "rapor.pdf", "evrakTur": "application/pdf", "evrakBoyut": 184320, "eskiKayit": False, "vekaleten": None, "iptalNedeni": None, "cakisanAtama": 0},
+  ],
+  "gorevlerim": [
+    {"tarih": "2026-11-24", "zaman": "TAM", "talepId": 1, "kod": "TLP-0001", "ana": "Örnek Ana Proje A", "alt": "Örnek Alt Proje 1", "faaliyet": "Örnek Faaliyet", "konum": "Örnek Yerleşke", "saat": "07:30 - 16:35", "sorumlu": "Örnek Personel 2", "gorevMetni": "Örnek"},
+    {"tarih": "2026-11-25", "zaman": "OO", "talepId": 1, "kod": "TLP-0001", "ana": "Örnek Ana Proje A", "alt": "Örnek Alt Proje 1", "faaliyet": "Örnek Faaliyet", "konum": "Örnek Yerleşke", "saat": "07:30 - 12:30", "sorumlu": "Örnek Personel 2", "gorevMetni": "Örnek"},
+  ],
   "matrisSurum": {"surum": "1-7"},
   "matrisBolumler": ["Örnek Bölüm A", "Örnek Bölüm B", "Örnek Bölüm C"],
   "atamaAdaylar": [
@@ -119,4 +130,8 @@ with sync_playwright() as P:
     pm.get_by_label('Haftaya git (tarih)').fill(''); pm.get_by_label('Haftaya git (tarih)').press_sequentially('23112026'); pm.wait_for_timeout(500)
     pm.get_by_role('button', name='Örnek Ana Proje A', exact=False).first.click(); pm.wait_for_timeout(200)
     pm.set_viewport_size({'width': 1200, 'height': 900}); sh(pm, '11_matris')
+    pi = ac(ben(True, False, False, True, ["SAHA"]))
+    pi.locator('nav.menu button', has_text='Görevlerim').first.click(); pi.wait_for_timeout(400)
+    pi.get_by_label('İzin başlangıç').fill('07.12.2026'); pi.get_by_label('İzin bitiş').fill('11.12.2026')
+    pi.set_viewport_size({'width': 1200, 'height': 1300}); sh(pi, '12_izin_rapor')
     b.close()

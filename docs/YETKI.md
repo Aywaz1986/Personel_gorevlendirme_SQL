@@ -19,9 +19,12 @@ Bağlanabilmek yetki değildir. `gorev.personel`'de aktif kaydı olmayan veya hi
 | Talep onay/ret, atama, ikame, sorumlu devri | ✔ | – | – |
 | Çakışmada karar (vazgeç / çakışandan çıkar ve ata) | ✔ | – | – |
 | Havuz yönetimi, akademik takvim/tatil | ✔ | – | – |
-| İzin talebi / geri çekme | vekaleten (anında onaylı) | – | kendi izni |
+| İzin talebi / geri çekme | vekaleten (anında onaylı); onaylı izni geri çekebilir | kendi izni (ONAY_BEKLIYOR iken geri çeker) | kendi izni (aynı) |
 | İzin onay/ret/kısaltma | ✔ | – | – |
-| Rapor beyanı | vekaleten, düzeltme/iptal | – | kendi raporu |
+| Rapor beyanı (evrak zorunlu) / iptal | vekaleten, her raporu iptal | kendi raporu | kendi raporu |
+| Rapor evrakını görme | ✔ | yalnız kendi | yalnız kendi |
+
+> Dilim 7 notu: sicili olan her kayıtlı kişi (Sorumlu dahil) kendi izin/raporunu beyan eder. Saha geçmiş tarihli izin giremez. Ret ve rapor iptali nedeni ≥3 karakter zorunludur.
 | Haftalık özet (7 gün, Excel) | ✔ | ✔ | ✔ |
 | Kadro eşitleme | Özlük yöneticisi olan yönetici | – | – |
 | Bölüm–rol eşleştirme, istisna, kullanıcı yönetimi | ✔ | – | – |

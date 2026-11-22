@@ -36,6 +36,8 @@ Test listesi: `docs/test-dilim-6.md`. Uygulanan: `008_matris.sql`, `matrisHafta/
 ## Dilim 7 – İzin ve rapor
 `izin_talepleri/_gunleri`, `raporlar` (varbinary, ≤10 MB, PDF/JPG/PNG), rapor–izin çakışma önceliği, vekaleten giriş, ikame uyarıları.
 
+Test listesi: `docs/test-dilim-7.md`. Uygulanan: `009_izin_rapor.sql`, 12 komut (`izinKaydet` … `gorevlerim`), `004_izin_rapor.js` (Saha "Görevlerim"; Sorumlu/Yönetici "İzin ve rapor"), matriste izin/rapor hücreleri. Kararlar (Murat, 21.11.2026): rapor kaydedilir, çakışan atama DURUR ve Yönetici uyarılır; izin onayında çakışmayı Yönetici seçer (vazgeç / çakışandan çıkar).
+
 ## Dilim 8 – Revize, iptal, ikame
 `revize_talepleri`, `sorumlu_devir`; erken bitiş, görev iptali, personel değiştirme, kişi sayısı değişimi.
 

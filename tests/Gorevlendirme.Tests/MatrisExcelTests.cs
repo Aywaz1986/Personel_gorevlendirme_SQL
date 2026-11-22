@@ -37,3 +37,16 @@ public class MatrisExcelTests
         System.Xml.Linq.XDocument.Parse(xml);                           // iyi biçimli XML
     }
 }
+
+public class MatrisExcelIzinTests
+{
+    [Fact]
+    public void Izin_ve_rapor_gun_hucresine_eklenir()
+    {
+        var izin = "[{\"tarih\":\"2026-11-24\",\"zaman\":\"TAM\",\"tur\":\"IZIN\",\"durum\":\"ONAYLI\",\"kod\":\"IZN-0001\"},{\"tarih\":\"2026-11-25\",\"zaman\":\"OO\",\"tur\":\"IZIN\",\"durum\":\"BEKLIYOR\",\"kod\":\"IZN-0002\"},{\"tarih\":\"2026-11-26\",\"zaman\":\"TAM\",\"tur\":\"RAPOR\",\"durum\":\"ONAYLI\",\"kod\":\"RPR-0001\"}]";
+        var t = MatrisExcel.Tablo(new DateTime(2026, 11, 23), new[] { ("1", "A", "B", (string?)null, (string?)izin) });
+        Assert.Equal("Tam gün: İzin (IZN-0001)", t[1][4]);
+        Assert.Equal("ÖÖ: İzin (onay bekliyor) (IZN-0002)", t[1][5]);
+        Assert.Equal("Tam gün: Rapor (RPR-0001)", t[1][6]);
+    }
+}
