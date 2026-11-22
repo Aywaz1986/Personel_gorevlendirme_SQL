@@ -12,7 +12,7 @@ Her değişiklik önce **Yayınlanmamış** bölümüne yazılır; sürüm yüks
 - [x] 4. Arayüz: Sistem "Canlıya geçiş" kartı, Eski veri "Aktarım" kartı
 - [x] 5. `tools/sql/gorev_geri_donus.sql`
 - [x] 6. Belgeler (CANLIYA-GECIS.md, test-dilim-10.md), kılavuz 8.8 + ekran görüntüsü 15
-- [ ] 7. Push, CI, PR (taban dilim-9-analiz)
+- [x] 7. Push, CI yeşil (4/4), PR açıldı (taban dilim-9-analiz). Murat'ın el sınaması (`docs/test-dilim-10.md`)
 
 ### Dilim 9 – Analiz ve arşiv (2026-11) — DEVAM EDİYOR (dal `dilim-9-analiz`, Dilim 8 dalından; PR #12 → #13 → bu sırayla birleşecek; Murat testleri Pazartesi 23.11.2026 toplu yapacak)
 **Oturum devir notu (her adımda güncelle; yeni oturum önce buradan devam eder):**
