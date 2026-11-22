@@ -108,3 +108,12 @@ Girdi sütunları (başlık yoksa sıra): Tarih; Ad; Zaman dilimi; Tür (son iki
 | `analizPersonelDetay` | `sicil, bas, bit` | `[{tarih, zaman, tur (GOREV/IZIN/RAPOR), ana, alt, faaliyet, konum, kod, sorumlu}]` | aynı | izin türü `faaliyet` alanında gelir; izin/rapor satırları yalnız Yönetici |
 | `arsivGecmis` | `q?, ana?` | `[{id, personel, bolum, proje, gorevMetni, sorumlu, kaynak, aktarim}]` | Yönetici, Sorumlu | tarihsiz eski görevler, en çok 2000 satır |
 | `analizExcel` | `tur` (`proje`/`personel`/`detay`/`arsiv`), `bas, bit`, filtreler, `sicil` (detay) | `{iptal, yol?, satir?}` | aynı | kayıt penceresi; sayı sütunları sayısal hücre |
+
+## Dilim 11 – Senaryo tamamlama
+| Komut | Girdi | Çıktı | Yetki | Not |
+|---|---|---|---|---|
+| `talepIletisim` | `talepId` | `{talepId, kod, sahaNotu, sorumluAd, sorumluGsm, atananlar?[{sicil, ad, bolum, gsm}]}` | Yönetici; kendi talebinin Sorumlusu; atanmış Saha | `atananlar` yalnız aktif atama varken ve Yönetici/Sorumlu için |
+| `sayaclar` | – | `{bekleyenTalep?, izinOnay?, revizeBekleyen, ikameUyari, onaylanan?, reddedilen?, bildirim}` | kayıtlı herkes | menü rozetleri; role göre boş alanlar |
+| `ikameBekleyenler` | – | `[{talepId, kod, ad, sicil, ilk, son, gun, neden (RAPOR/AYRILDI/BIRIM)}]` | Yönetici (tümü), Sorumlu (kendi) | ileri tarihli aktif atama |
+
+Değişen: `matrisHafta`/`matrisExcel` + `konum?` (yerleşke süzgeci, son isteğe bağlı bağımsız değişken); `atamaAdaylar` + `toplamGorev, adamGun, yerlesker, talepGun, izinRaporGun`; `analizPersonel` + `musaitGun?` (yalnız Yönetici), `tatilGun`, `tatilCalismaGun`; `rapor evrakı` dosya adı `Ad_Soyad_yyyymmdd_KOD.uzantı`; `talepKaydet/revizeIste` `nitelik` = Saha / Operasyon Notu (≤1000).

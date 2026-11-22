@@ -49,7 +49,8 @@ async function atamaPaneli(talepId, geri) {
   function adayListesi() {
     const liste = h('div', { style: 'display:flex;flex-direction:column;gap:8px' });
     const doldur = () => liste.replaceChildren(...(adaylar.length ? adaylar.map((a) => h('div', { class: 'kart', style: 'display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;padding:10px 14px' },
-      h('div', { style: 'flex:1 1 220px;min-width:0' }, h('div', { style: 'font-weight:600' }, a.ad), h('div', { class: 'alt' }, (a.bolum || '') + (a.gecmis > 0 ? ' · ' + t.ana + ' projesinde ' + a.gecmis + ' kez çalıştı' : ''))),
+      h('div', { style: 'flex:1 1 220px;min-width:0' }, h('div', { style: 'font-weight:600' }, a.ad), h('div', { class: 'alt' }, (a.bolum || '') + (a.gecmis > 0 ? ' · ' + t.ana + ' projesinde ' + a.gecmis + ' kez çalıştı' : '')),
+        h('div', { class: 'alt' }, t.ana + ': ' + (a.toplamGorev || 0) + ' görev · ' + analizSayi(a.adamGun || 0) + ' adam-gün' + (a.yerlesker ? ' · ' + a.yerlesker : '') + ' · Talep günlerinde müsait: ' + Math.max(0, (a.talepGun || 0) - (a.cakisanGun || 0) - (a.izinRaporGun || 0)) + '/' + (a.talepGun || 0) + (a.izinRaporGun > 0 ? ' (izin/rapor ' + a.izinRaporGun + ')' : ''))),
       a.onerildi ? rozet('Önerilen', 'bilgi') : null,
       a.buTalepte > 0 ? rozet('Bu talepte ' + a.buTalepte, 'iyi') : null,
       a.cakisanGun > 0 ? rozet('Çakışma: ' + a.cakisanGun + ' gün', 'uyari') : rozet('Müsait', 'iyi'),

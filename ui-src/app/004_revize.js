@@ -96,13 +96,13 @@ async function talepYonetPaneli(talepId, geri) {
     if (!st.rv) st.rv = { metin: t.gorevMetni || '', nitelik: t.nitelik || '', sb: t.saatBaslangic, sbit: t.saatBitis, gunler: t.gunler.map((g) => ({ tarih: g.tarih, zaman: g.zaman, kisi: g.kisi, atanan: (g.atananlar || []).length })) };
     const r = st.rv;
     const metin = h('textarea', { class: 'metin', rows: '3', maxlength: '1000', style: 'width:100%;box-sizing:border-box' }, r.metin);
-    const nitelik = h('input', { type: 'text', class: 'metin', maxlength: '300', value: r.nitelik, style: 'width:100%;box-sizing:border-box', 'aria-label': 'Nitelik' });
+    const nitelik = h('input', { type: 'text', class: 'metin', maxlength: '1000', value: r.nitelik, style: 'width:100%;box-sizing:border-box', 'aria-label': 'Saha / Operasyon Notu' });
     const sb = h('input', { type: 'text', class: 'metin', value: r.sb, style: 'width:90px', 'aria-label': 'Başlangıç saati' }), sbit = h('input', { type: 'text', class: 'metin', value: r.sbit, style: 'width:90px', 'aria-label': 'Bitiş saati' });
     const neden = alan('Revize nedeni (isteğe bağlı)');
     const kisiler = r.gunler.map((g) => { const i = h('input', { type: 'number', class: 'metin', min: String(Math.max(1, g.atanan)), max: '500', value: String(g.kisi), style: 'width:80px', 'aria-label': takvimTarihYaz(g.tarih) + ' kişi sayısı' }); i.addEventListener('input', () => { g.kisi = Number(i.value) || g.kisi; }); return h('div', { class: 'satir', style: 'align-items:center' }, h('span', { style: 'min-width:190px' }, takvimTarihYaz(g.tarih) + ' ' + takvimGun(g.tarih) + ' · ' + atamaTamAd(g.zaman)), i, h('span', { class: 'alt' }, 'atanan ' + g.atanan)); });
     return h('section', { class: 'kart' }, h('h2', null, yon ? 'Revize (doğrudan uygulanır)' : 'Revize iste'),
       h('div', { class: 'alt', style: 'margin-bottom:8px' }, (yon ? 'Değişiklik hemen uygulanır.' : 'Değişiklik Yönetici onayından sonra uygulanır.') + ' Atanmış kişiden az kişi sayısı yazılamaz; önce kişiyi çıkarın.'),
-      h('div', { style: 'display:flex;flex-direction:column;gap:10px' }, h('label', null, 'Görev metni'), metin, h('label', null, 'Nitelik'), nitelik,
+      h('div', { style: 'display:flex;flex-direction:column;gap:10px' }, h('label', null, 'Görev metni'), metin, h('label', null, 'Saha / Operasyon Notu'), nitelik,
         h('div', { class: 'satir' }, h('label', null, 'Saat ', sb), h('label', null, '– ', sbit)), h('label', null, 'Gün başına kişi sayısı'), ...kisiler, neden,
         h('div', { class: 'satir' }, h('button', { class: 'ana', type: 'button', onclick: () => {
           const gonder = { talepId, neden: neden.value };
@@ -117,7 +117,7 @@ async function talepYonetPaneli(talepId, geri) {
 
   function revizeListesi() {
     if (!st.revizeler.length) return null;
-    const ozet = (x) => [x.gorevMetni ? 'metin' : null, x.nitelik ? 'nitelik' : null, x.saatBaslangic ? 'saat ' + x.saatBaslangic + '–' + x.saatBitis : null, (x.gunler || []).length ? 'gün/kişi sayısı' : null].filter(Boolean).join(', ');
+    const ozet = (x) => [x.gorevMetni ? 'metin' : null, x.nitelik ? 'saha notu' : null, x.saatBaslangic ? 'saat ' + x.saatBaslangic + '–' + x.saatBitis : null, (x.gunler || []).length ? 'gün/kişi sayısı' : null].filter(Boolean).join(', ');
     return h('section', { style: 'display:flex;flex-direction:column;gap:8px' }, h('h2', { style: 'margin:0' }, 'Revizeler'),
       st.revizeler.map((x) => {
         const ret = st.retId === x.id ? (() => { const n = alan('Ret nedeni (zorunlu)'); return h('div', { class: 'satir', style: 'margin-top:6px' }, n, h('button', { type: 'button', onclick: () => dene(() => Kopru.cagir('revizeReddet', { id: x.id, neden: n.value }), 'Revize reddedildi.') }, 'Reddi kaydet')); })() : null;

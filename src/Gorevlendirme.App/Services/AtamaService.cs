@@ -14,6 +14,7 @@ public static class AtamaService
         (await sql.ProcAsync("gorev.sp_atama_adaylar", ("@talep_id", talepId), ("@q", string.IsNullOrWhiteSpace(q) ? null : q))).Select(r => new
         {
             sicil = r["sicil_no"], ad = r["adi_soyadi"], bolum = r["bolum"], onerildi = r["onerildi"], gecmis = r["gecmis"], buTalepte = r["bu_talepte"], cakisanGun = r["cakisan_gun"],
+            toplamGorev = r["toplam_gorev"], adamGun = r["adam_gun"], yerlesker = r["yerlesker"] is DBNull ? null : r["yerlesker"], talepGun = r["talep_gun"], izinRaporGun = r["izin_rapor_gun"],
         }).ToList();
 
     public static async Task<object> CakismaKontrolAsync(SqlService sql, int talepId, IEnumerable<AtamaGirdisi> g) =>

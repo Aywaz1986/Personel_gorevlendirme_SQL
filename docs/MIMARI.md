@@ -105,3 +105,7 @@ Onay/atama yordamları `SERIALIZABLE` + `UPDLOCK`: aynı personel, aynı gün ve
 - Aktarım planı C#'ta (`EskiAktarim.Planla`, saf mantık, birim testli) JSON üretir; SQL tek işlemde doğrular ve yazar. Her kayıt `kaynak='ESKI_ARAC'` (tarihsiz geçmiş `ESKI_ARAC_TARIHSIZ`). Geri alma yalnız bunları ve kullanılmayan aktarım havuz satırlarını siler (alt seviyeden üste).
 - Aktarım ve geri alma yalnız `ORTAM='TEST'`; canlıda reddedilir. Canlıdan TEST'e dönüş uygulamada yoktur: `tools/sql/gorev_geri_donus.sql` (db_owner, elle).
 
+
+## Senaryo tamamlama (Dilim 11)
+- `013_senaryo_tamamlama.sql`: `nitelik` sütunları 1000 karakter (arayüzde "Saha / Operasyon Notu"); `sp_talep_kaydet/revize_*` statik kopyalarla güncellenir (dinamik SQL yok, dbo koruma temiz); yeni `sp_talep_iletisim`, `fn_ikame_bekleyenler`, `sp_ikame_bekleyenler`, `sp_sayaclar`; `sp_analiz_personel`, `sp_atama_adaylar`, `sp_rapor_evrak`, `sp_matris_hafta` genişletildi.
+- Arayüz: menü rozetleri `sayaclar` ile; 30 sn zamanlayıcı (`S.zaman`) yalnız odak giriş alanında değilken sayfanın `S.yenile` kancasını çağırır.

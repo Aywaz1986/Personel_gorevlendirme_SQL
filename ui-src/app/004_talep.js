@@ -63,12 +63,14 @@ function talepTarihOku(s) {
 
 async function talepSayfa() {
   const yonetici = S.gorunum === 'YONETICI';
-  const durum = { gorunum: 'liste', filtre: '', liste: [], havuz: [], tatiller: [], f: null, bildirim: [], atama: null, atananAcik: {} };
+  const durum = { gorunum: 'liste', filtre: '', liste: [], havuz: [], tatiller: [], f: null, bildirim: [], atama: null, atananAcik: {}, iletisimAcik: {}, ikame: [] };
   const kap = h('div', { style: 'display:flex;flex-direction:column;gap:14px' });
 
   async function yukle() {
-    try { durum.liste = await Kopru.cagir('talepListe', {}); durum.bildirim = await Kopru.cagir('bildirimListe', {}); ciz(); } catch (e) { hata(e); }
+    try { durum.liste = await Kopru.cagir('talepListe', {}); durum.bildirim = await Kopru.cagir('bildirimListe', {}); durum.ikame = await Kopru.cagir('ikameBekleyenler', {}); ciz(); } catch (e) { hata(e); }
   }
+  // Otomatik/elle yenileme: yalnız liste görünümündeyken (açık form kaybolmasın).
+  S.yenile = async () => { if (durum.gorunum === 'liste') await yukle(); };
 
   async function formAc(t, kopya) {
     try {
@@ -118,14 +120,17 @@ async function talepSayfa() {
       h('div', { class: 'alt' }, x.kod + ' · ' + talepAralik(x) + ' · ' + x.saatBaslangic + '–' + x.saatBitis + (yonetici ? ' · ' + x.sorumluAdi : '')),
       h('div', { style: 'font-size:16px;font-weight:600;margin:3px 0' }, x.ana + (x.alt && x.alt !== 'Genel' ? ' › ' + x.alt : '') + ' › ' + x.faaliyet),
       h('div', { class: 'alt' }, 'Konum: ' + x.konum + ' · ' + x.gorevMetni),
+      x.nitelik ? h('div', { class: 'alt', style: 'white-space:pre-wrap' }, 'Saha / Operasyon Notu: ' + x.nitelik) : null,
       x.oneri ? h('div', { class: 'alt' }, 'Önerilen: ' + x.oneri) : null,
       x.retNedeni ? h('div', { class: 'mesaj kotu', style: 'margin-top:6px' }, 'Ret nedeni: ' + x.retNedeni) : null,
       durum.atananAcik[x.id] ? atananBlok(durum.atananAcik[x.id]) : null,
+      durum.iletisimAcik[x.id] ? iletisimBlok(durum.iletisimAcik[x.id]) : null,
       h('div', { class: 'satir', style: 'margin-top:8px;align-items:center' },
         rozet(talepDurumAd(x.durum), talepDurumTur(x.durum)), h('span', { class: 'alt' }, x.gunSayisi + ' gün · ' + talepKisiGun(x.kisiGun) + (x.atanan > 0 ? ' · atanan ' + x.atanan + '/' + x.istenen : '')),
         h('span', { style: 'flex:1' }),
         yonetici && ['ONAY_BEKLIYOR', 'KISMEN_ATANDI'].includes(x.durum) ? h('button', { class: 'ana', onclick: () => atamaAc(x.id) }, 'Ata') : null,
         x.atanan > 0 ? h('button', { onclick: async () => { try { if (durum.atananAcik[x.id]) delete durum.atananAcik[x.id]; else durum.atananAcik[x.id] = await Kopru.cagir('talepGetir', { id: x.id }); ciz(); } catch (e) { hata(e); } } }, 'Atananlar') : null,
+        yonetici || x.atanan > 0 ? h('button', { onclick: async () => { try { if (durum.iletisimAcik[x.id]) delete durum.iletisimAcik[x.id]; else durum.iletisimAcik[x.id] = await Kopru.cagir('talepIletisim', { talepId: x.id }); ciz(); } catch (e) { hata(e); } } }, 'İletişim') : null,
         ['KISMEN_ATANDI', 'TAMAMEN_ATANDI'].includes(x.durum) ? h('button', { onclick: () => yonetAc(x.id) }, 'Yönet…') : null,
         h('button', { onclick: async () => { try { await formAc(await Kopru.cagir('talepGetir', { id: x.id }), true); } catch (e) { hata(e); } } }, 'Kopyala'),
         talepDegistirilebilir(x.durum) ? h('button', { onclick: async () => { try { await formAc(await Kopru.cagir('talepGetir', { id: x.id }), false); } catch (e) { hata(e); } } }, 'Revize') : null,
@@ -228,7 +233,7 @@ async function talepSayfa() {
     r.sb = h('input', { type: 'time', class: 'metin', value: f.sb, 'aria-label': 'Mesai başlangıç saati' }); r.sbt = h('input', { type: 'time', class: 'metin', value: f.sbt, 'aria-label': 'Mesai bitiş saati' });
     r.sb.addEventListener('input', () => ozetGuncelle()); r.sbt.addEventListener('input', () => ozetGuncelle());
     r.metin = h('textarea', { class: 'metin', rows: '3', maxlength: '1000', style: 'width:100%;box-sizing:border-box' }, f.metin);
-    r.nitelik = h('input', { type: 'text', class: 'metin', maxlength: '300', value: f.nitelik, placeholder: 'ör. kaynakçı, forklift ehliyetli' });
+    r.nitelik = h('textarea', { class: 'metin', rows: '3', maxlength: '1000', style: 'width:100%;box-sizing:border-box', placeholder: 'ör. kamyonet ile gidilecek; KKD getirin; sahada konaklama yok; giriş için X kişisini arayın' }, f.nitelik);
 
     // 1. Talep sahibi
     let sorumluBolum;
@@ -332,7 +337,7 @@ async function talepSayfa() {
               alan('Ana Proje', r.ana), alan('Alt Proje (boşsa "Genel")', r.alt), alan('Faaliyet', r.faaliyet), alan('Konum', r.konum)),
             h('div', { style: 'margin-top:10px' }, r.yeni),
             h('div', { style: 'margin-top:12px' }, h('label', { style: 'font-size:13px;display:flex;flex-direction:column;gap:4px' }, 'Görev metni', r.metin)),
-            h('div', { style: 'margin-top:10px' }, alan('Aranan nitelik (isteğe bağlı)', r.nitelik))),
+            h('div', { style: 'margin-top:10px' }, alan('Saha / Operasyon Notu (isteğe bağlı: araç, teçhizat, giriş, konaklama…)', r.nitelik))),
           h('section', { class: 'kart' }, h('h2', null, '3. Gün ve zaman dilimi'),
             h('div', { class: 'satir', style: 'align-items:flex-end' }, alan('Başlangıç', r.bas), alan('Bitiş', r.bit), alan('Günlük kişi', r.kisi), alan('Mesai başlangıç', r.sb), alan('Mesai bitiş', r.sbt)),
             h('div', { style: 'margin:10px 0' }, gunKap),
@@ -355,7 +360,24 @@ async function talepSayfa() {
     return el;
   }
 
-  function ciz() { kap.replaceChildren(h('h1', null, yonetici ? 'Talepler' : 'Görev Talep Arayüzü'), durum.gorunum === 'form' ? form() : durum.gorunum === 'atama' ? durum.atama : liste()); }
+  function iletisimBlok(i) {
+    const tel = (g) => g ? h('a', { href: 'tel:' + String(g).replace(/\s+/g, ''), style: 'margin-left:6px' }, g) : h('span', { class: 'alt', style: 'margin-left:6px' }, 'telefon kayıtlı değil');
+    return h('div', { class: 'kart', style: 'margin:6px 0;padding:10px 14px;background:var(--zemin,transparent)' },
+      i.sahaNotu ? h('div', { style: 'white-space:pre-wrap;margin-bottom:6px' }, h('b', null, 'Saha / Operasyon Notu: '), i.sahaNotu) : null,
+      h('div', null, h('b', null, 'Proje Sorumlusu: '), i.sorumluAd, tel(i.sorumluGsm)),
+      i.atananlar && i.atananlar.length ? h('div', { style: 'margin-top:4px' }, h('b', null, 'Atananlar:'), i.atananlar.map((a) => h('div', null, a.ad + (a.bolum ? ' (' + a.bolum + ')' : ''), tel(a.gsm)))) : null);
+  }
+
+  const IKAME_NEDEN = { RAPOR: 'Raporlu', AYRILDI: 'Ayrıldı / pasif', BIRIM: 'Birim değişikliği' };
+  function ikameKutusu() {
+    if (!durum.ikame.length) return null;
+    return h('section', { class: 'kart', style: 'border-color:var(--uyari,#c60)' }, h('h2', { style: 'margin:0 0 6px' }, 'İkame personel bekleyen görevler (' + durum.ikame.length + ')'),
+      durum.ikame.map((x) => h('div', { class: 'satir', style: 'align-items:center;padding:4px 0' },
+        rozet(IKAME_NEDEN[x.neden] || x.neden, 'uyari'), h('span', null, x.kod + ' · ' + x.ad + ' · ' + takvimTarihYaz(x.ilk) + (x.ilk !== x.son ? ' – ' + takvimTarihYaz(x.son) : '') + ' (' + x.gun + ' gün)' + (yonetici ? ' · ' + x.sorumlu : '')),
+        h('span', { style: 'flex:1' }), yonetici ? h('button', { onclick: () => yonetAc(x.talepId) }, 'Yönet…') : null)));
+  }
+
+  function ciz() { kap.replaceChildren(h('h1', null, yonetici ? 'Talepler' : 'Görev Talep Arayüzü'), durum.gorunum === 'form' ? form() : durum.gorunum === 'atama' ? durum.atama : h('div', { style: 'display:flex;flex-direction:column;gap:14px' }, ikameKutusu(), liste())); }
 
   await yukle();
   if (!kap.childNodes.length) ciz();

@@ -122,7 +122,7 @@ C.push(h2("8.6 Atanmış talepte iptal, erken bitiş, ikame, revize ve devir"));
 C.push(p("Talep listesinde **Kısmen/Tamamen atandı** durumundaki taleplerde **Yönet…** düğmesi çıkar. Açılan sayfada talebin günleri ve atananlar listelenir."));
 C.push(n("**Yönetici:** atanan kişinin yanındaki **Çıkar** o günkü atamayı kaldırır (neden zorunlu); **İkame…** kişinin yerine başkasını atar (yeni kişi seçilir, isterseniz başlangıç tarihi yazılır; boşsa bugünden itibaren). Yeni kişi başka görevdeyse **Çakışma kararı** kutusu çıkar; izin ya da raporluysa işlem reddedilir.","n8"));
 C.push(n("**Erken bitir…:** yeni son günü yazın; sonraki günler ve atamalar kalkar. **Görevi iptal et…:** tüm atamalar kalkar, talep İptal olur (görev başlamışsa iptal yerine erken bitiş kullanılır). Her ikisinde de etkilenen kişilere bildirim gider.","n8"));
-C.push(n("**Revize…:** görev metni, nitelik, saat ve gün başına kişi sayısı değiştirilir. Proje Sorumlusu **Revize iste** der, Yönetici **Onayla** ya da nedenle **Reddet…** der; Yönetici revizeyi doğrudan uygulayabilir. Atanmış kişiden az kişi sayısı yazılamaz; önce kişi çıkarılır.","n8"));
+C.push(n("**Revize…:** görev metni, Saha / Operasyon Notu, saat ve gün başına kişi sayısı değiştirilir. Proje Sorumlusu **Revize iste** der, Yönetici **Onayla** ya da nedenle **Reddet…** der; Yönetici revizeyi doğrudan uygulayabilir. Atanmış kişiden az kişi sayısı yazılamaz; önce kişi çıkarılır.","n8"));
 C.push(n("**Sorumlu devret…** (Yönetici): talebin Proje Sorumlusu başka kişiye geçer; eski ve yeni sorumluya bildirim gider, geçmiş sayfanın altında görünür.","n8"));
 C.push(...img("13_yonet","Yönet sayfası: atananlar, ikame/çıkarma, erken bitiş formu ve revizeler.",1500));
 
@@ -133,6 +133,12 @@ C.push(n("**Personel:** kişi başına adam-gün, görev günü, proje sayısı 
 C.push(n("**Arşiv (geçmiş görevler):** eski araçtan aktarılan, tarihi bilinmeyen \"kim hangi projeye gitti\" kayıtları; kişi, proje ya da görev metniyle aranır. Geçmiş dönemler için Proje ve Personel sekmelerinde tarih aralığını geriye alın.","n8"));
 C.push(...img("14_analiz","Analiz: ana proje bazlı adam-gün.",1500));
 
+C.push(h2("8.9 Saha notu, iletişim, rozetler ve ikame uyarısı"));
+C.push(n("**Saha / Operasyon Notu:** talep formunda araç, teçhizat (KKD), giriş kişisi, konaklama gibi bilgiler çok satırlı yazılır (en fazla 1000 karakter). Eski \"Aranan nitelik\" alanının yerini almıştır.","n8"));
+C.push(n("**İletişim:** talep listesinde ve Saha'nın Görevlerim sayfasında **İletişim / Göster** saha notunu ve Proje Sorumlusunun telefonunu açar. Yönetici ve Proje Sorumlusu ayrıca atananların telefonlarını görür; Saha görmez.","n8"));
+C.push(n("**Menü rozetleri:** Talepler, İzin ve rapor ve Görevlerim menülerindeki kırmızı sayı bekleyen işi gösterir; üzerine gelince dökümü çıkar. Sayfalar 30 saniyede bir kendiliğinden yenilenir (yazı yazarken bozulmaz); üstteki **Yenile** düğmesi anında yeniler.","n8"));
+C.push(n("**İkame bekleyen görevler:** raporlanan, kadrodan ayrılan ya da birimi değişen kişinin ileri tarihli atamaları Talepler sayfasındaki uyarı kutusunda listelenir; **Yönet…** ile ikame yapılır.","n8"));
+C.push(n("**Analiz ve atama:** aday kartında projedeki görev sayısı, adam-gün, yerleşke ve müsait gün görünür; Personel analizinde müsait gün, tatil günü ve tatilde çalışma sütunları vardır. Matriste **Yerleşke** süzgeci bulunur; rapor evrakı **Ad_Soyad_yyyymmdd_KOD** adıyla iner.","n8"));
 C.push(h2("8.8 Eski veri aktarımı ve canlıya geçiş"));
 C.push(p("Bu bölüm yalnız Merkez Yönetici içindir. Canlıya geçmeden önce veritabanının tam yedeği alınmış olmalıdır."));
 C.push(n("**Eski veri aktarımı:** Eski veri sayfasında önce **Dosya seç ve denetle** ile kuru çalıştırma raporunu okuyun. Sonra Aktarım kartında kutuya `AKTAR` yazıp **Dosya seç ve aktar** deyin. Görevliler talep ve atama, izinliler onaylı izin, raporlular evraksız rapor olur; haftası bilinmeyen ya da kadroda eşleşmeyen kişilerin görevleri tarihsiz geçmişe (Arşiv) yazılır. Özet satırındaki sayıları rapordakilerle karşılaştırın.","n9"));
