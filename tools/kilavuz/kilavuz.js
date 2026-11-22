@@ -110,6 +110,14 @@ C.push(n("**Excel'e aktar** kayıt penceresi açar; görünen hafta ve filtreler
 C.push(...img("11_matris","Haftalık matris: ÖÖ/ÖS bölünmüş hücreler, filtreler ve ayrıntı kartı.",1500));
 C.push(note("**Otomatik yenileme.** Ekran 30 saniyede bir haftanın atamalarında değişiklik olup olmadığına bakar; değişmişse tabloyu kendiliğinden tazeler (üstte “Son yenileme” saati görünür). Sarı sütun akademik takvimdeki tam gün tatildir. İzin ve rapor günleri sonraki dilimde bu tabloya eklenecektir."));
 
+C.push(h2("8.5 İzin, rapor ve görevlerim"));
+C.push(p("**Saha personeli** için menüde **Görevlerim**, **Proje Sorumlusu** ve **Yönetici** için **İzin ve rapor** sayfası bulunur. Saha sayfasının üstünde kendi görevleriniz (son 14 gün ve önümüzdeki 90 gün) listelenir."));
+C.push(n("**İzin talebi:** tür, başlangıç ve bitiş tarihini **GG.AA.YYYY** yazın; tam gün ya da yalnız öğleden önce/sonra seçin; **Talebi gönder**. Hafta sonu ve tatiller varsayılan olarak atlanır. Talep Yönetici onayına gider; onaylanan günlere atama yapılamaz. Bekleyen talebi **Geri çek** ile iptal edebilirsiniz.","n8"));
+C.push(n("**Rapor beyanı:** ilk/son günü yazın, **Evrak seç…** ile PDF, JPG ya da PNG dosyası (en fazla 10 MB) seçin, **Raporu kaydet**. Evrak zorunludur. Rapor izinden önceliklidir: aynı günlerdeki izin iptal olur; o günlerde göreviniz varsa görev durur ve Yönetici ikame için uyarılır.","n8"));
+C.push(n("**Yönetici:** bekleyen izinleri **Onayla** ya da nedenle **Reddet…**; onaylı izni **Kısalt…** ya da geri çekebilir. Onay sırasında kişinin o günlerde görevi varsa **Çakışma kararı** kutusu çıkar: *Vazgeç* ya da *Çakışan görevden çıkar ve izni uygula*. **Vekaleten** kutusundan başka biri adına izin/rapor girilebilir (izin anında onaylanır).","n8"));
+C.push(...img("12_izin_rapor","Görevlerim: kişisel görevler, izin talebi ve rapor beyanı.",1500));
+C.push(note("**Matriste görünüm.** Haftalık matriste izin gri blok (kesikli çerçeve: onay bekliyor), rapor kırmızı blok olarak görünür; yarım gün izin yalnız ilgili yarıyı kaplar."));
+
 C.push(h1("9. Yetkisiz erişim"));
 C.push(p("Hesabınız kadroda yoksa, pasifse ya da hiçbir rolü çözülmediyse bu sayfa açılır. **Hesap adını kopyala** ile adınızı merkez yöneticisine iletin."));
 C.push(...img("05_yetkisiz","Yetkisiz erişim sayfası."));

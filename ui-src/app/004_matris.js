@@ -68,13 +68,24 @@ async function matrisSayfa() {
         style: 'display:block;width:calc(100% - 6px);margin:1px 3px;height:' + boy + 'px;min-height:0;padding:0 4px;border:0;border-radius:5px;font-weight:600;font-size:13px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;cursor:pointer;background:' + bg + ';color:' + fg,
         onclick: () => { d.secili = { ad: k.ad, iso, c }; ayrintiCiz(); } }, etiket);
     };
+    const izYari = (k, iso, c, boy) => {
+      const rapor = c.tur === 'RAPOR', bekl = c.durum === 'BEKLIYOR';
+      const ad = rapor ? 'Rapor' : bekl ? 'İzin (onay bekliyor)' : 'İzin';
+      return h('div', { title: c.kod + ' · ' + ad, 'aria-label': k.ad + ', ' + takvimTarihYaz(iso) + ', ' + ad + ', ' + c.kod,
+        style: 'margin:1px 3px;height:' + boy + 'px;display:flex;align-items:center;justify-content:center;border-radius:5px;font-size:13px;font-weight:600;overflow:hidden;white-space:nowrap;' +
+          (rapor ? 'background:#fde2e2;color:#8a1c1c;border:1px solid #e9a6a6' : 'background:#e7e9ee;color:#3b4252;border:1px ' + (bekl ? 'dashed' : 'solid') + ' #aab0bd') }, (rapor ? '🩺 ' : '🏖 ') + ad);
+    };
     const hucre = (k, iso, i) => {
       const o = k.hucreler.filter((c) => c.tarih === iso);
+      const iz = (k.izinler || []).filter((c) => c.tarih === iso && c.durum !== 'IPTAL');
+      const izBul = (z) => iz.find((c) => c.zaman === z && c.tur === 'RAPOR') || iz.find((c) => c.zaman === z);
       const tam = o.find((c) => c.zaman === 'TAM'), oo = o.find((c) => c.zaman === 'OO'), os = o.find((c) => c.zaman === 'OS');
+      const izTam = izBul('TAM'), izOO = izBul('OO'), izOS = izBul('OS');
       const t = tatilMi(iso);
       const bg = t ? 'background:var(--uyari-bg,#fff4d6)' : i >= 5 ? 'background:var(--bg)' : '';
+      const yarim = (a, z, ik) => a ? yari(k, iso, a, 26) : (ik || izTam) ? izYari(k, iso, ik || izTam, 26) : yari(k, iso, null, 26);
       return h('td', { style: 'padding:0;width:12%;min-width:110px;vertical-align:top;border-bottom:1px solid var(--cizgi);border-right:1px solid var(--cizgi);' + bg },
-        tam ? yari(k, iso, tam, 54) : [yari(k, iso, oo, 26), yari(k, iso, os, 26)]);
+        tam ? yari(k, iso, tam, 54) : izTam && !oo && !os ? izYari(k, iso, izTam, 54) : [yarim(oo, 'OO', izOO), yarim(os, 'OS', izOS)]);
     };
     const toplam = gunIso.map((iso) => d.veri.filter((k) => k.hucreler.some((c) => c.tarih === iso)).length);
     const kolon = (x, i) => { const t = tatilMi(x); return h('th', { style: 'padding:8px 4px;text-align:center;font-size:14px;border-bottom:1px solid var(--cizgi);border-right:1px solid var(--cizgi);' + (t ? 'background:var(--uyari-bg,#fff4d6)' : i >= 5 ? 'background:var(--bg);color:var(--soluk)' : ''), title: t ? t.ad : '' },
@@ -88,7 +99,7 @@ async function matrisSayfa() {
         toplam.map((n) => h('td', { style: 'text-align:center;font-weight:600;padding:8px' }, String(n))))));
     tabloKap.replaceChildren(d.veri.length ? h('div', { class: 'kart', style: 'padding:0;overflow:auto' }, tablo)
       : h('div', { class: 'kart', style: 'text-align:center;color:var(--soluk)' }, d.sadece || d.ana ? 'Bu hafta, seçili filtrelerle görevlendirilmiş personel yok.' : 'Eşleşen personel yok.'));
-    notKap.replaceChildren(h('div', { style: 'margin-bottom:6px' }, 'Üst yarı = öğleden önce (ÖÖ), alt yarı = öğleden sonra (ÖS), tek blok = tam gün. Boş hücre = görev yok. Renk Ana Projeyi gösterir; ad hücrede de yazılıdır. Sarı sütun = tatil. Hücreye basınca ayrıntı açılır.'),
+    notKap.replaceChildren(h('div', { style: 'margin-bottom:6px' }, 'Üst yarı = öğleden önce (ÖÖ), alt yarı = öğleden sonra (ÖS), tek blok = tam gün. Boş hücre = görev yok. Gri blok = izin (kesikli çerçeve: onay bekliyor), kırmızı blok = rapor. Renk Ana Projeyi gösterir; ad hücrede de yazılıdır. Sarı sütun = tatil. Hücreye basınca ayrıntı açılır.'),
       ...[...renk].map(([a, [bg, fg]]) => h('span', { class: 'rozet', style: 'background:' + bg + ';color:' + fg + ';margin-right:6px' }, a)));
     ayrintiCiz();
   }
@@ -112,7 +123,7 @@ async function matrisSayfa() {
     h('div', { class: 'satir', style: 'align-items:center' }, h('h1', { style: 'margin:0' }, 'Haftalık matris'), h('span', { style: 'flex:1' }), yenileYazi, h('button', { type: 'button', onclick: excel }, "Excel'e aktar")),
     h('div', { class: 'satir', style: 'align-items:center' }, h('button', { type: 'button', 'aria-label': 'Önceki hafta', onclick: git(-1) }, '◀'), haftaYazi,
       h('button', { type: 'button', 'aria-label': 'Sonraki hafta', onclick: git(1) }, '▶'), h('button', { class: 'ana', type: 'button', onclick: () => haftayaGit(takvimIso(matrisPazartesi(new Date()))) }, 'Bu hafta'), basKutu),
-    h('div', { class: 'satir', style: 'align-items:center' }, qKutu, bolumSec, anaSec, h('label', { style: 'display:flex;gap:6px;align-items:center' }, sadeceKutu, 'Yalnız bu hafta görevli olanlar')),
+    h('div', { class: 'satir', style: 'align-items:center' }, qKutu, bolumSec, anaSec, h('label', { style: 'display:flex;gap:6px;align-items:center' }, sadeceKutu, 'Yalnız bu hafta görevi/izni/raporu olanlar')),
     tabloKap, ayrintiKap, notKap);
 
   try { for (const b of await Kopru.cagir('matrisBolumler')) bolumSec.append(h('option', { value: b }, b)); } catch (e) { /* filtre listesi olmadan da çalışır */ }

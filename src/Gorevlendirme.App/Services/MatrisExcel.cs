@@ -11,7 +11,11 @@ public static class MatrisExcel
     private static readonly string[] GunAd = { "Pzt", "Sal", "Çar", "Per", "Cum", "Cmt", "Paz" };
 
     /// <summary>Matris satırlarından (sicil, ad, bolum, hucreler_json) çalışma sayfası verisi: başlık + her kişi için bir satır.</summary>
-    public static List<List<string>> Tablo(DateTime pazartesi, IEnumerable<(string Sicil, string Ad, string Bolum, string? HucrelerJson)> kisiler)
+    public static List<List<string>> Tablo(DateTime pazartesi, IEnumerable<(string Sicil, string Ad, string Bolum, string? HucrelerJson)> kisiler) =>
+        Tablo(pazartesi, kisiler.Select(k => (k.Sicil, k.Ad, k.Bolum, k.HucrelerJson, (string?)null)));
+
+    /// <summary>İzin ve rapor günleri de (izinler_json) ilgili gün hücresine eklenir.</summary>
+    public static List<List<string>> Tablo(DateTime pazartesi, IEnumerable<(string Sicil, string Ad, string Bolum, string? HucrelerJson, string? IzinlerJson)> kisiler)
     {
         var tablo = new List<List<string>>();
         var baslik = new List<string> { "Sicil", "Personel", "Bölüm" };
@@ -32,6 +36,19 @@ public static class MatrisExcel
                     if (idx < 0 || idx > 6) continue;
                     var dilim = S(h, "zaman") switch { "OO" => "ÖÖ", "OS" => "ÖS", _ => "Tam gün" };
                     gunler[idx].Add(dilim + ": " + S(h, "ana") + " › " + S(h, "faaliyet") + " (" + S(h, "kod") + ")");
+                }
+            }
+            if (!string.IsNullOrWhiteSpace(k.IzinlerJson))
+            {
+                using var doc2 = JsonDocument.Parse(k.IzinlerJson);
+                foreach (var h in doc2.RootElement.EnumerateArray())
+                {
+                    if (!DateTime.TryParseExact(S(h, "tarih"), "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.None, out var t)) continue;
+                    var idx = (int)(t.Date - pazartesi.Date).TotalDays;
+                    if (idx < 0 || idx > 6) continue;
+                    var dilim = S(h, "zaman") switch { "OO" => "ÖÖ", "OS" => "ÖS", _ => "Tam gün" };
+                    var ad = S(h, "tur") == "RAPOR" ? "Rapor" : S(h, "durum") == "BEKLIYOR" ? "İzin (onay bekliyor)" : "İzin";
+                    gunler[idx].Add(dilim + ": " + ad + " (" + S(h, "kod") + ")");
                 }
             }
             for (var i = 0; i < 7; i++) satir.Add(string.Join("\n", gunler[i]));

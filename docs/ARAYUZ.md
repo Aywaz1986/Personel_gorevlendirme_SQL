@@ -60,3 +60,21 @@ Yeni hata eşlemesi: sunucu 50022/50023 → `yetki`; 50020/50021/50024/50025 →
 | `eskiVeriDenetle` | `maskele?` (varsayılan true) | `{iptal:true}` ya da `{iptal:false, dosya, sayilar, metin}` | ✔ | Dilim 3b. Yalnız Merkez Yönetici (kadro listesi sunucuda reddeder). STA dosya seçim penceresi açar, `.db`yi SALT OKUNUR okur, hiçbir şey yazmaz. `metin` düz rapor, `sayilar` ekran özeti |
 
 Girdi sütunları (başlık yoksa sıra): Tarih; Ad; Zaman dilimi; Tür (son ikisi isteğe bağlı: Tüm gün, Resmi tatil). Başlık varsa sütunlar adından bulunur. Tarih biçimleri: gg.aa.yyyy, yyyy-aa-gg, gg/aa/yyyy.
+
+## Dilim 7 komutları (izin, rapor, kişisel görev)
+| Komut | Girdi | Çıktı | Yetki | Not |
+|---|---|---|---|---|
+| `izinKaydet` | `sicil?` (vekaleten), `tur, aciklama?, gunler[{tarih, zaman}], karar?` (`REDDET`/`CIKAR`) | `{id, kod, durum}` | herkes (kayıtlı) | Yönetici: anında ONAYLANDI; çakışan atamada `REDDET` → hata kodu `cakisma` (50030); diğerleri ONAY_BEKLIYOR + Yöneticiye bildirim |
+| `izinOnayla` | `id, karar?` | `{id, durum, cikarilan}` | Yönetici | çakışmada `cakisma`; `CIKAR` atamadan çıkarır + sorumluya bildirim |
+| `izinReddet` | `id, neden` (≥3) | `{tamam}` | Yönetici | |
+| `izinGeriCek` | `id` | `{tamam}` | sahibi (ONAY_BEKLIYOR); Yönetici ONAYLANDI da | |
+| `izinKisalt` | `id, yeniSon` | `{tamam}` | Yönetici | kalan gün yoksa GERI_CEKILDI |
+| `izinListe` | `durum?, sicil?` | `[{id, kod, sicil, ad, bolum, durum, tur, aciklama, vekaleten, retNedeni, ilkTarih, sonTarih, gunSayisi, cakisanAtama, gunler[]}]` | herkes | Yönetici hepsini, diğerleri kendi kayıtlarını görür |
+| `raporEvrakSec` | – | `{iptal, yol?, ad?, boyut?}` | herkes | açma penceresi (STA); PDF/JPG/PNG ≤10 MB |
+| `raporKaydet` | `sicil?, ilkTarih, sonTarih, aciklama?, evrakYol` | `{id, kod, cakisanAtama}` | herkes | dosya C# tarafında okunur, tür imzadan doğrulanır; izin günleri iptal, çakışan atama durur + bildirim |
+| `raporIptal` | `id, neden` (≥3) | `{tamam}` | sahibi / Yönetici | |
+| `raporListe` | `sicil?, iptalDahil?` | `[{id, kod, ..., evrakAdi, evrakBoyut, cakisanAtama}]` | herkes | evrak baytı dönmez |
+| `raporEvrakKaydet` | `id` | `{iptal, yol?}` | sahibi / Yönetici | kayıt penceresi |
+| `gorevlerim` | `bas?, bit?` | `[{tarih, zaman, kod, ana, alt, faaliyet, konum, saat, sorumlu}]` | herkes | kendi AKTIF atamaları (varsayılan −14/+90 gün) |
+
+`matrisHafta` satırına `izinler[{tarih, zaman, tur (IZIN/RAPOR), durum, kod}]` eklendi.

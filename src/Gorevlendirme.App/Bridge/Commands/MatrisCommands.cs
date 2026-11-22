@@ -42,7 +42,7 @@ public static class MatrisCommands
             var satirlar = await sql.ProcAsync("gorev.sp_matris_hafta", ("@bas", bas), ("@bolum", OptS(a, "bolum")), ("@ana", OptS(a, "ana")), ("@q", OptS(a, "q")), ("@sadece_gorevli", OptB(a, "sadeceGorevli", true)));
             var pzt = DateTime.ParseExact(bas, "yyyy-MM-dd", null).Date;
             pzt = pzt.AddDays(-(((int)pzt.DayOfWeek + 6) % 7));
-            var tablo = MatrisExcel.Tablo(pzt, satirlar.Select(r => (Convert.ToString(r["sicil_no"]) ?? "", Convert.ToString(r["adi_soyadi"]) ?? "", Convert.ToString(r["bolum"]) ?? "", r["hucreler_json"] as string)));
+            var tablo = MatrisExcel.Tablo(pzt, satirlar.Select(r => (Convert.ToString(r["sicil_no"]) ?? "", Convert.ToString(r["adi_soyadi"]) ?? "", Convert.ToString(r["bolum"]) ?? "", r["hucreler_json"] as string, r["izinler_json"] as string)));
             var yol = await KayitYoluAsync("haftalik-matris-" + pzt.ToString("yyyy-MM-dd") + ".xlsx");
             if (yol == null) return (object?)new { iptal = true };
             await File.WriteAllBytesAsync(yol, MatrisExcel.Xlsx(tablo));
