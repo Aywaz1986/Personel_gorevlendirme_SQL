@@ -27,4 +27,4 @@ Ayrıntı: `docs/DILIMLER.md`.
 | 7 | İzin ve rapor | evet | `[~]` kodlandı, CI/el sınaması bekliyor |
 | 8 | Revize, iptal, ikame, devir | evet | [~] kodlandı, CI/el sınaması bekliyor |
 | 9 | Analiz ve arşiv | evet | [~] kodlandı, CI/el sınaması bekliyor |
-| 10 | Canlıya geçiş | evet | [ ] |
+| 10 | Canlıya geçiş | evet | [~] kodlandı, CI/el sınaması bekliyor |

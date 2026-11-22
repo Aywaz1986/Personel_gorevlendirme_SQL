@@ -3,6 +3,17 @@
 Her değişiklik önce **Yayınlanmamış** bölümüne yazılır; sürüm yükselince bölüm sürüm başlığına dönüştürülür.
 
 ## Yayınlanmamış
+### Dilim 10 – Canlıya geçiş (2026-11) — DEVAM EDİYOR (dal `dilim-10-canli-gecis`, Dilim 9 dalından; PR sırası #12 → #13 → #14 → bu; Murat testleri Pazartesi 23.11.2026 toplu yapacak)
+**Oturum devir notu (her adımda güncelle; yeni oturum önce buradan devam eder):**
+- Varsayılanlar (Murat'a sorulmadı; Pazartesi teyit): bkz. `docs/DILIMLER.md` Dilim 10.
+- [x] 1. `012_canli_aktarim.sql` (kontrol, ortam_canli, eski_aktar/durum/geri_al) — sunucuda sınanmadı
+- [x] 2. C#: EskiAktarim (planlayıcı), CanliService, CanliCommands (5 komut), BridgeTests
+- [x] 3. Testler: CanliTests (4 SQL), EskiAktarimTests (birim)
+- [x] 4. Arayüz: Sistem "Canlıya geçiş" kartı, Eski veri "Aktarım" kartı
+- [x] 5. `tools/sql/gorev_geri_donus.sql`
+- [x] 6. Belgeler (CANLIYA-GECIS.md, test-dilim-10.md), kılavuz 8.8 + ekran görüntüsü 15
+- [ ] 7. Push, CI, PR (taban dilim-9-analiz)
+
 ### Dilim 9 – Analiz ve arşiv (2026-11) — DEVAM EDİYOR (dal `dilim-9-analiz`, Dilim 8 dalından; PR #12 → #13 → bu sırayla birleşecek; Murat testleri Pazartesi 23.11.2026 toplu yapacak)
 **Oturum devir notu (her adımda güncelle; yeni oturum önce buradan devam eder):**
 - Varsayılanlar (Murat'a sorulmadı; Pazartesi teyit): yalnız AKTIF atamalar; Yönetici tümü / Sorumlu kendi talepleri / Saha yok; izin-rapor sütunları yalnız Yönetici; rapor günü = takvim günü; arşiv = tarihsiz eski görevler + tarih aralığı sorgusu.

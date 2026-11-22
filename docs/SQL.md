@@ -105,3 +105,8 @@ Anahtarlar: her tabloda `INT/BIGINT IDENTITY id`, iş anahtarı ayrı `UNIQUE`, 
 - `011_analiz.sql` sınanmadı (sunucu yok); CI SQL testleri (`AnalizTests`) doğrular.
 - Rapor günü = dönemle kesişen takvim günü sayısı (hafta sonu dahil); izin günü = onaylı izin gün/dilim ağırlığı.
 - Kişi detayında rapor günleri `sys.all_objects` üzerinden sayı üretilerek açılır (en çok 366 gün).
+
+## Dilim 10 notları
+- `012_canli_aktarim.sql` sınanmadı (sunucu yok); CI SQL testleri (`CanliTests`) doğrular. Riskli noktalar: `MERGE … ON 1=0 OUTPUT` ile kimlik eşleme, aktarım havuzunda benzersiz dizin (ust_id, ad) ile "yoksa ekle", geri almada FK sırası.
+- ORTAM=CANLI iken `gorev_sifirla.sql`/`gorev_kaldir.sql` reddeder (§5); geri dönüş `tools/sql/gorev_geri_donus.sql`.
+

@@ -32,7 +32,7 @@ public static class EskiVeriDenetimi
     private static DateOnly PazartesiOf(DateOnly d) => d.AddDays(-(((int)d.DayOfWeek + 6) % 7));
 
     internal static string SicilMaske(string? s) => string.IsNullOrWhiteSpace(s) ? "(yok)" : s.Length <= 2 ? "***" : "***" + s[^2..];
-    private static string SicilAnahtar(string? s) => (s ?? "").Trim().TrimStart('0').ToUpperInvariant();
+    internal static string SicilAnahtar(string? s) => (s ?? "").Trim().TrimStart('0').ToUpperInvariant();
 
     public static EskiVeriRaporu Raporla(EskiVeri v, IReadOnlyList<KadroKisi> kadro, IReadOnlyList<HavuzKaydi> havuz, bool maskele)
     {

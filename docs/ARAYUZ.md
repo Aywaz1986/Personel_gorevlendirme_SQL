@@ -57,6 +57,11 @@ Yeni hata eşlemesi: sunucu 50022/50023 → `yetki`; 50020/50021/50024/50025 →
 | `matrisSurum` | `bas` | `{surum}` | ✔ | haftanın atama `rowversion` + satır sayısı; arayüz 30 sn'de bir sorar |
 | `matrisBolumler` | – | `[bolum]` | ✔ | filtre listesi |
 | `matrisExcel` | `bas, bolum?, ana?, q?, sadeceGorevli?` | `{iptal, yol?, satir?}` | ✔ | kayıt penceresi açar; `.xlsx` (Sicil, Personel, Bölüm, 7 gün) yazar; iptalde `iptal:true` |
+| `canliKontrol` | – | `[{sira, kontrol, zorunlu, tamam, ayrinti}]` | Yönetici | canlıya geçiş kontrol listesi (8 madde) |
+| `canliyaGec` | `onay` (`CANLI`), `minSurum?` | `{tamam}` | Yönetici | zorunlu maddeler tamamsa ORTAM=CANLI (tek yönlü); asgari sürümü ayarlar |
+| `eskiAktarDurum` | – | `{talep, atama, izin, rapor, gecmis, havuz, ortam}` | Yönetici | `kaynak='ESKI_ARAC'` sayıları |
+| `eskiAktar` | – | `{iptal}` ya da `{iptal:false, dosya, ozet, sonuc}` | Yönetici | dosya seçer, planlar, tek işlemde yazar; yalnız TEST; ikinci aktarım reddedilir |
+| `eskiAktarGeriAl` | `onay` (`GERIAL`) | `{tamam}` | Yönetici | yalnız eski araç kayıtlarını siler; yalnız TEST |
 | `eskiVeriDenetle` | `maskele?` (varsayılan true) | `{iptal:true}` ya da `{iptal:false, dosya, sayilar, metin}` | ✔ | Dilim 3b. Yalnız Merkez Yönetici (kadro listesi sunucuda reddeder). STA dosya seçim penceresi açar, `.db`yi SALT OKUNUR okur, hiçbir şey yazmaz. `metin` düz rapor, `sayilar` ekran özeti |
 
 Girdi sütunları (başlık yoksa sıra): Tarih; Ad; Zaman dilimi; Tür (son ikisi isteğe bağlı: Tüm gün, Resmi tatil). Başlık varsa sütunlar adından bulunur. Tarih biçimleri: gg.aa.yyyy, yyyy-aa-gg, gg/aa/yyyy.

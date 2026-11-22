@@ -49,3 +49,6 @@ Kurulumdan sonra SSMS'te `db_owner` ile `tools/sql/gorev_ilk_yonetici.sql` bir k
 Proje havuzu ve takvim: **okuma** her rolde (rolü olan), **yazma** yalnız Merkez Yönetici (`fn_yonetici_mi`). Rolü olmayan kişi okuyamaz (50023). Tatil gününe atama engellenmez; Dilim 5'te yöneticiye uyarı çıkar.
 
 > Dilim 9 (analiz): Yönetici tüm atamaları; Proje Sorumlusu yalnız kendi taleplerinin atamalarını görür; Saha analiz ekranını kullanamaz. İzin ve rapor sütunları yalnız Yönetici'ye gelir.
+
+> Dilim 10 (canlıya geçiş): `sp_canli_kontrol`, `sp_ortam_canli`, `sp_eski_aktar*` yalnız Merkez Yönetici (yetki 50023). Aktarım/geri alma yalnız TEST ortamında. CANLI → TEST dönüşü yalnız `db_owner`'ın elle çalıştırdığı `gorev_geri_donus.sql` ile.
+
