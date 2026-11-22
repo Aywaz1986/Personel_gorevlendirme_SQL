@@ -14,9 +14,11 @@ Bağlanabilmek yetki değildir. `gorev.personel`'de aktif kaydı olmayan veya hi
 ## Matris (özet)
 | İşlem | Yönetici | Sorumlu | Saha |
 |---|---|---|---|
-| Talep aç / revize / geri çek / iptal | vekaleten | kendi taleplerinde | – |
+| Talep aç / geri çek | vekaleten | kendi taleplerinde | – |
+| Atanmış talepte revize isteği, erken bitiş, iptal | doğrudan uygular | kendi talebinde (revize Yönetici onayıyla) | – |
+| Revize onay/ret, atamadan çıkarma, ikame | ✔ | – | – |
 | Talep listesi, personel arama (öneri için) | hepsi | yalnız kendi talepleri | yok (`yetki`) |
-| Talep onay/ret, atama, ikame, sorumlu devri | ✔ | – | – |
+| Talep onay/ret, atama, sorumlu devri | ✔ | – | – |
 | Çakışmada karar (vazgeç / çakışandan çıkar ve ata) | ✔ | – | – |
 | Havuz yönetimi, akademik takvim/tatil | ✔ | – | – |
 | İzin talebi / geri çekme | vekaleten (anında onaylı); onaylı izni geri çekebilir | kendi izni (ONAY_BEKLIYOR iken geri çeker) | kendi izni (aynı) |

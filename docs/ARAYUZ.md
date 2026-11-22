@@ -78,3 +78,18 @@ Girdi sütunları (başlık yoksa sıra): Tarih; Ad; Zaman dilimi; Tür (son iki
 | `gorevlerim` | `bas?, bit?` | `[{tarih, zaman, kod, ana, alt, faaliyet, konum, saat, sorumlu}]` | herkes | kendi AKTIF atamaları (varsayılan −14/+90 gün) |
 
 `matrisHafta` satırına `izinler[{tarih, zaman, tur (IZIN/RAPOR), durum, kod}]` eklendi.
+
+## Dilim 8 komutları (iptal, erken bitiş, ikame, revize, devir)
+| Komut | Girdi | Çıktı | Yetki | Not |
+|---|---|---|---|---|
+| `talepIptal` | `id, neden` (≥3) | `{tamam}` | Yönetici; Sorumlu kendi talebi | yalnız KISMEN/TAMAMEN_ATANDI ve geçmiş günü AKTIF atama yoksa; atamalar kalkar, kişilere `GOREV_IPTAL` bildirimi |
+| `talepErkenBitir` | `id, yeniSon, neden` | `{talepId, durum}` | Yönetici; Sorumlu kendi talebi | yeni son gün sonrası gün ve atamalar kalkar (`ERKEN_BITIS` bildirimi) |
+| `atamaCikar` | `talepId, sicil, tarih?, zaman?, neden` | `{talepId, durum, cikarilan}` | Yönetici | tarih boşsa kişinin tüm aktif atamaları |
+| `atamaIkame` | `talepId, eski, yeni, bastan?, karar?, neden?` | `{talepId, durum, degisen, cikarilan, uyari}` | Yönetici | çakışmada `REDDET` → `cakisma` (50030); `CIKAR`; izin/rapor `izin_rapor` |
+| `sorumluDevret` | `talepId, yeniSicil, neden?` | `{tamam}` | Yönetici | kapanmış talepte yok; her iki sorumluya bildirim |
+| `sorumluDevirListe` | `talepId` | `[{id, eski, yeni, neden, hesap, tarih}]` | Yönetici; Sorumlu kendi talebi | |
+| `revizeIste` | `talepId, gorevMetni?, nitelik?, saatBaslangic?, saatBitis?, gunler?[{tarih, zaman, kisi}], neden?` | `{id, kod, durum}` | Yönetici (anında uygular); Sorumlu kendi talebi (BEKLIYOR) | bir talepte tek bekleyen revize; boş alan değişmez |
+| `revizeOnayla` | `id` | `{id, durum}` | Yönetici | atanmış kişiden az kişi sayısı / atanmış gün kaldırma → `dogrulama`, revize bekler |
+| `revizeReddet` | `id, neden` (≥3) | `{tamam}` | Yönetici | |
+| `revizeGeriCek` | `id` | `{tamam}` | isteyen Sorumlu / Yönetici | |
+| `revizeListe` | `talepId?, durum?` | `[{id, kod, talepId, talepKod, durum, isteyen, neden, gorevMetni, nitelik, saatBaslangic, saatBitis, gunler[], tarih, retNedeni}]` | Yönetici hepsi; Sorumlu kendi talepleri | |

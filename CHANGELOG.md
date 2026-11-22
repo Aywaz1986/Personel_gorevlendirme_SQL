@@ -3,6 +3,16 @@
 Her değişiklik önce **Yayınlanmamış** bölümüne yazılır; sürüm yükselince bölüm sürüm başlığına dönüştürülür.
 
 ## Yayınlanmamış
+### Dilim 8 – Revize, iptal, ikame, devir (2026-11) — DEVAM EDİYOR (dal `dilim-8-revize-ikame`; Dilim 7 PR #12 CI yeşil, birleştirme Murat'ta; Murat testleri Pazartesi 23.11.2026 toplu yapacak)
+**Oturum devir notu (her adımda güncelle; yeni oturum önce buradan devam eder):**
+- Kararlar (Murat'a sorulmadı, varsayılan; Pazartesi teyit): iptal yalnız hiç günü geçmemiş atanmış talepte, başlamışsa erken bitiş; ikame çakışmada Dilim 5/7 karar kutusu; revize Sorumlu ister / Yönetici onaylar (Yönetici doğrudan uygular); atanmış kişiden az kişi sayısı onaylanamaz.
+- [x] 1. `010_revize_ikame.sql` (sorumlu_devir, revize_talepleri, 11 yordam) — sunucuda sınanmadı
+- [x] 2. C#: RevizeService, RevizeCommands (11 komut), MainForm kaydı, BridgeTests, SqlTests csproj
+- [x] 3. Testler: RevizeTests (4 SQL)
+- [x] 4. Arayüz `004_revize.js` (Yönet… paneli) + talep listesi düğmesi; ekran görüntüsü 13
+- [x] 5. Belgeler, test-dilim-8.md, kılavuz 8.6
+- [ ] 6. Push, CI, PR (Dilim 7 birleşince base main), Murat'ın el sınaması (`docs/test-dilim-8.md`)
+
 ### Dilim 7 – İzin ve rapor (2026-11) — DEVAM EDİYOR (dal `dilim-7-izin-rapor`; Dilim 6 PR #11 birleştirme Murat'ta)
 **Oturum devir notu (her adımda güncelle; yeni oturum önce buradan devam eder):**
 - Kararlar (Murat, 21.11.2026): rapor kaydedilir, çakışan atama durur + Yönetici uyarılır; izin onayında çakışmayı Yönetici seçer (vazgeç / çakışandan çıkar). Rapor izinden önceliklidir. Murat testleri Pazartesi (23.11.2026) toplu yapacak.

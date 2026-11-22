@@ -90,3 +90,8 @@ Onay/atama yordamları `SERIALIZABLE` + `UPDLOCK`: aynı personel, aynı gün ve
 - Rapor kazanır: kayıt anında aralıktaki izin günleri IPTAL olur. Çakışan atamalar otomatik silinmez; Yöneticiye "ikame gerekli" bildirimi gider.
 - Evrak yolu: arayüz dosya yolunu (`raporEvrakSec`) taşır, baytları C# okur (`IzinRaporService.EvrakTuru`: uzantı + dosya imzası + boyut).
 - `matrisSurum` izin/rapor değişimini de içerir; matris izinleri gri, raporu kırmızı blok gösterir.
+
+## Revize, iptal, ikame (Dilim 8)
+- `revize_talepleri` (tek bekleyen revize/talep), `sorumlu_devir` (geçmiş). Yazma `EXECUTE AS OWNER` yordamlarla; `sp_revize_uygula` içsel ortak uygulama mantığıdır.
+- İkame, eski kişinin atamalarını kapatıp `sp_atama_onayla`yı çağırır; kapasite, çakışma kararı ve izin/rapor tetikleyicisi tek yerde kalır. `REDDET` çakışması iç yordam çağrılmadan önce 50030 ile denetlenir.
+- İptal yalnız hiç günü geçmemiş talepte; başlamış görev "erken bitiş" ile kısaltılır. Atamalar silinmez, `CIKARILDI` olur (neden ve çıkaran kaydıyla).
