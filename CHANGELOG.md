@@ -11,7 +11,7 @@ Her değişiklik önce **Yayınlanmamış** bölümüne yazılır; sürüm yüks
 - [x] 3. Testler: AnalizTests (2 SQL), AnalizTabloTests (3 birim)
 - [x] 4. Arayüz `004_analiz.js` (Analiz sayfası, menü Yönetici+Sorumlu); ekran görüntüsü 14
 - [x] 5. Belgeler, test-dilim-9.md, kılavuz 8.7
-- [ ] 6. Push, CI, PR (taban dilim-8-revize-ikame), Murat'ın el sınaması (`docs/test-dilim-9.md`)
+- [x] 6. Push, CI yeşil (4/4), PR #14 açıldı (taban dilim-8-revize-ikame). Murat'ın el sınaması (`docs/test-dilim-9.md`)
 
 ### Dilim 8 – Revize, iptal, ikame, devir (2026-11) — DEVAM EDİYOR (dal `dilim-8-revize-ikame`; Dilim 7 PR #12 CI yeşil, birleştirme Murat'ta; Murat testleri Pazartesi 23.11.2026 toplu yapacak)
 **Oturum devir notu (her adımda güncelle; yeni oturum önce buradan devam eder):**
