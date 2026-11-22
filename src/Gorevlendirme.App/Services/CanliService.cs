@@ -1,3 +1,5 @@
+namespace Gorevlendirme;
+
 /// <summary>Canlıya geçiş ve eski veri aktarımı sunucu çağrıları (Dilim 10, 012_canli_aktarim.sql). Yetkiyi (Merkez Yönetici) ve TEST/CANLI kurallarını sunucu denetler.</summary>
 public static class CanliService
 {
