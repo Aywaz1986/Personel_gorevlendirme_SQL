@@ -14,7 +14,7 @@ async function izinTatiller() {
 async function izinRaporSayfa() {
   const yon = S.gorunum === 'YONETICI', saha = S.gorunum === 'SAHA';
   const d = { gorev: [], izin: [], rapor: [], tatiller: [], bildirim: [], cakisma: null, vek: null, rapForm: { vek: null, evrak: null },
-    iF: { tur: IZIN_TURLERI[0], bas: '', bit: '', zaman: 'TAM', atla: true, aciklama: '' }, rF: { bas: '', bit: '', aciklama: '' }, retId: null, rapIptalId: null, kisaltId: null };
+    iF: { tur: IZIN_TURLERI[0], bas: '', bit: '', zaman: 'TAM', atla: true, aciklama: '' }, rF: { bas: '', bit: '', aciklama: '' }, retId: null, rapIptalId: null, kisaltId: null, ilet: {} };
   const kap = h('div', { style: 'display:flex;flex-direction:column;gap:14px;min-width:0' });
 
   async function yukle() {
@@ -26,6 +26,8 @@ async function izinRaporSayfa() {
       ciz();
     } catch (e) { hata(e); }
   }
+
+  S.yenile = yukle;
 
   function personSec(anahtar) {
     const cs = anahtar === 'izin' ? d : d.rapForm;
@@ -43,18 +45,27 @@ async function izinRaporSayfa() {
       h('ul', { style: 'margin:6px 0 0;padding-left:18px' }, d.bildirim.map((b) => h('li', null, b.mesaj + ' ', h('span', { class: 'alt', style: 'color:inherit;opacity:.8' }, b.tarih)))));
   }
 
+  function iletisimBlok(i) {
+    const tel = (g) => g ? h('a', { href: 'tel:' + String(g).replace(/\s+/g, ''), style: 'margin-left:6px' }, g) : h('span', { class: 'alt', style: 'margin-left:6px' }, 'telefon kayıtlı değil');
+    return h('div', null, i.sahaNotu ? h('div', { style: 'white-space:pre-wrap;margin-bottom:4px' }, h('b', null, 'Saha / Operasyon Notu: '), i.sahaNotu) : h('div', { class: 'alt' }, 'Bu talep için saha notu girilmemiş.'),
+      h('div', null, h('b', null, 'Proje Sorumlusu: '), i.sorumluAd, tel(i.sorumluGsm)));
+  }
+
   function gorevBolumu() {
     if (!saha) return null;
     const satirlar = d.gorev;
     return h('section', { class: 'kart' }, h('h2', null, 'Görevlerim'), h('div', { class: 'alt', style: 'margin-bottom:8px' }, 'Son 14 gün ve önümüzdeki 90 gün.'),
       satirlar.length ? h('div', { style: 'overflow:auto' }, h('table', { style: 'border-collapse:collapse;width:100%' },
-        h('thead', null, h('tr', null, ['Tarih', 'Dilim', 'Proje / faaliyet', 'Konum · saat', 'Sorumlu'].map((x) => h('th', { style: 'text-align:left;padding:6px 8px;border-bottom:1px solid var(--cizgi)' }, x)))),
-        h('tbody', null, satirlar.map((g) => h('tr', null,
+        h('thead', null, h('tr', null, ['Tarih', 'Dilim', 'Proje / faaliyet', 'Konum · saat', 'Sorumlu', 'Not · iletişim'].map((x) => h('th', { style: 'text-align:left;padding:6px 8px;border-bottom:1px solid var(--cizgi)' }, x)))),
+        h('tbody', null, satirlar.flatMap((g) => [h('tr', null,
           h('td', { style: 'padding:6px 8px;border-bottom:1px solid var(--cizgi);white-space:nowrap' }, takvimTarihYaz(g.tarih)),
           h('td', { style: 'padding:6px 8px;border-bottom:1px solid var(--cizgi)' }, atamaTamAd(g.zaman)),
           h('td', { style: 'padding:6px 8px;border-bottom:1px solid var(--cizgi)' }, h('b', null, g.ana), ' › ' + g.alt + ' › ' + g.faaliyet, h('div', { class: 'alt' }, g.kod)),
           h('td', { style: 'padding:6px 8px;border-bottom:1px solid var(--cizgi)' }, (g.konum || '') + ' · ' + (g.saat || '')),
-          h('td', { style: 'padding:6px 8px;border-bottom:1px solid var(--cizgi)' }, g.sorumlu)))))) : h('div', { style: 'color:var(--soluk)' }, 'Bu dönemde size atanmış görev yok.'));
+          h('td', { style: 'padding:6px 8px;border-bottom:1px solid var(--cizgi)' }, g.sorumlu),
+          h('td', { style: 'padding:6px 8px;border-bottom:1px solid var(--cizgi)' }, h('button', { type: 'button', onclick: async () => {
+            try { if (d.ilet[g.talepId]) delete d.ilet[g.talepId]; else d.ilet[g.talepId] = await Kopru.cagir('talepIletisim', { talepId: g.talepId }); ciz(); } catch (e) { hata(e); } } }, d.ilet[g.talepId] ? 'Gizle' : 'Göster'))),
+          d.ilet[g.talepId] ? h('tr', null, h('td', { colspan: '6', style: 'padding:6px 8px;border-bottom:1px solid var(--cizgi)' }, iletisimBlok(d.ilet[g.talepId]))) : null].filter(Boolean))))) : h('div', { style: 'color:var(--soluk)' }, 'Bu dönemde size atanmış görev yok.'));
   }
 
   function cakismaKutusu() {

@@ -30,6 +30,7 @@ Ayrıntı: [`docs/PLAN.md`](docs/PLAN.md), dilim içerikleri: [`docs/DILIMLER.md
 | 8 | **Revize, iptal, ikame, devir**: görev iptali, erken bitiş, atamadan çıkarma, ikame (personel değiştirme), revize isteği/onayı (metin, saat, kişi sayısı), sorumlu devri | dal `dilim-8-revize-ikame` (kodlandı; CI, el sınaması bekliyor) |
 | 9 | **Analiz ve arşiv**: ana proje bazlı adam-gün, personel analizi (izin/rapor dahil), kişi detayı, tarihsiz geçmiş görevler arşivi, Excel'e aktarma | dal `dilim-9-analiz` (kodlandı; CI, el sınaması bekliyor) |
 | 10 | **Canlıya geçiş**: canlı kontrol listesi + tek yönlü `sp_ortam_canli`, eski veri gerçek aktarımı (geri alınabilir), geri dönüş betiği, tam fonksiyon testi | dal `dilim-10-canli-gecis` (kodlandı; CI, el sınaması bekliyor) |
+| 11 | **Senaryo tamamlama**: Saha / Operasyon Notu (nitelik yerine), talep iletişim (telefon), aday özeti, müsait/tatil analizi, yerleşke filtresi, ikame bekleyen kutusu, menü rozetleri, 30 sn yenileme, standart evrak adı | dal `dilim-11-senaryo-tamamlama` (kodlandı; CI, el sınaması bekliyor) |
 
 ## Belgeler
 | Dosya | İçerik |

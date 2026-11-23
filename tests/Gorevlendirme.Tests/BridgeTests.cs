@@ -42,6 +42,7 @@ public class BridgeTests
         RevizeCommands.Register(r);
         AnalizCommands.Register(r);
         CanliCommands.Register(r);
+        SenaryoCommands.Register(r);
         foreach (var k in new[] { "ping", "runtime", "baglantiDene", "baglan", "baglantiKapat", "surumDurum", "semaDurum", "semaUygula", "sunucuDenetimi",
                                   "ben", "kadroOzet", "kadroListe", "kadroEsitle", "eslestirmeListe", "eslestirmeKaydet", "istisnaListe", "istisnaKaydet", "istisnaSil",
                                   "havuzListe", "havuzEkle", "havuzAdlandir", "havuzDurum", "havuzBirlestir", "takvimListe", "takvimOzet", "takvimKaydet", "takvimSil",
@@ -52,7 +53,7 @@ public class BridgeTests
                                   "izinKaydet", "izinOnayla", "izinReddet", "izinGeriCek", "izinKisalt", "izinListe", "raporEvrakSec", "raporKaydet", "raporIptal", "raporListe", "raporEvrakKaydet", "gorevlerim",
                                   "talepIptal", "talepErkenBitir", "atamaCikar", "atamaIkame", "sorumluDevret", "sorumluDevirListe", "revizeIste", "revizeOnayla", "revizeReddet", "revizeGeriCek", "revizeListe",
                                   "analizAnaProjeler", "analizProje", "analizPersonel", "analizPersonelDetay", "arsivGecmis", "analizExcel",
-                                  "canliKontrol", "canliyaGec", "eskiAktarDurum", "eskiAktar", "eskiAktarGeriAl" })
+                                  "canliKontrol", "canliyaGec", "eskiAktarDurum", "eskiAktar", "eskiAktarGeriAl", "talepIletisim", "sayaclar", "ikameBekleyenler" })
             Assert.NotNull(r.Find(k));
         foreach (var k in new[] { "ben", "kadroListe", "kadroEsitle", "istisnaKaydet", "havuzEkle", "takvimUygula", "eskiVeriDenetle", "talepKaydet", "talepGeriCek", "atamaOnayla", "talepReddet", "matrisHafta", "matrisExcel", "izinKaydet", "izinOnayla", "raporKaydet", "gorevlerim", "talepIptal", "atamaIkame", "revizeIste", "analizProje", "analizExcel", "canliyaGec", "eskiAktar" })
             Assert.True(r.Find(k)!.KapiGerekli);   // iş komutları sürüm kapısına tabidir

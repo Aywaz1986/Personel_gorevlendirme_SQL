@@ -52,3 +52,6 @@ Proje havuzu ve takvim: **okuma** her rolde (rolü olan), **yazma** yalnız Merk
 
 > Dilim 10 (canlıya geçiş): `sp_canli_kontrol`, `sp_ortam_canli`, `sp_eski_aktar*` yalnız Merkez Yönetici (yetki 50023). Aktarım/geri alma yalnız TEST ortamında. CANLI → TEST dönüşü yalnız `db_owner`'ın elle çalıştırdığı `gorev_geri_donus.sql` ile.
 
+
+## Dilim 11 – Telefon ve saha notu görünürlüğü
+`sp_talep_iletisim`: Yönetici her talebi; Sorumlu yalnız kendi talebini; Saha yalnız kendisine aktif atanmış talebi görür (saha notu + Proje Sorumlusu telefonu). Atananların telefonları yalnız Yönetici ve talebin Sorumlusuna, ve yalnız aktif atama varken gelir. Başkası için 50023 (yetki). `sp_sayaclar` ve `sp_ikame_bekleyenler` rol kapsamıyla sınırlıdır; `musait_gun` yalnız Yönetici.

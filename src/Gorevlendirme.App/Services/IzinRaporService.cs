@@ -74,7 +74,7 @@ public static class IzinRaporService
     public static async Task<(byte[] Veri, string Ad)> RaporEvrakAsync(SqlService sql, int id)
     {
         var r = (await sql.ProcAsync("gorev.sp_rapor_evrak", ("@id", id))).First();
-        return (r["evrak"] as byte[] ?? Array.Empty<byte>(), Convert.ToString(r["evrak_adi"]) ?? "rapor");
+        return (r["evrak"] as byte[] ?? Array.Empty<byte>(), (r.TryGetValue("standart_ad", out var sa) && sa is string st && st.Length > 0 ? st : Convert.ToString(r["evrak_adi"])) ?? "rapor");
     }
 
     public static async Task<object> GorevlerimAsync(SqlService sql, string? bas, string? bit) =>

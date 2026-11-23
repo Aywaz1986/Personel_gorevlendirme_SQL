@@ -23,11 +23,14 @@ public class AnalizTabloTests
         var r = Satir(("sicil_no", "1002"), ("adi_soyadi", "Ahmet Sümbül"), ("bolum", "Teknik"), ("adam_gun", 1.5m), ("gun", 2), ("proje", 1), ("izin_gun", 1.0m), ("rapor_gun", 3),
             ("projeler_json", "[{\"ana\":\"Toroman\",\"adam_gun\":1.5}]"));
         var y = AnalizService.PersonelTablo(new[] { r }, true);
-        Assert.Equal(9, y[0].Count);
-        Assert.Equal("Toroman (1.5)", y[1][8]);
+        Assert.Equal(12, y[0].Count);
+        Assert.Equal("Toroman (1.5)", y[1][11]);
+        Assert.Contains("Müsait gün", y[0]);
+        Assert.Contains("Tatilde çalışma (gün)", y[0]);
         Assert.Equal("3", y[1][7]);
         var s = AnalizService.PersonelTablo(new[] { r }, false);
-        Assert.Equal(7, s[0].Count);
+        Assert.Equal(9, s[0].Count);
+        Assert.DoesNotContain("Müsait gün", s[0]);
         Assert.DoesNotContain("İzin (gün)", s[0]);
     }
 

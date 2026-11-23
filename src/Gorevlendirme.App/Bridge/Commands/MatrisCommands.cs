@@ -32,14 +32,14 @@ public static class MatrisCommands
 
     public static void Register(CommandRegistry r)
     {
-        r.Register("matrisHafta", async (st, a) => await MatrisService.HaftaAsync(st.RequireSql, Args.S(a, "bas"), OptS(a, "bolum"), OptS(a, "ana"), OptS(a, "q"), OptB(a, "sadeceGorevli", true)), kapiGerekli: true);
+        r.Register("matrisHafta", async (st, a) => await MatrisService.HaftaAsync(st.RequireSql, Args.S(a, "bas"), OptS(a, "bolum"), OptS(a, "ana"), OptS(a, "q"), OptB(a, "sadeceGorevli", true), OptS(a, "konum")), kapiGerekli: true);
         r.Register("matrisSurum", async (st, a) => (object?)new { surum = await MatrisService.SurumAsync(st.RequireSql, Args.S(a, "bas")) }, kapiGerekli: true);
         r.Register("matrisBolumler", async (st, a) => await MatrisService.BolumlerAsync(st.RequireSql), kapiGerekli: true);
         r.Register("matrisExcel", async (st, a) =>
         {
             var sql = st.RequireSql;
             var bas = Args.S(a, "bas");
-            var satirlar = await sql.ProcAsync("gorev.sp_matris_hafta", ("@bas", bas), ("@bolum", OptS(a, "bolum")), ("@ana", OptS(a, "ana")), ("@q", OptS(a, "q")), ("@sadece_gorevli", OptB(a, "sadeceGorevli", true)));
+            var satirlar = await sql.ProcAsync("gorev.sp_matris_hafta", ("@bas", bas), ("@bolum", OptS(a, "bolum")), ("@ana", OptS(a, "ana")), ("@q", OptS(a, "q")), ("@sadece_gorevli", OptB(a, "sadeceGorevli", true)), ("@konum", OptS(a, "konum")));
             var pzt = DateTime.ParseExact(bas, "yyyy-MM-dd", null).Date;
             pzt = pzt.AddDays(-(((int)pzt.DayOfWeek + 6) % 7));
             var tablo = MatrisExcel.Tablo(pzt, satirlar.Select(r => (Convert.ToString(r["sicil_no"]) ?? "", Convert.ToString(r["adi_soyadi"]) ?? "", Convert.ToString(r["bolum"]) ?? "", r["hucreler_json"] as string, r["izinler_json"] as string)));

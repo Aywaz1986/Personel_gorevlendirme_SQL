@@ -10,6 +10,7 @@ async function analizSayfa() {
   const th = (x, sag) => h('th', { style: 'text-align:' + (sag ? 'right' : 'left') + ';padding:6px 8px;border-bottom:1px solid var(--cizgi);white-space:nowrap' }, x);
   const td = (x, sag, kalin) => h('td', { style: 'padding:6px 8px;border-bottom:1px solid var(--cizgi);' + (sag ? 'text-align:right;' : '') + (kalin ? 'font-weight:600;background:var(--vurgu-bg)' : '') }, x);
 
+  S.yenile = () => yukle();
   async function yukle() {
     d.yuk = true; ciz();
     try {
@@ -56,10 +57,11 @@ async function analizSayfa() {
     ara.addEventListener('keydown', (e) => { if (e.key === 'Enter') { d.q = ara.value; yukle(); } });
     const bol = h('select', { 'aria-label': 'Bölüm', onchange: (e) => { d.bolum = e.target.value; yukle(); } }, h('option', { value: '' }, 'Tüm bölümler'), d.bolumler.map((x) => h('option', { value: x, selected: x === d.bolum }, x)));
     const tablo = d.kisiler.length ? h('div', { style: 'overflow:auto' }, h('table', { style: 'border-collapse:collapse;width:100%' },
-      h('thead', null, h('tr', null, th('Ad soyad'), th('Bölüm'), th('Adam-gün', true), th('Görev günü', true), th('Proje', true), yon ? th('İzin (gün)', true) : null, yon ? th('Rapor (gün)', true) : null, th('Projeler'))),
+      h('thead', null, h('tr', null, th('Ad soyad'), th('Bölüm'), th('Adam-gün', true), th('Görev günü', true), th('Proje', true), yon ? th('İzin (gün)', true) : null, yon ? th('Rapor (gün)', true) : null, yon ? th('Müsait gün', true) : null, th('Tatil günü', true), th('Tatilde çalışma', true), th('Projeler'))),
       h('tbody', null, d.kisiler.map((k) => h('tr', { style: 'cursor:pointer', onclick: async () => { try { d.detay = { k, satirlar: await Kopru.cagir('analizPersonelDetay', { sicil: k.sicil, bas: d.bas, bit: d.bit }) }; ciz(); } catch (e) { hata(e); } } },
         td(k.ad + ' (' + k.sicil + ')'), td(k.bolum || ''), td(analizSayi(k.adamGun), true), td(String(k.gun), true), td(String(k.proje), true),
         yon ? td(k.izinGun == null ? '' : analizSayi(k.izinGun), true) : null, yon ? td(k.raporGun == null ? '' : String(k.raporGun), true) : null,
+        yon ? td(k.musaitGun == null ? '' : analizSayi(k.musaitGun), true) : null, td(k.tatilGun == null ? '' : analizSayi(k.tatilGun), true), td(k.tatilCalismaGun == null ? '' : analizSayi(k.tatilCalismaGun), true),
         td((k.projeler || []).map((p) => p.ana + ' (' + analizSayi(p.adam_gun) + ')').join('; '))))))) : h('div', { class: 'kart', style: 'color:var(--soluk)' }, 'Bu dönemde kayıt yok.');
     return h('div', { style: 'display:flex;flex-direction:column;gap:10px' }, h('div', { class: 'satir', style: 'align-items:center' }, ara, bol, h('button', { type: 'button', onclick: () => { d.q = ara.value; yukle(); } }, 'Ara')), tablo, detay());
   }

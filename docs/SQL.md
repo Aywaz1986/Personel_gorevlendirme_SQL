@@ -110,3 +110,6 @@ Anahtarlar: her tabloda `INT/BIGINT IDENTITY id`, iş anahtarı ayrı `UNIQUE`, 
 - `012_canli_aktarim.sql` sınanmadı (sunucu yok); CI SQL testleri (`CanliTests`) doğrular. Riskli noktalar: `MERGE … ON 1=0 OUTPUT` ile kimlik eşleme, aktarım havuzunda benzersiz dizin (ust_id, ad) ile "yoksa ekle", geri almada FK sırası.
 - ORTAM=CANLI iken `gorev_sifirla.sql`/`gorev_kaldir.sql` reddeder (§5); geri dönüş `tools/sql/gorev_geri_donus.sql`.
 
+
+## Not (Dilim 11)
+`013` mevcut yordamları `CREATE OR ALTER` ile statik kopya olarak yeniden tanımlar; dinamik SQL kullanılmaz. Sunucuda sınanmadı; CI SqlTests (SenaryoTests) doğrular.

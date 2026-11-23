@@ -28,3 +28,4 @@ Ayrıntı: `docs/DILIMLER.md`.
 | 8 | Revize, iptal, ikame, devir | evet | [~] kodlandı, CI/el sınaması bekliyor |
 | 9 | Analiz ve arşiv | evet | [~] kodlandı, CI/el sınaması bekliyor |
 | 10 | Canlıya geçiş | evet | [~] kodlandı, CI/el sınaması bekliyor |
+| 11 | Senaryo tamamlama | evet | [~] kodlandı, CI/el sınaması bekliyor |

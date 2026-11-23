@@ -33,7 +33,10 @@ public static class AnalizService
             sicil = r["sicil_no"], ad = r["adi_soyadi"], bolum = r["bolum"], adamGun = D(r["adam_gun"]), gun = r["gun"], proje = r["proje"],
             izinGun = r["izin_gun"] is DBNull or null ? (decimal?)null : D(r["izin_gun"]), raporGun = r["rapor_gun"] is DBNull or null ? (int?)null : Convert.ToInt32(r["rapor_gun"]),
             projeler = JsonOku(r["projeler_json"] as string),
+            musaitGun = Opt(r, "musait_gun"), tatilGun = Opt(r, "tatil_gun"), tatilCalismaGun = Opt(r, "tatil_calisma_gun"),
         }).ToList();
+
+    private static decimal? Opt(Dictionary<string, object?> r, string k) => r.TryGetValue(k, out var v) && v is not (null or DBNull) ? D(v) : null;
 
     public static async Task<List<Dictionary<string, object?>>> DetayHamAsync(SqlService sql, string sicil, string bas, string bit) =>
         await sql.ProcAsync("gorev.sp_analiz_personel_detay", ("@sicil", sicil), ("@bas", bas), ("@bit", bit));
@@ -60,16 +63,20 @@ public static class AnalizService
         return t;
     }
 
+    private static object? Al(Dictionary<string, object?> r, string k) => r.TryGetValue(k, out var v) ? v : null;
+
     public static List<List<string>> PersonelTablo(IEnumerable<Dictionary<string, object?>> satirlar, bool izinGoster)
     {
         var baslik = new List<string> { "Sicil", "Ad soyad", "Bölüm", "Adam-gün", "Görev günü", "Proje sayısı" };
-        if (izinGoster) { baslik.Add("İzin (gün)"); baslik.Add("Rapor (takvim günü)"); }
+        if (izinGoster) { baslik.Add("İzin (gün)"); baslik.Add("Rapor (takvim günü)"); baslik.Add("Müsait gün"); }
+        baslik.Add("Tatil günü"); baslik.Add("Tatilde çalışma (gün)");
         baslik.Add("Projeler (adam-gün)");
         var t = new List<List<string>> { baslik };
         foreach (var r in satirlar)
         {
             var s = new List<string> { T(r["sicil_no"]), T(r["adi_soyadi"]), T(r["bolum"]), Sayi(r["adam_gun"]), T(r["gun"]), T(r["proje"]) };
-            if (izinGoster) { s.Add(Sayi(r["izin_gun"])); s.Add(T(r["rapor_gun"] is DBNull or null ? 0 : r["rapor_gun"])); }
+            if (izinGoster) { s.Add(Sayi(r["izin_gun"])); s.Add(T(r["rapor_gun"] is DBNull or null ? 0 : r["rapor_gun"])); s.Add(Sayi(Al(r, "musait_gun"))); }
+            s.Add(Sayi(Al(r, "tatil_gun"))); s.Add(Sayi(Al(r, "tatil_calisma_gun")));
             s.Add(ProjelerMetni(r["projeler_json"] as string));
             t.Add(s);
         }

@@ -163,7 +163,8 @@ public class IzinRaporTests
 
         // evrak: sahibi ve Yönetici açabilir, başkası açamaz; listede boyut ve ad görünür
         var (veri, ad) = await IzinRaporService.RaporEvrakAsync(o.Saha1, rid);
-        Assert.Equal(Pdf, veri); Assert.Equal("rapor.pdf", ad);
+        Assert.Equal(Pdf, veri);
+        Assert.Matches(@"^Ahmet_Sümbül_\d{8}_RPR-\d{4}\.pdf$", ad);      // standart ad: PersonelAdi_Tarih_RaporKodu.uzanti
         await IzinRaporService.RaporEvrakAsync(o.Yonetici, rid);
         Assert.Equal("yetki", await Kod(() => IzinRaporService.RaporEvrakAsync(o.Saha2, rid)));
         Assert.Single(Liste(await IzinRaporService.RaporListeAsync(o.Saha1, null, false)));

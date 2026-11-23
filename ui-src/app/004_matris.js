@@ -13,7 +13,7 @@ function matrisHaftaYazi(bas) {
 
 async function matrisSayfa() {
   const GUN = ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'];
-  const d = { bas: takvimIso(matrisPazartesi(new Date())), bolum: '', ana: '', q: '', sadece: true, veri: [], surum: null, tatiller: [], anaListe: [], secili: null, yenileme: null };
+  const d = { bas: takvimIso(matrisPazartesi(new Date())), bolum: '', ana: '', konum: '', q: '', sadece: true, veri: [], surum: null, tatiller: [], anaListe: [], secili: null, yenileme: null };
   const kap = h('div', { style: 'display:flex;flex-direction:column;gap:12px;min-width:0' });
   const tabloKap = h('div', { style: 'min-width:0' }), ayrintiKap = h('div'), notKap = h('div', { class: 'alt', style: 'color:var(--soluk);font-size:13px' });
   const yenileYazi = h('span', { class: 'alt', style: 'font-size:13px;color:var(--soluk)' });
@@ -24,10 +24,11 @@ async function matrisSayfa() {
   }
   function tatilMi(iso) { return d.tatiller.find((x) => x.zaman === 'TAM' && x.baslangic <= iso && (x.bitis || x.baslangic) >= iso); }
 
+  S.yenile = () => yukle(true);
   async function yukle(sessiz) {
     try {
       const [veri, surum] = await Promise.all([
-        Kopru.cagir('matrisHafta', { bas: d.bas, bolum: d.bolum, ana: d.ana, q: d.q, sadeceGorevli: d.sadece }),
+        Kopru.cagir('matrisHafta', { bas: d.bas, bolum: d.bolum, ana: d.ana, konum: d.konum, q: d.q, sadeceGorevli: d.sadece }),
         Kopru.cagir('matrisSurum', { bas: d.bas }),
       ]);
       d.veri = veri; d.surum = surum.surum; d.secili = null;
@@ -50,6 +51,8 @@ async function matrisSayfa() {
   bolumSec.addEventListener('change', () => { d.bolum = bolumSec.value; yukle(); });
   const anaSec = h('select', { 'aria-label': 'Ana Proje' }, h('option', { value: '' }, 'Tüm Ana Projeler'));
   anaSec.addEventListener('change', () => { d.ana = anaSec.value; yukle(); });
+  const konumSec = h('select', { 'aria-label': 'Yerleşke' }, h('option', { value: '' }, 'Tüm yerleşkeler'));
+  konumSec.addEventListener('change', () => { d.konum = konumSec.value; yukle(); });
   const sadeceKutu = h('input', { type: 'checkbox', checked: true, style: 'min-height:0' });
   sadeceKutu.addEventListener('change', () => { d.sadece = sadeceKutu.checked; yukle(); });
 
@@ -114,7 +117,7 @@ async function matrisSayfa() {
 
   async function excel() {
     try {
-      const o = await Kopru.cagir('matrisExcel', { bas: d.bas, bolum: d.bolum, ana: d.ana, q: d.q, sadeceGorevli: d.sadece });
+      const o = await Kopru.cagir('matrisExcel', { bas: d.bas, bolum: d.bolum, ana: d.ana, konum: d.konum, q: d.q, sadeceGorevli: d.sadece });
       if (!o.iptal) toast('Excel kaydedildi (' + o.satir + ' personel): ' + o.yol, 'iyi');
     } catch (e) { hata(e); }
   }
@@ -123,11 +126,12 @@ async function matrisSayfa() {
     h('div', { class: 'satir', style: 'align-items:center' }, h('h1', { style: 'margin:0' }, 'Haftalık matris'), h('span', { style: 'flex:1' }), yenileYazi, h('button', { type: 'button', onclick: excel }, "Excel'e aktar")),
     h('div', { class: 'satir', style: 'align-items:center' }, h('button', { type: 'button', 'aria-label': 'Önceki hafta', onclick: git(-1) }, '◀'), haftaYazi,
       h('button', { type: 'button', 'aria-label': 'Sonraki hafta', onclick: git(1) }, '▶'), h('button', { class: 'ana', type: 'button', onclick: () => haftayaGit(takvimIso(matrisPazartesi(new Date()))) }, 'Bu hafta'), basKutu),
-    h('div', { class: 'satir', style: 'align-items:center' }, qKutu, bolumSec, anaSec, h('label', { style: 'display:flex;gap:6px;align-items:center' }, sadeceKutu, 'Yalnız bu hafta görevi/izni/raporu olanlar')),
+    h('div', { class: 'satir', style: 'align-items:center' }, qKutu, bolumSec, anaSec, konumSec, h('label', { style: 'display:flex;gap:6px;align-items:center' }, sadeceKutu, 'Yalnız bu hafta görevi/izni/raporu olanlar')),
     tabloKap, ayrintiKap, notKap);
 
   try { for (const b of await Kopru.cagir('matrisBolumler')) bolumSec.append(h('option', { value: b }, b)); } catch (e) { /* filtre listesi olmadan da çalışır */ }
   try { for (const x of (await Kopru.cagir('havuzListe', {})).filter((y) => y.seviye === 1 && y.aktif && !y.birlestirildiId).sort((a, b) => a.ad.localeCompare(b.ad, 'tr'))) anaSec.append(h('option', { value: x.ad }, x.ad)); } catch (e) { /* ... */ }
+  try { const ks = new Set((await Kopru.cagir('havuzListe', {})).filter((y) => y.seviye === 4 && y.aktif && !y.birlestirildiId).map((y) => y.ad)); for (const k of [...ks].sort((a, b) => a.localeCompare(b, 'tr'))) konumSec.append(h('option', { value: k }, k)); } catch (e) { /* ... */ }
   await tatilYukle();
   await yukle();
 
