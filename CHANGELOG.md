@@ -9,7 +9,7 @@ Her değişiklik önce **Yayınlanmamış** bölümüne yazılır; sürüm yüks
 - [x] 1. C#: SharedConnection (doğrulama, atomik yazma, silme, kaynak), PencereKonumu, 5 yeni komut (Yönetici denetimli); birim testleri `BaglantiYapilandirmaTests`, BridgeTests
 - [x] 2. Arayüz: sessiz bağlanma, bilgi ekranları, yönetici formu (+varsayılan kaydet/sil), yüzen pencere (sürükle, boyutlandır, iğne, kurum varsayılanı)
 - [x] 3. Belgeler (README, PLAN, DILIMLER, ARAYUZ, MIMARI, YETKI), `docs/test-dilim-13.md`, kılavuz (2.1)
-- [ ] 4. Push, CI, PR (taban dilim-12-senaryo-eksikleri)
+- [x] 4. Push, CI yeşil (4/4), PR açıldı (taban dilim-12-senaryo-eksikleri)
 
 ### Dilim 12 – Senaryo eksikleri ve Ayarlar (2026-11) — DEVAM EDİYOR (dal `dilim-12-senaryo-eksikleri`, Dilim 11 dalından; PR sırası #12 → … → #16 → bu)
 **Oturum devir notu (her adımda güncelle):**
