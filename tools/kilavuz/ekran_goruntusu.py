@@ -94,6 +94,10 @@ VERI = {
     {"sira": 8, "kontrol": "Pilotta girilmiş deneme talebi yok", "zorunlu": False, "tamam": True, "ayrinti": "Eski aktarım dışı talep: 0"},
   ],
   "eskiAktarDurum": {"talep": 180, "atama": 640, "izin": 25, "rapor": 6, "gecmis": 179, "havuz": 31, "ortam": "TEST"},
+  "rolPersonel": [{"sicil": "1002", "ad": "Örnek Personel 2", "bolum": "Örnek Bölüm B"}, {"sicil": "1003", "ad": "Örnek Personel 3", "bolum": "Örnek Bölüm B"}],
+  "sayaclar": {"bekleyenTalep": 2, "izinOnay": 1, "revizeBekleyen": 0, "ikameUyari": 0, "onaylanan": 0, "reddedilen": 0, "bildirim": 0},
+  "logIslemTurleri": [{"islem": "TALEP_KAYDET", "adet": 3}, {"islem": "ATAMA_ONAY", "adet": 2}],
+  "logListe": [{"id": 5, "zaman": "2026-11-23 08:20:11", "kullanici": "ALAN\\ornek.yonetici", "adSoyad": "Örnek Yönetici", "islem": "ATAMA_ONAY", "nesne": "talepler", "nesneId": "1", "ayrinti": "TLP-0001: 2 atama"}],
   "istisnaListe": [{"hesap": "ALAN\\ornek.yonetici", "adiSoyadi": "Örnek Yönetici", "yonetici": True, "sorumlu": True, "saha": False, "aktif": True, "aciklama": "", "sicilNo": "1000"}],
 }
 def ben(kayitli, y, s, sa, g):
@@ -118,13 +122,15 @@ with sync_playwright() as P:
         pg.goto('file:///tmp/gorev_idx.html'); pg.wait_for_timeout(600); return pg
     pg = ac(ben(True, True, True, False, ["YONETICI", "SORUMLU"]))
     def menu(ad): pg.locator('nav.menu button', has_text=ad).first.click()
-    menu('Kadro'); sh(pg, '01_kadro')
-    for ad, n in [('Bölüm–rol', '02_eslestirme'), ('Kişi istisna', '03_istisna')]:
-        menu(ad); sh(pg, n)
+    menu('Ayarlar'); pg.wait_for_timeout(300)
+    def sekme(ad): pg.locator('button', has_text=ad).first.click(); pg.wait_for_timeout(300)
+    sh(pg, '16_ayarlar_gorunum'); sekme('Kadro'); sh(pg, '01_kadro')
+    for ad, n in [('Rol eşleştirme', '02_eslestirme'), ('Kullanıcılar ve yetkiler', '03_istisna')]:
+        sekme(ad); sh(pg, n)
+    sekme('İşlem günlüğü'); sh(pg, '17_gunluk')
     menu('Proje havuzu'); sh(pg, '06_havuz')
     menu('Akademik takvim'); pg.wait_for_timeout(300)
     pg.locator('textarea').fill('08 NİSAN Pazartesi / 1 Gün (YILLIK İZİNDEN KESİLECEK)\n10-11-12 NİSAN Çarşamba-Perşembe-Cuma / 3 Gün Ramazan Bayramı\n01 MAYIS Çarşamba / 1 Gün Emek ve Dayanışma Günü'); pg.get_by_role('button', name='Önizle').click(); pg.wait_for_timeout(500); pg.evaluate('window.scrollTo(0,0)'); pg.set_viewport_size({'width': 1200, 'height': 2300}); sh(pg, '07_takvim'); pg.set_viewport_size({'width': 1200, 'height': 800})
-    menu('Kadro')
     pg.locator('.gorunum button').click(); sh(pg, '04_gorunum')
     sh(ac(ben(False, False, False, False, [])), '05_yetkisiz')
     ps = ac(ben(True, False, True, False, ["SORUMLU"]))
@@ -135,9 +141,9 @@ with sync_playwright() as P:
     ps.get_by_label('Faaliyet', exact=True).select_option('Örnek Faaliyet'); ps.wait_for_timeout(100)
     ps.get_by_label('Konum', exact=True).select_option('Örnek Yerleşke')
     ps.get_by_label('Başlangıç tarihi').press_sequentially('23112026'); ps.get_by_label('Bitiş tarihi').press_sequentially('27112026'); ps.wait_for_timeout(300)
-    ps.locator('textarea').fill('Örnek görev açıklaması.')
+    ps.locator('textarea').first.fill('Örnek görev açıklaması.')
     ps.get_by_role('button', name='Öğleden önce').nth(2).click()
-    ps.locator('input[type=search]').fill('Örnek'); ps.wait_for_timeout(600); ps.get_by_role('button', name='Örnek Personel 2 (1002)').click(); ps.wait_for_timeout(200)
+    ps.locator('input[type=search]').fill('Örnek'); ps.wait_for_timeout(600); ps.get_by_role('button', name='Örnek Personel 2 ·').click(); ps.wait_for_timeout(200)
     ps.set_viewport_size({'width': 1200, 'height': 1500}); sh(ps, '09_talep_form')
     py = ac(ben(True, False, False, False, ["YONETICI"]))
     py.locator('nav.menu button', has_text='Talepler').first.click(); py.wait_for_timeout(200)
@@ -163,6 +169,7 @@ with sync_playwright() as P:
     pa.locator('nav.menu button', has_text='Analiz').first.click(); pa.wait_for_timeout(500)
     pa.set_viewport_size({'width': 1200, 'height': 700}); sh(pa, '14_analiz')
     pc = ac(ben(True, False, False, False, ["YONETICI"]))
-    pc.locator('nav.menu button', has_text='Sistem').first.click(); pc.wait_for_timeout(500)
+    pc.locator('nav.menu button', has_text='Ayarlar').first.click(); pc.wait_for_timeout(300)
+    pc.locator('button', has_text='Sistem').first.click(); pc.wait_for_timeout(500)
     pc.set_viewport_size({'width': 1200, 'height': 1100}); sh(pc, '15_canli')
     b.close()

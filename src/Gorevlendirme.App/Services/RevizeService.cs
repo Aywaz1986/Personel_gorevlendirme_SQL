@@ -49,11 +49,24 @@ public static class RevizeService
         return new { id = r["id"], kod = r["kod"], durum = r["durum"] };
     }
 
-    public static async Task<object> RevizeOnaylaAsync(SqlService sql, int id)
+    public static async Task<object> RevizeOnaylaAsync(SqlService sql, int id, IEnumerable<int>? cikar = null)
     {
-        var r = (await sql.ProcAsync("gorev.sp_revize_onayla", ("@id", id))).First();
+        var ids = cikar?.ToArray();
+        var r = (await sql.ProcAsync("gorev.sp_revize_onayla", ("@id", id), ("@cikar_json", ids is { Length: > 0 } ? System.Text.Json.JsonSerializer.Serialize(ids) : null))).First();
         return new { id = r["id"], durum = r["durum"] };
     }
+
+    public static async Task<object> FazlalikAsync(SqlService sql, int id) =>
+        (await sql.ProcAsync("gorev.sp_revize_fazlalik", ("@id", id))).Select(r => new
+        {
+            atamaId = r["atama_id"], tarih = r["tarih"], zaman = r["zaman"], sicil = r["sicil_no"], ad = r["adi_soyadi"], atanmis = r["atanmis"], yeni = r["yeni"], fazla = r["fazla"],
+        }).ToList();
+
+    public static async Task<object> MusaitlikAsync(SqlService sql, int id) =>
+        (await sql.ProcAsync("gorev.sp_revize_musaitlik", ("@id", id))).Select(r => new
+        {
+            tarih = r["tarih"], zaman = r["zaman"], sicil = r["sicil_no"], ad = r["adi_soyadi"], durum = r["durum"],
+        }).ToList();
 
     public static Task RevizeReddetAsync(SqlService sql, int id, string neden) => sql.ProcAsync("gorev.sp_revize_reddet", ("@id", id), ("@neden", neden));
     public static Task RevizeGeriCekAsync(SqlService sql, int id) => sql.ProcAsync("gorev.sp_revize_geri_cek", ("@id", id));

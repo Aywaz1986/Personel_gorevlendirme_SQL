@@ -11,6 +11,7 @@ async function baslaSonrasi() {
   await kabukCiz();
 }
 (async () => {
+  try { gorunumUygula(); } catch (e) { /* görünüm tercihi okunamazsa varsayılan */ }
   try {
     const r = await Kopru.cagir('baglantiDene');
     if (!r.kayit) { baglantiFormu(); return; }

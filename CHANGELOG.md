@@ -3,6 +3,16 @@
 Her değişiklik önce **Yayınlanmamış** bölümüne yazılır; sürüm yükselince bölüm sürüm başlığına dönüştürülür.
 
 ## Yayınlanmamış
+### Dilim 12 – Senaryo eksikleri ve Ayarlar (2026-11) — DEVAM EDİYOR (dal `dilim-12-senaryo-eksikleri`, Dilim 11 dalından; PR sırası #12 → … → #16 → bu)
+**Oturum devir notu (her adımda güncelle):**
+- Kararlar (Murat 23.11.2026): eksikler bitmeden görsel/yapılandırma yok; ayarlar Özlük'teki gibi tek yerde (yazı ayarları, kullanıcılar, rol eşleştirme); talep ekranı listeleri rol eşleşmesinden gelir.
+- [x] 1. `014_senaryo_eksikleri.sql` — sunucuda sınanmadı
+- [x] 2. C# komutları, testler (Dilim12Tests)
+- [x] 3. Arayüz: Ayarlar, günlük, rapor düzelt, revize seçimi/müsaitlik, kırılım, müsait süzgeci, sayaç şeridi, rol listeleri
+- [x] 4. Belgeler, test-dilim-12.md, kılavuz (8.10)
+- [x] 4b. Atama panelinde sorumlu telefonu + saha notu (senaryo yeniden kontrol)
+- [x] 5. Push, CI yeşil (4/4), PR açıldı (taban dilim-11-senaryo-tamamlama)
+
 ### Dilim 11 – Senaryo tamamlama (2026-11) — DEVAM EDİYOR (dal `dilim-11-senaryo-tamamlama`, Dilim 10 dalından; PR sırası #12 → #13 → #14 → #15 → bu)
 **Oturum devir notu (her adımda güncelle; yeni oturum önce buradan devam eder):**
 - Kararlar (Murat 22.11.2026): senaryodaki tüm özellikler eksiksiz; nitelik yerine Saha / Operasyon Notu; belgeler veritabanında; bağlantı ekranı kalır; eksikler tekrar belirlenecek. Sonraki: yapılandırma + görsel düzenleme.

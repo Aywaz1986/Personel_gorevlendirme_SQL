@@ -4,14 +4,48 @@ function revizeDurumTur(d) { return ({ BEKLIYOR: 'uyari', ONAYLANDI: 'iyi', REDD
 
 async function talepYonetPaneli(talepId, geri) {
   const yon = S.gorunum === 'YONETICI';
-  const st = { t: null, revizeler: [], devir: [], acik: '', ikame: null, cakisma: null, yeniKisi: null, rv: null };
+  const st = { t: null, revizeler: [], devir: [], acik: '', ikame: null, cakisma: null, yeniKisi: null, rv: null, musait: {}, fazla: null };
   const kap = h('div', { style: 'display:flex;flex-direction:column;gap:14px;min-width:0' });
 
   async function yukle() {
     st.t = await Kopru.cagir('talepGetir', { id: talepId });
     st.revizeler = await Kopru.cagir('revizeListe', { talepId });
     st.devir = await Kopru.cagir('sorumluDevirListe', { talepId });
+    st.musait = {};
+    for (const x of st.revizeler.filter((r) => r.durum === 'BEKLIYOR' && (r.gunler || []).length)) {
+      try { st.musait[x.id] = await Kopru.cagir('revizeMusaitlik', { id: x.id }); } catch (e) { /* bilgi amaçlı; onayı engellemez */ }
+    }
     ciz();
+  }
+  // Onay: kişi sayısı düşürülüyorsa önce çıkarılacak kişiler seçtirilir (Yönetici seçer).
+  async function onayla(x) {
+    try {
+      const f = (x.gunler || []).length ? await Kopru.cagir('revizeFazlalik', { id: x.id }) : [];
+      if (!f.length) { await Kopru.cagir('revizeOnayla', { id: x.id }); toast('Revize uygulandı.'); st.fazla = null; await yukle(); return; }
+      st.fazla = { id: x.id, satirlar: f, secili: new Set() }; ciz();
+    } catch (e) { hata(e); }
+  }
+  function fazlaKutusu(x) {
+    if (!st.fazla || st.fazla.id !== x.id) return null;
+    const grup = new Map();
+    for (const r of st.fazla.satirlar) { const k = r.tarih + '|' + r.zaman; if (!grup.has(k)) grup.set(k, []); grup.get(k).push(r); }
+    return h('div', { class: 'kart', style: 'margin-top:8px;border-color:var(--uyari,#c60)' },
+      h('b', null, 'Kişi sayısı azalıyor: çıkarılacak kişileri seçin'),
+      [...grup.values()].map((l) => h('div', { style: 'margin-top:6px' },
+        h('div', { class: 'alt' }, takvimTarihYaz(l[0].tarih) + ' · ' + atamaTamAd(l[0].zaman) + ' — ' + l[0].atanmis + ' atanmış, ' + l[0].yeni + ' istenen: ' + l[0].fazla + ' kişi çıkarılmalı'),
+        l.map((r) => h('label', { class: 'onay' }, h('input', { type: 'checkbox', checked: st.fazla.secili.has(r.atamaId), onchange: (e) => { if (e.target.checked) st.fazla.secili.add(r.atamaId); else st.fazla.secili.delete(r.atamaId); } }), ' ' + r.ad)))),
+      h('div', { class: 'satir', style: 'margin-top:8px' }, h('button', { class: 'ana', type: 'button', onclick: async () => {
+        try { await Kopru.cagir('revizeOnayla', { id: x.id, cikar: [...st.fazla.secili] }); toast('Seçilenler görevden çıkarıldı, revize uygulandı.'); st.fazla = null; await yukle(); } catch (e) { hata(e); }
+      } }, 'Seçilenleri çıkar ve onayla'), h('button', { type: 'button', onclick: () => { st.fazla = null; ciz(); } }, 'Vazgeç')));
+  }
+  const MUSAIT_AD = { MUSAIT: 'müsait', GOREV: 'başka görevde', IZIN: 'izinli', RAPOR: 'raporlu' };
+  function musaitSatiri(x) {
+    const m = st.musait[x.id];
+    if (!m || !m.length) return null;
+    const sorun = m.filter((r) => r.durum !== 'MUSAIT');
+    return h('div', { class: sorun.length ? 'mesaj kotu' : 'alt', style: 'margin-top:6px' },
+      h('b', null, 'Eklenen günlerde atanmış kişilerin durumu: '),
+      sorun.length ? sorun.map((r) => r.ad + ' ' + takvimTarihYaz(r.tarih) + ' ' + atamaTamAd(r.zaman) + ' ' + MUSAIT_AD[r.durum]).join(' · ') : 'hepsi müsait');
   }
   async function dene(is, mesaj, kapat) {
     try { await is(); if (mesaj) toast(mesaj); st.acik = ''; st.ikame = null; st.cakisma = null; st.yeniKisi = null; st.rv = null; if (kapat) geri(true); else await yukle(); } catch (e) { hata(e); }
@@ -122,11 +156,11 @@ async function talepYonetPaneli(talepId, geri) {
       st.revizeler.map((x) => {
         const ret = st.retId === x.id ? (() => { const n = alan('Ret nedeni (zorunlu)'); return h('div', { class: 'satir', style: 'margin-top:6px' }, n, h('button', { type: 'button', onclick: () => dene(() => Kopru.cagir('revizeReddet', { id: x.id, neden: n.value }), 'Revize reddedildi.') }, 'Reddi kaydet')); })() : null;
         return h('div', { class: 'kart', style: 'padding:10px 12px' }, h('div', { class: 'satir', style: 'align-items:center' }, h('b', null, x.kod), rozet(revizeDurumAd(x.durum), revizeDurumTur(x.durum)), h('span', { class: 'alt' }, x.isteyen + ' · ' + String(x.tarih).slice(0, 16).replace('T', ' ')), h('span', { style: 'flex:1' }),
-          x.durum === 'BEKLIYOR' && yon ? h('button', { class: 'ana', type: 'button', onclick: () => dene(() => Kopru.cagir('revizeOnayla', { id: x.id }), 'Revize uygulandı.') }, 'Onayla') : null,
+          x.durum === 'BEKLIYOR' && yon ? h('button', { class: 'ana', type: 'button', onclick: () => onayla(x) }, 'Onayla') : null,
           x.durum === 'BEKLIYOR' && yon ? h('button', { type: 'button', onclick: () => { st.retId = st.retId === x.id ? null : x.id; ciz(); } }, 'Reddet…') : null,
           x.durum === 'BEKLIYOR' ? h('button', { type: 'button', onclick: () => dene(() => Kopru.cagir('revizeGeriCek', { id: x.id }), 'Revize geri çekildi.') }, 'Geri çek') : null),
           h('div', { class: 'alt', style: 'margin-top:4px' }, 'Değişen: ' + (ozet(x) || '—') + (x.neden ? ' · ' + x.neden : '')),
-          x.retNedeni ? h('div', { class: 'alt', style: 'color:var(--kotu,#b00020)' }, 'Ret nedeni: ' + x.retNedeni) : null, ret);
+          x.retNedeni ? h('div', { class: 'alt', style: 'color:var(--kotu,#b00020)' }, 'Ret nedeni: ' + x.retNedeni) : null, x.durum === 'BEKLIYOR' ? musaitSatiri(x) : null, x.durum === 'BEKLIYOR' && yon ? fazlaKutusu(x) : null, ret);
       }));
   }
 

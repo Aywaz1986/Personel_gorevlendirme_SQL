@@ -5,7 +5,7 @@ function analizIso(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).
 async function analizSayfa() {
   const yon = S.gorunum === 'YONETICI';
   const bugun = new Date();
-  const d = { sekme: 'proje', bas: analizIso(new Date(bugun.getFullYear(), bugun.getMonth(), 1)), bit: analizIso(bugun), ana: '', bolum: '', q: '', aq: '', proje: [], kisiler: [], arsiv: [], detay: null, anaListe: [], bolumler: [], yuk: false };
+  const d = { sekme: 'proje', bas: analizIso(new Date(bugun.getFullYear(), bugun.getMonth(), 1)), bit: analizIso(bugun), ana: '', bolum: '', q: '', aq: '', proje: [], kirilim: [], kisiler: [], arsiv: [], detay: null, anaListe: [], bolumler: [], yuk: false };
   const kap = h('div', { style: 'display:flex;flex-direction:column;gap:14px;min-width:0' });
   const th = (x, sag) => h('th', { style: 'text-align:' + (sag ? 'right' : 'left') + ';padding:6px 8px;border-bottom:1px solid var(--cizgi);white-space:nowrap' }, x);
   const td = (x, sag, kalin) => h('td', { style: 'padding:6px 8px;border-bottom:1px solid var(--cizgi);' + (sag ? 'text-align:right;' : '') + (kalin ? 'font-weight:600;background:var(--vurgu-bg)' : '') }, x);
@@ -15,6 +15,7 @@ async function analizSayfa() {
     d.yuk = true; ciz();
     try {
       if (d.sekme === 'proje') d.proje = await Kopru.cagir('analizProje', { bas: d.bas, bit: d.bit, ana: d.ana });
+      else if (d.sekme === 'kirilim') d.kirilim = await Kopru.cagir('analizKirilim', { bas: d.bas, bit: d.bit, ana: d.ana });
       else if (d.sekme === 'personel') { d.kisiler = await Kopru.cagir('analizPersonel', { bas: d.bas, bit: d.bit, bolum: d.bolum, q: d.q }); d.detay = null; }
       else d.arsiv = await Kopru.cagir('arsivGecmis', { q: d.aq, ana: d.ana });
     } catch (e) { hata(e); }
@@ -35,6 +36,27 @@ async function analizSayfa() {
       d.sekme === 'arsiv' ? null : [h('label', null, 'Başlangıç ', bas), h('label', null, 'Bitiş ', bit), h('button', { class: 'ana', type: 'button', onclick: uygula }, 'Uygula'),
         hizli('Bu ay', () => [new Date(y, a, 1), bugun]), hizli('Son 3 ay', () => [new Date(y, a - 2, 1), bugun]), hizli('Bu yıl', () => [new Date(y, 0, 1), bugun]), hizli('Geçen yıl', () => [new Date(y - 1, 0, 1), new Date(y - 1, 11, 31)])],
       d.sekme === 'personel' ? null : ana);
+  }
+
+  // Ana Proje → Alt Proje → Yerleşke → Personel (adam-gün): her basamakta ara toplam.
+  function kirilimSekmesi() {
+    if (!d.kirilim.length) return h('div', { class: 'kart', style: 'color:var(--soluk)' }, 'Bu dönemde atama yok.');
+    const topla = (l) => l.reduce((t, r) => t + r.adamGun, 0);
+    const grupla = (l, f) => { const m = new Map(); l.forEach((r) => { const k = f(r); if (!m.has(k)) m.set(k, []); m.get(k).push(r); }); return m; };
+    const govde = [];
+    grupla(d.kirilim, (r) => r.ana).forEach((la, ana) => {
+      govde.push(h('tr', null, td('📑 ' + ana, false, true), td('', false, true), td('', false, true), td('', false, true), td(analizSayi(topla(la)), true, true)));
+      grupla(la, (r) => r.alt).forEach((ls, alt) => {
+        govde.push(h('tr', null, td(''), td('▸ ' + alt, false, true), td('', false, true), td('', false, true), td(analizSayi(topla(ls)), true, true)));
+        grupla(ls, (r) => r.yerleske).forEach((ly, yer) => {
+          govde.push(h('tr', null, td(''), td(''), td('📍 ' + yer, false, true), td('', false, true), td(analizSayi(topla(ly)), true, true)));
+          ly.forEach((r) => govde.push(h('tr', null, td(''), td(''), td(''), td(r.ad + ' (' + r.gun + ' gün)'), td(analizSayi(r.adamGun), true))));
+        });
+      });
+    });
+    return h('div', { style: 'overflow:auto' }, h('table', { style: 'border-collapse:collapse;width:100%' },
+      h('thead', null, h('tr', null, th('Ana proje'), th('Alt proje'), th('Yerleşke'), th('Personel'), th('Adam-gün', true))),
+      h('tbody', null, govde), h('tfoot', null, h('tr', null, td('Genel toplam', false, true), td('', false, true), td('', false, true), td('', false, true), td(analizSayi(topla(d.kirilim)), true, true)))));
   }
 
   function projeSekmesi() {
@@ -90,11 +112,11 @@ async function analizSayfa() {
 
   function ciz() {
     const sek = (id, ad) => h('button', { type: 'button', class: d.sekme === id ? 'ana' : '', onclick: () => { d.sekme = id; d.detay = null; yukle(); } }, ad);
-    const exc = d.sekme === 'proje' ? () => excel({ tur: 'proje', ana: d.ana }) : d.sekme === 'personel' ? () => excel({ tur: 'personel', bolum: d.bolum, q: d.q }) : () => excel({ tur: 'arsiv', q: d.aq, ana: d.ana });
+    const exc = d.sekme === 'proje' ? () => excel({ tur: 'proje', ana: d.ana }) : d.sekme === 'kirilim' ? () => excel({ tur: 'kirilim', ana: d.ana }) : d.sekme === 'personel' ? () => excel({ tur: 'personel', bolum: d.bolum, q: d.q }) : () => excel({ tur: 'arsiv', q: d.aq, ana: d.ana });
     kap.replaceChildren(h('h1', { style: 'margin:0' }, 'Analiz'),
       h('div', { class: 'alt' }, 'Adam-gün: tam gün 1,0 · öğleden önce/sonra 0,5. Yalnız aktif atamalar sayılır.' + (yon ? '' : ' Yalnız kendi talepleriniz.')),
-      h('div', { class: 'satir', style: 'align-items:center' }, sek('proje', 'Proje adam-gün'), sek('personel', 'Personel'), sek('arsiv', 'Arşiv (geçmiş görevler)'), h('span', { style: 'flex:1' }), h('button', { type: 'button', onclick: exc }, 'Excel\'e aktar')),
-      filtre(), d.yuk ? h('div', { class: 'alt' }, 'Yükleniyor…') : d.sekme === 'proje' ? projeSekmesi() : d.sekme === 'personel' ? personelSekmesi() : arsivSekmesi());
+      h('div', { class: 'satir', style: 'align-items:center' }, sek('proje', 'Proje adam-gün'), sek('kirilim', 'Proje kırılımı'), sek('personel', 'Personel'), sek('arsiv', 'Arşiv (geçmiş görevler)'), h('span', { style: 'flex:1' }), h('button', { type: 'button', onclick: exc }, 'Excel\'e aktar')),
+      filtre(), d.yuk ? h('div', { class: 'alt' }, 'Yükleniyor…') : d.sekme === 'proje' ? projeSekmesi() : d.sekme === 'kirilim' ? kirilimSekmesi() : d.sekme === 'personel' ? personelSekmesi() : arsivSekmesi());
   }
 
   try { d.anaListe = await Kopru.cagir('analizAnaProjeler'); } catch (e) { /* filtre listesi olmadan da çalışır */ }
