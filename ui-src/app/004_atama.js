@@ -4,6 +4,8 @@ function atamaTamAd(z) { return z === 'TAM' ? 'Tam gün' : z === 'OO' ? 'Öğled
 async function atamaPaneli(talepId, geri) {
   const t = await Kopru.cagir('talepGetir', { id: talepId });
   let adaylar = await Kopru.cagir('atamaAdaylar', { talepId });
+  let iletisim = null;
+  try { iletisim = await Kopru.cagir('talepIletisim', { talepId }); } catch (e) { /* telefon bilgisi yoksa panel yine açılır */ }
   const st = { secili: new Set(), asama: [], cakisma: null, retAcik: false };
   const kap = h('div', { style: 'display:flex;flex-direction:column;gap:14px' });
   const anahtar = (g) => g.tarih + '|' + g.zaman;
@@ -78,7 +80,8 @@ async function atamaPaneli(talepId, geri) {
     const tahmin = atanan + st.asama.length >= istenen ? 'tamamen atandı' : (atanan + st.asama.length > 0 ? 'kısmen atandı' : 'onay bekliyor');
     const oz = [['📍', 'Konum', t.konum], ['🕣', 'Saat', t.saatBaslangic.replace(':', '.') + ' - ' + t.saatBitis.replace(':', '.')], ['📅', 'Tarih', talepTarihOzet(t.gunler)],
       ['📑', 'Proje', t.ana + (t.alt && t.alt !== 'Genel' ? ' › ' + t.alt : '')], ['📡', 'Faaliyet', t.faaliyet], ['🙋‍♀️', 'Önerilen Personel', t.oneri.length ? t.oneri.map((p) => p.ad).join(', ') : '—'],
-      ['🧍‍♂️', 'Proje sorumlusu', t.sorumluAdi]];
+      ['🧍‍♂️', 'Proje sorumlusu', t.sorumluAdi + (iletisim && iletisim.sorumluGsm ? ' · 📞 ' + iletisim.sorumluGsm : '')],
+      ['🗒️', 'Saha / Operasyon Notu', t.nitelik || '—']];
     const retKutu = st.retAcik ? (() => {
       const neden = h('textarea', { class: 'metin', rows: '2', maxlength: '300', style: 'width:100%', placeholder: 'Ret nedeni (zorunlu)' });
       return h('section', { class: 'kart' }, h('h2', null, 'Talebi reddet'), neden,

@@ -19,3 +19,4 @@
 | 13 | Yönetici | Matris › Personel süzgeci = Sadece müsaitler | Hafta içinde boş yarım günü olan aktif personel; tamamen dolu kişi görünmez |
 | 14 | Yönetici | Talepler sayfası üst şeridi | Bekleyen Görev Talepleri / İzin Onayları / Revize Talepleri / Rapor Kaynaklı İkame ayrı sayaçlar; İzin Onayları izin sayfasına götürür |
 | 15 | Saha | Menü | Matris, Görevlerim, Ayarlar (yalnız Görünüm) |
+| 16 | Yönetici | Atama panelini açar | Proje sorumlusunun telefonu ve Saha / Operasyon Notu panel başlığında görünür |

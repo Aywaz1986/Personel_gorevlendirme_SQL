@@ -10,6 +10,7 @@ Her değişiklik önce **Yayınlanmamış** bölümüne yazılır; sürüm yüks
 - [x] 2. C# komutları, testler (Dilim12Tests)
 - [x] 3. Arayüz: Ayarlar, günlük, rapor düzelt, revize seçimi/müsaitlik, kırılım, müsait süzgeci, sayaç şeridi, rol listeleri
 - [x] 4. Belgeler, test-dilim-12.md, kılavuz (8.10)
+- [x] 4b. Atama panelinde sorumlu telefonu + saha notu (senaryo yeniden kontrol)
 - [x] 5. Push, CI yeşil (4/4), PR açıldı (taban dilim-11-senaryo-tamamlama)
 
 ### Dilim 11 – Senaryo tamamlama (2026-11) — DEVAM EDİYOR (dal `dilim-11-senaryo-tamamlama`, Dilim 10 dalından; PR sırası #12 → #13 → #14 → #15 → bu)
