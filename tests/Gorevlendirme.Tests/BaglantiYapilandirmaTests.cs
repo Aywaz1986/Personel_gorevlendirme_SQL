@@ -24,7 +24,7 @@ public class BaglantiYapilandirmaTests : IDisposable
     }
 
     [Theory]
-    [InlineData("", "db")] [InlineData("s", " ")] [InlineData("s\n", "db")] [InlineData("s", "d\tb")]
+    [InlineData("", "db")] [InlineData("s", " ")] [InlineData("s\nx", "db")] [InlineData("s", "d\tb")]
     public void Gecersiz_ad_reddedilir(string s, string d)
     {
         Assert.NotNull(SharedConnection.Dogrula(s, d));
