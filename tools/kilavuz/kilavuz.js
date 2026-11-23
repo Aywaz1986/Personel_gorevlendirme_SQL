@@ -31,11 +31,18 @@ C.push(p("Rol, kişinin Özlük bölümünden gelir (Bölüm 4). Kişi bazlı is
 C.push(note("**Bağlanabilmek yetki değildir.** Hesabınızın rolü çözülemiyorsa hiçbir veri görünmez ve “Yetkisiz Erişim” sayfası açılır."));
 
 C.push(h1("2. Başlarken"));
-C.push(n("Gorevlendirme.exe dosyasına çift tıklayın. Sunucu bağlantısı kayıtlıysa Windows kimliğinizle kendiliğinden bağlanır; değilse sunucu ve veritabanı adını yazıp **Bağlan**’a basın.","n2"));
+C.push(n("Gorevlendirme.exe dosyasına çift tıklayın. Bağlantı bilgisi exe’nin klasöründeki `Gorevlendirme.baglanti.json` dosyasından (yoksa aynı klasördeki Özlük’ün `Ozluk.baglanti.json` dosyasından) okunur ve Windows kimliğinizle **kendiliğinden** bağlanır; normal kullanıcı bağlantı penceresi görmez. Bağlantı ayarı yoksa ya da sunucuya ulaşılamıyorsa sade bir bilgi ekranı çıkar (**Yeniden dene**).","n2"));
 C.push(n("Veritabanı şeması eski ya da kurulu değilse yalnızca **Sistem** sayfası açılır; yönetici (db_owner) **Şemayı kur / yükselt** der.","n2"));
 C.push(n("İlk yönetici, SSMS’te `tools/sql/gorev_ilk_yonetici.sql` betiğiyle bir kez atanır (uygulama içinde “beni yönetici yap” düğmesi yoktur). Sonraki yöneticileri mevcut yönetici atar; sistemde her zaman en az bir aktif yönetici bulunur.","n2"));
 C.push(p("Üst çubukta ortam rozeti görünür: **TEST** (geliştirme) ya da **CANLI**."));
 C.push(...img("04_gorunum","Çoklu rolde üst menüden görünüm değiştirme."));
+C.push(...img("20_baglanti_yok","Bağlantı ayarı yapılmamışsa gösterilen sade bilgi ekranı."));
+C.push(h2("2.1 Bağlantı penceresi ve varsayılan bağlantı"));
+C.push(p("Ekranın sol altında küçük bir **bağlantı penceresi** durur: durum, sürüm, kullanıcı, rol ve ortamı gösterir; **+** ile açılır, **↻/Yenile** verileri sunucudan yeniler. Başlığından sürüklenir, kenarlarından boyutlandırılır, başlığa çift tıklamak konumu sıfırlar. Sunucu ve veritabanı adı yalnızca Merkez Yönetici’ye görünür."));
+C.push(p("**📌 İğne:** konumu kilitler. Yönetici iğnelediğinde konum **tüm kullanıcılar için varsayılan** olur (`Gorevlendirme.pencere.json`); iğne kaldırılınca bu varsayılan da kalkar."));
+C.push(...img("18_baglanti_penceresi","Yüzen bağlantı penceresi (Yönetici görünümü)."));
+C.push(p("**Yönetici:** pencerede **Bağlantıyı değiştir** ile form açılır. **“Varsayılan olarak kaydet”** işaretlenirse sunucu/veritabanı exe klasörüne yazılır ve herkes formu görmeden bağlanır (parola/kullanıcı adı saklanmaz). **Varsayılan bağlantıyı sil** dosyayı kaldırır. Klasör yazılamıyorsa (ör. Program Files) hata gösterilir; dosyayı BT elle koyabilir."));
+C.push(...img("19_baglanti_formu","Bağlantı formu (yalnızca Yönetici)."));
 
 C.push(note("**Ayarlar menüsü:** Kadro, Bölüm–rol eşleştirme (Rol eşleştirme), Kişi istisnaları (Kullanıcılar ve yetkiler), İşlem günlüğü, Eski veri ve Sistem sayfaları **Ayarlar** menüsünün sekmeleridir. Yazı boyutu, yazı tipi ve tema ayarı (Görünüm ve yazı sekmesi) her rolde açıktır."));
 C.push(...img("16_ayarlar_gorunum","Ayarlar: Görünüm ve yazı sekmesi ve Yönetici sekmeleri."));

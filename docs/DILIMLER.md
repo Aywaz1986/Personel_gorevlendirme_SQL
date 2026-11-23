@@ -62,3 +62,11 @@ Test listesi: `docs/test-dilim-11.md`. Uygulanan: `013_senaryo_tamamlama.sql`. K
 Murat 23.11.2026: eksikler bitmeden görsel/yapılandırmaya geçilmez; Özlük'teki ayar yapısı buraya taşınır (yazı ayarları, kullanıcılar, rol eşleştirme ayarlara); rol eşleşmesine göre talep ekranı personel listeleri.
 
 Test listesi: `docs/test-dilim-12.md`. Uygulanan: `014_senaryo_eksikleri.sql`. Yeni: **Ayarlar** menüsü (herkes: Görünüm; Yönetici: Kullanıcılar ve yetkiler, Rol eşleştirme, Kadro, İşlem günlüğü, Eski veri, Sistem); `rolPersonel` (SORUMLU/SAHA listeleri: kişi başı istisna varsa o, yoksa bölüm eşleştirmesi); `logListe`/`logIslemTurleri`; `raporDuzelt`; `revizeFazlalik`/`revizeMusaitlik` + `revizeOnayla.cikar`; `analizKirilim`; `matrisHafta.sadeceMusait`. Karar: yazı/tema tercihi bilgisayara özeldir (sunucuya yazılmaz). Atama aday listesi (Yönetici) henüz rolle süzülmez; yalnız talep ekranı listeleri rol bazlıdır.
+
+## Dilim 13 – Gizli bağlantı yapılandırması ve yüzen pencere
+Murat 23.11.2026: Özlük'teki gizli bağlantı yapılandırması ve yüzen bağlantı penceresi aynı özelliklerle bu uygulamaya. Test listesi: `docs/test-dilim-13.md`. SQL değişikliği yok.
+- Bağlantı sırası: `Gorevlendirme.baglanti.json` (exe klasörü) → `Ozluk.baglanti.json` → kullanıcıya özel (DPAPI). Yalnızca Windows kimliği; parola/kullanıcı adı dosyada yok.
+- Normal kullanıcı form görmez: ayar yoksa "Bağlantı ayarı yapılmamış", ulaşılamıyorsa "Sunucuya bağlanılamadı" (Yeniden dene); form yalnızca "Yönetici: bağlantı ayarları" bağlantısı ya da pencerede "Bağlantıyı değiştir" ile.
+- Yönetici formda "varsayılan olarak kaydet" derse dosya yazılır (atomik); yazılamazsa hata. Yazma/silme komutları sunucuda etkin Yönetici ister.
+- Yüzen pencere: sürükle, kenardan boyutlandır, çift tık sıfırla, daralt/aç, iğne. Yönetici iğnelerse konum `Gorevlendirme.pencere.json` ile herkes için varsayılan (Özlük'te veritabanında; burada `dbo`/şema değişikliği olmaması için dosyada). Kişisel konum/iğne bilgisayara özel (localStorage). Sunucu/veritabanı adı yalnızca Yönetici'ye görünür.
+

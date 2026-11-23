@@ -30,3 +30,4 @@ Ayrıntı: `docs/DILIMLER.md`.
 | 10 | Canlıya geçiş | evet | [~] kodlandı, CI/el sınaması bekliyor |
 | 11 | Senaryo tamamlama | evet | [~] kodlandı, CI/el sınaması bekliyor |
 | 12 | Senaryo eksikleri + Ayarlar | evet | [~] kodlandı, CI/el sınaması bekliyor |
+| 13 | Gizli bağlantı yapılandırması + yüzen bağlantı penceresi | evet | [~] kodlandı, CI/el sınaması bekliyor |
