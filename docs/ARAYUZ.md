@@ -117,3 +117,16 @@ Girdi sütunları (başlık yoksa sıra): Tarih; Ad; Zaman dilimi; Tür (son iki
 | `ikameBekleyenler` | – | `[{talepId, kod, ad, sicil, ilk, son, gun, neden (RAPOR/AYRILDI/BIRIM)}]` | Yönetici (tümü), Sorumlu (kendi) | ileri tarihli aktif atama |
 
 Değişen: `matrisHafta`/`matrisExcel` + `konum?` (yerleşke süzgeci, son isteğe bağlı bağımsız değişken); `atamaAdaylar` + `toplamGorev, adamGun, yerlesker, talepGun, izinRaporGun`; `analizPersonel` + `musaitGun?` (yalnız Yönetici), `tatilGun`, `tatilCalismaGun`; `rapor evrakı` dosya adı `Ad_Soyad_yyyymmdd_KOD.uzantı`; `talepKaydet/revizeIste` `nitelik` = Saha / Operasyon Notu (≤1000).
+
+## Dilim 12 – Senaryo eksikleri
+| Komut | Girdi | Çıktı | Yetki |
+|---|---|---|---|
+| `rolPersonel` | `rol` (SORUMLU/SAHA), `q?` | `[{sicil, ad, bolum}]` | SORUMLU: Yönetici; SAHA: Yönetici, Sorumlu |
+| `logListe` | `bas?, bit?, islem?, q?, ust?` | `[{id, zaman, kullanici, adSoyad, islem, nesne, nesneId, ayrinti}]` | Yönetici |
+| `logIslemTurleri` | – | `[{islem, adet}]` | Yönetici |
+| `raporDuzelt` | `id, ilkTarih, sonTarih, neden?` | `{id, kod, izinIptal, cakisanAtama}` | Yönetici |
+| `revizeFazlalik` | `id` | `[{atamaId, tarih, zaman, sicil, ad, atanmis, yeni, fazla}]` | Yönetici |
+| `revizeMusaitlik` | `id` | `[{tarih, zaman, sicil, ad, durum (MUSAIT/GOREV/IZIN/RAPOR)}]` | Yönetici, talebin Sorumlusu |
+| `analizKirilim` | `bas, bit, ana?` | `[{ana, alt, yerleske, sicil, ad, adamGun, gun}]`; Excel: `analizExcel tur=kirilim` | Yönetici, Sorumlu (kendi) |
+
+Değişen: `revizeOnayla` + `cikar?: [atamaId]` (çıkarılacaklar önce çıkarılır); `matrisHafta/matrisExcel` + `sadeceMusait?`. Arayüz: menüde Kadro/Eşleştirme/İstisna/Eski veri/Sistem yerine **Ayarlar** (sekmeli).

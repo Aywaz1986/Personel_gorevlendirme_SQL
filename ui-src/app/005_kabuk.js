@@ -1,8 +1,8 @@
 // Kabuk: üst çubuk (ortam, görünüm geçişi), rol bazlı menü ve sayfalar.
 const SAYFALAR = {
-  YONETICI: [['talep', 'Talepler', talepSayfa], ['matris', 'Haftalık matris', matrisSayfa], ['izin', 'İzin ve rapor', izinRaporSayfa], ['analiz', 'Analiz', analizSayfa], ['kadro', 'Kadro', kadroSayfa], ['havuz', 'Proje havuzu', havuzSayfa], ['takvim', 'Akademik takvim', takvimSayfa], ['eskiveri', 'Eski veri', eskiVeriSayfa], ['eslestirme', 'Bölüm–rol eşleştirme', eslestirmeSayfa], ['istisna', 'Kişi istisnaları', istisnaSayfa], ['sistem', 'Sistem', sistemIcerik]],
-  SORUMLU: [['talep', 'Görev Talep Arayüzü', talepSayfa], ['matris', 'Haftalık matris', matrisSayfa], ['izin', 'İzin ve rapor', izinRaporSayfa], ['analiz', 'Analiz', analizSayfa]],
-  SAHA: [['matris', 'Haftalık matris', matrisSayfa], ['gorevim', 'Görevlerim', izinRaporSayfa]],
+  YONETICI: [['talep', 'Talepler', talepSayfa], ['matris', 'Haftalık matris', matrisSayfa], ['izin', 'İzin ve rapor', izinRaporSayfa], ['analiz', 'Analiz', analizSayfa], ['havuz', 'Proje havuzu', havuzSayfa], ['takvim', 'Akademik takvim', takvimSayfa], ['ayarlar', 'Ayarlar', ayarlarSayfa]],
+  SORUMLU: [['talep', 'Görev Talep Arayüzü', talepSayfa], ['matris', 'Haftalık matris', matrisSayfa], ['izin', 'İzin ve rapor', izinRaporSayfa], ['analiz', 'Analiz', analizSayfa], ['ayarlar', 'Ayarlar', ayarlarSayfa]],
+  SAHA: [['matris', 'Haftalık matris', matrisSayfa], ['gorevim', 'Görevlerim', izinRaporSayfa], ['ayarlar', 'Ayarlar', ayarlarSayfa]],
 };
 function bosSayfa(baslik, metin) {
   return h('div', { class: 'icerik', style: 'padding:0' }, h('h1', null, baslik), h('div', { class: 'kart', style: 'text-align:center;border-style:dashed;color:var(--soluk)' }, metin));

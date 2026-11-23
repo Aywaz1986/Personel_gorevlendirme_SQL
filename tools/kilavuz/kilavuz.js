@@ -37,6 +37,8 @@ C.push(n("İlk yönetici, SSMS’te `tools/sql/gorev_ilk_yonetici.sql` betiğiyl
 C.push(p("Üst çubukta ortam rozeti görünür: **TEST** (geliştirme) ya da **CANLI**."));
 C.push(...img("04_gorunum","Çoklu rolde üst menüden görünüm değiştirme."));
 
+C.push(note("**Ayarlar menüsü:** Kadro, Bölüm–rol eşleştirme (Rol eşleştirme), Kişi istisnaları (Kullanıcılar ve yetkiler), İşlem günlüğü, Eski veri ve Sistem sayfaları **Ayarlar** menüsünün sekmeleridir. Yazı boyutu, yazı tipi ve tema ayarı (Görünüm ve yazı sekmesi) her rolde açıktır."));
+C.push(...img("16_ayarlar_gorunum","Ayarlar: Görünüm ve yazı sekmesi ve Yönetici sekmeleri."));
 C.push(h1("3. Kadro (Merkez Yönetici)"));
 C.push(p("Kadro Özlük’ten okunur; burada yalnızca beş alanlık kopyası tutulur (sicil, ad soyad, bölüm, telefon, kullanıcı adı, ayrılış). **Kadroyu Özlük’ten eşitle** düğmesi:"));
 C.push(b("Yeni kişileri ekler, değişenleri günceller, Özlük’te artık görünmeyen ya da ayrılış tarihi geçmiş kişileri **pasife alır**; hiçbir kaydı silmez."));
@@ -133,6 +135,14 @@ C.push(n("**Personel:** kişi başına adam-gün, görev günü, proje sayısı 
 C.push(n("**Arşiv (geçmiş görevler):** eski araçtan aktarılan, tarihi bilinmeyen \"kim hangi projeye gitti\" kayıtları; kişi, proje ya da görev metniyle aranır. Geçmiş dönemler için Proje ve Personel sekmelerinde tarih aralığını geriye alın.","n8"));
 C.push(...img("14_analiz","Analiz: ana proje bazlı adam-gün.",1500));
 
+C.push(h2("8.10 Ayarlar, işlem günlüğü ve rol bazlı listeler"));
+C.push(n("**Ayarlar:** Genel yazı boyutu (%85–%150), tablo/matris yazısı, yazı tipi ve tema (Sistem/Açık/Koyu) seçilir; tercih yalnız bu bilgisayarda saklanır. Yönetici ayrıca Kullanıcılar ve yetkiler, Rol eşleştirme, Kadro, İşlem günlüğü, Eski veri ve Sistem sekmelerini görür.","n8"));
+C.push(n("**İşlem günlüğü:** Yönetici tarih aralığı, işlem türü ve metin ile süzerek kimin neyi ne zaman yaptığını görür (en yeni 500 kayıt). Kayıtlar değiştirilemez.","n8"));
+C.push(...img("17_gunluk","İşlem günlüğü."));
+C.push(n("**Rol bazlı listeler:** Talep formunda talep sahibi (Yönetici vekâleten açarken) yalnız Proje Sorumlusu rolündeki kişilerden, önerilen personel ise Saha Personeli rolündekilerden seçilir. Roller Ayarlar › Rol eşleştirme ve Kullanıcılar ve yetkiler sekmelerinden gelir.","n8"));
+C.push(n("**Rapor tarihi düzeltme:** Yönetici, geçerli raporun satırında **Tarihi düzelt…** ile ilk/son günü değiştirir; yeni aralıktaki izinler iptal olur, çakışan görevler için uyarı verilir.","n8"));
+C.push(n("**Revizede kişi azaltma:** kişi sayısı düşen revizede **Onayla** çıkarılacak kişilerin seçim kutusunu açar; seçilenler görevden çıkarılır ve revize uygulanır. Eklenen günlerde atanmış kişilerin müsaitliği (müsait/görevde/izinli/raporlu) onaydan önce görünür.","n8"));
+C.push(n("**Analiz ve matris:** Analizde **Proje kırılımı** sekmesi Ana → Alt Proje → Yerleşke → Personel adam-günü gösterir (Excel'e de aktarılır). Matriste Personel süzgeci Görevli/izinli, Sadece müsaitler veya Tümü olarak seçilir.","n8"));
 C.push(h2("8.9 Saha notu, iletişim, rozetler ve ikame uyarısı"));
 C.push(n("**Saha / Operasyon Notu:** talep formunda araç, teçhizat (KKD), giriş kişisi, konaklama gibi bilgiler çok satırlı yazılır (en fazla 1000 karakter). Eski \"Aranan nitelik\" alanının yerini almıştır.","n8"));
 C.push(n("**İletişim:** talep listesinde ve Saha'nın Görevlerim sayfasında **İletişim / Göster** saha notunu ve Proje Sorumlusunun telefonunu açar. Yönetici ve Proje Sorumlusu ayrıca atananların telefonlarını görür; Saha görmez.","n8"));

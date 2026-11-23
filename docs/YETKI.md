@@ -55,3 +55,6 @@ Proje havuzu ve takvim: **okuma** her rolde (rolü olan), **yazma** yalnız Merk
 
 ## Dilim 11 – Telefon ve saha notu görünürlüğü
 `sp_talep_iletisim`: Yönetici her talebi; Sorumlu yalnız kendi talebini; Saha yalnız kendisine aktif atanmış talebi görür (saha notu + Proje Sorumlusu telefonu). Atananların telefonları yalnız Yönetici ve talebin Sorumlusuna, ve yalnız aktif atama varken gelir. Başkası için 50023 (yetki). `sp_sayaclar` ve `sp_ikame_bekleyenler` rol kapsamıyla sınırlıdır; `musait_gun` yalnız Yönetici.
+
+## Dilim 12
+Rol listeleri (`fn_rol_kisileri`): kişi başı aktif istisna kaydı varsa yalnız o (sorumlu_mu/saha_mi), yoksa bölüm eşleştirmesi; yalnız aktif kadro. `sp_rol_personel`: SORUMLU yalnız Yönetici, SAHA Yönetici ve Sorumlu. İşlem günlüğü, rapor düzeltme, revize fazlalık: yalnız Yönetici. Revize müsaitliği: Yönetici ve talebin Sorumlusu. Analiz kırılımı: Yönetici tümü, Sorumlu kendi talepleri.
