@@ -113,3 +113,6 @@ Anahtarlar: her tabloda `INT/BIGINT IDENTITY id`, iş anahtarı ayrı `UNIQUE`, 
 
 ## Not (Dilim 11)
 `013` mevcut yordamları `CREATE OR ALTER` ile statik kopya olarak yeniden tanımlar; dinamik SQL kullanılmaz. Sunucuda sınanmadı; CI SqlTests (SenaryoTests) doğrular.
+
+## Not (Dilim 12)
+`014` yeni yordamlar ve `sp_matris_hafta`/`sp_revize_onayla` için `CREATE OR ALTER`; dinamik SQL yok. Sunucuda sınanmadı; CI SqlTests (Dilim12Tests) doğrular.

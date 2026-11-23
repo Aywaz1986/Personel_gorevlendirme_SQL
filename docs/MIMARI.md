@@ -109,3 +109,6 @@ Onay/atama yordamları `SERIALIZABLE` + `UPDLOCK`: aynı personel, aynı gün ve
 ## Senaryo tamamlama (Dilim 11)
 - `013_senaryo_tamamlama.sql`: `nitelik` sütunları 1000 karakter (arayüzde "Saha / Operasyon Notu"); `sp_talep_kaydet/revize_*` statik kopyalarla güncellenir (dinamik SQL yok, dbo koruma temiz); yeni `sp_talep_iletisim`, `fn_ikame_bekleyenler`, `sp_ikame_bekleyenler`, `sp_sayaclar`; `sp_analiz_personel`, `sp_atama_adaylar`, `sp_rapor_evrak`, `sp_matris_hafta` genişletildi.
 - Arayüz: menü rozetleri `sayaclar` ile; 30 sn zamanlayıcı (`S.zaman`) yalnız odak giriş alanında değilken sayfanın `S.yenile` kancasını çağırır.
+
+## Dilim 12
+`014_senaryo_eksikleri.sql`: `fn_rol_kisileri`, `sp_rol_personel`, `sp_log_listele`, `sp_log_islem_turleri`, `sp_rapor_duzelt`, `sp_revize_fazlalik`, `sp_revize_onayla(@cikar_json)`, `sp_revize_musaitlik`, `sp_analiz_kirilim`, `sp_matris_hafta(@sadece_musait)`. Arayüz: `004_ayarlar.js` (sekmeli Ayarlar; görünüm tercihi `localStorage` `ayar.gorunum`, `document.documentElement.style.zoom` ile uygulanır; tema `data-tema`).

@@ -28,6 +28,7 @@ public static class AnalizCommands
     {
         r.Register("analizAnaProjeler", async (st, a) => await AnalizService.AnaProjelerAsync(st.RequireSql), kapiGerekli: true);
         r.Register("analizProje", async (st, a) => await AnalizService.ProjeAsync(st.RequireSql, Args.S(a, "bas"), Args.S(a, "bit"), OptS(a, "ana")), kapiGerekli: true);
+        r.Register("analizKirilim", async (st, a) => await AnalizService.KirilimAsync(st.RequireSql, Args.S(a, "bas"), Args.S(a, "bit"), OptS(a, "ana")), kapiGerekli: true);
         r.Register("analizPersonel", async (st, a) => await AnalizService.PersonelAsync(st.RequireSql, Args.S(a, "bas"), Args.S(a, "bit"), OptS(a, "bolum"), OptS(a, "q")), kapiGerekli: true);
         r.Register("analizPersonelDetay", async (st, a) => await AnalizService.DetayAsync(st.RequireSql, Args.S(a, "sicil"), Args.S(a, "bas"), Args.S(a, "bit")), kapiGerekli: true);
         r.Register("arsivGecmis", async (st, a) => await AnalizService.ArsivAsync(st.RequireSql, OptS(a, "q"), OptS(a, "ana")), kapiGerekli: true);
@@ -38,6 +39,7 @@ public static class AnalizCommands
             switch (tur)
             {
                 case "proje": tablo = AnalizService.ProjeTablo(await AnalizService.ProjeHamAsync(sql, bas, bit, OptS(a, "ana"))); sayfa = "Proje adam-gün"; dosya = $"analiz-proje-{bas}-{bit}.xlsx"; sayi = AnalizService.ProjeSayiSutunlari; break;
+                case "kirilim": tablo = AnalizService.KirilimTablo(await AnalizService.KirilimHamAsync(sql, bas, bit, OptS(a, "ana"))); sayfa = "Proje kırılımı"; dosya = $"analiz-kirilim-{bas}-{bit}.xlsx"; sayi = AnalizService.KirilimSayiSutunlari; break;
                 case "personel":
                     var ham = await AnalizService.PersonelHamAsync(sql, bas, bit, OptS(a, "bolum"), OptS(a, "q"));
                     var izin = ham.Count > 0 && ham[0]["izin_gun"] is not (DBNull or null);   // izin/rapor yalnız Yönetici'ye gelir

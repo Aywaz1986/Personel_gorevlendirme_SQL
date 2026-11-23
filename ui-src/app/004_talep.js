@@ -22,10 +22,25 @@ function talepTarihOzet(gunler) {
 function talepKisiGun(n) { return String(n).replace('.', ',') + ' kişi-gün'; }
 
 // Personel arama kutusu (en az 2 harf); seçilince onSec({sicil, ad}) çağrılır.
-function talepPersonelAra(yer, onSec) {
+// Rol eşleştirmesinden gelen kişi listesi (SAHA: önerilebilecek personel, SORUMLU: Proje Sorumlusu havuzu); oturumda bir kez yüklenir.
+const talepRolOnbellek = {};
+async function talepRolListe(rol) {
+  if (!talepRolOnbellek[rol]) talepRolOnbellek[rol] = await Kopru.cagir('rolPersonel', { rol });
+  return talepRolOnbellek[rol];
+}
+function talepPersonelAra(yer, onSec, rol) {
   const sonuc = h('div', { class: 'satir', style: 'margin-top:6px' });
   let zm = 0;
   const kutu = h('input', { type: 'search', class: 'metin', placeholder: yer, 'aria-label': yer, style: 'min-width:260px' });
+  const rolGoster = async () => {
+    try {
+      const q = kutu.value.trim().toLocaleLowerCase('tr');
+      const l = (await talepRolListe(rol)).filter((p) => !q || p.ad.toLocaleLowerCase('tr').includes(q)).slice(0, 40);
+      sonuc.replaceChildren(...(l.length ? l.map((p) => h('button', { type: 'button', title: p.bolum || '', onclick: () => { sonuc.replaceChildren(); kutu.value = ''; onSec(p); } }, p.ad + (p.bolum ? ' · ' + p.bolum : '')))
+        : [h('span', { class: 'alt' }, 'Bu rolde eşleşen personel yok (Ayarlar › Rol eşleştirme).')]));
+    } catch (e) { hata(e); }
+  };
+  if (rol) { kutu.addEventListener('focus', rolGoster); kutu.addEventListener('input', rolGoster); return h('div', null, kutu, sonuc); }
   kutu.addEventListener('input', () => {
     clearTimeout(zm);
     zm = setTimeout(async () => {
@@ -67,7 +82,7 @@ async function talepSayfa() {
   const kap = h('div', { style: 'display:flex;flex-direction:column;gap:14px' });
 
   async function yukle() {
-    try { durum.liste = await Kopru.cagir('talepListe', {}); durum.bildirim = await Kopru.cagir('bildirimListe', {}); durum.ikame = await Kopru.cagir('ikameBekleyenler', {}); ciz(); } catch (e) { hata(e); }
+    try { durum.liste = await Kopru.cagir('talepListe', {}); durum.bildirim = await Kopru.cagir('bildirimListe', {}); durum.ikame = await Kopru.cagir('ikameBekleyenler', {}); if (yonetici) durum.say = await Kopru.cagir('sayaclar', {}); ciz(); } catch (e) { hata(e); }
   }
   // Otomatik/elle yenileme: yalnız liste görünümündeyken (açık form kaybolmasın).
   S.yenile = async () => { if (durum.gorunum === 'liste') await yukle(); };
@@ -249,17 +264,15 @@ async function talepSayfa() {
         f.sorumlu = p ? { sicil: p.sicil, ad: p.ad } : null; ozetGuncelle();
         if (p) return;
         clearTimeout(zm);
-        zm = setTimeout(async () => {
-          if (v.trim().length < 2) return;
-          try {
-            const l = await Kopru.cagir('personelAra', { q: v });
-            secenek = new Map(l.map((x) => [x.ad + ' (' + x.sicil + ')', x]));
-            dl.replaceChildren(...l.map((x) => h('option', { value: x.ad + ' (' + x.sicil + ')' }, x.bolum || '')));
-          } catch (e) { hata(e); }
-        }, 250);
       });
+      // Talep sahibi listesi: yalnız Proje Sorumlusu rolündeki kişiler (istisna + bölüm eşleştirmesi).
+      talepRolListe('SORUMLU').then((l) => {
+        secenek = new Map(l.map((x) => [x.ad + ' (' + x.sicil + ')', x]));
+        dl.replaceChildren(...l.map((x) => h('option', { value: x.ad + ' (' + x.sicil + ')' }, x.bolum || '')));
+        if (!l.length) kutu.placeholder = 'Sorumlu rolünde kişi yok (Ayarlar › Rol eşleştirme)';
+      }).catch(hata);
       sorumluBolum = h('section', { class: 'kart' }, h('h2', null, '1. Talep sahibi (Proje Sorumlusu)'),
-        alan('Vekâleten açıyorsanız talep sahibini seçin', kutu), dl);
+        alan('Vekâleten açıyorsanız Proje Sorumlusu havuzundan seçin', kutu), dl);
     }
 
     // 3. Gün ve zaman dilimi
@@ -345,7 +358,7 @@ async function talepSayfa() {
             h('p', { class: 'alt', style: 'margin:8px 0 0' }, 'Hafta sonu ve tatil günleri listeye gelmez; gerekirse "Tek gün ekle" ile elle eklenir. Çakışma denetimi atama sırasında yapılır.')),
           h('section', { class: 'kart' }, h('h2', null, '4. Önerilen personel (isteğe bağlı, bağlayıcı değil)'),
             h('div', { class: 'satir', style: 'margin-bottom:6px' }, oneriChip.length ? oneriChip : [h('span', { class: 'alt' }, 'Öneri yok.')]),
-            talepPersonelAra('Ad yazarak ara…', (p) => { oku(); if (!f.oneri.some((x) => x.sicil === p.sicil)) f.oneri.push({ sicil: p.sicil, ad: p.ad }); ciz(); }),
+            talepPersonelAra('Saha personeli seçin veya ad yazın…', (p) => { oku(); if (!f.oneri.some((x) => x.sicil === p.sicil)) f.oneri.push({ sicil: p.sicil, ad: p.ad }); ciz(); }, 'SAHA'),
             h('p', { class: 'alt', style: 'margin:6px 0 0' }, 'Atamayı Merkez Yönetici yapar; öneri yalnız yol göstericidir.'))),
         h('aside', { style: 'flex:1 1 360px;max-width:520px;min-width:0;display:flex;flex-direction:column;gap:14px;position:sticky;top:12px' },
           h('section', { class: 'kart' }, h('h2', null, 'Özet'), h('div', null, ozetSatirlari),
@@ -369,9 +382,20 @@ async function talepSayfa() {
   }
 
   const IKAME_NEDEN = { RAPOR: 'Raporlu', AYRILDI: 'Ayrıldı / pasif', BIRIM: 'Birim değişikliği' };
+  // Yönetici sekme sayaçları (senaryo): Bekleyen Görev Talepleri · İzin Onayları · Revize Talepleri · Rapor Kaynaklı İkame.
+  function sayacSeridi() {
+    const c = durum.say; if (!yonetici || !c) return null;
+    const chip = (ad, n, tur, tikla) => h('button', { type: 'button', class: n ? 'ana' : '', style: 'display:flex;gap:6px;align-items:center', onclick: tikla }, ad, rozet(String(n || 0), n ? tur : 'soluk'));
+    return h('div', { class: 'satir', style: 'align-items:center' },
+      chip('Bekleyen Görev Talepleri', c.bekleyenTalep, 'uyari', () => { durum.filtre = 'BEKLEYEN'; ciz(); }),
+      chip('İzin Onayları', c.izinOnay, 'uyari', () => { S.sayfa = 'izin'; kabukCiz(); }),
+      chip('Revize Talepleri', c.revizeBekleyen, 'uyari', () => { durum.filtre = 'ATANMIS'; ciz(); toast('Revize bekleyen talepler atanmış talepler arasındadır; satırdan Yönet… ile açın.'); }),
+      chip('Rapor Kaynaklı İkame', c.ikameUyari, 'kotu', () => { const k = document.getElementById('ikame-kutusu'); if (k) k.scrollIntoView({ behavior: 'smooth' }); else toast('İkame bekleyen görev yok.'); }));
+  }
+
   function ikameKutusu() {
     if (!durum.ikame.length) return null;
-    return h('section', { class: 'kart', style: 'border-color:var(--uyari,#c60)' }, h('h2', { style: 'margin:0 0 6px' }, 'İkame personel bekleyen görevler (' + durum.ikame.length + ')'),
+    return h('section', { id: 'ikame-kutusu', class: 'kart', style: 'border-color:var(--uyari,#c60)' }, h('h2', { style: 'margin:0 0 6px' }, 'İkame personel bekleyen görevler (' + durum.ikame.length + ')'),
       durum.ikame.map((x) => h('div', { class: 'satir', style: 'align-items:center;padding:4px 0' },
         rozet(IKAME_NEDEN[x.neden] || x.neden, 'uyari'), h('span', null, x.kod + ' · ' + x.ad + ' · ' + takvimTarihYaz(x.ilk) + (x.ilk !== x.son ? ' – ' + takvimTarihYaz(x.son) : '') + ' (' + x.gun + ' gün)' + (yonetici ? ' · ' + x.sorumlu : '')),
         h('span', { style: 'flex:1' }), yonetici ? h('button', { onclick: () => yonetAc(x.talepId) }, 'Yönet…') : null)));

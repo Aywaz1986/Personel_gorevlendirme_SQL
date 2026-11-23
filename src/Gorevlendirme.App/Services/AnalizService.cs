@@ -53,6 +53,24 @@ public static class AnalizService
         { id = r["id"], personel = r["personel"], bolum = r["bolum"], proje = r["proje"], gorevMetni = r["gorev_metni"], sorumlu = r["sorumlu"], kaynak = r["kaynak"], aktarim = r["aktarim"] }).ToList();
 
     // ---- Excel tabloları (saf; sayı sütunları Xlsx'e ayrıca bildirilir) ----
+    public static async Task<List<Dictionary<string, object?>>> KirilimHamAsync(SqlService sql, string bas, string bit, string? ana) =>
+        await sql.ProcAsync("gorev.sp_analiz_kirilim", ("@bas", bas), ("@bit", bit), ("@ana", Bos(ana)));
+
+    public static async Task<object> KirilimAsync(SqlService sql, string bas, string bit, string? ana) =>
+        (await KirilimHamAsync(sql, bas, bit, ana)).Select(r => new
+        {
+            ana = r["ana"], alt = r["alt"], yerleske = r["yerleske"], sicil = r["sicil_no"], ad = r["ad"], adamGun = D(r["adam_gun"]), gun = r["gun"],
+        }).ToList();
+
+    public static readonly ISet<int> KirilimSayiSutunlari = new HashSet<int> { 5, 6 };
+
+    public static List<List<string>> KirilimTablo(IEnumerable<Dictionary<string, object?>> satirlar)
+    {
+        var t = new List<List<string>> { new() { "Ana proje", "Alt proje", "Yerleşke", "Sicil", "Personel", "Adam-gün", "Gün" } };
+        foreach (var r in satirlar) t.Add(new() { T(r["ana"]), T(r["alt"]), T(r["yerleske"]), T(r["sicil_no"]), T(r["ad"]), Sayi(r["adam_gun"]), T(r["gun"]) });
+        return t;
+    }
+
     public static readonly ISet<int> ProjeSayiSutunlari = new HashSet<int> { 3, 4, 5, 6 };
     public static readonly ISet<int> PersonelSayiSutunlari = new HashSet<int> { 3, 4, 5, 6, 7 };
 

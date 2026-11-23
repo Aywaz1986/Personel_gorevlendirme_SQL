@@ -14,7 +14,7 @@ async function izinTatiller() {
 async function izinRaporSayfa() {
   const yon = S.gorunum === 'YONETICI', saha = S.gorunum === 'SAHA';
   const d = { gorev: [], izin: [], rapor: [], tatiller: [], bildirim: [], cakisma: null, vek: null, rapForm: { vek: null, evrak: null },
-    iF: { tur: IZIN_TURLERI[0], bas: '', bit: '', zaman: 'TAM', atla: true, aciklama: '' }, rF: { bas: '', bit: '', aciklama: '' }, retId: null, rapIptalId: null, kisaltId: null, ilet: {} };
+    iF: { tur: IZIN_TURLERI[0], bas: '', bit: '', zaman: 'TAM', atla: true, aciklama: '' }, rF: { bas: '', bit: '', aciklama: '' }, retId: null, rapIptalId: null, rapDuzeltId: null, kisaltId: null, ilet: {} };
   const kap = h('div', { style: 'display:flex;flex-direction:column;gap:14px;min-width:0' });
 
   async function yukle() {
@@ -186,9 +186,20 @@ async function izinRaporSayfa() {
       const n = h('input', { type: 'text', class: 'metin', maxlength: '300', placeholder: 'İptal nedeni (zorunlu)', style: 'flex:1;min-width:220px' });
       ek.push(h('div', { class: 'satir', style: 'margin-top:6px' }, n, h('button', { type: 'button', onclick: async () => { try { await Kopru.cagir('raporIptal', { id: x.id, neden: n.value }); toast('Rapor iptal edildi.'); d.rapIptalId = null; await yukle(); } catch (e) { hata(e); } } }, 'İptali kaydet')));
     }
+    if (d.rapDuzeltId === x.id && yon) {
+      const b = h('input', { type: 'text', class: 'metin', value: takvimTarihYaz(x.ilkTarih), style: 'width:130px', 'aria-label': 'Yeni ilk gün', placeholder: 'GG.AA.YYYY' });
+      const s2 = h('input', { type: 'text', class: 'metin', value: takvimTarihYaz(x.sonTarih), style: 'width:130px', 'aria-label': 'Yeni son gün', placeholder: 'GG.AA.YYYY' });
+      const n = h('input', { type: 'text', class: 'metin', maxlength: '250', placeholder: 'Düzeltme nedeni (isteğe bağlı)', style: 'flex:1;min-width:200px' });
+      ek.push(h('div', { class: 'satir', style: 'margin-top:6px;align-items:center' }, h('label', null, 'İlk gün ', b), h('label', null, 'Son gün ', s2), n, h('button', { class: 'ana', type: 'button', onclick: async () => {
+        const i1 = talepTarihOku(b.value), i2 = talepTarihOku(s2.value);
+        if (!i1 || !i2) { toast('Tarihi GG.AA.YYYY biçiminde yazın.', 'kotu'); return; }
+        try { const r = await Kopru.cagir('raporDuzelt', { id: x.id, ilkTarih: i1, sonTarih: i2, neden: n.value }); toast('Rapor düzeltildi' + (r.izinIptal ? '; ' + r.izinIptal + ' izin günü iptal oldu' : '') + (r.cakisanAtama ? '; ' + r.cakisanAtama + ' görev ataması etkileniyor' : '') + '.'); d.rapDuzeltId = null; await yukle(); } catch (e) { hata(e); }
+      } }, 'Düzeltmeyi kaydet')));
+    }
     return h('div', { class: 'kart', style: 'padding:10px 12px' },
       h('div', { class: 'satir', style: 'align-items:center' }, h('b', null, x.kod), rozet(aktif ? 'Geçerli' : 'İptal', aktif ? 'iyi' : 'soluk'), yon ? h('span', null, x.ad + (x.bolum ? ' (' + x.bolum + ')' : '')) : null, h('span', { style: 'flex:1' }),
         x.eskiKayit ? rozet('Eski kayıt', 'soluk') : h('button', { type: 'button', onclick: async () => { try { const r = await Kopru.cagir('raporEvrakKaydet', { id: x.id }); if (!r.iptal) toast('Evrak kaydedildi.'); } catch (e) { hata(e); } } }, 'Evrakı kaydet'),
+        aktif && yon ? h('button', { type: 'button', onclick: () => { d.rapDuzeltId = d.rapDuzeltId === x.id ? null : x.id; ciz(); } }, 'Tarihi düzelt…') : null,
         aktif ? h('button', { type: 'button', onclick: () => { d.rapIptalId = d.rapIptalId === x.id ? null : x.id; ciz(); } }, 'İptal et…') : null),
       h('div', { class: 'alt', style: 'margin-top:4px' }, izinTarihAralik(x.ilkTarih, x.sonTarih) + (x.evrakAdi ? ' · ' + x.evrakAdi + ' (' + izinBayt(x.evrakBoyut) + ')' : '') + (x.vekaleten ? ' · vekaleten: ' + x.vekaleten : '') + (x.aciklama ? ' · ' + x.aciklama : '')),
       aktif && x.cakisanAtama > 0 ? h('div', { class: 'alt', style: 'color:var(--uyari)' }, '⚠ Bu aralıkta ' + x.cakisanAtama + ' görev ataması duruyor; ikame için Atama ekranını kullanın.') : null,

@@ -31,6 +31,29 @@ public static class SenaryoService
             talepId = r["talep_id"], kod = r["kod"], sicil = r["sicil_no"], ad = r["adi_soyadi"], neden = r["neden"], ilk = r["ilk_tarih"], son = r["son_tarih"], gun = r["gun"], sorumlu = r["sorumlu"],
         }).ToList();
 
+    /// <summary>Rol bazlı kişi listesi: SORUMLU (Sorumlu Havuzu; Yönetici) ya da SAHA (önerilebilecek personel; Yönetici, Sorumlu).</summary>
+    public static async Task<object> RolPersonelAsync(SqlService sql, string rol, string? q) =>
+        (await sql.ProcAsync("gorev.sp_rol_personel", ("@rol", rol), ("@q", string.IsNullOrWhiteSpace(q) ? null : q))).Select(r => new
+        {
+            sicil = r["sicil_no"], ad = r["adi_soyadi"], bolum = N(r["bolum"]),
+        }).ToList();
+
+    public static async Task<object> LogListeAsync(SqlService sql, string? bas, string? bit, string? islem, string? q, int ust) =>
+        (await sql.ProcAsync("gorev.sp_log_listele", ("@bas", string.IsNullOrWhiteSpace(bas) ? null : bas), ("@bit", string.IsNullOrWhiteSpace(bit) ? null : bit),
+            ("@islem", string.IsNullOrWhiteSpace(islem) ? null : islem), ("@q", string.IsNullOrWhiteSpace(q) ? null : q), ("@ust", ust))).Select(r => new
+        {
+            id = r["id"], zaman = r["zaman"], kullanici = r["kullanici"], adSoyad = r["ad_soyad"], islem = r["islem"], nesne = N(r["nesne"]), nesneId = N(r["nesne_id"]), ayrinti = N(r["ayrinti"]),
+        }).ToList();
+
+    public static async Task<object> LogIslemTurleriAsync(SqlService sql) =>
+        (await sql.ProcAsync("gorev.sp_log_islem_turleri")).Select(r => new { islem = r["islem"], adet = r["adet"] }).ToList();
+
+    public static async Task<object> RaporDuzeltAsync(SqlService sql, int id, string ilkTarih, string sonTarih, string? neden)
+    {
+        var r = (await sql.ProcAsync("gorev.sp_rapor_duzelt", ("@id", id), ("@ilk_tarih", ilkTarih), ("@son_tarih", sonTarih), ("@neden", string.IsNullOrWhiteSpace(neden) ? null : neden))).First();
+        return new { id = r["id"], kod = r["kod"], izinIptal = r["izin_iptal"], cakisanAtama = r["cakisan_atama"] };
+    }
+
     private static string Camel(string s)
     {
         var p = s.Split('_');
