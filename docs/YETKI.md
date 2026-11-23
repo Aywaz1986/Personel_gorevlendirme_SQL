@@ -58,3 +58,7 @@ Proje havuzu ve takvim: **okuma** her rolde (rolü olan), **yazma** yalnız Merk
 
 ## Dilim 12
 Rol listeleri (`fn_rol_kisileri`): kişi başı aktif istisna kaydı varsa yalnız o (sorumlu_mu/saha_mi), yoksa bölüm eşleştirmesi; yalnız aktif kadro. `sp_rol_personel`: SORUMLU yalnız Yönetici, SAHA Yönetici ve Sorumlu. İşlem günlüğü, rapor düzeltme, revize fazlalık: yalnız Yönetici. Revize müsaitliği: Yönetici ve talebin Sorumlusu. Analiz kırılımı: Yönetici tümü, Sorumlu kendi talepleri.
+
+## Bağlantı yapılandırması (Dilim 13)
+- `varsayilanBaglantiYaz/Sil/Durum` ve `pencereKonumYaz` yalnızca etkin Merkez Yönetici'ye açıktır (sunucuda `KimlikService.BenAsync` ile denetlenir). Normal kullanıcı bağlantı formunu göremez; sunucu/veritabanı adı arayüzde yalnızca Yönetici'ye gösterilir (`baglantiBilgi` sunucu adı döndürmez).
+- Ortak dosyalar exe klasöründedir ve yazma izni dosya sistemine bağlıdır; dosyada parola yoktur.

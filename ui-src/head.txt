@@ -60,6 +60,19 @@ select,input[type=search],input.metin{padding:8px 10px;border:1px solid var(--ci
 .form{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;align-items:end}
 .form .tamsatir{grid-column:1/-1}
 
+#bglPen{position:fixed;left:10px;bottom:14px;z-index:9000;width:196px;max-width:196px;box-sizing:border-box;background:#065f46;color:#ecfdf5;border-radius:12px;padding:9px 11px 10px;font-size:11.5px;line-height:1.35;box-shadow:0 4px 14px rgba(0,0,0,.3)}
+#bglPen .h{display:flex;gap:6px;align-items:center;cursor:grab;user-select:none;touch-action:none}#bglPen .h b{color:#fff;flex:1}#bglPen .h .v{color:#a7f3d0;font-size:11px}
+#bglPen button.c{background:transparent;border:0;color:#d1fae5;cursor:pointer;font-size:14px;line-height:1;padding:0 2px;min-width:0}
+#bglPen .r{display:flex;gap:6px;margin-top:4px}#bglPen .r span:first-child{color:#a7f3d0;min-width:70px;flex:none}#bglPen .r span:last-child{flex:1;word-break:break-word}
+#bglPen button.y{margin-top:8px;width:100%;background:#047857;color:#fff;border:0;border-radius:6px;padding:4px 0;font-size:12px}
+#bglRf2{display:none}#bglPen.kucuk #bglRf2{display:inline-block}#bglPen.kucuk{width:auto;max-width:230px}#bglPen.kucuk .b{display:none}
+#bglPen.suruk .h{cursor:grabbing}#bglPen.suruk{opacity:.92}#bglPen.iglendi .h{cursor:default}
+#bglPen.olcu{max-width:none;display:flex;flex-direction:column}#bglPen.olcu .b{overflow:auto;flex:1;min-height:0}
+#bglPen.tasindi{box-shadow:0 10px 30px rgba(0,0,0,.35)}
+#bglPen .rz{position:absolute;z-index:2;display:block}#bglPen .rz.n,#bglPen .rz.s{left:8px;right:8px;height:6px;cursor:ns-resize}#bglPen .rz.n{top:-3px}#bglPen .rz.s{bottom:-3px}
+#bglPen .rz.e,#bglPen .rz.w{top:8px;bottom:8px;width:6px;cursor:ew-resize}#bglPen .rz.e{right:-3px}#bglPen .rz.w{left:-3px}
+#bglPen .rz.ne,#bglPen .rz.nw,#bglPen .rz.se,#bglPen .rz.sw{width:12px;height:12px}#bglPen .rz.ne{top:-4px;right:-4px;cursor:nesw-resize}#bglPen .rz.sw{bottom:-4px;left:-4px;cursor:nesw-resize}#bglPen .rz.nw{top:-4px;left:-4px;cursor:nwse-resize}#bglPen .rz.se{bottom:-4px;right:-4px;cursor:nwse-resize}
+#bglPen.iglendi .rz,#bglPen.kucuk .rz{display:none}
 </style>
 </head>
 <body>

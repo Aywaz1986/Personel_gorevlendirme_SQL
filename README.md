@@ -32,6 +32,7 @@ Ayrıntı: [`docs/PLAN.md`](docs/PLAN.md), dilim içerikleri: [`docs/DILIMLER.md
 | 10 | **Canlıya geçiş**: canlı kontrol listesi + tek yönlü `sp_ortam_canli`, eski veri gerçek aktarımı (geri alınabilir), geri dönüş betiği, tam fonksiyon testi | dal `dilim-10-canli-gecis` (kodlandı; CI, el sınaması bekliyor) |
 | 11 | **Senaryo tamamlama**: Saha / Operasyon Notu (nitelik yerine), talep iletişim (telefon), aday özeti, müsait/tatil analizi, yerleşke filtresi, ikame bekleyen kutusu, menü rozetleri, 30 sn yenileme, standart evrak adı | dal `dilim-11-senaryo-tamamlama` (kodlandı; CI, el sınaması bekliyor) |
 | 12 | **Senaryo eksikleri + Ayarlar**: Ayarlar sayfası (yazı/tema, kullanıcılar, rol eşleştirme, kadro, işlem günlüğü), rol bazlı talep listeleri, revizede kişi seçerek çıkarma + müsaitlik, rapor tarihi düzeltme, analiz kırılımı, "Sadece müsaitler", ayrı sayaçlar | dal `dilim-12-senaryo-eksikleri` (kodlandı; CI, el sınaması bekliyor) |
+| 13 | **Gizli bağlantı + yüzen pencere**: bağlantı exe klasöründeki dosyadan sessizce kurulur (normal kullanıcı form görmez), Yönetici varsayılanı yazar/siler, iğnelenebilir yüzen bağlantı penceresi (Özlük ile aynı), sade bilgi ekranları | dal `dilim-13-baglanti-yapilandirma`, test: `docs/test-dilim-13.md` |
 
 ## Belgeler
 | Dosya | İçerik |

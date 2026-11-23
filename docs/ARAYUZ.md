@@ -7,9 +7,13 @@ Arayüz ham SQL göndermez; `window.chrome.webview.postMessage({id, cmd, args})`
 |---|---|---|---|---|
 | `ping` | – | `{pong, time}` | – | |
 | `runtime` | – | uygulama/WebView2 sürümü, Windows kullanıcısı | – | |
-| `baglantiDene` | – | `{kayit:false}` ya da bağlantı sonucu | – | `Gorevlendirme.baglanti.json` → `Ozluk.baglanti.json` → kullanıcıya özel (DPAPI) sırasıyla |
+| `baglantiDene` | – | `{kayit:false}` ya da bağlantı sonucu (`kaynak`: ortak/ozluk/yerel) | – | `Gorevlendirme.baglanti.json` → `Ozluk.baglanti.json` → kullanıcıya özel (DPAPI) sırasıyla |
 | `baglan` | `server, database, encrypt, trust, kaydet` | `{kayit, bagli, info, sunucu, veritabani}` | – | yalnız Windows kimliği |
 | `baglantiKapat` / `baglantiUnut` | – | `{tamam}` | – | Unut: kayıtlı bağlantıyı siler |
+| `baglantiBilgi` | – | `{kayit, kaynak, pencere:{x,y,w,h}\|null}` | – | bağlantı gerekmez; sunucu adı DÖNMEZ |
+| `varsayilanBaglantiYaz` | `server, database, encrypt, trust` | `{tamam, yol}` | Yönetici | exe klasörüne `Gorevlendirme.baglanti.json`; yazılamazsa `dosya` hatası |
+| `varsayilanBaglantiSil` / `varsayilanBaglantiDurum` | – | `{tamam, silindi}` / `{mevcut, yol, sunucu, veritabani, ozlukDosyasi}` | Yönetici | |
+| `pencereKonumYaz` | `x, y, w, h` ya da `sil:true` | `{tamam}` | Yönetici | yüzen pencerenin kurum varsayılan konumu (`Gorevlendirme.pencere.json`) |
 | `surumDurum` | – | `{durum, mesaj, engelle, uygulama, hedefSema, sema, asgari, ortam, hesap, pollingSaniye}` | – | `AppState.Engel`'i ayarlar |
 | `semaDurum` | – | harmanlama, şema sahibi, uygulanan/bekleyen betikler | – | |
 | `semaUygula` | `zorla` | `{uygulananlar}` | – | db_owner gerekir |

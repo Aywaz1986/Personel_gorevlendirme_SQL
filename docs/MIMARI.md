@@ -112,3 +112,7 @@ Onay/atama yordamları `SERIALIZABLE` + `UPDLOCK`: aynı personel, aynı gün ve
 
 ## Dilim 12
 `014_senaryo_eksikleri.sql`: `fn_rol_kisileri`, `sp_rol_personel`, `sp_log_listele`, `sp_log_islem_turleri`, `sp_rapor_duzelt`, `sp_revize_fazlalik`, `sp_revize_onayla(@cikar_json)`, `sp_revize_musaitlik`, `sp_analiz_kirilim`, `sp_matris_hafta(@sadece_musait)`. Arayüz: `004_ayarlar.js` (sekmeli Ayarlar; görünüm tercihi `localStorage` `ayar.gorunum`, `document.documentElement.style.zoom` ile uygulanır; tema `data-tema`).
+
+## Bağlantı yapılandırması (Dilim 13)
+`Data/BaglantiDeposu.cs`: `ConnectionStore` (DPAPI, kullanıcıya özel), `SharedConnection` (`Gorevlendirme.baglanti.json` → `Ozluk.baglanti.json`; doğrulama, atomik yazma), `PencereKonumu` (`Gorevlendirme.pencere.json`). Arayüz: `ui-src/app/003b_baglanti.js` (bilgi ekranı, yönetici formu, yüzen pencere); açılış `006_basla.js` (`otoBaglan`).
+

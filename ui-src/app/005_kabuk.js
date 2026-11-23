@@ -9,7 +9,8 @@ function bosSayfa(baslik, metin) {
 }
 
 async function kabukCiz() {
-  const k = S.kimlik; const gl = k.gorunumler;
+  const k = S.kimlik;
+  if (!document.getElementById('bglPen')) baglantiPenceresi(); const gl = k.gorunumler;
   const sayfalar = SAYFALAR[S.gorunum];
   if (!S.sayfa || !sayfalar.some((x) => x[0] === S.sayfa)) S.sayfa = sayfalar[0][0];
   const icerik = h('div', { class: 'icerik' });
@@ -64,5 +65,6 @@ function yetkisizSayfa(k) {
     h('h1', { style: 'font-size:20px;margin:0' }, 'Yetkisiz Erişim'),
     h('p', { style: 'margin:0;color:var(--soluk)' }, 'Windows hesabınız bu uygulamada tanımlı değil ya da hiçbir rolü yok. Veritabanına bağlanabilmek yetki anlamına gelmez.'),
     h('div', { class: 'kod' }, k.hesap), h('p', { style: 'margin:0;color:var(--soluk);font-size:13px' }, 'Erişim için bu hesap adını merkez yöneticisine iletin.'),
-    kopya, h('button', { onclick: async () => { await Kopru.cagir('baglantiKapat'); baglantiFormu(); } }, 'Bağlantıyı kapat'))));
+    kopya, h('button', { onclick: () => otoBaglan() }, 'Yeniden dene'),
+    h('p', { style: 'margin:6px 0 0;font-size:11px' }, h('a', { href: '#', style: 'color:var(--soluk)', onclick: (ev) => { ev.preventDefault(); baglantiFormu(); } }, 'Yönetici: bağlantı ayarları')))));
 }

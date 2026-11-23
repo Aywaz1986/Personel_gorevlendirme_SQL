@@ -13,7 +13,9 @@ KADRO = [
   {"sicilNo": "0987", "adiSoyadi": "Örnek Personel 4", "bolum": "Örnek Bölüm B", "kullaniciAdi": None, "rol": None, "aktif": False},
 ]
 VERI = {
-  "baglantiDene": {"kayit": True, "bagli": True},
+  "baglantiDene": {"kayit": True, "bagli": True, "kaynak": "ortak", "sunucu": "ORNEKSUNUCU,1433", "veritabani": "SST_Ozluk"},
+  "baglantiBilgi": {"kayit": True, "kaynak": "ortak", "pencere": None},
+  "varsayilanBaglantiDurum": {"mevcut": True, "yol": "C:\\Uygulama\\Gorevlendirme.baglanti.json", "sunucu": "ORNEKSUNUCU,1433", "veritabani": "SST_Ozluk", "ozlukDosyasi": False},
   "surumDurum": {"durum": "tamam", "mesaj": "Sürüm uyumlu.", "engelle": False, "uygulama": "0.1.0", "hedefSema": 3, "sema": 3, "asgari": "0.1.0", "ortam": "TEST", "hesap": "ALAN\\ornek.yonetici", "pollingSaniye": 20},
   "kadroOzet": {"toplam": 4, "aktif": 3, "sonZaman": "2026-11-16T14:20:00", "sonKullanici": "ALAN\\ornek.yonetici", "sonAyrinti": json.dumps({"okunan": 4, "eklenen": 1, "guncellenen": 2, "pasife_alinan": 1, "degismeyen": 0})},
   "kadroListe": KADRO,
@@ -133,6 +135,11 @@ with sync_playwright() as P:
     pg.locator('textarea').fill('08 NİSAN Pazartesi / 1 Gün (YILLIK İZİNDEN KESİLECEK)\n10-11-12 NİSAN Çarşamba-Perşembe-Cuma / 3 Gün Ramazan Bayramı\n01 MAYIS Çarşamba / 1 Gün Emek ve Dayanışma Günü'); pg.get_by_role('button', name='Önizle').click(); pg.wait_for_timeout(500); pg.evaluate('window.scrollTo(0,0)'); pg.set_viewport_size({'width': 1200, 'height': 2300}); sh(pg, '07_takvim'); pg.set_viewport_size({'width': 1200, 'height': 800})
     pg.locator('.gorunum button').click(); sh(pg, '04_gorunum')
     sh(ac(ben(False, False, False, False, [])), '05_yetkisiz')
+    pg.locator('#bglCol').click(); sh(pg, '18_baglanti_penceresi', '#bglPen')
+    pg.locator('#bglPen button', has_text='Bağlantıyı değiştir').click(); sh(pg, '19_baglanti_formu')
+    v0 = dict(VERI); v0["baglantiDene"] = {"kayit": False}; v0["baglantiBilgi"] = {"kayit": False, "kaynak": None, "pencere": None}
+    q = b.new_page(viewport={'width': 1200, 'height': 700}); q.add_init_script(mock(ben(True, False, False, True, ["SAHA"])).replace(json.dumps(dict(VERI, ben=ben(True, False, False, True, ["SAHA"]))), json.dumps(dict(v0, ben=ben(True, False, False, True, ["SAHA"])))))
+    q.goto('file:///tmp/gorev_idx.html'); sh(q, '20_baglanti_yok')
     ps = ac(ben(True, False, True, False, ["SORUMLU"]))
     sh(ps, '08_talep_liste')
     ps.get_by_role('button', name='Yeni talep').click(); ps.wait_for_timeout(300)

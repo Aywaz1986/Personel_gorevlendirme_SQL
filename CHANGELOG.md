@@ -3,6 +3,14 @@
 Her değişiklik önce **Yayınlanmamış** bölümüne yazılır; sürüm yükselince bölüm sürüm başlığına dönüştürülür.
 
 ## Yayınlanmamış
+### Dilim 13 – Gizli bağlantı yapılandırması + yüzen pencere (2026-11) — DEVAM EDİYOR (dal `dilim-13-baglanti-yapilandirma`, Dilim 12 dalından; PR sırası … → #17 → bu)
+**Oturum devir notu (her adımda güncelle):**
+- Karar (Murat 23.11.2026): Özlük'teki gizli/ortak bağlantı yapılandırması ve yüzen bağlantı penceresi aynı özelliklerle buraya. SQL değişikliği YOK (şema sürümü aynı).
+- [x] 1. C#: SharedConnection (doğrulama, atomik yazma, silme, kaynak), PencereKonumu, 5 yeni komut (Yönetici denetimli); birim testleri `BaglantiYapilandirmaTests`, BridgeTests
+- [x] 2. Arayüz: sessiz bağlanma, bilgi ekranları, yönetici formu (+varsayılan kaydet/sil), yüzen pencere (sürükle, boyutlandır, iğne, kurum varsayılanı)
+- [x] 3. Belgeler (README, PLAN, DILIMLER, ARAYUZ, MIMARI, YETKI), `docs/test-dilim-13.md`, kılavuz (2.1)
+- [x] 4. Push, CI yeşil (4/4), PR açıldı (taban dilim-12-senaryo-eksikleri)
+
 ### Dilim 12 – Senaryo eksikleri ve Ayarlar (2026-11) — DEVAM EDİYOR (dal `dilim-12-senaryo-eksikleri`, Dilim 11 dalından; PR sırası #12 → … → #16 → bu)
 **Oturum devir notu (her adımda güncelle):**
 - Kararlar (Murat 23.11.2026): eksikler bitmeden görsel/yapılandırma yok; ayarlar Özlük'teki gibi tek yerde (yazı ayarları, kullanıcılar, rol eşleştirme); talep ekranı listeleri rol eşleşmesinden gelir.
