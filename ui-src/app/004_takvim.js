@@ -2,7 +2,15 @@
 function takvimTarihYaz(iso) { const p = String(iso).split('-'); return p.length === 3 ? p[2] + '.' + p[1] + '.' + p[0] : String(iso); }
 function takvimGun(iso) { const d = new Date(iso + 'T00:00:00'); return isNaN(d) ? '' : d.toLocaleDateString('tr-TR', { weekday: 'long' }); }
 function takvimZamanAd(z) { return z === 'TAM' ? 'Tüm gün' : z === 'OO' ? 'Öğleden önce (ÖÖ)' : z === 'OS' ? 'Öğleden sonra (ÖS)' : z; }
-function takvimTurAd(t) { return t === 'RESMI' ? 'Resmi tatil' : t === 'IDARI' ? 'İdari tatil' : t; }
+function takvimTurAd(t) { return t === 'RESMI' ? 'Resmi tatil' : t === 'IDARI' ? 'Yıllık izin (idari)' : t; }
+// Kategori (kullanıcı dili) <-> sunucu alanları: Yıllık İzin = IDARI (+ yıllık izinden kesilir bayrağı), Resmi Tatil = RESMI, Yarım Gün = OO/OS.
+function takvimKategoriSatirdan(x) { return x.zaman !== 'TAM' ? 'YARIM' : x.tur === 'RESMI' ? 'RESMI' : 'YILLIK'; }
+function takvimKategoriAlanlar(kat, dilim, tur, yillik) {
+  if (kat === 'RESMI') return { tur: 'RESMI', zaman: 'TAM', yillik: false };
+  if (kat === 'YARIM') return { tur: tur || 'RESMI', zaman: dilim === 'OS' ? 'OS' : 'OO', yillik: !!yillik };
+  return { tur: 'IDARI', zaman: 'TAM', yillik: yillik !== false };
+}
+const TAKVIM_KATEGORI = [['YILLIK', 'Yıllık İzin'], ['RESMI', 'Resmi Tatil'], ['YARIM', 'Yarım Gün']];
 function takvimAyAd(i) { return ['OCAK', 'ŞUBAT', 'MART', 'NİSAN', 'MAYIS', 'HAZİRAN', 'TEMMUZ', 'AĞUSTOS', 'EYLÜL', 'EKİM', 'KASIM', 'ARALIK'][i]; }
 function takvimIso(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
 function takvimHafta(d) { const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())); const g = t.getUTCDay() || 7; t.setUTCDate(t.getUTCDate() + 4 - g); const b = new Date(Date.UTC(t.getUTCFullYear(), 0, 1)); return Math.ceil(((t - b) / 86400000 + 1) / 7); }
@@ -29,8 +37,8 @@ function takvimDosyaOku(dosya) {
 
 async function takvimSayfa() {
   const yilSimdi = new Date().getFullYear();
-  const durum = { yil: yilSimdi, liste: [], ozet: null, duzenle: null, onizleme: null, satirlar: null };
-  const kap = h('div');
+  const durum = { yil: yilSimdi, liste: [], ozet: null, duzenle: null, tarama: null };
+  const kapUst = h('div'), kapAlt = h('div');
 
   async function yukle() {
     try {
@@ -81,31 +89,41 @@ async function takvimSayfa() {
     }
     const lej = (c, t, daire) => h('span', { style: 'margin-right:14px;white-space:nowrap' }, h('span', { style: 'display:inline-block;width:14px;height:14px;vertical-align:middle;margin-right:4px;' + (daire ? 'border:2px solid ' + c + ';border-radius:50%' : 'background:' + c) }), t);
     return h('section', { class: 'kart' }, h('div', { class: 'satir', style: 'gap:18px;align-items:flex-start' }, aylar),
-      h('div', { class: 'alt', style: 'margin-top:8px' }, lej(renk.RESMI, 'Resmi tatil'), lej(renk.IDARI, 'İdari tatil'), lej(renk.RESMI, 'Yarım gün', true), h('span', null, 'Gri: hafta sonu · HFT: ISO hafta no')));
+      h('div', { class: 'alt', style: 'margin-top:8px' }, lej(renk.RESMI, 'Resmi tatil'), lej(renk.IDARI, 'Yıllık izin (idari)'), lej(renk.RESMI, 'Yarım gün', true), h('span', null, 'Gri: hafta sonu · HFT: ISO hafta no')));
   }
 
   function form() {
     const d = durum.duzenle;
+    const kat0 = d ? takvimKategoriSatirdan(d) : 'RESMI';
     const bas = h('input', { type: 'date', class: 'metin', value: d ? d.baslangic : '', 'aria-label': 'Başlangıç' });
     const bit = h('input', { type: 'date', class: 'metin', value: d && d.bitis !== d.baslangic ? d.bitis : '', 'aria-label': 'Bitiş (boşsa tek gün)' });
-    const zaman = h('select', { 'aria-label': 'Zaman dilimi' }, ['TAM', 'OO', 'OS'].map((z) => h('option', { value: z, selected: d ? d.zaman === z : z === 'TAM' }, takvimZamanAd(z))));
-    const tur = h('select', { 'aria-label': 'Tür' }, ['RESMI', 'IDARI'].map((t) => h('option', { value: t, selected: d ? d.tur === t : t === 'RESMI' }, takvimTurAd(t))));
-    const ad = h('input', { type: 'text', class: 'metin', maxlength: '200', placeholder: 'Ad (ör. Ramazan Bayramı)', value: d ? d.ad : '', 'aria-label': 'Ad' });
-    const yil = h('input', { type: 'checkbox', checked: d ? !!d.yillik : false, id: 'tk-yillik' });
-    return h('section', { class: 'kart' }, h('h2', null, d ? 'Kaydı düzenle' : 'Yeni tatil / kapalı gün'),
-      h('div', { class: 'satir', style: 'align-items:center' }, h('label', null, 'Başlangıç ', bas), h('label', null, 'Bitiş ', bit), zaman, tur, ad,
-        h('label', { for: 'tk-yillik' }, yil, ' Yıllık izinden kesilir'),
+    const kat = h('select', { 'aria-label': 'Tür', style: 'font-weight:600' }, [['YILLIK', 'Yıllık İzin'], ['RESMI', 'Resmi Tatil']].concat(d && kat0 === 'YARIM' ? [['YARIM', 'Yarım Gün']] : []).map(([k, a]) => h('option', { value: k, selected: k === kat0 }, a)));
+    const dilim = h('select', { 'aria-label': 'Zaman dilimi' }, ['TAM', 'OO', 'OS'].map((z) => h('option', { value: z, selected: d ? d.zaman === z : z === 'TAM' }, takvimZamanAd(z))));
+    const ad = h('input', { type: 'text', class: 'metin', maxlength: '200', placeholder: 'Ad (ör. Ramazan Bayramı)', value: d ? d.ad : '', 'aria-label': 'Ad', style: 'flex:1 1 180px' });
+    const yil = h('input', { type: 'checkbox', checked: d ? !!d.yillik : true, id: 'tk-yillik' });
+    const yilEt = h('label', { for: 'tk-yillik', class: 'onay' }, yil, ' Yıllık izinden kesilir');
+    const gor = () => { yilEt.style.display = kat.value === 'YILLIK' ? '' : 'none'; };
+    kat.addEventListener('change', gor); gor();
+    return h('div', null, h('div', { class: 'alt', style: 'margin-bottom:6px' }, d ? 'Kaydı düzenle' : 'Yeni kayıt'),
+      h('div', { class: 'satir', style: 'align-items:center;gap:8px' }, h('label', null, 'Başlangıç ', bas), h('label', null, 'Bitiş ', bit), kat, dilim, ad, yilEt,
         h('button', { class: 'ana', onclick: async () => {
-          try { await Kopru.cagir('takvimKaydet', { id: d ? d.id : null, baslangic: bas.value, bitis: bit.value, zaman: zaman.value, tur: tur.value, ad: ad.value, yillik: yil.checked }); toast('Kaydedildi.'); durum.duzenle = null; await yukle(); } catch (e) { hata(e); }
-        } }, 'Kaydet'),
+          try {
+            const a = takvimKategoriAlanlar(kat.value, dilim.value, d ? d.tur : 'RESMI', yil.checked);
+            if (kat.value !== 'YARIM' && dilim.value !== 'TAM') a.zaman = dilim.value;   // seçilen dilim tek gün yarım gün kaydı üretir
+            await Kopru.cagir('takvimKaydet', { id: d ? d.id : null, baslangic: bas.value, bitis: bit.value, zaman: a.zaman, tur: a.tur, ad: ad.value, yillik: a.yillik });
+            toast('Kaydedildi.'); durum.duzenle = null; await yukle();
+          } catch (e) { hata(e); }
+        } }, d ? 'Kaydet' : 'Takvime ekle'),
         d ? h('button', { onclick: () => { durum.duzenle = null; ciz(); } }, 'Vazgeç') : null),
-      h('p', { class: 'alt', style: 'margin:6px 0 0' }, 'Bitiş boşsa tek gün. Yarım gün (ÖÖ/ÖS) yalnız tek günde olur. Bir kayıt tek yıl içinde ve 60 günden kısa olmalıdır.'));
+      h('p', { class: 'alt', style: 'margin:6px 0 0;font-size:12px' }, 'Bitiş boşsa tek gün. Yarım gün (ÖÖ/ÖS) yalnız tek günde olur. Bir kayıt tek yıl içinde ve 60 günden kısa olmalıdır.'));
   }
 
+  // Excel/CSV/yapıştır: dosya taranır, bulunan her tarih satırı için tür SEÇTİRİLİR (Yıllık İzin / Resmi Tatil / Yarım Gün), sonra toplu eklenir.
   function toplu() {
-    const alan = h('textarea', { class: 'metin', rows: '6', style: 'width:100%;font-family:Consolas,monospace', placeholder: 'Standart takvim dosyasını (.xlsx) seçin ya da listeyi yapıştırın:\n08 NİSAN Pazartesi / 1 Gün (YILLIK İZİNDEN KESİLECEK)\n10-11-12 NİSAN Çarşamba-Perşembe-Cuma / 3 Gün Ramazan Bayramı\n\nveya sütunlu: Başlangıç; Bitiş; Ad; Tür; Zaman dilimi; Yıllık', 'aria-label': 'Yapıştırılan satırlar' });
+    const alan = h('textarea', { class: 'metin', rows: '3', style: 'width:100%;font-family:Consolas,monospace', placeholder: 'ya da listeyi yapıştırın:\n08 NİSAN Pazartesi 1 gün Resmi', 'aria-label': 'Yapıştırılacak liste' });
     const dosya = h('input', { type: 'file', accept: '.csv,.txt,.xlsx', 'aria-label': 'Dosya seç' });
-    const onizle = h('button', { class: 'ana', onclick: async () => {
+    const t = durum.tarama;
+    const sec = async () => {
       try {
         let ok;
         if (dosya.files && dosya.files.length) {
@@ -113,47 +131,66 @@ async function takvimSayfa() {
           ok = o.xlsx ? await Kopru.cagir('takvimXlsxOku', { base64: o.xlsx, yil: durum.yil }) : await Kopru.cagir('takvimMetinOku', { metin: o.metin, yil: durum.yil });
         } else ok = await Kopru.cagir('takvimMetinOku', { metin: alan.value, yil: durum.yil });
         if (!ok.satirlar.length) { toast('Okunacak satır bulunamadı.', 'uyari'); return; }
-        if (ok.yil && ok.yil !== durum.yil) { durum.yil = ok.yil; toast('Dosyadaki yıl (' + ok.yil + ') seçildi.'); }
-        durum.satirlar = ok.satirlar; durum.onizleme = await Kopru.cagir('takvimOnizle', { satirlar: ok.satirlar });
-        await yukle();
+        if (ok.yil && ok.yil !== durum.yil) { durum.yil = ok.yil; toast('Dosyadaki yıl (' + ok.yil + ') seçildi.'); await yukle(); }
+        durum.tarama = ok.satirlar.map((x) => ({ ...x, kat: takvimKategoriSatirdan(x), dilim: x.zaman === 'OS' ? 'OS' : 'OO', dahil: true, sonuc: null }));
+        ciz();
       } catch (e) { hata(e); }
-    } }, 'Önizle');
-    const o = durum.onizleme;
-    const sayi = (d) => o ? o.filter((x) => x.durum === d).length : 0;
-    const hatali = sayi('HATA');
-    return h('section', { class: 'kart' }, h('h2', null, 'Toplu yükleme (standart takvim .xlsx, CSV ya da yapıştır)'),
-      h('p', { class: 'alt', style: 'margin:0 0 8px' }, 'Hiçbir şey yazılmadan önce önizleme gösterilir. Hatalı satır varsa hiçbiri uygulanmaz.'),
-      alan, h('div', { class: 'satir', style: 'margin-top:8px;align-items:center' }, dosya, onizle),
-      o ? h('div', { style: 'margin-top:12px' },
-        h('div', { class: 'satir', style: 'margin-bottom:8px;align-items:center' }, rozet('Yeni ' + sayi('YENI'), 'iyi'), rozet('Güncellenecek ' + sayi('GUNCELLE'), 'bilgi'), rozet('Aynı ' + sayi('AYNI'), 'bilgi'), hatali ? rozet('Hatalı ' + hatali, 'kotu') : null,
-          h('button', { class: 'ana', disabled: hatali > 0 || sayi('YENI') + sayi('GUNCELLE') === 0, onclick: async () => {
-            try { const r = await Kopru.cagir('takvimUygula', { satirlar: durum.satirlar }); toast('Uygulandı: ' + r.eklenen + ' eklendi, ' + r.guncellenen + ' güncellendi.'); durum.onizleme = null; durum.satirlar = null; await yukle(); } catch (e) { hata(e); }
-          } }, 'Uygula')),
-        h('div', { class: 'kaydir' }, h('table', { style: 'min-width:720px' }, h('thead', null, h('tr', null, ['Satır', 'Başlangıç', 'Bitiş', 'Gün', 'Dilim', 'Tür', 'Ad', 'Yıllık', 'Durum'].map((x) => h('th', null, x)))),
-          h('tbody', null, o.map((x) => h('tr', null, h('td', null, x.sira), h('td', null, x.baslangic ? takvimTarihYaz(x.baslangic) : '-'), h('td', null, x.bitis && x.bitis !== x.baslangic ? takvimTarihYaz(x.bitis) : ''), h('td', null, x.gun == null ? '' : takvimGunYaz(x.gun)), h('td', null, x.zaman || '-'), h('td', null, x.tur || '-'), h('td', null, x.ad || '-'), h('td', null, x.yillik ? 'Evet' : ''),
-            h('td', null, x.durum === 'HATA' ? h('span', { style: 'color:var(--kotu)' }, x.hata) : rozet(x.durum === 'YENI' ? 'Yeni' : x.durum === 'GUNCELLE' ? 'Güncellenecek' : 'Aynı', x.durum === 'YENI' ? 'iyi' : 'bilgi'))))))) ) : null);
+    };
+    const donustur = () => durum.tarama.filter((x) => x.dahil).map((x) => { const a = takvimKategoriAlanlar(x.kat, x.dilim, x.tur, x.kat === 'YARIM' ? x.yillik : x.yillik !== false); return { sira: x.sira, baslangic: x.baslangic, bitis: x.kat === 'YARIM' ? x.baslangic : x.bitis, zaman: a.zaman, tur: a.tur, ad: x.ad, yillik: a.yillik }; });
+    const govde = h('div', null,
+      h('div', { class: 'satir', style: 'align-items:center' }, dosya, h('button', { class: 'ana', onclick: sec }, 'Dosyayı tara')), alan);
+    if (t) {
+      const toplu = h('select', { 'aria-label': 'Hepsine uygula', onchange: (e) => { if (!e.target.value) return; t.forEach((x) => { x.kat = e.target.value; x.sonuc = null; }); ciz(); } },
+        h('option', { value: '' }, 'Hepsini şuna çevir…'), TAKVIM_KATEGORI.map(([k, a]) => h('option', { value: k }, a)));
+      const hatali = t.some((x) => x.dahil && x.sonuc && x.sonuc.durum === 'HATA');
+      const hazir = t.some((x) => x.dahil && x.sonuc);
+      govde.append(h('div', { style: 'margin-top:10px' },
+        h('div', { class: 'satir', style: 'align-items:center;margin-bottom:6px' }, h('strong', null, t.length + ' tarih bulundu — her biri için türü seçin'), toplu),
+        h('div', { class: 'kaydir', style: 'max-height:300px;overflow:auto' }, h('table', { style: 'min-width:640px' },
+          h('thead', null, h('tr', null, ['Ekle', 'Tarih', 'Ad', 'Tür', 'Sonuç'].map((x) => h('th', null, x)))),
+          h('tbody', null, t.map((x) => h('tr', null,
+            h('td', null, h('input', { type: 'checkbox', checked: x.dahil, 'aria-label': 'Ekle', onchange: (e) => { x.dahil = e.target.checked; x.sonuc = null; ciz(); } })),
+            h('td', null, takvimAralikYaz(x)), h('td', null, x.ad),
+            h('td', { style: 'white-space:nowrap' },
+              h('select', { 'aria-label': 'Tür', onchange: (e) => { x.kat = e.target.value; x.sonuc = null; ciz(); } }, TAKVIM_KATEGORI.map(([k, a]) => h('option', { value: k, selected: x.kat === k }, a))),
+              x.kat === 'YARIM' ? h('select', { 'aria-label': 'Yarım gün dilimi', onchange: (e) => { x.dilim = e.target.value; x.sonuc = null; } }, ['OO', 'OS'].map((z) => h('option', { value: z, selected: x.dilim === z }, z === 'OO' ? 'ÖÖ' : 'ÖS'))) : null),
+            h('td', null, x.sonuc ? (x.sonuc.durum === 'HATA' ? h('span', { style: 'color:var(--kotu)' }, x.sonuc.hata) : rozet(x.sonuc.durum === 'YENI' ? 'Yeni' : x.sonuc.durum === 'GUNCELLE' ? 'Güncellenecek' : 'Aynı', x.sonuc.durum === 'YENI' ? 'iyi' : 'bilgi')) : '-')))))),
+        h('div', { class: 'satir', style: 'margin-top:8px' },
+          h('button', { onclick: async () => {
+            try { const s = donustur(); const o = await Kopru.cagir('takvimOnizle', { satirlar: s }); let i = 0; t.forEach((x) => { x.sonuc = x.dahil ? o[i++] : null; }); ciz(); } catch (e) { hata(e); }
+          } }, 'Doğrula'),
+          h('button', { class: 'ana', disabled: !hazir || hatali, onclick: async () => {
+            try { const r = await Kopru.cagir('takvimUygula', { satirlar: donustur() }); toast('Eklendi: ' + r.eklenen + ' yeni, ' + r.guncellenen + ' güncellendi.'); durum.tarama = null; await yukle(); } catch (e) { hata(e); }
+          } }, 'Seçilenleri takvime ekle'),
+          h('button', { onclick: () => { durum.tarama = null; ciz(); } }, 'Vazgeç'))));
+    }
+    return h('div', { style: 'margin-top:14px;border-top:1px solid var(--cizgi);padding-top:10px' },
+      h('div', { class: 'alt', style: 'margin-bottom:6px' }, 'Excel (.xlsx) / CSV ile toplu ekleme: dosya taranır, bulunan tarihler listelenir; türü siz seçersiniz.'), govde);
+  }
+
+  function kayitlar() {
+    return h('div', { style: 'margin-top:14px;border-top:1px solid var(--cizgi);padding-top:10px' },
+      h('div', { style: 'margin-bottom:6px' }, h('strong', null, 'Kayıtlar (' + durum.yil + ')')),
+      h('div', { class: 'kaydir', style: 'max-height:260px;overflow:auto' }, h('table', { style: 'min-width:560px' }, h('thead', null, h('tr', null, ['Tarih', 'Tür', 'Ad', 'Yıllık izinden', ''].map((x) => h('th', null, x)))),
+        h('tbody', null, durum.liste.length ? durum.liste.map((x) => h('tr', null,
+          h('td', null, takvimAralikYaz(x) + (x.zaman !== 'TAM' ? ' (' + (x.zaman === 'OO' ? 'ÖÖ' : 'ÖS') + ')' : '')),
+          h('td', null, x.zaman !== 'TAM' ? 'Yarım gün' : x.tur === 'RESMI' ? 'Resmi tatil' : 'Yıllık izin'), h('td', null, x.ad),
+          h('td', null, x.yillik ? 'Kesilir (' + takvimGunYaz(x.kesilen) + ')' : '-'),
+          h('td', { style: 'white-space:nowrap' },
+            h('button', { onclick: () => { durum.duzenle = x; ciz(); } }, 'Düzenle'),
+            h('button', { style: 'color:var(--kotu)', onclick: async () => { try { await Kopru.cagir('takvimSil', { id: x.id }); toast('Silindi.'); await yukle(); } catch (e) { hata(e); } } }, 'Sil'))))
+          : h('tr', null, h('td', { colspan: '5', class: 'alt' }, durum.yil + ' için kayıt yok.'))))));
   }
 
   function ciz() {
     const yillar = []; for (let y = yilSimdi - 2; y <= yilSimdi + 3; y++) yillar.push(y);
     if (!yillar.includes(durum.yil)) yillar.push(durum.yil);
     yillar.sort();
-    const sec = h('select', { 'aria-label': 'Yıl', onchange: (e) => { durum.yil = Number(e.target.value); durum.onizleme = null; yukle(); } }, yillar.map((y) => h('option', { value: y, selected: y === durum.yil }, y)));
-    kap.replaceChildren(h('div', { class: 'satir', style: 'align-items:center;margin-bottom:8px' }, 'Yıl:', sec), ozet(), yilTakvimi(),
-      h('section', { class: 'kart' }, h('div', { style: 'margin-bottom:10px' }, h('strong', null, 'Kayıtlar')),
-        h('div', { class: 'kaydir' }, h('table', { style: 'min-width:720px' }, h('thead', null, h('tr', null, ['Tarih', 'Gün', 'Dilim', 'Tür', 'Ad', 'Yıllık izinden', ''].map((x) => h('th', null, x)))),
-          h('tbody', null, durum.liste.length ? durum.liste.map((x) => h('tr', null, h('td', null, takvimAralikYaz(x)), h('td', null, takvimGunYaz(x.gun)), h('td', null, takvimZamanAd(x.zaman)), h('td', null, takvimTurAd(x.tur)), h('td', null, x.ad),
-            h('td', null, x.yillik ? 'Kesilir (' + takvimGunYaz(x.kesilen) + ')' : '-'),
-            h('td', { style: 'white-space:nowrap' },
-              h('button', { onclick: () => { durum.duzenle = x; ciz(); window.scrollTo(0, 0); } }, 'Düzenle'),
-              h('button', { style: 'color:var(--kotu)', onclick: async () => { try { await Kopru.cagir('takvimSil', { id: x.id }); toast('Silindi.'); await yukle(); } catch (e) { hata(e); } } }, 'Sil'))))
-            : h('tr', null, h('td', { colspan: '7', class: 'alt' }, durum.yil + ' için kayıt yok.')))))),
-      form(), toplu());
+    const sec = h('select', { 'aria-label': 'Yıl', onchange: (e) => { durum.yil = Number(e.target.value); durum.tarama = null; yukle(); } }, yillar.map((y) => h('option', { value: y, selected: y === durum.yil }, y)));
+    kapUst.replaceChildren(h('div', { class: 'satir', style: 'align-items:center;margin-bottom:8px' }, 'Yıl:', sec), form(), kayitlar(), toplu());
+    kapAlt.replaceChildren(ozet(), yilTakvimi());
   }
 
   await yukle();
-  return h('div', { class: 'icerik', style: 'padding:0' },
-    h('div', null, h('h1', null, 'Akademik takvim'),
-      h('p', { class: 'alt' }, 'Resmi ve idari tatil günleri (tek gün ya da aralık, yarım gün dahil). Tatil gününe atama engellenmez; yönetici atama yaparken uyarı görür (Dilim 5). "Yıllık izinden kesilir" işareti yalnız bilgi amaçlıdır.')),
-    kap);
+  return { ust: kapUst, alt: kapAlt };
 }

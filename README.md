@@ -34,6 +34,7 @@ Ayrıntı: [`docs/PLAN.md`](docs/PLAN.md), dilim içerikleri: [`docs/DILIMLER.md
 | 12 | **Senaryo eksikleri + Ayarlar**: Ayarlar sayfası (yazı/tema, kullanıcılar, rol eşleştirme, kadro, işlem günlüğü), rol bazlı talep listeleri, revizede kişi seçerek çıkarma + müsaitlik, rapor tarihi düzeltme, analiz kırılımı, "Sadece müsaitler", ayrı sayaçlar | dal `dilim-12-senaryo-eksikleri` (kodlandı; CI, el sınaması bekliyor) |
 | 13 | **Gizli bağlantı + yüzen pencere**: bağlantı exe klasöründeki dosyadan sessizce kurulur (normal kullanıcı form görmez), Yönetici varsayılanı yazar/siler, iğnelenebilir yüzen bağlantı penceresi (Özlük ile aynı), sade bilgi ekranları | dal `dilim-13-baglanti-yapilandirma`, test: `docs/test-dilim-13.md` |
 | 14 | **Yeni arayüz tasarımı**: referans tasarımın renk/yapı/düğmeleri (üst çubuk, rol düğmeleri yalnız yetkili olanlara, KPI kartları, sekme şeridi), talep kartı (sağda kaydırmalı tavsiye kutusu, ortalanmış düğmeler), Kullanıcı Yetki sekmesi (+ Yeni yetkili ekle), Ayarlar ayrı sekme, gömülü yazı tipi + Yazı Ayarları, tema ve buzlu cam, `015` sayaç | dal `dilim-14-yeni-tasarim`, test: `docs/test-dilim-14.md` |
+| 15 | **Havuz + takvim**: Proje/Görev Havuzu merkezî panel (kademeli açılır listeler, ağaç, ad düzeltme, birleştirme, pasife alma, **arşiv** nedenli), Akademik Takvim & Resmi Tatil yönetimi (Yıllık İzin/Resmi Tatil/Yarım Gün seçimi), Excel taramasında tarih başına tür seçimi, yıllık çizelge | dal `dilim-15-takvim-havuz`, test: `docs/test-dilim-15.md` |
 
 ## Belgeler
 | Dosya | İçerik |

@@ -3,6 +3,14 @@
 Her değişiklik önce **Yayınlanmamış** bölümüne yazılır; sürüm yükselince bölüm sürüm başlığına dönüştürülür.
 
 ## Yayınlanmamış
+### Dilim 15 – Akademik takvim + Proje/Görev Havuzu yönetimi (2026-11) — DEVAM EDİYOR (dal `dilim-15-takvim-havuz`, Dilim 14 dalından; PR sırası … → #19 → #20 → bu)
+**Oturum devir notu (her adımda güncelle):**
+- Karar (Murat 24.11.2026 istek dosyası, madde 5–6): takvim tür combobox + Excel'de tarih başına tür seçimi + yıllık çizelge; havuz merkezî kademeli panel, ad düzeltme, birleştirme, pasife alma, arşiv, denetim. Takvim şeması değişmedi; havuzda yalnız arşiv eklendi.
+- [x] 1. `016_havuz_arsiv.sql` (sınanmadı; CI SqlTests), `havuzArsiv` komutu, SqlTests + BridgeTests
+- [x] 2. Arayüz: `004_havuz.js`, `004_takvim.js`, `004_havuz_takvim.js`
+- [x] 3. Belgeler, `docs/test-dilim-15.md`, kılavuz (bölüm 6–7) + ekran görüntüleri
+- [ ] 4. Push, CI, PR (taban dilim-14-yeni-tasarim)
+
 ### Dilim 14 – Yeni arayüz tasarımı (2026-11) — DEVAM EDİYOR (dal `dilim-14-yeni-tasarim`, Dilim 13 dalından; PR sırası … → #19 → bu)
 **Oturum devir notu (her adımda güncelle):**
 - Karar (Murat 24.11.2026): referans tasarım aktarılır; istek 1–4 + yazı/tema/cam Dilim 14, istek 5–6 (akademik takvim, havuz yönetimi) Dilim 15.

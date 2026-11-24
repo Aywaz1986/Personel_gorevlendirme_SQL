@@ -74,10 +74,9 @@ Murat 24.11.2026: referans tasarım ("Merkezi Personel Görevlendirme Arayüz Ta
 - Ayarlar › Görünüm ve yazı: Özlük'teki Yazı Ayarları (alan bazında yazı tipi/boyutu), hazır + özel temalar, buzlu cam. Varsayılan yazı tipi yapıya gömülü (`ui-src/fonts`, `build.py`). Tercihler bilgisayara özel.
 - Eksik/bilinçli: Sorumlu iki sütunlu form ve vekâlet düğmesi (gezinme penceresi) tam birebir değil; Proje Havuzu & Akademik Takvim sayfası Dilim 15'e kadar iskelettir.
 
-## Dilim 15 – Akademik takvim ve Proje/Görev Havuzu yönetimi (planlı)
-İstek dosyası madde 5–6: 2024 akademik takvim tasarımı, Yıllık İzin/Resmi Tatil seçimi, Excel tarama + madde madde tür seçimi (Yıllık İzin, Resmi Tatil, Yarım Gün) + toplu ekleme; Ana Proje → Alt Proje → Faaliyet → Yerleşke ağacı, kademeli combobox, yazım düzeltme, mükerrer birleştirme (veri kaybı yok), tamamlananı pasife alma, reddedilen/geçersizi arşivleme, tüm değişiklikler denetim kaydında. SQL göçü (016+) gerekir.
-- Bağlantı sırası: `Gorevlendirme.baglanti.json` (exe klasörü) → `Ozluk.baglanti.json` → kullanıcıya özel (DPAPI). Yalnızca Windows kimliği; parola/kullanıcı adı dosyada yok.
-- Normal kullanıcı form görmez: ayar yoksa "Bağlantı ayarı yapılmamış", ulaşılamıyorsa "Sunucuya bağlanılamadı" (Yeniden dene); form yalnızca "Yönetici: bağlantı ayarları" bağlantısı ya da pencerede "Bağlantıyı değiştir" ile.
-- Yönetici formda "varsayılan olarak kaydet" derse dosya yazılır (atomik); yazılamazsa hata. Yazma/silme komutları sunucuda etkin Yönetici ister.
-- Yüzen pencere: sürükle, kenardan boyutlandır, çift tık sıfırla, daralt/aç, iğne. Yönetici iğnelerse konum `Gorevlendirme.pencere.json` ile herkes için varsayılan (Özlük'te veritabanında; burada `dbo`/şema değişikliği olmaması için dosyada). Kişisel konum/iğne bilgisayara özel (localStorage). Sunucu/veritabanı adı yalnızca Yönetici'ye görünür.
-
+## Dilim 15 – Akademik takvim ve Proje/Görev Havuzu yönetimi
+Murat 24.11.2026 istek dosyası madde 5–6. Test listesi: `docs/test-dilim-15.md`. SQL: `016_havuz_arsiv.sql` (`proje_havuzu.arsiv/arsiv_neden/arsiv_tarih`, `sp_havuz_arsivle`, `sp_havuz_listele` genişledi, `sp_havuz_durum` arşivdekini etkinleştirmez). Yeni komut: `havuzArsiv`.
+- Havuz (sekmenin sol kartı): kademeli açılır listeler (Ana Proje → Alt Proje → Faaliyet → Yerleşke), seçili kayda işlemler + ağaç. Ad düzelt, Tamamlandı (pasife al; analiz bozulmaz, yeni talep listelerinde gizli), Birleştir (veri kaybı yok, kaynak hedefi gösterir), Arşivle (nedenli; altındakilerle), tümü `islem_log`'da (HAVUZ_EKLE/ADLANDIR/PASIF/AKTIF/BIRLESTIR/ARSIV/ARSIVDEN_CIKAR).
+- Takvim (sağ kart + alt çizelge): tür combobox **Yıllık İzin** (= `IDARI` + yıllık izinden kesilir bayrağı) / **Resmi Tatil** (`RESMI`) / **Yarım Gün** (ÖÖ/ÖS). Takvim şeması değişmedi.
+- Excel/CSV/yapıştır: dosya taranır, bulunan her tarih için tür seçilir (toplu çevirme, satır dışlama), Doğrula (önizleme) sonra toplu ekleme; hatalıysa hiçbiri eklenmez.
+- Varsayım: "2024 tasarımı" olarak Dilim 3b'deki standart (2024_Takvim.xlsx: mavi resmi, turuncu idari/yıllık izin, daire yarım gün, ISO hafta) yıllık çizelge korunmuştur; farklı renk/açıklama istenirse ayrıca düzeltilir.

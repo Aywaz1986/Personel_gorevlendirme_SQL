@@ -7,6 +7,7 @@ public static class HavuzService
         (await sql.ProcAsync("gorev.sp_havuz_listele")).Select(r => new
         {
             id = r["id"], ustId = r["ust_id"], seviye = r["seviye"], ad = r["ad"], aktif = r["aktif"], birlestirildiId = r["birlestirildi_id"],
+            arsiv = r["arsiv"], arsivNeden = r["arsiv_neden"], arsivTarih = r["arsiv_tarih"],
         }).ToList();
 
     public static async Task<List<HavuzKaydi>> DuzListeAsync(SqlService sql) =>
@@ -32,5 +33,11 @@ public static class HavuzService
     {
         var r = (await sql.ProcAsync("gorev.sp_havuz_birlestir", ("@kaynak_id", kaynakId), ("@hedef_id", hedefId))).First();
         return new { birlesen = r["birlesen"], tasinan = r["tasinan"] };
+    }
+
+    public static async Task<object> ArsivAsync(SqlService sql, int id, bool arsiv, string? neden)
+    {
+        var r = (await sql.ProcAsync("gorev.sp_havuz_arsivle", ("@id", id), ("@arsiv", arsiv), ("@neden", neden))).First();
+        return new { etkilenen = r["etkilenen"] };
     }
 }
