@@ -78,11 +78,11 @@ function talepTarihOku(s) {
 
 async function talepSayfa() {
   const yonetici = S.gorunum === 'YONETICI';
-  const durum = { gorunum: 'liste', filtre: '', liste: [], havuz: [], tatiller: [], f: null, bildirim: [], atama: null, atananAcik: {}, iletisimAcik: {}, ikame: [] };
+  const durum = { gorunum: 'liste', filtre: '', liste: [], havuz: [], tatiller: [], f: null, bildirim: [], atama: null, atananAcik: {}, iletisimAcik: {}, ikame: [], tav: {} };
   const kap = h('div', { style: 'display:flex;flex-direction:column;gap:14px' });
 
   async function yukle() {
-    try { durum.liste = await Kopru.cagir('talepListe', {}); durum.bildirim = await Kopru.cagir('bildirimListe', {}); durum.ikame = await Kopru.cagir('ikameBekleyenler', {}); if (yonetici) durum.say = await Kopru.cagir('sayaclar', {}); ciz(); } catch (e) { hata(e); }
+    try { durum.liste = await Kopru.cagir('talepListe', {}); durum.bildirim = await Kopru.cagir('bildirimListe', {}); await tavsiyeYukle(); ciz(); } catch (e) { hata(e); }
   }
   // Otomatik/elle yenileme: yalnız liste görünümündeyken (açık form kaybolmasın).
   S.yenile = async () => { if (durum.gorunum === 'liste') await yukle(); };
@@ -108,8 +108,8 @@ async function talepSayfa() {
     } catch (e) { hata(e); }
   }
 
-  async function atamaAc(id) {
-    try { durum.atama = await atamaPaneli(id, async (yenile) => { durum.atama = null; durum.gorunum = 'liste'; if (yenile) await yukle(); else ciz(); }); durum.gorunum = 'atama'; ciz(); } catch (e) { hata(e); }
+  async function atamaAc(id, ret) {
+    try { durum.atama = await atamaPaneli(id, ret, async (yenile) => { durum.atama = null; durum.gorunum = 'liste'; if (yenile) await yukle(); else ciz(); }); durum.gorunum = 'atama'; ciz(); } catch (e) { hata(e); }
   }
   async function yonetAc(id) {
     try { durum.atama = await talepYonetPaneli(id, async (yenile) => { durum.atama = null; durum.gorunum = 'liste'; if (yenile) await yukle(); else ciz(); }); durum.gorunum = 'atama'; ciz(); } catch (e) { hata(e); }
@@ -126,33 +126,65 @@ async function talepSayfa() {
       h('ul', { style: 'margin:6px 0 0;padding-left:18px' }, durum.bildirim.map((b) => h('li', null, b.mesaj + ' ', h('span', { class: 'alt', style: 'color:inherit;opacity:.8' }, b.tarih)))));
   }
 
+  // Tavsiye kutusu (Yönetici): ana projedeki geçmiş deneyime göre aday kişiler; kart başına bir kez okunur, 5 dakikada bir tazelenir.
+  async function tavsiyeYukle() {
+    if (!yonetici) return;
+    const bekleyen = durum.liste.filter((x) => ['ONAY_BEKLIYOR', 'KISMEN_ATANDI'].includes(x.durum)).slice(0, 25);
+    const simdi = Date.now();
+    await Promise.all(bekleyen.filter((x) => !durum.tav[x.id] || simdi - durum.tav[x.id].z > 300000).map(async (x) => {
+      try { const l = await Kopru.cagir('atamaAdaylar', { talepId: x.id }); durum.tav[x.id] = { z: simdi, l: l.slice().sort((p, q) => (q.gecmis || 0) - (p.gecmis || 0) || (q.toplamGorev || 0) - (p.toplamGorev || 0)).slice(0, 15) }; } catch (e) { durum.tav[x.id] = { z: simdi, l: [] }; }
+    }));
+  }
+  function tavsiyeKutusu(x) {
+    const t = durum.tav[x.id];
+    return h('div', { class: 'sag' }, h('div', { class: 'bl' }, '⚡ Ana proje bazlı geçmiş deneyim tavsiye bloğu (' + x.ana + ')'),
+      h('div', { class: 'alt', style: 'font-size:11px' }, 'Geçmiş görev kayıtları ve anlık zaman dilimi müsaitliği'),
+      h('div', { class: 'tav' }, !t ? h('div', { class: 'alt' }, 'Yükleniyor…') : t.l.length ? t.l.map((a) => {
+        const musait = Math.max(0, (a.talepGun || 0) - (a.cakisanGun || 0) - (a.izinRaporGun || 0));
+        return h('div', { class: 'k' }, h('div', { class: 'b' }, h('b', null, a.ad), h('div', { class: 'alt' }, (a.toplamGorev || 0) + ' görev (' + analizSayi(a.adamGun || 0) + ' adam-gün)' + (a.yerlesker ? ' • ' + a.yerlesker : '')),
+          h('div', { style: 'margin-top:2px' }, a.izinRaporGun > 0 ? h('span', { class: 'cipi ko' }, 'İzin/Rapor (' + a.izinRaporGun + ' gün)') : (a.cakisanGun > 0 ? h('span', { class: 'cipi uy' }, 'Çakışma / Görevli (' + a.cakisanGun + ' gün)') : h('span', { class: 'cipi iy' }, 'Müsait')),
+            ' ', a.onerildi ? h('span', { class: 'cipi' }, 'Önerilen') : null, musait < (a.talepGun || 0) && !a.cakisanGun && !a.izinRaporGun ? null : null)),
+          h('button', { type: 'button', onclick: () => atamaAc(x.id) }, 'Seç'));
+      }) : h('div', { class: 'alt' }, 'Bu ana projede geçmiş görev kaydı olan aday bulunamadı.')));
+  }
+
   function liste() {
     const f = durum.filtre;
     const goster = durum.liste.filter((x) => !f || (f === 'BEKLEYEN' ? ['TASLAK', 'ONAY_BEKLIYOR'].includes(x.durum) : f === 'ATANMIS' ? ['KISMEN_ATANDI', 'TAMAMEN_ATANDI'].includes(x.durum) : ['REDDEDILDI', 'GERI_CEKILDI', 'IPTAL'].includes(x.durum)));
     const sayi = (fn) => durum.liste.filter(fn).length;
     const chip = (kod, ad, n) => h('button', { class: durum.filtre === kod ? 'secili ana' : '', onclick: () => { durum.filtre = kod; ciz(); } }, ad + ' (' + n + ')');
-    const kartlar = goster.map((x) => h('section', { class: 'kart' },
-      h('div', { class: 'alt' }, x.kod + ' · ' + talepAralik(x) + ' · ' + x.saatBaslangic + '–' + x.saatBitis + (yonetici ? ' · ' + x.sorumluAdi : '')),
-      h('div', { style: 'font-size:16px;font-weight:600;margin:3px 0' }, x.ana + (x.alt && x.alt !== 'Genel' ? ' › ' + x.alt : '') + ' › ' + x.faaliyet),
-      h('div', { class: 'alt' }, 'Konum: ' + x.konum + ' · ' + x.gorevMetni),
-      x.nitelik ? h('div', { class: 'alt', style: 'white-space:pre-wrap' }, 'Saha / Operasyon Notu: ' + x.nitelik) : null,
-      x.oneri ? h('div', { class: 'alt' }, 'Önerilen: ' + x.oneri) : null,
-      x.retNedeni ? h('div', { class: 'mesaj kotu', style: 'margin-top:6px' }, 'Ret nedeni: ' + x.retNedeni) : null,
-      durum.atananAcik[x.id] ? atananBlok(durum.atananAcik[x.id]) : null,
-      durum.iletisimAcik[x.id] ? iletisimBlok(durum.iletisimAcik[x.id]) : null,
-      h('div', { class: 'satir', style: 'margin-top:8px;align-items:center' },
-        rozet(talepDurumAd(x.durum), talepDurumTur(x.durum)), h('span', { class: 'alt' }, x.gunSayisi + ' gün · ' + talepKisiGun(x.kisiGun) + (x.atanan > 0 ? ' · atanan ' + x.atanan + '/' + x.istenen : '')),
-        h('span', { style: 'flex:1' }),
-        yonetici && ['ONAY_BEKLIYOR', 'KISMEN_ATANDI'].includes(x.durum) ? h('button', { class: 'ana', onclick: () => atamaAc(x.id) }, 'Ata') : null,
-        x.atanan > 0 ? h('button', { onclick: async () => { try { if (durum.atananAcik[x.id]) delete durum.atananAcik[x.id]; else durum.atananAcik[x.id] = await Kopru.cagir('talepGetir', { id: x.id }); ciz(); } catch (e) { hata(e); } } }, 'Atananlar') : null,
-        yonetici || x.atanan > 0 ? h('button', { onclick: async () => { try { if (durum.iletisimAcik[x.id]) delete durum.iletisimAcik[x.id]; else durum.iletisimAcik[x.id] = await Kopru.cagir('talepIletisim', { talepId: x.id }); ciz(); } catch (e) { hata(e); } } }, 'İletişim') : null,
-        ['KISMEN_ATANDI', 'TAMAMEN_ATANDI'].includes(x.durum) ? h('button', { onclick: () => yonetAc(x.id) }, 'Yönet…') : null,
-        h('button', { onclick: async () => { try { await formAc(await Kopru.cagir('talepGetir', { id: x.id }), true); } catch (e) { hata(e); } } }, 'Kopyala'),
-        talepDegistirilebilir(x.durum) ? h('button', { onclick: async () => { try { await formAc(await Kopru.cagir('talepGetir', { id: x.id }), false); } catch (e) { hata(e); } } }, 'Revize') : null,
-        talepDegistirilebilir(x.durum) ? h('button', { onclick: async () => {
-          if (!confirm(x.kod + ' talebi geri çekilsin mi?')) return;
-          try { await Kopru.cagir('talepGeriCek', { id: x.id }); toast('Talep geri çekildi.'); await yukle(); } catch (e) { hata(e); }
-        } }, 'Geri çek') : null)));
+    const durumRenk = { iyi: 'background:#d1fae5;color:#047857', uyari: 'background:#fef3c7;color:#b45309', kotu: 'background:#fee2e2;color:#b91c1c', bilgi: 'background:#e0e7ff;color:#4338ca', soluk: 'background:#e2e8f0;color:#475569' };
+    const kartlar = goster.map((x) => {
+      const bekleyen = ['ONAY_BEKLIYOR', 'KISMEN_ATANDI'].includes(x.durum);
+      const atamaVar = yonetici && bekleyen;
+      const tur = talepDurumTur(x.durum);
+      return h('section', { class: 'tk' },
+        h('div', { class: 'bas' }, h('span', { class: 'kod' }, x.kod), h('span', { class: 'proje' }, x.ana + (x.alt && x.alt !== 'Genel' ? ' › ' + x.alt : '')), h('span', { class: 'yol' }, '→ ' + x.faaliyet),
+          h('span', { style: 'flex:1' }), h('span', { class: 'rz', style: durumRenk[tur] || durumRenk.soluk }, talepDurumAd(x.durum) + (x.istenen > 0 ? ' (' + x.atanan + '/' + x.istenen + ')' : ''))),
+        h('div', { class: 'govde2' },
+          h('div', { class: 'sol' },
+            h('div', { class: 'kutular' }, h('div', { class: 'kt' }, h('div', { class: 'e' }, 'Konum / Yerleşke'), h('b', null, x.konum)),
+              h('div', { class: 'kt' }, h('div', { class: 'e' }, 'Tarih & Zaman Dilimi'), h('b', null, talepAralik(x)), h('span', { style: 'color:var(--vurgu);font-size:12px' }, x.gunSayisi + ' gün • ' + talepKisiGun(x.kisiGun) + ' • ' + x.saatBaslangic + '–' + x.saatBitis)),
+              yonetici ? h('div', { class: 'kt' }, h('div', { class: 'e' }, 'Proje Sorumlusu'), h('b', null, x.sorumluAdi), durum.iletisimAcik[x.id] && durum.iletisimAcik[x.id].sorumluGsm ? h('span', { class: 'tel' }, '📞 ' + durum.iletisimAcik[x.id].sorumluGsm) : null) : null),
+            x.nitelik ? h('div', { class: 'not' }, h('b', null, 'Saha / Operasyon Notu: '), x.nitelik) : null,
+            x.gorevMetni ? h('div', { class: 'alt' }, x.gorevMetni) : null,
+            x.oneri ? h('div', { class: 'alt' }, h('b', null, 'Sorumlu Personel Tavsiyesi: '), x.oneri) : null,
+            x.retNedeni ? h('div', { class: 'mesaj kotu', style: 'margin:0' }, 'Ret nedeni: ' + x.retNedeni) : null,
+            durum.atananAcik[x.id] ? atananBlok(durum.atananAcik[x.id]) : null,
+            durum.iletisimAcik[x.id] ? iletisimBlok(durum.iletisimAcik[x.id]) : null),
+          atamaVar ? tavsiyeKutusu(x) : null),
+        atamaVar ? h('div', { class: 'ana2' }, h('button', { class: 'ana', onclick: () => atamaAc(x.id) }, '✔ Atama Yap / Gün Bazlı Böl'), h('button', { class: 'ret', onclick: () => atamaAc(x.id, true) }, '✖ Zorunlu Açıklamayla Reddet')) : null,
+        h('div', { class: 'ikinci' },
+          x.atanan > 0 ? h('button', { onclick: async () => { try { if (durum.atananAcik[x.id]) delete durum.atananAcik[x.id]; else durum.atananAcik[x.id] = await Kopru.cagir('talepGetir', { id: x.id }); ciz(); } catch (e) { hata(e); } } }, 'Atananlar') : null,
+          yonetici || x.atanan > 0 ? h('button', { onclick: async () => { try { if (durum.iletisimAcik[x.id]) delete durum.iletisimAcik[x.id]; else durum.iletisimAcik[x.id] = await Kopru.cagir('talepIletisim', { talepId: x.id }); ciz(); } catch (e) { hata(e); } } }, 'İletişim') : null,
+          ['KISMEN_ATANDI', 'TAMAMEN_ATANDI'].includes(x.durum) ? h('button', { onclick: () => yonetAc(x.id) }, 'Yönet…') : null,
+          h('button', { onclick: async () => { try { await formAc(await Kopru.cagir('talepGetir', { id: x.id }), true); } catch (e) { hata(e); } } }, '📋 Kopyala'),
+          talepDegistirilebilir(x.durum) ? h('button', { onclick: async () => { try { await formAc(await Kopru.cagir('talepGetir', { id: x.id }), false); } catch (e) { hata(e); } } }, 'Revize') : null,
+          talepDegistirilebilir(x.durum) ? h('button', { onclick: async () => {
+            if (!confirm(x.kod + ' talebi geri çekilsin mi?')) return;
+            try { await Kopru.cagir('talepGeriCek', { id: x.id }); toast('Talep geri çekildi.'); await yukle(); } catch (e) { hata(e); }
+          } }, 'Geri çek') : null));
+    });
     return h('div', { style: 'display:flex;flex-direction:column;gap:12px' },
       bildirimBandi(),
       h('div', { class: 'satir', style: 'align-items:center' },
@@ -381,29 +413,10 @@ async function talepSayfa() {
       i.atananlar && i.atananlar.length ? h('div', { style: 'margin-top:4px' }, h('b', null, 'Atananlar:'), i.atananlar.map((a) => h('div', null, a.ad + (a.bolum ? ' (' + a.bolum + ')' : ''), tel(a.gsm)))) : null);
   }
 
-  const IKAME_NEDEN = { RAPOR: 'Raporlu', AYRILDI: 'Ayrıldı / pasif', BIRIM: 'Birim değişikliği' };
-  // Yönetici sekme sayaçları (senaryo): Bekleyen Görev Talepleri · İzin Onayları · Revize Talepleri · Rapor Kaynaklı İkame.
-  function sayacSeridi() {
-    const c = durum.say; if (!yonetici || !c) return null;
-    const chip = (ad, n, tur, tikla) => h('button', { type: 'button', class: n ? 'ana' : '', style: 'display:flex;gap:6px;align-items:center', onclick: tikla }, ad, rozet(String(n || 0), n ? tur : 'soluk'));
-    return h('div', { class: 'satir', style: 'align-items:center' },
-      chip('Bekleyen Görev Talepleri', c.bekleyenTalep, 'uyari', () => { durum.filtre = 'BEKLEYEN'; ciz(); }),
-      chip('İzin Onayları', c.izinOnay, 'uyari', () => { S.sayfa = 'izin'; kabukCiz(); }),
-      chip('Revize Talepleri', c.revizeBekleyen, 'uyari', () => { durum.filtre = 'ATANMIS'; ciz(); toast('Revize bekleyen talepler atanmış talepler arasındadır; satırdan Yönet… ile açın.'); }),
-      chip('Rapor Kaynaklı İkame', c.ikameUyari, 'kotu', () => { const k = document.getElementById('ikame-kutusu'); if (k) k.scrollIntoView({ behavior: 'smooth' }); else toast('İkame bekleyen görev yok.'); }));
-  }
-
-  function ikameKutusu() {
-    if (!durum.ikame.length) return null;
-    return h('section', { id: 'ikame-kutusu', class: 'kart', style: 'border-color:var(--uyari,#c60)' }, h('h2', { style: 'margin:0 0 6px' }, 'İkame personel bekleyen görevler (' + durum.ikame.length + ')'),
-      durum.ikame.map((x) => h('div', { class: 'satir', style: 'align-items:center;padding:4px 0' },
-        rozet(IKAME_NEDEN[x.neden] || x.neden, 'uyari'), h('span', null, x.kod + ' · ' + x.ad + ' · ' + takvimTarihYaz(x.ilk) + (x.ilk !== x.son ? ' – ' + takvimTarihYaz(x.son) : '') + ' (' + x.gun + ' gün)' + (yonetici ? ' · ' + x.sorumlu : '')),
-        h('span', { style: 'flex:1' }), yonetici ? h('button', { onclick: () => yonetAc(x.talepId) }, 'Yönet…') : null)));
-  }
-
-  function ciz() { kap.replaceChildren(h('h1', null, yonetici ? 'Talepler' : 'Görev Talep Arayüzü'), durum.gorunum === 'form' ? form() : durum.gorunum === 'atama' ? durum.atama : h('div', { style: 'display:flex;flex-direction:column;gap:14px' }, ikameKutusu(), liste())); }
+  function ciz() { kap.replaceChildren(durum.gorunum === 'form' ? form() : durum.gorunum === 'atama' ? durum.atama : liste()); }
 
   await yukle();
   if (!kap.childNodes.length) ciz();
+  if (S.acilis === 'yeniTalep') { S.acilis = null; await formAc(null, false); }
   return kap;
 }

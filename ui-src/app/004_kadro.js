@@ -57,9 +57,9 @@ async function eslestirmeSayfa() {
     } catch (e) { hata(e); }
   }
   await yukle();
-  return h('div', { class: 'icerik', style: 'padding:0' },
-    h('div', null, h('h1', null, 'Bölüm–rol eşleştirme'), h('p', { class: 'alt' }, 'Rol, kişinin Özlük bölümünden gelir. Merkez Yönetici bölümden değil, yalnızca "Kişi istisnaları" ile atanır. Bölüm listesi kadro eşitlemesinden gelir.')),
-    h('section', { class: 'kart' }, h('div', { class: 'kaydir' }, h('table', { style: 'min-width:560px' }, h('thead', null, h('tr', null, ['Özlük bölümü', 'Rol', 'Aktif kişi', ''].map((x) => h('th', null, x)))), tablo))));
+  return h('section', { class: 'kart', style: 'min-width:0' },
+    h('h2', { style: 'font-size:16px;color:var(--nav)' }, 'Özlük Bölüm Adı → Sistem Rolü Eşleştirme'), h('p', { class: 'alt', style: 'margin:0 0 8px' }, 'Rol, kişinin Özlük bölümünden gelir. Merkez Yönetici bölümden değil, yalnızca "Kişi istisnaları" ile atanır. Bölüm listesi kadro eşitlemesinden gelir.'),
+    h('div', { class: 'kaydir' }, h('table', { style: 'min-width:480px' }, h('thead', null, h('tr', null, ['Özlük bölümü', 'Rol', 'Aktif kişi', ''].map((x) => h('th', null, x)))), tablo)));
 }
 
 async function istisnaSayfa() {
@@ -70,7 +70,7 @@ async function istisnaSayfa() {
   const yon = h('input', { type: 'checkbox' }), sor = h('input', { type: 'checkbox' }), sah = h('input', { type: 'checkbox' }), akt = h('input', { type: 'checkbox', checked: true });
   let kadro = [];
   hesap.addEventListener('change', () => { const k = kadro.find((x) => x.kullaniciAdi && x.kullaniciAdi.toLocaleLowerCase('tr-TR') === hesap.value.trim().toLocaleLowerCase('tr-TR')); if (k) sicil.value = k.sicilNo; });
-  function doldur(r) { hesap.value = r.hesap; sicil.value = r.sicilNo || ''; ack.value = r.aciklama || ''; yon.checked = !!r.yonetici; sor.checked = !!r.sorumlu; sah.checked = !!r.saha; akt.checked = !!r.aktif; hesap.focus(); }
+  let doldur = function (r) { hesap.value = r.hesap; sicil.value = r.sicilNo || ''; ack.value = r.aciklama || ''; yon.checked = !!r.yonetici; sor.checked = !!r.sorumlu; sah.checked = !!r.saha; akt.checked = !!r.aktif; hesap.focus(); };
   const evet = (b) => (b ? 'Evet' : '–');
   async function yukle() {
     try {
@@ -90,11 +90,17 @@ async function istisnaSayfa() {
   } }, 'Kaydet');
   await yukle();
   const kt = (t, c) => h('label', { class: 'onay' }, c, ' ' + t);
-  return h('div', { class: 'icerik', style: 'padding:0' },
-    h('div', null, h('h1', null, 'Kişi istisnaları'), h('p', { class: 'alt' }, 'Kişi bazlı istisna bölüm kuralının üzerine yazar: kişinin rolleri yalnızca burada işaretlenenlerdir. Merkez Yönetici de buradan atanır.')),
-    h('section', { class: 'kart' }, h('div', { class: 'kaydir' }, h('table', { style: 'min-width:700px' }, h('thead', null, h('tr', null, ['Kişi', 'Windows hesabı', 'Merkez Yönetici', 'Proje Sorumlusu', 'Saha Personeli', 'Durum', ''].map((x) => h('th', null, x)))), tablo)),
-      mesajKutu('kotu', 'Son aktif yöneticinin yöneticiliği kaldırılamaz: işlem sunucuda reddedilir.')),
-    h('section', { class: 'kart' }, h('h2', null, 'Kişi ekle / düzenle'), dl,
-      h('div', { class: 'form' }, h('label', null, 'Windows hesabı', hesap), h('label', null, 'Sicil (kadrodan)', sicil), h('label', null, 'Açıklama', ack),
-        h('div', { class: 'tamsatir satir' }, kt('Merkez Yönetici', yon), kt('Proje Sorumlusu', sor), kt('Saha Personeli', sah), kt('Aktif', akt), kaydet))));
+  // "Yeni yetkili ekle": kullanıcılar alanının sağ üst köşesindeki düğme formu açar; Düzenle de aynı formu açar.
+  const formKart = h('section', { class: 'kart', hidden: true, style: 'background:var(--vurgu-bg)' }, h('h2', null, 'Yetkili ekle / düzenle'), dl,
+    h('div', { class: 'form' }, h('label', null, 'Windows hesabı', hesap), h('label', null, 'Sicil (kadrodan)', sicil), h('label', null, 'Açıklama', ack),
+      h('div', { class: 'tamsatir satir' }, kt('Merkez Yönetici', yon), kt('Proje Sorumlusu', sor), kt('Saha Personeli', sah), kt('Aktif', akt), kaydet, h('button', { type: 'button', onclick: () => { formKart.hidden = true; } }, 'Kapat'))));
+  const doldurOrj = doldur;
+  doldur = (r) => { formKart.hidden = false; doldurOrj(r); };
+  return h('section', { class: 'kart', style: 'min-width:0' },
+    h('div', { style: 'display:flex;gap:10px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap' },
+      h('div', null, h('h2', { style: 'font-size:16px;color:var(--baslik);margin:0' }, 'Yönetici Tanımı ve Kişi Bazlı İstisna Roller'), h('p', { class: 'alt', style: 'margin:2px 0 8px' }, 'Kişi bazlı istisna bölüm kuralının üzerine yazar: kişinin rolleri yalnızca burada işaretlenenlerdir. Merkez Yönetici de buradan atanır.')),
+      h('button', { class: 'ana', type: 'button', onclick: () => { formKart.hidden = false; hesap.value = ''; sicil.value = ''; ack.value = ''; yon.checked = sor.checked = sah.checked = false; akt.checked = true; hesap.focus(); } }, '+ Yeni yetkili ekle')),
+    formKart,
+    h('div', { class: 'kaydir' }, h('table', { style: 'min-width:640px' }, h('thead', null, h('tr', null, ['Kişi', 'Windows hesabı', 'Yönetici', 'Sorumlu', 'Saha', 'Durum', ''].map((x) => h('th', null, x)))), tablo)),
+    h('div', { class: 'mesaj uyari', style: 'font-size:12px' }, 'Son aktif yöneticinin yöneticiliği kaldırılamaz: işlem sunucuda reddedilir.'));
 }

@@ -116,3 +116,5 @@ Onay/atama yordamları `SERIALIZABLE` + `UPDLOCK`: aynı personel, aynı gün ve
 ## Bağlantı yapılandırması (Dilim 13)
 `Data/BaglantiDeposu.cs`: `ConnectionStore` (DPAPI, kullanıcıya özel), `SharedConnection` (`Gorevlendirme.baglanti.json` → `Ozluk.baglanti.json`; doğrulama, atomik yazma), `PencereKonumu` (`Gorevlendirme.pencere.json`). Arayüz: `ui-src/app/003b_baglanti.js` (bilgi ekranı, yönetici formu, yüzen pencere); açılış `006_basla.js` (`otoBaglan`).
 
+## Yeni arayüz (Dilim 14)
+`005_kabuk.js` (üst çubuk, rol düğmeleri `ROL_DUGME`, sekme şeridi `SAYFALAR`), `004_gorunum.js` (Yazı Ayarları + tema + buzlu cam; CSS değişkenleri `documentElement` üzerinde, tercih `localStorage`), `004_yetki.js` (Kullanıcı Yetki), `004_havuz_takvim.js` (Dilim 15 iskeleti). Varsayılan yazı tipi `build.py` ile `index.html`'e base64 gömülür (çalışma zamanı CDN yok). `015_sayac_sahada.sql`: `sp_sayaclar` iki sütun.

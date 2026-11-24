@@ -65,6 +65,17 @@ Test listesi: `docs/test-dilim-12.md`. Uygulanan: `014_senaryo_eksikleri.sql`. Y
 
 ## Dilim 13 – Gizli bağlantı yapılandırması ve yüzen pencere
 Murat 23.11.2026: Özlük'teki gizli bağlantı yapılandırması ve yüzen bağlantı penceresi aynı özelliklerle bu uygulamaya. Test listesi: `docs/test-dilim-13.md`. SQL değişikliği yok.
+
+## Dilim 14 – Yeni arayüz tasarımı
+Murat 24.11.2026: referans tasarım ("Merkezi Personel Görevlendirme Arayüz Tasarımı") renk, yapı ve buton işleviyle aktarılır. Test listesi: `docs/test-dilim-14.md`. SQL: yalnız `015_sayac_sahada.sql` (`sp_sayaclar` + `sahada_bugun`, `saha_toplam`).
+- Üst çubuk: yalnızca kişinin sahip olduğu rollerin düğmesi görünür (yetkisiz roller gizli); KPI kartları; sekme şeridi (Yönetici: Talepler, İzin Onayları, Revize & İkame, Matris, Analiz, Proje Havuzu & Akademik Takvim, Kullanıcı Yetki, Ayarlar).
+- Talep kartı: altta ortalanmış küçük "Atama Yap / Gün Bazlı Böl" ve "Zorunlu Açıklamayla Reddet"; sağda kaydırmalı "Ana Proje bazlı geçmiş deneyim tavsiye" kutusu.
+- Kullanıcı Yetki sekmesi: kullanıcı rolleri, yönetici tanımları, işlem günlüğü; sağ üstte "+ Yeni yetkili ekle". Ayarlar'dan bu üçü kaldırıldı.
+- Ayarlar › Görünüm ve yazı: Özlük'teki Yazı Ayarları (alan bazında yazı tipi/boyutu), hazır + özel temalar, buzlu cam. Varsayılan yazı tipi yapıya gömülü (`ui-src/fonts`, `build.py`). Tercihler bilgisayara özel.
+- Eksik/bilinçli: Sorumlu iki sütunlu form ve vekâlet düğmesi (gezinme penceresi) tam birebir değil; Proje Havuzu & Akademik Takvim sayfası Dilim 15'e kadar iskelettir.
+
+## Dilim 15 – Akademik takvim ve Proje/Görev Havuzu yönetimi (planlı)
+İstek dosyası madde 5–6: 2024 akademik takvim tasarımı, Yıllık İzin/Resmi Tatil seçimi, Excel tarama + madde madde tür seçimi (Yıllık İzin, Resmi Tatil, Yarım Gün) + toplu ekleme; Ana Proje → Alt Proje → Faaliyet → Yerleşke ağacı, kademeli combobox, yazım düzeltme, mükerrer birleştirme (veri kaybı yok), tamamlananı pasife alma, reddedilen/geçersizi arşivleme, tüm değişiklikler denetim kaydında. SQL göçü (016+) gerekir.
 - Bağlantı sırası: `Gorevlendirme.baglanti.json` (exe klasörü) → `Ozluk.baglanti.json` → kullanıcıya özel (DPAPI). Yalnızca Windows kimliği; parola/kullanıcı adı dosyada yok.
 - Normal kullanıcı form görmez: ayar yoksa "Bağlantı ayarı yapılmamış", ulaşılamıyorsa "Sunucuya bağlanılamadı" (Yeniden dene); form yalnızca "Yönetici: bağlantı ayarları" bağlantısı ya da pencerede "Bağlantıyı değiştir" ile.
 - Yönetici formda "varsayılan olarak kaydet" derse dosya yazılır (atomik); yazılamazsa hata. Yazma/silme komutları sunucuda etkin Yönetici ister.

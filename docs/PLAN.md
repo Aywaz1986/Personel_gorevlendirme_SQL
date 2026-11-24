@@ -31,3 +31,5 @@ Ayrıntı: `docs/DILIMLER.md`.
 | 11 | Senaryo tamamlama | evet | [~] kodlandı, CI/el sınaması bekliyor |
 | 12 | Senaryo eksikleri + Ayarlar | evet | [~] kodlandı, CI/el sınaması bekliyor |
 | 13 | Gizli bağlantı yapılandırması + yüzen bağlantı penceresi | evet | [~] kodlandı, CI/el sınaması bekliyor |
+| 14 | Yeni arayüz tasarımı (rol düğmeleri, sekme şeridi, talep kartı, Kullanıcı Yetki, yazı/tema/cam) | evet | [~] kodlandı, CI/el sınaması bekliyor |
+| 15 | Akademik takvim (2024 tasarımı, Excel toplu aktarım) + Proje/Görev Havuzu yönetimi (ağaç, birleştirme, pasif/arşiv) | evet | [ ] planlı (Murat 24.11.2026 istek dosyası, madde 5–6) |

@@ -1,39 +1,5 @@
-// Ayarlar: Görünüm (yazı/tema; herkes), Kullanıcılar ve yetkiler, Rol eşleştirme, Kadro, İşlem günlüğü, Eski veri, Sistem (Yönetici).
+// Ayarlar: Görünüm ve yazı (herkes), Kadro, Eski veri, Sistem (Yönetici). Kullanıcı rolleri, yönetici tanımı ve işlem günlüğü "Kullanıcı Yetki & Audit Log" sekmesindedir.
 // Görünüm tercihleri bu bilgisayarda (tarayıcı deposu) tutulur; yetki ve veri ayarları sunucudadır.
-const AYAR_VARSAYILAN = { olcek: 100, tablo: 0, font: 'varsayilan', tema: 'sistem' };
-const AYAR_FONT = { varsayilan: ['Varsayılan (Segoe UI)', '"Segoe UI",system-ui,sans-serif'], calibri: ['Calibri', 'Calibri,"Segoe UI",sans-serif'], arial: ['Arial', 'Arial,Helvetica,sans-serif'], tahoma: ['Tahoma', 'Tahoma,"Segoe UI",sans-serif'], serif: ['Georgia (serif)', 'Georgia,"Times New Roman",serif'] };
-
-function gorunumOku() {
-  try { return Object.assign({}, AYAR_VARSAYILAN, JSON.parse(localStorage.getItem('ayar.gorunum') || '{}')); } catch (e) { return Object.assign({}, AYAR_VARSAYILAN); }
-}
-function gorunumYaz(a) { try { localStorage.setItem('ayar.gorunum', JSON.stringify(a)); } catch (e) { /* depolama yoksa oturumluk kalır */ } }
-function gorunumUygula(a) {
-  a = a || gorunumOku();
-  const k = document.documentElement;
-  k.style.zoom = String(Math.max(70, Math.min(160, Number(a.olcek) || 100)) / 100);
-  k.style.setProperty('--tablo-yz', a.tablo ? a.tablo + 'px' : 'inherit');
-  document.body.style.fontFamily = (AYAR_FONT[a.font] || AYAR_FONT.varsayilan)[1];
-  if (a.tema === 'acik' || a.tema === 'koyu') k.setAttribute('data-tema', a.tema); else k.removeAttribute('data-tema');
-}
-
-function ayarGorunum() {
-  const a = gorunumOku();
-  const kaydet = () => { gorunumYaz(a); gorunumUygula(a); };
-  const sec = (ad, secenekler, deger, degisti) => {
-    const s = h('select', { 'aria-label': ad }, secenekler.map(([v, t]) => h('option', { value: String(v), selected: String(v) === String(deger) }, t)));
-    s.addEventListener('change', () => degisti(s.value)); return s;
-  };
-  const satir = (ad, ipucu, kontrol) => h('div', { class: 'satir', style: 'align-items:center;padding:8px 0;border-bottom:1px solid var(--cizgi)' },
-    h('div', { style: 'flex:1;min-width:220px' }, h('b', null, ad), h('div', { class: 'alt' }, ipucu)), kontrol);
-  return h('section', { class: 'kart' }, h('h2', null, 'Görünüm ve yazı ayarları'),
-    satir('Genel yazı boyutu', 'Tüm ekranı büyütür veya küçültür.', sec('Genel yazı boyutu', [[85, 'Küçük (%85)'], [100, 'Normal (%100)'], [115, 'Büyük (%115)'], [130, 'Çok büyük (%130)'], [150, 'En büyük (%150)']], a.olcek, (v) => { a.olcek = Number(v); kaydet(); })),
-    satir('Tablo ve matris yazısı', 'Matris, analiz ve liste tablolarının yazı boyutu.', sec('Tablo yazısı', [[0, 'Genel ile aynı'], [12, '12 px'], [13, '13 px'], [14, '14 px'], [16, '16 px'], [18, '18 px']], a.tablo, (v) => { a.tablo = Number(v); kaydet(); })),
-    satir('Yazı tipi', 'Arayüzün yazı ailesi.', sec('Yazı tipi', Object.entries(AYAR_FONT).map(([k, v]) => [k, v[0]]), a.font, (v) => { a.font = v; kaydet(); })),
-    satir('Tema', 'Sistem: Windows ayarını izler.', sec('Tema', [['sistem', 'Sistem'], ['acik', 'Açık'], ['koyu', 'Koyu']], a.tema, (v) => { a.tema = v; kaydet(); })),
-    h('div', { class: 'satir', style: 'margin-top:12px' }, h('button', { type: 'button', onclick: () => { Object.assign(a, AYAR_VARSAYILAN); kaydet(); toast('Varsayılan görünüm yüklendi.'); S.ayarSekme = 'gorunum'; kabukCiz(); } }, 'Varsayılana dön')),
-    h('div', { class: 'alt', style: 'margin-top:8px' }, 'Bu ayarlar yalnız bu bilgisayardaki sizin görünümünüzü etkiler.'));
-}
-
 function ayarLogZaman(z) { const s = String(z || ''); return s.length >= 19 ? takvimTarihYaz(s.slice(0, 10)) + ' ' + s.slice(11, 19) : s; }
 async function ayarGunluk() {
   const f = S.logFiltre = S.logFiltre || { bas: '', bit: '', islem: '', q: '' };
@@ -67,14 +33,11 @@ async function ayarGunluk() {
 async function ayarlarSayfa() {
   const yon = S.gorunum === 'YONETICI';
   const sekmeler = [['gorunum', 'Görünüm ve yazı', async () => ayarGorunum()]];
-  if (yon) sekmeler.push(['kullanici', 'Kullanıcılar ve yetkiler', istisnaSayfa], ['eslestirme', 'Rol eşleştirme', eslestirmeSayfa], ['kadro', 'Kadro', kadroSayfa],
-    ['gunluk', 'İşlem günlüğü', ayarGunluk], ['eskiveri', 'Eski veri', eskiVeriSayfa], ['sistem', 'Sistem', sistemIcerik]);
+  if (yon) sekmeler.push(['kadro', 'Kadro', kadroSayfa], ['eskiveri', 'Eski veri', eskiVeriSayfa], ['sistem', 'Sistem', sistemIcerik]);
   if (!sekmeler.some((x) => x[0] === S.ayarSekme)) S.ayarSekme = 'gorunum';
   const kap = h('div', { style: 'display:flex;flex-direction:column;gap:14px;min-width:0' });
   const govde = h('div', { style: 'min-width:0' });
   async function ciz() {
-    // Rol/kadro değişmiş olabilir: talep ekranının rol listeleri yeniden okunur.
-    Object.keys(talepRolOnbellek).forEach((k) => delete talepRolOnbellek[k]);
     S.yenile = null;
     kap.replaceChildren(h('h1', { style: 'margin:0' }, 'Ayarlar'),
       h('div', { class: 'satir', style: 'align-items:center' }, sekmeler.map(([id, ad]) => h('button', { type: 'button', class: S.ayarSekme === id ? 'ana' : '', onclick: () => { S.ayarSekme = id; ciz(); } }, ad))), govde);

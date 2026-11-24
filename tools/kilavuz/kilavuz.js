@@ -27,7 +27,7 @@ C.push(p("Personel Görevlendirme; personelin projelere görevlendirilmesini, g�
 C.push(h2("1.1 Roller"));
 C.push(tbl([2300,7060],[["Rol","Ne yapar"],["Merkez Yönetici","Kadro eşitleme, bölüm–rol eşleştirme, kişi istisnaları, atama (sonraki dilimler)."],["Proje Sorumlusu","Görev talebi açar, değiştirir, geri çeker ve izler (Bölüm 8)."],["Saha Personeli","Kendi görevlerini izler, izin/rapor beyan eder (Dilim 7)."]]));
 C.push(sp());
-C.push(p("Rol, kişinin Özlük bölümünden gelir (Bölüm 4). Kişi bazlı istisna bölüm kuralının üzerine yazar. Birden fazla rolü olan kişi üst menüden **Görünüm** değiştirir; son seçim hatırlanır."));
+C.push(p("Rol, kişinin Özlük bölümünden gelir (Bölüm 4). Kişi bazlı istisna bölüm kuralının üzerine yazar. Birden fazla rolü olan kişide üst çubukta yalnız sahip olduğu rollerin düğmeleri görünür (yetkisiz roller tamamen gizlenir); son seçim hatırlanır."));
 C.push(note("**Bağlanabilmek yetki değildir.** Hesabınızın rolü çözülemiyorsa hiçbir veri görünmez ve “Yetkisiz Erişim” sayfası açılır."));
 
 C.push(h1("2. Başlarken"));
@@ -44,7 +44,7 @@ C.push(...img("18_baglanti_penceresi","Yüzen bağlantı penceresi (Yönetici g�
 C.push(p("**Yönetici:** pencerede **Bağlantıyı değiştir** ile form açılır. **“Varsayılan olarak kaydet”** işaretlenirse sunucu/veritabanı exe klasörüne yazılır ve herkes formu görmeden bağlanır (parola/kullanıcı adı saklanmaz). **Varsayılan bağlantıyı sil** dosyayı kaldırır. Klasör yazılamıyorsa (ör. Program Files) hata gösterilir; dosyayı BT elle koyabilir."));
 C.push(...img("19_baglanti_formu","Bağlantı formu (yalnızca Yönetici)."));
 
-C.push(note("**Ayarlar menüsü:** Kadro, Bölüm–rol eşleştirme (Rol eşleştirme), Kişi istisnaları (Kullanıcılar ve yetkiler), İşlem günlüğü, Eski veri ve Sistem sayfaları **Ayarlar** menüsünün sekmeleridir. Yazı boyutu, yazı tipi ve tema ayarı (Görünüm ve yazı sekmesi) her rolde açıktır."));
+C.push(note("**Ayarlar sekmesi:** Üst sekme şeridinde ayrı bir sekmedir. Görünüm ve yazı (tema, buzlu cam, yazı tipi/boyutu; her rolde açık), Kadro, Eski veri ve Sistem alt sekmelerini içerir. Kullanıcı rolleri, yönetici tanımları ve işlem günlüğü artık **Kullanıcı Yetki** sekmesindedir; yeni yetkili **+ Yeni yetkili ekle** düğmesiyle (kullanıcılar alanının sağ üstü) eklenir."));
 C.push(...img("16_ayarlar_gorunum","Ayarlar: Görünüm ve yazı sekmesi ve Yönetici sekmeleri."));
 C.push(h1("3. Kadro (Merkez Yönetici)"));
 C.push(p("Kadro Özlük’ten okunur; burada yalnızca beş alanlık kopyası tutulur (sicil, ad soyad, bölüm, telefon, kullanıcı adı, ayrılış). **Kadroyu Özlük’ten eşitle** düğmesi:"));
@@ -85,7 +85,7 @@ C.push(n("Hata yoksa **Uygula**. Hatalı satır varsa hiçbiri uygulanmaz: hatay
 C.push(...img("07_takvim","Akademik takvim: yıl görünümü, kayıtlar, form ve toplu yükleme önizlemesi.",1073));
 
 C.push(h1("8. Görev talebi (Proje Sorumlusu)"));
-C.push(p("Proje Sorumlusu menüde **Görev Talep Arayüzü**'nü görür; Merkez Yönetici aynı ekranı **Talepler** adıyla görür ve tüm talepleri izler, talepleri vekâleten açabilir."));
+C.push(p("Proje Sorumlusu **Görev Talep Arayüzü** sekmesini görür; Merkez Yönetici aynı ekranı **Talepler** adıyla görür ve tüm talepleri izler, talepleri vekâleten açabilir."));
 C.push(h2("8.1 Taleplerim listesi"));
 C.push(p("Her talep bir kart olarak görünür: kod (TLP-NNNN), tarih aralığı, mesai saati, proje yolu, konum, önerilen personel, gün ve kişi-gün sayısı ve **durum rozeti**. Üstteki düğmelerle Bekleyen / Atanmış / Kapalı süzülür."));
 C.push(tbl([2400,6960],[["Rozet","Anlamı"],["Taslak","Kaydedildi, henüz gönderilmedi; serbestçe değiştirilir."],["Onay bekliyor","Gönderildi; Yönetici henüz karar vermedi. Revize ve geri çekme serbesttir."],["Kısmen / Tamamen atandı","Atama başladı (Yönetici atama ekranı sonraki dilimde gelir)."],["Reddedildi, Geri çekildi, İptal","Kapalı talep; yalnızca **Kopyala** yapılabilir."]]));
@@ -101,7 +101,7 @@ C.push(...img("09_talep_form","Yeni görev talebi formu.",1700));
 C.push(note("**Revize, Kopyala, Geri çek.** Taslak ve onay bekleyen talepte **Revize** formu mevcut bilgilerle açar. **Kopyala** aynı bilgilerle yeni bir form açar (günler boş gelir). **Geri çek** talebi kapatır. Onaylanmış talepte revize ve iptal sonraki dilimde gelir. Yönetici talep sahibini formun başındaki listeden seçerek başka bir Sorumlu adına talep açabilir."));
 
 C.push(h2("8.3 Atama paneli (Yönetici)"));
-C.push(p("Onay bekleyen ya da kısmen atanmış talebin kartındaki **Ata** düğmesi atama panelini açar. Solda her gün/dilim için **atanan / istenen** görülür, altta adaylar, sağda talep özeti ve **Karar** kartı bulunur."));
+C.push(p("Onay bekleyen ya da kısmen atanmış talep kartının altında ortalanmış **Atama Yap / Gün Bazlı Böl** düğmesi atama panelini açar (yanında **Zorunlu Açıklamayla Reddet**). Kartın sağındaki kaydırmalı kutu, Ana Proje bazlı geçmiş deneyim tavsiyelerini listeler. Solda her gün/dilim için **atanan / istenen** görülür, altta adaylar, sağda talep özeti ve **Karar** kartı bulunur."));
 C.push(n("Soldaki tabloda atama yapmak istediğiniz satırları işaretleyin (dolu satırlar seçilemez).","n8"));
 C.push(n("Adaylar listesinde **Önerilen** kişi ve o Ana Projede daha önce çalışanlar üsttedir; çakışması olana “Çakışma: N gün”, olmayana “Müsait” yazar. Adın yanındaki **Seçili günlere ata** düğmesi kişiyi işaretli satırlara bekleme listesine ekler (Karar kartında görünür, × ile çıkarılır).","n8"));
 C.push(n("**Atamayı onayla**'ya basın. Kısmi atama serbesttir: talep **Kısmen atandı** olur; istenen sayıya ulaşılınca **Tamamen atandı**.","n8"));
@@ -111,7 +111,7 @@ C.push(note("**Reddetme.** Onay bekleyen talepte **Reddet…** ile ret nedeni (z
 C.push(note("**Sorumlu tarafı.** Taleplerim sayfasının üstünde yeni bildirimler görünür (atandı, reddedildi, görevden çıkarıldı); **Tümünü okundu say** ile kapanır. Atama yapılmış talepte **Atananlar** düğmesi gün gün kimin atandığını gösterir."));
 
 C.push(h2("8.4 Haftalık matris (herkes)"));
-C.push(p("**Haftalık matris** menüsü Yönetici, Proje Sorumlusu ve Saha personeli için açıktır; yalnız okunur. Satırlar personel, sütunlar haftanın yedi günüdür. Hücrenin üst yarısı öğleden önce, alt yarısı öğleden sonradır; tam gün görev tek blok olarak görünür. Renk Ana Projeyi gösterir, proje adı hücrede de yazılıdır."));
+C.push(p("**Haftalık matris** sekmesi Yönetici, Proje Sorumlusu ve Saha personeli için açıktır; yalnız okunur. Satırlar personel, sütunlar haftanın yedi günüdür. Hücrenin üst yarısı öğleden önce, alt yarısı öğleden sonradır; tam gün görev tek blok olarak görünür. Renk Ana Projeyi gösterir, proje adı hücrede de yazılıdır."));
 C.push(n("Haftayı **◀ ▶** ile değiştirin, **Bu hafta**'ya basın ya da kutuya tarihi **GG.AA.YYYY** yazın (o tarihin haftası açılır).","n8"));
 C.push(n("**Ad ara**, **Bölüm** ve **Ana Proje** ile daraltın. **Yalnız bu hafta görevli olanlar** işaretini kaldırırsanız görevi olmayan aktif personel de listelenir.","n8"));
 C.push(n("Bir göreve basınca altta talep kodu, Ana Proje › Alt Proje › Faaliyet, konum, saat ve proje sorumlusu açılır.","n8"));
@@ -136,24 +136,24 @@ C.push(n("**Sorumlu devret…** (Yönetici): talebin Proje Sorumlusu başka kiş
 C.push(...img("13_yonet","Yönet sayfası: atananlar, ikame/çıkarma, erken bitiş formu ve revizeler.",1500));
 
 C.push(h2("8.7 Analiz ve arşiv"));
-C.push(p("Menüdeki **Analiz** sayfası Yönetici ve Proje Sorumlusu içindir (Sorumlu yalnız kendi taleplerini görür). Üç sekmesi vardır; her sekmede **Excel'e aktar** düğmesi bulunur."));
+C.push(p("Sekme şeridindeki **Analiz** sayfası Yönetici ve Proje Sorumlusu içindir (Sorumlu yalnız kendi taleplerini görür). Üç sekmesi vardır; her sekmede **Excel'e aktar** düğmesi bulunur."));
 C.push(n("**Proje adam-gün:** başlangıç ve bitiş tarihini GG.AA.YYYY yazıp **Uygula** deyin (ya da Bu ay / Son 3 ay / Bu yıl / Geçen yıl düğmeleri). Ana proje, alt proje ve faaliyet bazında adam-gün görünür; tam gün 1,0, öğleden önce/sonra 0,5 sayılır. Ana proje listesinden süzebilirsiniz.","n8"));
 C.push(n("**Personel:** kişi başına adam-gün, görev günü, proje sayısı ve (Yönetici için) izin ile rapor günleri; hangi ana projede kaç adam-gün çalıştığı yanında yazar. Bir satıra tıklayınca o kişinin gün gün görev, izin ve rapor dökümü açılır. Ad/sicil ve bölüm süzgeci vardır.","n8"));
 C.push(n("**Arşiv (geçmiş görevler):** eski araçtan aktarılan, tarihi bilinmeyen \"kim hangi projeye gitti\" kayıtları; kişi, proje ya da görev metniyle aranır. Geçmiş dönemler için Proje ve Personel sekmelerinde tarih aralığını geriye alın.","n8"));
 C.push(...img("14_analiz","Analiz: ana proje bazlı adam-gün.",1500));
 
 C.push(h2("8.10 Ayarlar, işlem günlüğü ve rol bazlı listeler"));
-C.push(n("**Ayarlar:** Genel yazı boyutu (%85–%150), tablo/matris yazısı, yazı tipi ve tema (Sistem/Açık/Koyu) seçilir; tercih yalnız bu bilgisayarda saklanır. Yönetici ayrıca Kullanıcılar ve yetkiler, Rol eşleştirme, Kadro, İşlem günlüğü, Eski veri ve Sistem sekmelerini görür.","n8"));
+C.push(n("**Ayarlar › Görünüm ve yazı:** Hazır ve özel temalar, buzlu cam (blur) düzeyi, genel yazı boyutu (%85–%150), tablo/matris yazısı ve yazı tipi seçilir; varsayılan yazı tipi uygulamaya gömülüdür, tercih yalnız bu bilgisayarda saklanır. Yönetici ayrıca Kadro, Eski veri ve Sistem sekmelerini görür; roller ve işlem günlüğü **Kullanıcı Yetki** sekmesindedir.","n8"));
 C.push(n("**İşlem günlüğü:** Yönetici tarih aralığı, işlem türü ve metin ile süzerek kimin neyi ne zaman yaptığını görür (en yeni 500 kayıt). Kayıtlar değiştirilemez.","n8"));
 C.push(...img("17_gunluk","İşlem günlüğü."));
-C.push(n("**Rol bazlı listeler:** Talep formunda talep sahibi (Yönetici vekâleten açarken) yalnız Proje Sorumlusu rolündeki kişilerden, önerilen personel ise Saha Personeli rolündekilerden seçilir. Roller Ayarlar › Rol eşleştirme ve Kullanıcılar ve yetkiler sekmelerinden gelir.","n8"));
+C.push(n("**Rol bazlı listeler:** Talep formunda talep sahibi (Yönetici vekâleten açarken) yalnız Proje Sorumlusu rolündeki kişilerden, önerilen personel ise Saha Personeli rolündekilerden seçilir. Roller Kullanıcı Yetki sekmesinden gelir.","n8"));
 C.push(n("**Rapor tarihi düzeltme:** Yönetici, geçerli raporun satırında **Tarihi düzelt…** ile ilk/son günü değiştirir; yeni aralıktaki izinler iptal olur, çakışan görevler için uyarı verilir.","n8"));
 C.push(n("**Revizede kişi azaltma:** kişi sayısı düşen revizede **Onayla** çıkarılacak kişilerin seçim kutusunu açar; seçilenler görevden çıkarılır ve revize uygulanır. Eklenen günlerde atanmış kişilerin müsaitliği (müsait/görevde/izinli/raporlu) onaydan önce görünür.","n8"));
 C.push(n("**Analiz ve matris:** Analizde **Proje kırılımı** sekmesi Ana → Alt Proje → Yerleşke → Personel adam-günü gösterir (Excel'e de aktarılır). Matriste Personel süzgeci Görevli/izinli, Sadece müsaitler veya Tümü olarak seçilir.","n8"));
 C.push(h2("8.9 Saha notu, iletişim, rozetler ve ikame uyarısı"));
 C.push(n("**Saha / Operasyon Notu:** talep formunda araç, teçhizat (KKD), giriş kişisi, konaklama gibi bilgiler çok satırlı yazılır (en fazla 1000 karakter). Eski \"Aranan nitelik\" alanının yerini almıştır.","n8"));
 C.push(n("**İletişim:** talep listesinde ve Saha'nın Görevlerim sayfasında **İletişim / Göster** saha notunu ve Proje Sorumlusunun telefonunu açar. Yönetici ve Proje Sorumlusu ayrıca atananların telefonlarını görür; Saha görmez.","n8"));
-C.push(n("**Menü rozetleri:** Talepler, İzin ve rapor ve Görevlerim menülerindeki kırmızı sayı bekleyen işi gösterir; üzerine gelince dökümü çıkar. Sayfalar 30 saniyede bir kendiliğinden yenilenir (yazı yazarken bozulmaz); üstteki **Yenile** düğmesi anında yeniler.","n8"));
+C.push(n("**Sekme rozetleri:** Talepler, İzin ve rapor ve Görevlerim sekmelerindeki kırmızı sayı bekleyen işi gösterir; üzerine gelince dökümü çıkar. Sayfalar 30 saniyede bir kendiliğinden yenilenir (yazı yazarken bozulmaz); üstteki **Yenile** düğmesi anında yeniler.","n8"));
 C.push(n("**İkame bekleyen görevler:** raporlanan, kadrodan ayrılan ya da birimi değişen kişinin ileri tarihli atamaları Talepler sayfasındaki uyarı kutusunda listelenir; **Yönet…** ile ikame yapılır.","n8"));
 C.push(n("**Analiz ve atama:** aday kartında projedeki görev sayısı, adam-gün, yerleşke ve müsait gün görünür; Personel analizinde müsait gün, tatil günü ve tatilde çalışma sütunları vardır. Matriste **Yerleşke** süzgeci bulunur; rapor evrakı **Ad_Soyad_yyyymmdd_KOD** adıyla iner.","n8"));
 C.push(h2("8.8 Eski veri aktarımı ve canlıya geçiş"));
