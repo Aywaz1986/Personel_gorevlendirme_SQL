@@ -9,7 +9,7 @@ Her değişiklik önce **Yayınlanmamış** bölümüne yazılır; sürüm yüks
 - [x] 1. `016_havuz_arsiv.sql` (sınanmadı; CI SqlTests), `havuzArsiv` komutu, SqlTests + BridgeTests
 - [x] 2. Arayüz: `004_havuz.js`, `004_takvim.js`, `004_havuz_takvim.js`
 - [x] 3. Belgeler, `docs/test-dilim-15.md`, kılavuz (bölüm 6–7) + ekran görüntüleri
-- [ ] 4. Push, CI, PR (taban dilim-14-yeni-tasarim)
+- [x] 4. Push, CI yeşil (4/4), PR açıldı (taban dilim-14-yeni-tasarim)
 
 ### Dilim 14 – Yeni arayüz tasarımı (2026-11) — DEVAM EDİYOR (dal `dilim-14-yeni-tasarim`, Dilim 13 dalından; PR sırası … → #19 → bu)
 **Oturum devir notu (her adımda güncelle):**
