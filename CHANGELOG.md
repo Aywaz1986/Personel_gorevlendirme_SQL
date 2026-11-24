@@ -10,7 +10,7 @@ Her değişiklik önce **Yayınlanmamış** bölümüne yazılır; sürüm yüks
 - [x] 2. Gömülü yazı tipi, Yazı Ayarları, tema + buzlu cam (`004_gorunum.js`)
 - [x] 3. `015_sayac_sahada.sql` (sınanmadı; CI SqlTests), SenaryoTests
 - [x] 4. Belgeler, `docs/test-dilim-14.md`, kılavuz + ekran görüntüleri
-- [ ] 5. Push, CI, PR (taban dilim-13-baglanti-yapilandirma)
+- [x] 5. Push, CI yeşil (4/4), PR açıldı (taban dilim-13-baglanti-yapilandirma)
 - [ ] Sonra: Dilim 15 (madde 5–6), `016+` göçü
 
 ### Dilim 13 – Gizli bağlantı yapılandırması + yüzen pencere (2026-11) — DEVAM EDİYOR (dal `dilim-13-baglanti-yapilandirma`, Dilim 12 dalından; PR sırası … → #17 → bu)
