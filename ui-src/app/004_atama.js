@@ -1,12 +1,12 @@
 // Atama paneli (Yönetici): gün/dilim bazında aday atama, çakışma kararı, ret. Kurallar sunucudadır (007_atama.sql).
 function atamaTamAd(z) { return z === 'TAM' ? 'Tam gün' : z === 'OO' ? 'Öğleden önce' : 'Öğleden sonra'; }
 
-async function atamaPaneli(talepId, geri) {
+async function atamaPaneli(talepId, retAcik, geri) {
   const t = await Kopru.cagir('talepGetir', { id: talepId });
   let adaylar = await Kopru.cagir('atamaAdaylar', { talepId });
   let iletisim = null;
   try { iletisim = await Kopru.cagir('talepIletisim', { talepId }); } catch (e) { /* telefon bilgisi yoksa panel yine açılır */ }
-  const st = { secili: new Set(), asama: [], cakisma: null, retAcik: false };
+  const st = { secili: new Set(), asama: [], cakisma: null, retAcik: !!retAcik };
   const kap = h('div', { style: 'display:flex;flex-direction:column;gap:14px' });
   const anahtar = (g) => g.tarih + '|' + g.zaman;
   const mevcut = (g) => g.atananlar || [];

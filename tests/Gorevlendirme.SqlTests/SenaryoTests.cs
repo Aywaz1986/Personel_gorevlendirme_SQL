@@ -81,11 +81,12 @@ public class SenaryoTests
         var id = await TalepAsync(o, "n", (D(p, 0), "TAM"));
         var s = (Dictionary<string, object?>)await SenaryoService.SayaclarAsync(o.Yonetici);
         Assert.Equal(1, N(s["bekleyenTalep"])); Assert.Equal(0, N(s["izinOnay"])); Assert.Equal(0, N(s["ikameUyari"]));
+        Assert.Equal(0, N(s["sahadaBugun"])); Assert.True(N(s["sahaToplam"]) >= 0); // 015: "Aktif Sahadaki Personel" kartı (bugün ataması yok)
         await Ata(o, id, "1002", D(p, 0), "TAM");
         s = (Dictionary<string, object?>)await SenaryoService.SayaclarAsync(o.Yonetici);
         Assert.Equal(0, N(s["bekleyenTalep"]));
         var so = (Dictionary<string, object?>)await SenaryoService.SayaclarAsync(o.Sorumlu);
-        Assert.Equal(1, N(so["onaylanan"])); Assert.Null(so["bekleyenTalep"]);
+        Assert.Equal(1, N(so["onaylanan"])); Assert.Null(so["bekleyenTalep"]); Assert.Null(so["sahadaBugun"]);
         Assert.Null(((Dictionary<string, object?>)await SenaryoService.SayaclarAsync(o.Saha1))["bekleyenTalep"]);
         // ayrılan kişi → ikame uyarısı (Yönetici + talebin Sorumlusu)
         await o.T.ExecAsync("UPDATE gorev.personel SET aktif = 0 WHERE sicil_no = N'1002'");

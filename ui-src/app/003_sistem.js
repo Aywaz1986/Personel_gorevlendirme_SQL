@@ -1,25 +1,4 @@
-// Bağlantı formu ve Sistem sayfası (sürüm kapısı, şema kurulumu, sunucu denetimi).
-function baglantiFormu(hataMetni) {
-  const sunucu = h('input', { class: 'metin', id: 'sunucu', placeholder: 'SUNUCU,PORT', autocomplete: 'off' });
-  const db = h('input', { class: 'metin', id: 'veritabani', placeholder: 'veritabanı adı', autocomplete: 'off' });
-  const sif = h('input', { type: 'checkbox', checked: true });
-  const guv = h('input', { type: 'checkbox' });
-  const kutu = h('div', { class: 'mesaj kotu', hidden: !hataMetni }, hataMetni || '');
-  const bagla = h('button', { class: 'ana', onclick: async () => {
-    kutu.hidden = true;
-    try {
-      await Kopru.cagir('baglan', { server: sunucu.value, database: db.value, encrypt: sif.checked, trust: guv.checked, kaydet: true });
-      await baslaSonrasi();
-    } catch (e) { kutu.textContent = e.message; kutu.hidden = false; }
-  } }, 'Bağlan');
-  goster(h('div', { class: 'tam' }, h('div', { class: 'kutu', style: 'text-align:left;justify-items:stretch' },
-    h('h1', { style: 'font-size:20px;margin:0' }, 'Personel Görevlendirme'),
-    h('p', { class: 'alt', style: 'margin:0;color:var(--soluk)' }, 'SQL Server bağlantısı (Windows kimliğiyle)'),
-    h('label', null, 'Sunucu', sunucu), h('label', null, 'Veritabanı', db),
-    h('label', { class: 'onay' }, sif, ' Şifreli bağlantı'), h('label', { class: 'onay' }, guv, ' Sertifikaya güven'),
-    bagla, kutu)));
-}
-
+// Sistem sayfası (sürüm kapısı, şema kurulumu, sunucu denetimi).
 async function sistemIcerik() {
   const kart = h('section', { class: 'kart' }, h('h2', null, 'Durum'));
   const liste = h('dl'); const msj = h('div'); const islem = h('div', { hidden: true });
@@ -60,7 +39,7 @@ async function sistemIcerik() {
   } }, 'Sunucu denetimi');
   kart.append(liste, msj, h('div', { class: 'satir', style: 'margin-top:12px' }, kur, dnt,
     h('button', { onclick: yenile }, 'Yenile'),
-    h('button', { onclick: async () => { await Kopru.cagir('baglantiKapat'); S.kimlik = null; baglantiFormu(); } }, 'Bağlantıyı kapat')), islem);
+    h('button', { onclick: async () => { await Kopru.cagir('baglantiKapat'); S.kimlik = null; baglantiFormu(); } }, 'Bağlantı ayarları')), islem);
   await yenile();
   return h('div', { class: 'icerik', style: 'padding:0' }, h('h1', null, 'Sistem'), kart, await canliKart(yenile), denetim);
 }

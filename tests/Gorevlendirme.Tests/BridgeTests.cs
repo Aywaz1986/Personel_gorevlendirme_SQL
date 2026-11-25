@@ -43,7 +43,7 @@ public class BridgeTests
         AnalizCommands.Register(r);
         CanliCommands.Register(r);
         SenaryoCommands.Register(r);
-        foreach (var k in new[] { "ping", "runtime", "baglantiDene", "baglan", "baglantiKapat", "surumDurum", "semaDurum", "semaUygula", "sunucuDenetimi",
+        foreach (var k in new[] { "ping", "runtime", "baglantiDene", "baglan", "baglantiKapat", "baglantiBilgi", "varsayilanBaglantiYaz", "varsayilanBaglantiSil", "varsayilanBaglantiDurum", "pencereKonumYaz", "surumDurum", "semaDurum", "semaUygula", "sunucuDenetimi",
                                   "ben", "kadroOzet", "kadroListe", "kadroEsitle", "eslestirmeListe", "eslestirmeKaydet", "istisnaListe", "istisnaKaydet", "istisnaSil",
                                   "havuzListe", "havuzEkle", "havuzAdlandir", "havuzDurum", "havuzBirlestir", "takvimListe", "takvimOzet", "takvimKaydet", "takvimSil",
                                   "takvimMetinOku", "takvimXlsxOku", "takvimOnizle", "takvimUygula", "eskiVeriDenetle",
@@ -55,7 +55,7 @@ public class BridgeTests
                                   "analizAnaProjeler", "analizProje", "analizPersonel", "analizPersonelDetay", "arsivGecmis", "analizExcel",
                                   "canliKontrol", "canliyaGec", "eskiAktarDurum", "eskiAktar", "eskiAktarGeriAl", "talepIletisim", "sayaclar", "ikameBekleyenler", "rolPersonel", "logListe", "logIslemTurleri", "raporDuzelt", "analizKirilim", "revizeFazlalik", "revizeMusaitlik" })
             Assert.NotNull(r.Find(k));
-        foreach (var k in new[] { "ben", "kadroListe", "kadroEsitle", "istisnaKaydet", "havuzEkle", "takvimUygula", "eskiVeriDenetle", "talepKaydet", "talepGeriCek", "atamaOnayla", "talepReddet", "matrisHafta", "matrisExcel", "izinKaydet", "izinOnayla", "raporKaydet", "gorevlerim", "talepIptal", "atamaIkame", "revizeIste", "analizProje", "analizExcel", "canliyaGec", "eskiAktar" })
+        foreach (var k in new[] { "ben", "kadroListe", "kadroEsitle", "istisnaKaydet", "havuzEkle", "takvimUygula", "eskiVeriDenetle", "talepKaydet", "talepGeriCek", "atamaOnayla", "talepReddet", "matrisHafta", "matrisExcel", "izinKaydet", "izinOnayla", "raporKaydet", "gorevlerim", "talepIptal", "atamaIkame", "revizeIste", "analizProje", "analizExcel", "canliyaGec", "eskiAktar", "varsayilanBaglantiYaz", "varsayilanBaglantiSil", "varsayilanBaglantiDurum", "pencereKonumYaz" })
             Assert.True(r.Find(k)!.KapiGerekli);   // iş komutları sürüm kapısına tabidir
     }
 
