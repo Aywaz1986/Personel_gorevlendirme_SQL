@@ -42,6 +42,30 @@ public class HavuzTakvimTests
     }
 
     [SqlFact]
+    public async Task Havuz_arsivler_nedenle_altini_pasife_alir_ve_arsivdeki_etkinlesmez()
+    {
+        var (t, y) = await YoneticiAsync();
+        await using var _t = t;
+        var a = await Ekle(y, null, "Ana 1");
+        var b = await Ekle(y, a, "Alt 1");
+        var c = await Ekle(y, b, "Faaliyet 1");
+        Assert.Equal("dogrulama", await Kod(() => y.ProcAsync("gorev.sp_havuz_arsivle", ("@id", b), ("@arsiv", true), ("@neden", "  "))));   // neden zorunlu
+        var r = (await y.ProcAsync("gorev.sp_havuz_arsivle", ("@id", b), ("@arsiv", true), ("@neden", "Reddedildi"))).First();
+        Assert.Equal(2, Convert.ToInt32(r["etkilenen"]));                                                                                   // Alt 1 + Faaliyet 1
+        Assert.Equal(0, Convert.ToInt32(await t.SkalerAsync($"SELECT COUNT(*) FROM gorev.proje_havuzu WHERE id IN ({b},{c}) AND (aktif = 1 OR arsiv = 0)")));
+        Assert.Equal(1, Convert.ToInt32(await t.SkalerAsync($"SELECT aktif FROM gorev.proje_havuzu WHERE id = {a}")));                    // üst etkilenmez
+        Assert.Equal("dogrulama", await Kod(() => y.ProcAsync("gorev.sp_havuz_durum", ("@id", b), ("@aktif", true))));                      // arşivdeki doğrudan etkinleşmez
+        await y.ProcAsync("gorev.sp_havuz_arsivle", ("@id", b), ("@arsiv", false));
+        Assert.Equal(0, Convert.ToInt32(await t.SkalerAsync($"SELECT COUNT(*) FROM gorev.proje_havuzu WHERE id IN ({b},{c}) AND (aktif = 1 OR arsiv = 1)")));   // pasif kalır
+        await y.ProcAsync("gorev.sp_havuz_durum", ("@id", b), ("@aktif", true));
+        Assert.Equal(1, Convert.ToInt32(await t.SkalerAsync($"SELECT aktif FROM gorev.proje_havuzu WHERE id = {b}")));
+        Assert.True(Convert.ToInt32(await t.SkalerAsync("SELECT COUNT(*) FROM gorev.islem_log WHERE islem IN (N'HAVUZ_ARSIV', N'HAVUZ_ARSIVDEN_CIKAR')")) >= 2);
+        var (hesap, saha) = await t.KisiAsync();
+        await t.ExecAsync($"INSERT INTO gorev.kullanici_yetki_istisna (hesap, saha_mi) VALUES (N'{hesap}', 1);");
+        Assert.Equal("yetki", await Kod(() => saha.ProcAsync("gorev.sp_havuz_arsivle", ("@id", b), ("@arsiv", true), ("@neden", "x"))));
+    }
+
+    [SqlFact]
     public async Task Havuz_yetki_listeleme_rolluye_yazma_yalniz_yoneticiye()
     {
         var (t, y) = await YoneticiAsync();

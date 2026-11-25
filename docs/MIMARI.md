@@ -118,3 +118,6 @@ Onay/atama yordamları `SERIALIZABLE` + `UPDLOCK`: aynı personel, aynı gün ve
 
 ## Yeni arayüz (Dilim 14)
 `005_kabuk.js` (üst çubuk, rol düğmeleri `ROL_DUGME`, sekme şeridi `SAYFALAR`), `004_gorunum.js` (Yazı Ayarları + tema + buzlu cam; CSS değişkenleri `documentElement` üzerinde, tercih `localStorage`), `004_yetki.js` (Kullanıcı Yetki), `004_havuz_takvim.js` (Dilim 15 iskeleti). Varsayılan yazı tipi `build.py` ile `index.html`'e base64 gömülür (çalışma zamanı CDN yok). `015_sayac_sahada.sql`: `sp_sayaclar` iki sütun.
+
+## Havuz ve takvim (Dilim 15)
+`016_havuz_arsiv.sql`: `proje_havuzu` üç arşiv sütunu, `sp_havuz_arsivle(@id,@arsiv,@neden)`. Arayüz: `004_havuz.js` (kademeli panel + ağaç), `004_takvim.js` (`takvimSayfa()` artık `{ust, alt}` döndürür: yönetim kartı ve yıllık çizelge), `004_havuz_takvim.js` (yerleşim). Takvim kategorileri arayüzde `YILLIK/RESMI/YARIM`; sunucuya `tur`+`zaman`+`yillik` olarak gider.

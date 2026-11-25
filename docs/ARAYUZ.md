@@ -37,6 +37,7 @@ Yeni hata eşlemesi: sunucu 50022/50023 → `yetki`; 50020/50021/50024/50025 →
 | `havuzEkle` | `ustId?, ad` | `{id}` | ✔ | yalnız yönetici; seviye üstten türer (1 Ana Proje … 4 Konum); kardeşler arasında ad tekil |
 | `havuzAdlandir` | `id, ad` | `{tamam}` | ✔ | birleştirilmiş kayıt değişmez |
 | `havuzDurum` | `id, aktif` | `{etkilenen}` | ✔ | pasife alma altını da alır; etkinleştirme için üst aktif olmalı |
+| `havuzArsiv` | `id, arsiv, neden?` | `{etkilenen}` | ✔ (Yönetici) | arşivle: neden zorunlu, altındakilerle pasif + arşiv; `arsiv:false` yalnız bayrağı kaldırır (pasif kalır). `havuzListe` artık `arsiv, arsivNeden, arsivTarih` döner |
 | `havuzBirlestir` | `kaynakId, hedefId` | `{birlesen, tasinan}` | ✔ | aynı seviye; çocuklar taşınır, aynı adlılar birleşir; kaynak pasif + `birlestirildiId` |
 | `takvimListe` | `yil?` | `[{id, baslangic(ISO), bitis(ISO), zaman, tur, ad, yillik, gun, kesilen}]` | ✔ | her rolde okur; `gun` takvim günü (yarım gün 0.5), `kesilen` yıllık izinden düşecek iş günü |
 | `takvimOzet` | `yil` | `{kayit, resmiGun, idariGun, kesilenGun}` | ✔ | her rolde okur; "kesilen" yalnız bilgi (yıllık izin modülü yok) |

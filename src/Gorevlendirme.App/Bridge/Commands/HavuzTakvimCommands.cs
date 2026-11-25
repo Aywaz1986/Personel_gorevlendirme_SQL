@@ -8,6 +8,9 @@ public static class HavuzTakvimCommands
     private static int? OptInt(JsonElement a, string k) =>
         a.ValueKind == JsonValueKind.Object && a.TryGetProperty(k, out var v) && v.ValueKind == JsonValueKind.Number && v.TryGetInt32(out var n) ? n : null;
 
+    private static string? OptS(JsonElement a, string k) =>
+        a.ValueKind == JsonValueKind.Object && a.TryGetProperty(k, out var v) && v.ValueKind == JsonValueKind.String ? v.GetString() : null;
+
     private static List<TakvimSatir> Satirlar(JsonElement a)
     {
         var l = new List<TakvimSatir>();
@@ -29,6 +32,7 @@ public static class HavuzTakvimCommands
             return (object?)new { tamam = true };
         }, kapiGerekli: true);
         r.Register("havuzDurum", async (st, a) => await HavuzService.DurumAsync(st.RequireSql, Args.I(a, "id"), Args.B(a, "aktif")), kapiGerekli: true);
+        r.Register("havuzArsiv", async (st, a) => await HavuzService.ArsivAsync(st.RequireSql, Args.I(a, "id"), Args.B(a, "arsiv"), OptS(a, "neden")), kapiGerekli: true);
         r.Register("havuzBirlestir", async (st, a) => await HavuzService.BirlestirAsync(st.RequireSql, Args.I(a, "kaynakId"), Args.I(a, "hedefId")), kapiGerekli: true);
 
         r.Register("takvimListe", async (st, a) => await TakvimService.ListeAsync(st.RequireSql, OptInt(a, "yil")), kapiGerekli: true);
