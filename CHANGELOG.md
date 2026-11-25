@@ -9,7 +9,7 @@ Her değişiklik önce **Yayınlanmamış** bölümüne yazılır; sürüm yüks
 - [x] 1. `017_dilim16.sql` (sınanmadı; CI SqlTests), servis/komutlar, Dilim16Tests, TestDb.MigrateAsync (ufuk 3650 gün)
 - [x] 2. Arayüz: Ata, atandı rozeti, Haftalık Özet, İzin/Rapor Bilgisi
 - [x] 3. Belgeler, `docs/test-dilim-16.md`, kılavuz, ekran görüntüleri
-- [ ] 4. Push, CI, PR (taban dilim-15-takvim-havuz)
+- [x] 4. Push, CI yeşil (4/4), PR açıldı (taban dilim-15-takvim-havuz)
 - [ ] Sonra: Dilim 17
 
 ### Dilim 15 – Akademik takvim + Proje/Görev Havuzu yönetimi (2026-11) — DEVAM EDİYOR (dal `dilim-15-takvim-havuz`, Dilim 14 dalından; PR sırası … → #19 → #20 → bu)
