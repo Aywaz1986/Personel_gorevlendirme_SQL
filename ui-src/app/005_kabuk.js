@@ -1,9 +1,9 @@
 // Kabuk (Dilim 14, yeni tasarım): iki katmanlı koyu üst çubuk, yetkiye göre rol düğmeleri, KPI kartları, sekme şeridi, alt bilgi.
 const SAYFALAR = {
-  YONETICI: [['talep', 'Bekleyen Görev Talepleri', talepSayfa], ['izin', 'İzin Onayları', izinRaporSayfa], ['revize', 'Revize & İkame Uyarıları', revizeIkameSayfa], ['matris', 'Ortak 7 Günlük Özet Matris', matrisSayfa],
+  YONETICI: [['talep', 'Bekleyen Görev Talepleri', talepSayfa], ['izin', 'İzin Onayları', izinRaporSayfa], ['revize', 'Revize & İkame Uyarıları', revizeIkameSayfa], ['matris', 'Haftalık Özet', matrisSayfa],
     ['analiz', 'Ana Proje & Personel Analizi', analizSayfa], ['havuz', 'Proje Havuzu & Akademik Takvim', havuzTakvimSayfa], ['yetki', 'Kullanıcı Yetki & Audit Log', yetkiSayfa], ['ayarlar', 'Ayarlar', ayarlarSayfa]],
-  SORUMLU: [['talep', 'Yeni Görev Talebi & Aktif Taleplerim', talepSayfa], ['matris', 'Ortak 7 Günlük Özet Matris', matrisSayfa], ['analiz', 'Ana Proje & Personel Analizi', analizSayfa], ['izin', 'İzin ve Rapor', izinRaporSayfa], ['ayarlar', 'Ayarlar', ayarlarSayfa]],
-  SAHA: [['gorevim', 'Görevlerim, İzin Talebi & Rapor Beyanı', izinRaporSayfa], ['matris', 'Ortak 7 Günlük Özet Matris', matrisSayfa], ['ayarlar', 'Ayarlar', ayarlarSayfa]],
+  SORUMLU: [['talep', 'Yeni Görev Talebi & Aktif Taleplerim', talepSayfa], ['matris', 'Haftalık Özet', matrisSayfa], ['analiz', 'Ana Proje & Personel Analizi', analizSayfa], ['izin', 'İzin / Rapor Bilgisi', izinBilgiSayfa], ['ayarlar', 'Ayarlar', ayarlarSayfa]],
+  SAHA: [['gorevim', 'Görevlerim, İzin Talebi & Rapor Beyanı', izinRaporSayfa], ['matris', 'Haftalık Özet', matrisSayfa], ['ayarlar', 'Ayarlar', ayarlarSayfa]],
 };
 const ROL_DUGME = { YONETICI: 'Merkez Yönetici Paneli', SORUMLU: 'Proje Sorumlusu Talep Arayüzü', SAHA: 'Saha Personeli İzleme & Beyan' };
 const SAYFA_BASLIK = {

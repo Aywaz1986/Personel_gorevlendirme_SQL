@@ -31,6 +31,13 @@ public sealed class TestDb : IAsyncDisposable
     public string Db { get; } = "gorev_ci_" + Guid.NewGuid().ToString("N")[..8];
     public Migrator Migrator { get; private set; } = null!;
 
+    /// <summary>Göçleri uygular ve sınama için atama ufkunu açar (varsayılan 14 gün; ufuk sınaması kendi değerini yazar).</summary>
+    public async Task MigrateAsync()
+    {
+        await Migrator.UygulaAsync(false);
+        await ExecAsync("UPDATE gorev.sistem_ayarlari SET deger = N'3650' WHERE anahtar = N'ATAMA_UFKU_GUN';");
+    }
+
     private static string Cs(string db) =>
         $"Server={Server};Database={db};User Id={User};Password={Password};TrustServerCertificate=true;Encrypt=false;Connect Timeout=30";
 

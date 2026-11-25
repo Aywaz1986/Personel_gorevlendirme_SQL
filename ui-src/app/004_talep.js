@@ -78,11 +78,11 @@ function talepTarihOku(s) {
 
 async function talepSayfa() {
   const yonetici = S.gorunum === 'YONETICI';
-  const durum = { gorunum: 'liste', filtre: '', liste: [], havuz: [], tatiller: [], f: null, bildirim: [], atama: null, atananAcik: {}, iletisimAcik: {}, ikame: [], tav: {} };
+  const durum = { gorunum: 'liste', filtre: '', liste: [], havuz: [], tatiller: [], f: null, bildirim: [], atama: null, atananAcik: {}, iletisimAcik: {}, ikame: [], tav: {}, adlar: {} };
   const kap = h('div', { style: 'display:flex;flex-direction:column;gap:14px' });
 
   async function yukle() {
-    try { durum.liste = await Kopru.cagir('talepListe', {}); durum.bildirim = await Kopru.cagir('bildirimListe', {}); await tavsiyeYukle(); ciz(); } catch (e) { hata(e); }
+    try { durum.liste = await Kopru.cagir('talepListe', {}); durum.bildirim = await Kopru.cagir('bildirimListe', {}); try { durum.adlar = {}; for (const r of await Kopru.cagir('talepAtananAdlar', {})) durum.adlar[r.talepId] = r.adlar; } catch (e) { /* başlıkta ad görünmez */ } await tavsiyeYukle(); ciz(); } catch (e) { hata(e); }
   }
   // Otomatik/elle yenileme: yalnız liste görünümündeyken (açık form kaybolmasın).
   S.yenile = async () => { if (durum.gorunum === 'liste') await yukle(); };
@@ -135,6 +135,19 @@ async function talepSayfa() {
       try { const l = await Kopru.cagir('atamaAdaylar', { talepId: x.id }); durum.tav[x.id] = { z: simdi, l: l.slice().sort((p, q) => (q.gecmis || 0) - (p.gecmis || 0) || (q.toplamGorev || 0) - (p.toplamGorev || 0)).slice(0, 15) }; } catch (e) { durum.tav[x.id] = { z: simdi, l: [] }; }
     }));
   }
+  // "Ata": tek kişi istenen görevde adayı bütün günlere atar; birden fazla kişi istenmişse (ya da çakışma varsa) atama ekranını açar.
+  async function hizliAta(x, a) {
+    try {
+      const t = await Kopru.cagir('talepGetir', { id: x.id });
+      if (t.gunler.some((g) => g.kisi > 1)) { toast('Birden fazla personel istendiği için atama ekranı açıldı.', 'bilgi'); await atamaAc(x.id); return; }
+      const atamalar = t.gunler.filter((g) => !(g.atananlar && g.atananlar.length)).map((g) => ({ sicil: a.sicil, tarih: g.tarih, zaman: g.zaman }));
+      if (!atamalar.length) { await atamaAc(x.id); return; }
+      const c = await Kopru.cagir('atamaCakismaKontrol', { talepId: x.id, atamalar });
+      if (c.length) { toast('Çakışan gün var; karar için atama ekranı açıldı.', 'uyari'); await atamaAc(x.id); return; }
+      await Kopru.cagir('atamaOnayla', { talepId: x.id, atamalar, karar: 'REDDET' });
+      toast(a.ad + ' görevin tüm günlerine atandı.', 'iyi'); await yukle();
+    } catch (e) { hata(e); }
+  }
   function tavsiyeKutusu(x) {
     const t = durum.tav[x.id];
     return h('div', { class: 'sag' }, h('div', { class: 'bl' }, '⚡ Ana proje bazlı geçmiş deneyim tavsiye bloğu (' + x.ana + ')'),
@@ -144,7 +157,7 @@ async function talepSayfa() {
         return h('div', { class: 'k' }, h('div', { class: 'b' }, h('b', null, a.ad), h('div', { class: 'alt' }, (a.toplamGorev || 0) + ' görev (' + analizSayi(a.adamGun || 0) + ' adam-gün)' + (a.yerlesker ? ' • ' + a.yerlesker : '')),
           h('div', { style: 'margin-top:2px' }, a.izinRaporGun > 0 ? h('span', { class: 'cipi ko' }, 'İzin/Rapor (' + a.izinRaporGun + ' gün)') : (a.cakisanGun > 0 ? h('span', { class: 'cipi uy' }, 'Çakışma / Görevli (' + a.cakisanGun + ' gün)') : h('span', { class: 'cipi iy' }, 'Müsait')),
             ' ', a.onerildi ? h('span', { class: 'cipi' }, 'Önerilen') : null, musait < (a.talepGun || 0) && !a.cakisanGun && !a.izinRaporGun ? null : null)),
-          h('button', { type: 'button', onclick: () => atamaAc(x.id) }, 'Seç'));
+          h('button', { type: 'button', class: 'ana', onclick: () => hizliAta(x, a) }, 'Ata'));
       }) : h('div', { class: 'alt' }, 'Bu ana projede geçmiş görev kaydı olan aday bulunamadı.')));
   }
 
@@ -159,7 +172,7 @@ async function talepSayfa() {
       const atamaVar = yonetici && bekleyen;
       const tur = talepDurumTur(x.durum);
       return h('section', { class: 'tk' },
-        h('div', { class: 'bas' }, h('span', { class: 'kod' }, x.kod), h('span', { class: 'proje' }, x.ana + (x.alt && x.alt !== 'Genel' ? ' › ' + x.alt : '')), h('span', { class: 'yol' }, '→ ' + x.faaliyet),
+        h('div', { class: 'bas' }, h('span', { class: 'kod' }, x.kod), h('span', { class: 'proje' }, x.ana + (x.alt && x.alt !== 'Genel' ? ' › ' + x.alt : '')), h('span', { class: 'yol' }, '→ ' + x.faaliyet), durum.adlar[x.id] ? h('span', { class: 'atandi' }, '✔ ' + durum.adlar[x.id] + ' atandı') : null,
           h('span', { style: 'flex:1' }), h('span', { class: 'rz', style: durumRenk[tur] || durumRenk.soluk }, talepDurumAd(x.durum) + (x.istenen > 0 ? ' (' + x.atanan + '/' + x.istenen + ')' : ''))),
         h('div', { class: 'govde2' },
           h('div', { class: 'sol' },

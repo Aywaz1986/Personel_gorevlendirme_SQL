@@ -3,6 +3,15 @@
 Her değişiklik önce **Yayınlanmamış** bölümüne yazılır; sürüm yükselince bölüm sürüm başlığına dönüştürülür.
 
 ## Yayınlanmamış
+### Dilim 16 – Mantık ve matris (2026-11) — DEVAM EDİYOR (dal `dilim-16-mantik-matris`, Dilim 15 dalından; PR sırası … → #21 → bu)
+**Oturum devir notu (her adımda güncelle):**
+- İstek (Murat 24.11.2026, 16 madde): Dilim 16 = 1, 2, 7, 11–16; Dilim 17 = 3, 4, 5, 6, 8, 9, 10 (görünüm).
+- [x] 1. `017_dilim16.sql` (sınanmadı; CI SqlTests), servis/komutlar, Dilim16Tests, TestDb.MigrateAsync (ufuk 3650 gün)
+- [x] 2. Arayüz: Ata, atandı rozeti, Haftalık Özet, İzin/Rapor Bilgisi
+- [x] 3. Belgeler, `docs/test-dilim-16.md`, kılavuz, ekran görüntüleri
+- [ ] 4. Push, CI, PR (taban dilim-15-takvim-havuz)
+- [ ] Sonra: Dilim 17
+
 ### Dilim 15 – Akademik takvim + Proje/Görev Havuzu yönetimi (2026-11) — DEVAM EDİYOR (dal `dilim-15-takvim-havuz`, Dilim 14 dalından; PR sırası … → #19 → #20 → bu)
 **Oturum devir notu (her adımda güncelle):**
 - Karar (Murat 24.11.2026 istek dosyası, madde 5–6): takvim tür combobox + Excel'de tarih başına tür seçimi + yıllık çizelge; havuz merkezî kademeli panel, ad düzeltme, birleştirme, pasife alma, arşiv, denetim. Takvim şeması değişmedi; havuzda yalnız arşiv eklendi.

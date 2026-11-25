@@ -80,3 +80,13 @@ Murat 24.11.2026 istek dosyası madde 5–6. Test listesi: `docs/test-dilim-15.m
 - Takvim (sağ kart + alt çizelge): tür combobox **Yıllık İzin** (= `IDARI` + yıllık izinden kesilir bayrağı) / **Resmi Tatil** (`RESMI`) / **Yarım Gün** (ÖÖ/ÖS). Takvim şeması değişmedi.
 - Excel/CSV/yapıştır: dosya taranır, bulunan her tarih için tür seçilir (toplu çevirme, satır dışlama), Doğrula (önizleme) sonra toplu ekleme; hatalıysa hiçbiri eklenmez.
 - Varsayım: "2024 tasarımı" olarak Dilim 3b'deki standart (2024_Takvim.xlsx: mavi resmi, turuncu idari/yıllık izin, daire yarım gün, ISO hafta) yıllık çizelge korunmuştur; farklı renk/açıklama istenirse ayrıca düzeltilir.
+
+## Dilim 16 – Mantık ve matris (Murat 24.11.2026 istek listesi 1, 2, 7, 11–16)
+Test listesi: `docs/test-dilim-16.md`. SQL: `017_dilim16.sql`. Yeni komutlar: `talepAtananAdlar`, `izinRaporBilgi`; `matrisHafta/matrisExcel` + `sadeceSaha`.
+- Talep kodu `TLP-YYYY-NNNN` (yıl + yıl içi sıra; `yil`,`yil_sira` + `trg_talepler_kod`; eski kayıtlar oluşturma yılına göre yeniden numaralanır).
+- Adaylar (`sp_atama_adaylar`) yalnız SAHA rolündeki kişiler. Tavsiye kutusunda **Ata**: günlük tek kişi isteniyorsa tüm günlere tek tıkla; çok kişi/çakışma varsa atama ekranı.
+- Atama ufku: `sistem_ayarlari.ATAMA_UFKU_GUN` (varsayılan 14); `sp_atama_onayla` daha ilerisini reddeder (50024). Geriye dönük atama sınırlanmadı.
+- Görev kartı başlığında "✔ Ad atandı" (`sp_talep_atanan_adlar`).
+- Haftalık Özet (eski "Ortak 7 Günlük Özet Matris"): varsayılan "Saha personeli (tümü)"; boş hafta içi günler yeşil "Müsait"; personel adı altında telefon (bölüm kaldırıldı); görev bloğu altında sorumlu + telefon. Telefonlar yalnız Yönetici ve Sorumluya (Saha göremez).
+- Sorumlu "İzin / Rapor Bilgisi": `sp_izin_rapor_bilgi`, yalnız okuma.
+- Otomatik yenileme denetimi: aşağıda (MIMARI).

@@ -45,7 +45,7 @@ public class BridgeTests
         SenaryoCommands.Register(r);
         foreach (var k in new[] { "ping", "runtime", "baglantiDene", "baglan", "baglantiKapat", "baglantiBilgi", "varsayilanBaglantiYaz", "varsayilanBaglantiSil", "varsayilanBaglantiDurum", "pencereKonumYaz", "surumDurum", "semaDurum", "semaUygula", "sunucuDenetimi",
                                   "ben", "kadroOzet", "kadroListe", "kadroEsitle", "eslestirmeListe", "eslestirmeKaydet", "istisnaListe", "istisnaKaydet", "istisnaSil",
-                                  "havuzListe", "havuzEkle", "havuzAdlandir", "havuzDurum", "havuzArsiv", "havuzBirlestir", "takvimListe", "takvimOzet", "takvimKaydet", "takvimSil",
+                                  "havuzListe", "havuzEkle", "havuzAdlandir", "talepAtananAdlar", "izinRaporBilgi", "havuzDurum", "havuzArsiv", "havuzBirlestir", "takvimListe", "takvimOzet", "takvimKaydet", "takvimSil",
                                   "takvimMetinOku", "takvimXlsxOku", "takvimOnizle", "takvimUygula", "eskiVeriDenetle",
                                   "personelAra", "talepListe", "talepGetir", "talepKaydet", "talepGeriCek",
                                   "atamaAdaylar", "atamaCakismaKontrol", "atamaOnayla", "talepReddet", "bildirimListe", "bildirimOkundu",

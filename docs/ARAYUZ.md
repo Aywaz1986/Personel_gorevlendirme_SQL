@@ -37,6 +37,8 @@ Yeni hata eşlemesi: sunucu 50022/50023 → `yetki`; 50020/50021/50024/50025 →
 | `havuzEkle` | `ustId?, ad` | `{id}` | ✔ | yalnız yönetici; seviye üstten türer (1 Ana Proje … 4 Konum); kardeşler arasında ad tekil |
 | `havuzAdlandir` | `id, ad` | `{tamam}` | ✔ | birleştirilmiş kayıt değişmez |
 | `havuzDurum` | `id, aktif` | `{etkilenen}` | ✔ | pasife alma altını da alır; etkinleştirme için üst aktif olmalı |
+| `talepAtananAdlar` | – | `[{talepId, adlar}]` | ✔ (Yönetici/Sorumlu) | görev başlığında "atandı"; Sorumlu yalnız kendi talepleri |
+| `izinRaporBilgi` | `gun?` (7/14/30) | `[{sicil,ad,gsm,tur,ilkTarih,sonTarih,durum}]` | ✔ (Yönetici/Sorumlu) | salt okunur izin/rapor bilgisi |
 | `havuzArsiv` | `id, arsiv, neden?` | `{etkilenen}` | ✔ (Yönetici) | arşivle: neden zorunlu, altındakilerle pasif + arşiv; `arsiv:false` yalnız bayrağı kaldırır (pasif kalır). `havuzListe` artık `arsiv, arsivNeden, arsivTarih` döner |
 | `havuzBirlestir` | `kaynakId, hedefId` | `{birlesen, tasinan}` | ✔ | aynı seviye; çocuklar taşınır, aynı adlılar birleşir; kaynak pasif + `birlestirildiId` |
 | `takvimListe` | `yil?` | `[{id, baslangic(ISO), bitis(ISO), zaman, tur, ad, yillik, gun, kesilen}]` | ✔ | her rolde okur; `gun` takvim günü (yarım gün 0.5), `kesilen` yıllık izinden düşecek iş günü |
@@ -135,3 +137,5 @@ Değişen: `matrisHafta`/`matrisExcel` + `konum?` (yerleşke süzgeci, son iste�
 | `analizKirilim` | `bas, bit, ana?` | `[{ana, alt, yerleske, sicil, ad, adamGun, gun}]`; Excel: `analizExcel tur=kirilim` | Yönetici, Sorumlu (kendi) |
 
 Değişen: `revizeOnayla` + `cikar?: [atamaId]` (çıkarılacaklar önce çıkarılır); `matrisHafta/matrisExcel` + `sadeceMusait?`. Arayüz: menüde Kadro/Eşleştirme/İstisna/Eski veri/Sistem yerine **Ayarlar** (sekmeli).
+
+Dilim 16: `matrisHafta`/`matrisExcel` yeni `sadeceSaha`; `matrisHafta` satırında `gsm`, hücrede `sorumluGsm` (yalnız Yönetici/Sorumlu için dolu). `atamaAdaylar` yalnız SAHA rolü. `atamaOnayla` ufuktan ilerisini reddeder.
