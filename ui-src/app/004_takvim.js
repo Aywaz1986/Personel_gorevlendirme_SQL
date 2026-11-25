@@ -105,7 +105,7 @@ async function takvimSayfa() {
     const yilEt = h('label', { for: 'tk-yillik', class: 'onay' }, yil, ' Yıllık izinden kesilir');
     const gor = () => { yilEt.style.display = kat.value === 'YILLIK' ? '' : 'none'; };
     kat.addEventListener('change', gor); gor();
-    return h('div', null, h('div', { class: 'alt', style: 'margin-bottom:6px' }, d ? 'Kaydı düzenle' : 'Yeni kayıt'),
+    return h('div', null, h('div', { class: 'alt', style: 'margin-bottom:6px' }, d ? '✏️ Kaydı düzenliyorsunuz: ' + takvimAralikYaz(d) : 'Yeni kayıt'),
       h('div', { class: 'satir', style: 'align-items:center;gap:8px' }, h('label', null, 'Başlangıç ', bas), h('label', null, 'Bitiş ', bit), kat, dilim, ad, yilEt,
         h('button', { class: 'ana', onclick: async () => {
           try {
@@ -205,6 +205,10 @@ async function takvimSayfa() {
     const bar = h('div', { class: 'takbar' }, h('div', { class: 'araccubuk' }, h('label', null, 'Yıl', sec)),
       h('button', { type: 'button', class: 'yonet', onclick: () => pencereAc('Akademik Tatil ve Resmi Tatil Yönetimi', kapUst) }, 'AKADEMİK TATİL VE RESMİ TATİL YÖNETİMİ'));
     kapAlt.replaceChildren(bar, ozet(), yilTakvimi(), detay());
+    if (durum.duzenle) {   // düzenleme formu pencerenin üstünde kalır: görünür kıl
+      const fk = kapUst.firstChild;
+      if (fk) { fk.style.cssText += ';border:2px solid var(--vurgu);border-radius:8px;padding:10px;background:var(--vurgu-bg)'; requestAnimationFrame(() => { try { fk.scrollIntoView({ block: 'start' }); } catch (e) { /* eski WebView */ } }); }
+    }
   }
 
   await yukle();

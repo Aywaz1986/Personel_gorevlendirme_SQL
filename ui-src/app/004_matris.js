@@ -114,8 +114,15 @@ async function matrisSayfa() {
     ayrintiKap.replaceChildren(...(s ? [h('section', { class: 'kart', style: 'max-width:520px' },
       h('div', { class: 'satir', style: 'align-items:center' }, h('b', null, s.ad + ' · ' + takvimGun(s.iso) + ' ' + takvimTarihYaz(s.iso) + ' · ' + atamaTamAd(s.c.zaman)), h('span', { style: 'flex:1' }),
         h('button', { type: 'button', 'aria-label': 'Ayrıntıyı kapat', onclick: () => { d.secili = null; ayrintiCiz(); } }, '✕')),
-      h('div', { style: 'line-height:1.7;margin-top:6px' }, h('div', null, s.c.kod + ' · ' + s.c.ana + ' › ' + s.c.alt + ' › ' + s.c.faaliyet),
-        h('div', null, '📍 ' + s.c.konum + ' · 🕣 ' + String(s.c.saat).replace(/:/g, '.')), h('div', null, '🧍‍♂️ Proje sorumlusu: ' + s.c.sorumlu + (s.c.sorumluGsm ? ' · 📞 ' + s.c.sorumluGsm : ''))))] : []));
+      h('div', { style: 'margin-top:6px' }, [
+        ['🔖', 'Talep', s.c.kod],
+        ['📑', 'Proje', s.c.ana + (s.c.alt && s.c.alt !== 'Genel' ? ' › ' + s.c.alt : '')],
+        ['📡', 'Faaliyet', s.c.faaliyet],
+        ['📍', 'Konum', s.c.konum],
+        ['🕣', 'Saat', String(s.c.saat).replace(/:/g, '.')],
+        ['📅', 'Tarih', takvimTarihYaz(s.iso) + ' ' + takvimGun(s.iso) + ' · ' + atamaTamAd(s.c.zaman)],
+        ['🧍‍♂️', 'Proje sorumlusu', s.c.sorumlu + (s.c.sorumluGsm ? '  📞 ' + s.c.sorumluGsm : '')],
+      ].map(([em, ad, v]) => h('div', { class: 'ozsatir' }, h('span', { class: 'oze' }, em + ' ' + ad + ':'), h('span', { class: 'ozd' }, v)))))] : []));
   }
 
   async function excel() {

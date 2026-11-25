@@ -19,6 +19,9 @@ function talepTarihOzet(gunler) {
     : a[2] + ' ' + ay[a[1] - 1] + ' ' + a[0] + ' – ' + b[2] + ' ' + ay[b[1] - 1] + ' ' + b[0];
   return aralik + ' - ' + t.length + ' gün';
 }
+// Günlük kişi sayısı: 5 gün × 1 kişi = "günlük 1 kişi" (5 ayrı kişi değil).
+function talepGunlukKisi(x) { return Math.max(1, Math.round((Number(x.kisiGun) || 0) / Math.max(1, Number(x.gunSayisi) || 1))); }
+function talepKisiYazi(x) { const g = talepGunlukKisi(x); return g === 1 ? 'günlük 1 kişi (tek personel olabilir)' : 'günlük ' + g + ' kişi'; }
 function talepKisiGun(n) { return String(n).replace('.', ',') + ' kişi-gün'; }
 
 // Personel arama kutusu (en az 2 harf); seçilince onSec({sicil, ad}) çağrılır.
@@ -187,13 +190,13 @@ async function talepSayfa() {
       const tur = talepDurumTur(x.durum);
       return h('section', { class: 'tk' },
         h('div', { class: 'bas' }, h('span', { class: 'kod' }, x.kod), h('span', { class: 'proje' }, x.ana + (x.alt && x.alt !== 'Genel' ? ' › ' + x.alt : '')), h('span', { class: 'yol' }, '→ ' + x.faaliyet), durum.adlar[x.id] ? h('span', { class: 'atandi' }, '✔ ' + durum.adlar[x.id] + ' atandı') : null,
-          h('span', { style: 'flex:1' }), h('span', { class: 'rz', style: durumRenk[tur] || durumRenk.soluk }, talepDurumAd(x.durum) + (x.istenen > 0 ? ' (' + x.atanan + '/' + x.istenen + ')' : ''))),
+          h('span', { style: 'flex:1' }), h('span', { class: 'rz', style: durumRenk[tur] || durumRenk.soluk }, talepDurumAd(x.durum) + (x.istenen > 0 ? ' (' + x.atanan + '/' + x.istenen + (talepGunlukKisi(x) === 1 ? ' gün' : ' kişi-gün') + ')' : ''))),
         h('div', { class: 'govde3' + (atamaVar ? ' uc' : '') },
           h('div', { class: 'kol' }, h('div', { class: 'bl' }, '📋 Özet'),
             h('div', null, [
               ['📍', 'Konum', x.konum],
               ['🕣', 'Saat', x.saatBaslangic && x.saatBitis ? x.saatBaslangic.replace(':', '.') + ' - ' + x.saatBitis.replace(':', '.') : '—'],
-              ['📅', 'Tarih', talepAralik(x) + ' - ' + x.gunSayisi + ' gün (' + talepKisiGun(x.kisiGun) + ')'],
+              ['📅', 'Tarih', talepAralik(x) + ' - ' + x.gunSayisi + ' gün · ' + talepKisiYazi(x)],
               ['📑', 'Proje', x.ana + (x.alt && x.alt !== 'Genel' ? ' › ' + x.alt : '')],
               ['📡', 'Faaliyet', x.faaliyet],
               ['🙋‍♀️', 'Önerilen Personel', x.oneri || '—'],
@@ -361,7 +364,7 @@ async function talepSayfa() {
         f.not ? h('div', { class: 'mesaj uyari', style: 'margin:0' }, f.not) : null,
         f.gunler.length ? h('div', { style: 'overflow-x:auto' }, tablo) : h('div', { class: 'alt' }, 'Henüz gün yok: başlangıç ve bitiş tarihini GG.AA.YYYY olarak yazın.'),
       ].filter(Boolean));
-      r.sayac.textContent = f.gunler.length + ' gün · ' + talepKisiGun(String(toplam));
+      { const ks = f.gunler.map((g) => g.kisi), mx = ks.length ? Math.max(...ks) : 1; r.sayac.textContent = f.gunler.length + ' gün · günlük ' + (ks.every((k) => k === mx) ? '' : 'en çok ') + mx + ' kişi'; }
       ozetGuncelle();
     }
     function aralik() {

@@ -145,6 +145,10 @@ with sync_playwright() as P:
     pg.locator('textarea').fill('08 NİSAN Pazartesi 1 gün İdari izin\n09 NİSAN Salı Ramazan Bayramı arifesi\n10-11-12 NİSAN Çarşamba-Perşembe-Cuma / 3 Gün Ramazan Bayramı\n01 MAYIS Çarşamba / 1 Gün Emek ve Dayanışma Günü'); pg.get_by_role('button', name='Dosyayı tara').click(); pg.wait_for_timeout(500)
     pg.get_by_role('button', name='Doğrula').click(); pg.wait_for_timeout(400); sh(pg, '07_takvim')
     pg.keyboard.press('Escape')
+    pg.get_by_role('button', name='AKADEMİK TATİL VE RESMİ TATİL YÖNETİMİ').click(); pg.wait_for_timeout(300)
+    pg.get_by_role('button', name='Vazgeç').first.click() if False else None
+    pg.get_by_role('button', name='Düzenle').nth(1).click(); pg.wait_for_timeout(400); sh(pg, '24_takvim_duzenle')
+    pg.keyboard.press('Escape')
     pg.set_viewport_size({'width': 1200, 'height': 800})
     pg.evaluate('window.scrollTo(0, 0)'); sh(pg, '04_gorunum', '.ust2')
     sh(ac(ben(False, False, False, False, [])), '05_yetkisiz')

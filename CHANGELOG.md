@@ -11,6 +11,7 @@ Her değişiklik önce **Yayınlanmamış** bölümüne yazılır; sürüm yüks
 - [x] 3. Ekran görüntüleri, kılavuz, belgeler, `docs/test-dilim-17.md`
 - [x] 4. Push, CI yeşil, PR #23
 - [x] 5. Özet sütunu form özetiyle aynı satır düzenine getirildi (Murat 25.11.2026)
+- [x] 6. Günlük kişi yazımı, Haftalık Özet ayrıntısı özet düzeninde, takvim düzenleme formu görünür (Murat 25.11.2026)
 
 ### Dilim 16 – Mantık ve matris (2026-11) — DEVAM EDİYOR (dal `dilim-16-mantik-matris`, Dilim 15 dalından; PR sırası … → #21 → bu)
 **Oturum devir notu (her adımda güncelle):**
