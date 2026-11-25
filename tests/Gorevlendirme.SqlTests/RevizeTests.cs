@@ -17,7 +17,7 @@ public class RevizeTests
     private static async Task<Ortam> KurAsync()
     {
         var t = await TestDb.OlusturAsync();
-        await t.Migrator.UygulaAsync(false);
+        await t.MigrateAsync();
         await t.ExecAsync(@"INSERT INTO gorev.personel (sicil_no, adi_soyadi, bolum) VALUES
             (N'1001', N'Erdem Efe', N'Proje'), (N'1002', N'Ahmet Sümbül', N'Teknik'), (N'1005', N'Yönetici Kişi', N'Merkez'), (N'1006', N'Ali Örnek', N'Teknik'), (N'1007', N'Yeni Sorumlu', N'Proje');");
         var (hs, sorumlu) = await t.KisiAsync();

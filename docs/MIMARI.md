@@ -121,3 +121,6 @@ Onay/atama yordamları `SERIALIZABLE` + `UPDLOCK`: aynı personel, aynı gün ve
 
 ## Havuz ve takvim (Dilim 15)
 `016_havuz_arsiv.sql`: `proje_havuzu` üç arşiv sütunu, `sp_havuz_arsivle(@id,@arsiv,@neden)`. Arayüz: `004_havuz.js` (kademeli panel + ağaç), `004_takvim.js` (`takvimSayfa()` artık `{ust, alt}` döndürür: yönetim kartı ve yıllık çizelge), `004_havuz_takvim.js` (yerleşim). Takvim kategorileri arayüzde `YILLIK/RESMI/YARIM`; sunucuya `tur`+`zaman`+`yillik` olarak gider.
+
+## Otomatik yenileme (denetim, Dilim 16)
+Kabuk (`005_kabuk.js`) her 30 sn: üst sayaçları (`sayaclar`: KPI + sekme rozetleri) yeniler; sayfa `S.yenile` tanımlıysa onu çağırır (sekme gizliyse ya da kullanıcı o sayfada bir giriş alanındaysa atlanır). Sayfa bazında: **Talepler** (yalnız liste görünümünde; tavsiye 5 dk önbellek), **İzin Onayları/Görevlerim** (liste), **Revize & İkame** (panel kapalıyken), **Haftalık Özet** (30 sn'de yalnız hafta sürümü sorulur, değişmişse tablo çekilir), **Analiz**, **İzin/Rapor Bilgisi** yenilenir. **Yenilenmeyenler:** Proje Havuzu & Takvim, Kullanıcı Yetki, Ayarlar (yönetici düzenleme sayfaları; elle ⟳ Yenile). Form/atama paneli açıkken yenileme yapılmaz (girişler silinmesin).

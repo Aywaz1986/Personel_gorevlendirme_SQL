@@ -22,6 +22,18 @@ public static class TalepService
             gunSayisi = r["gun_sayisi"], kisiGun = r["kisi_gun"], oneri = r["oneri"], atanan = r["atanan"], istenen = r["istenen"], retNedeni = r["ret_nedeni"], guncelleme = r["guncelleme"],
         }).ToList();
 
+    /// <summary>Talep başına aktif atananların adları (görev başlığında "X atandı").</summary>
+    public static async Task<object> AtananAdlarAsync(SqlService sql) =>
+        (await sql.ProcAsync("gorev.sp_talep_atanan_adlar")).Select(r => new { talepId = r["talep_id"], adlar = r["adlar"] }).ToList();
+
+    /// <summary>Sorumlu/Yönetici için salt okunur: önümüzdeki günlerde izinli ya da raporlu personel.</summary>
+    public static async Task<object> IzinRaporBilgiAsync(SqlService sql, int gun) =>
+        (await sql.ProcAsync("gorev.sp_izin_rapor_bilgi", ("@gun", gun))).Select(r => new
+        {
+            sicil = r["sicil_no"], ad = r["adi_soyadi"], gsm = r["gsm_no"], tur = r["tur"],
+            ilkTarih = Convert.ToDateTime(r["ilk_tarih"]).ToString("yyyy-MM-dd"), sonTarih = Convert.ToDateTime(r["son_tarih"]).ToString("yyyy-MM-dd"), durum = r["durum"],
+        }).ToList();
+
     public static async Task<object> GetirAsync(SqlService sql, int id)
     {
         var r = (await sql.ProcAsync("gorev.sp_talep_getir", ("@id", id))).First();

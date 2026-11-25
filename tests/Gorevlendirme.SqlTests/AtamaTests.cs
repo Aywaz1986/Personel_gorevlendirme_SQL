@@ -12,7 +12,7 @@ public class AtamaTests
     private static async Task<Ortam> KurAsync()
     {
         var t = await TestDb.OlusturAsync();
-        await t.Migrator.UygulaAsync(false);
+        await t.MigrateAsync();
         await t.ExecAsync(@"INSERT INTO gorev.personel (sicil_no, adi_soyadi, bolum) VALUES
             (N'1001', N'Erdem Efe', N'Proje'), (N'1002', N'Ahmet Sümbül', N'Saha'), (N'1003', N'Başka Sorumlu', N'Proje'), (N'1004', N'Pasif Kişi', N'Saha'),
             (N'1005', N'Yönetici Kişi', N'Merkez'), (N'1006', N'Ali Örnek', N'Saha'), (N'1007', N'Ayşe Örnek', N'Saha');
@@ -146,6 +146,9 @@ public class AtamaTests
     public async Task Adaylar_onerilen_ve_proje_gecmisi_once_cakisan_gun_bilgisi_verir()
     {
         var o = await KurAsync(); await using var _t = o.T;
+        await o.T.ExecAsync(@"UPDATE gorev.kullanici_yetki_istisna SET saha_mi = 1 WHERE sicil_no IN (N'1002', N'1006', N'1007');
+            INSERT INTO gorev.kullanici_yetki_istisna (hesap, sicil_no, saha_mi) SELECT N'sx-' + p.sicil_no, p.sicil_no, 1 FROM gorev.personel p
+            WHERE p.sicil_no IN (N'1002', N'1006', N'1007') AND NOT EXISTS (SELECT 1 FROM gorev.kullanici_yetki_istisna i WHERE i.sicil_no = p.sicil_no);");
         // 1006: Toroman'da eski bir talepte çalıştı (geçmiş); 1007: başka projede; 1002: önerilen
         var eski = Id(await Talep(o.Baska, "Toroman", new TalepService.GunGirdisi("2026-11-02", "TAM", 1), new TalepService.GunGirdisi("2026-11-03", "TAM", 1)));
         await AtamaService.OnaylaAsync(o.Yonetici, eski, new[] { A("1006", "2026-11-02"), A("1006", "2026-11-03") }, "REDDET");

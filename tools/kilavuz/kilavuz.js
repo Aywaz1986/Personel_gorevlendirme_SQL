@@ -91,7 +91,7 @@ C.push(...img("07_takvim","Excel ile toplu ekleme: tarih başına tür seçimi v
 C.push(h1("8. Görev talebi (Proje Sorumlusu)"));
 C.push(p("Proje Sorumlusu **Görev Talep Arayüzü** sekmesini görür; Merkez Yönetici aynı ekranı **Talepler** adıyla görür ve tüm talepleri izler, talepleri vekâleten açabilir."));
 C.push(h2("8.1 Taleplerim listesi"));
-C.push(p("Her talep bir kart olarak görünür: kod (TLP-NNNN), tarih aralığı, mesai saati, proje yolu, konum, önerilen personel, gün ve kişi-gün sayısı ve **durum rozeti**. Üstteki düğmelerle Bekleyen / Atanmış / Kapalı süzülür."));
+C.push(p("Her talep bir kart olarak görünür: kod (**TLP-YYYY-NNNN**, örn. TLP-2026-0001; numara her yıl 0001'den başlar), tarih aralığı, mesai saati, proje yolu, konum, önerilen personel, gün ve kişi-gün sayısı ve **durum rozeti**. Üstteki düğmelerle Bekleyen / Atanmış / Kapalı süzülür."));
 C.push(tbl([2400,6960],[["Rozet","Anlamı"],["Taslak","Kaydedildi, henüz gönderilmedi; serbestçe değiştirilir."],["Onay bekliyor","Gönderildi; Yönetici henüz karar vermedi. Revize ve geri çekme serbesttir."],["Kısmen / Tamamen atandı","Atama başladı (Yönetici atama ekranı sonraki dilimde gelir)."],["Reddedildi, Geri çekildi, İptal","Kapalı talep; yalnızca **Kopyala** yapılabilir."]]));
 C.push(...img("08_talep_liste","Taleplerim: durum rozetleri, Kopyala / Revize / Geri çek.",560));
 C.push(h2("8.2 Yeni talep"));
@@ -107,6 +107,7 @@ C.push(note("**Revize, Kopyala, Geri çek.** Taslak ve onay bekleyen talepte **R
 C.push(h2("8.3 Atama paneli (Yönetici)"));
 C.push(p("Onay bekleyen ya da kısmen atanmış talep kartının altında ortalanmış **Atama Yap / Gün Bazlı Böl** düğmesi atama panelini açar (yanında **Zorunlu Açıklamayla Reddet**). Kartın sağındaki kaydırmalı kutu, Ana Proje bazlı geçmiş deneyim tavsiyelerini listeler. Solda her gün/dilim için **atanan / istenen** görülür, altta adaylar, sağda talep özeti ve **Karar** kartı bulunur."));
 C.push(n("Soldaki tabloda atama yapmak istediğiniz satırları işaretleyin (dolu satırlar seçilemez).","n8"));
+C.push(n("**Hızlı atama:** kartın sağındaki tavsiye kutusunda yalnız **Saha Personeli** rolündeki kişiler çıkar. Her adayın yanındaki **Ata** düğmesi, görevde günlük tek kişi isteniyorsa kişiyi görevin tüm günlerine tek tıkla atar; birden fazla personel isteniyorsa (ya da çakışma varsa) atama ekranı açılır. Atama yapılınca kartın başlığında “✔ Ad Soyad atandı” görünür. **İleriye dönük atama sınırı 14 gündür**; daha ileri tarihe atama yapılamaz.","n8"));
 C.push(n("Adaylar listesinde **Önerilen** kişi ve o Ana Projede daha önce çalışanlar üsttedir; çakışması olana “Çakışma: N gün”, olmayana “Müsait” yazar. Adın yanındaki **Seçili günlere ata** düğmesi kişiyi işaretli satırlara bekleme listesine ekler (Karar kartında görünür, × ile çıkarılır).","n8"));
 C.push(n("**Atamayı onayla**'ya basın. Kısmi atama serbesttir: talep **Kısmen atandı** olur; istenen sayıya ulaşılınca **Tamamen atandı**.","n8"));
 C.push(...img("10_atama_paneli","Atama paneli: gün/dilim tablosu, adaylar, talep özeti ve karar kartı.",1250));
@@ -114,17 +115,17 @@ C.push(note("**Çakışma kararı.** Seçilen kişi aynı gün (tam gün ya da �
 C.push(note("**Reddetme.** Onay bekleyen talepte **Reddet…** ile ret nedeni (zorunlu) yazılır; Sorumlu kartında nedeni ve bir bildirim görür. Atama başlamış talep reddedilemez."));
 C.push(note("**Sorumlu tarafı.** Taleplerim sayfasının üstünde yeni bildirimler görünür (atandı, reddedildi, görevden çıkarıldı); **Tümünü okundu say** ile kapanır. Atama yapılmış talepte **Atananlar** düğmesi gün gün kimin atandığını gösterir."));
 
-C.push(h2("8.4 Haftalık matris (herkes)"));
-C.push(p("**Haftalık matris** sekmesi Yönetici, Proje Sorumlusu ve Saha personeli için açıktır; yalnız okunur. Satırlar personel, sütunlar haftanın yedi günüdür. Hücrenin üst yarısı öğleden önce, alt yarısı öğleden sonradır; tam gün görev tek blok olarak görünür. Renk Ana Projeyi gösterir, proje adı hücrede de yazılıdır."));
+C.push(h2("8.4 Haftalık Özet (herkes)"));
+C.push(p("**Haftalık Özet** sekmesi Yönetici, Proje Sorumlusu ve Saha personeli için açıktır; yalnız okunur. Satırlar personel, sütunlar haftanın yedi günüdür. Hücrenin üst yarısı öğleden önce, alt yarısı öğleden sonradır; tam gün görev tek blok olarak görünür. Renk Ana Projeyi gösterir, proje adı hücrede de yazılıdır."));
 C.push(n("Haftayı **◀ ▶** ile değiştirin, **Bu hafta**'ya basın ya da kutuya tarihi **GG.AA.YYYY** yazın (o tarihin haftası açılır).","n8"));
-C.push(n("**Ad ara**, **Bölüm** ve **Ana Proje** ile daraltın. **Yalnız bu hafta görevli olanlar** işaretini kaldırırsanız görevi olmayan aktif personel de listelenir.","n8"));
+C.push(n("**Ad ara**, **Bölüm** ve **Ana Proje** ile daraltın. Süzgeç listesinden **Saha personeli (tümü)** (varsayılan), **Görevli / izinli olanlar**, **Sadece müsaitler** ya da **Tüm personel** seçilir. Saha personelinin her günü görev, izin, rapor ya da yeşil kesikli **Müsait** olarak görünür; göreve atama yapılınca hücre otomatik göreve döner (30 sn içinde). Personelin adının altında iletişim numarası, görev bloğunun altında proje sorumlusu ve numarası yazar (numaralar yalnız Yönetici ve Proje Sorumlusuna görünür).","n8"));
 C.push(n("Bir göreve basınca altta talep kodu, Ana Proje › Alt Proje › Faaliyet, konum, saat ve proje sorumlusu açılır.","n8"));
 C.push(n("**Excel'e aktar** kayıt penceresi açar; görünen hafta ve filtrelerle bir .xlsx dosyası yazar (her gün için “ÖÖ: … / ÖS: …” metni).","n8"));
 C.push(...img("11_matris","Haftalık matris: ÖÖ/ÖS bölünmüş hücreler, filtreler ve ayrıntı kartı.",1500));
 C.push(note("**Otomatik yenileme.** Ekran 30 saniyede bir haftanın atamalarında değişiklik olup olmadığına bakar; değişmişse tabloyu kendiliğinden tazeler (üstte “Son yenileme” saati görünür). Sarı sütun akademik takvimdeki tam gün tatildir. İzin ve rapor günleri sonraki dilimde bu tabloya eklenecektir."));
 
 C.push(h2("8.5 İzin, rapor ve görevlerim"));
-C.push(p("**Saha personeli** için menüde **Görevlerim**, **Proje Sorumlusu** ve **Yönetici** için **İzin ve rapor** sayfası bulunur. Saha sayfasının üstünde kendi görevleriniz (son 14 gün ve önümüzdeki 90 gün) listelenir."));
+C.push(p("**Saha personeli** için menüde **Görevlerim**, **Yönetici** için **İzin Onayları** sayfası bulunur. **Proje Sorumlusu** için **İzin / Rapor Bilgisi** yalnız okunur bir listedir: önümüzdeki 7/14/30 günde izinli ve raporlu personel görünür, hiçbir işlem yapılamaz. Saha sayfasının üstünde kendi görevleriniz (son 14 gün ve önümüzdeki 90 gün) listelenir."));
 C.push(n("**İzin talebi:** tür, başlangıç ve bitiş tarihini **GG.AA.YYYY** yazın; tam gün ya da yalnız öğleden önce/sonra seçin; **Talebi gönder**. Hafta sonu ve tatiller varsayılan olarak atlanır. Talep Yönetici onayına gider; onaylanan günlere atama yapılamaz. Bekleyen talebi **Geri çek** ile iptal edebilirsiniz.","n8"));
 C.push(n("**Rapor beyanı:** ilk/son günü yazın, **Evrak seç…** ile PDF, JPG ya da PNG dosyası (en fazla 10 MB) seçin, **Raporu kaydet**. Evrak zorunludur. Rapor izinden önceliklidir: aynı günlerdeki izin iptal olur; o günlerde göreviniz varsa görev durur ve Yönetici ikame için uyarılır.","n8"));
 C.push(n("**Yönetici:** bekleyen izinleri **Onayla** ya da nedenle **Reddet…**; onaylı izni **Kısalt…** ya da geri çekebilir. Onay sırasında kişinin o günlerde görevi varsa **Çakışma kararı** kutusu çıkar: *Vazgeç* ya da *Çakışan görevden çıkar ve izni uygula*. **Vekaleten** kutusundan başka biri adına izin/rapor girilebilir (izin anında onaylanır).","n8"));
@@ -157,7 +158,7 @@ C.push(n("**Analiz ve matris:** Analizde **Proje kırılımı** sekmesi Ana → 
 C.push(h2("8.9 Saha notu, iletişim, rozetler ve ikame uyarısı"));
 C.push(n("**Saha / Operasyon Notu:** talep formunda araç, teçhizat (KKD), giriş kişisi, konaklama gibi bilgiler çok satırlı yazılır (en fazla 1000 karakter). Eski \"Aranan nitelik\" alanının yerini almıştır.","n8"));
 C.push(n("**İletişim:** talep listesinde ve Saha'nın Görevlerim sayfasında **İletişim / Göster** saha notunu ve Proje Sorumlusunun telefonunu açar. Yönetici ve Proje Sorumlusu ayrıca atananların telefonlarını görür; Saha görmez.","n8"));
-C.push(n("**Sekme rozetleri:** Talepler, İzin ve rapor ve Görevlerim sekmelerindeki kırmızı sayı bekleyen işi gösterir; üzerine gelince dökümü çıkar. Sayfalar 30 saniyede bir kendiliğinden yenilenir (yazı yazarken bozulmaz); üstteki **Yenile** düğmesi anında yeniler.","n8"));
+C.push(n("**Sekme rozetleri:** Talepler, İzin Onayları ve Görevlerim sekmelerindeki kırmızı sayı bekleyen işi gösterir; üzerine gelince dökümü çıkar. Sayfalar 30 saniyede bir kendiliğinden yenilenir (yazı yazarken bozulmaz); üstteki **Yenile** düğmesi anında yeniler.","n8"));
 C.push(n("**İkame bekleyen görevler:** raporlanan, kadrodan ayrılan ya da birimi değişen kişinin ileri tarihli atamaları Talepler sayfasındaki uyarı kutusunda listelenir; **Yönet…** ile ikame yapılır.","n8"));
 C.push(n("**Analiz ve atama:** aday kartında projedeki görev sayısı, adam-gün, yerleşke ve müsait gün görünür; Personel analizinde müsait gün, tatil günü ve tatilde çalışma sütunları vardır. Matriste **Yerleşke** süzgeci bulunur; rapor evrakı **Ad_Soyad_yyyymmdd_KOD** adıyla iner.","n8"));
 C.push(h2("8.8 Eski veri aktarımı ve canlıya geçiş"));

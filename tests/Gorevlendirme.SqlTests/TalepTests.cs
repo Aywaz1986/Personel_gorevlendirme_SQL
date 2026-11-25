@@ -18,7 +18,7 @@ public class TalepTests
     private static async Task<Ortam> KurAsync()
     {
         var t = await TestDb.OlusturAsync();
-        await t.Migrator.UygulaAsync(false);
+        await t.MigrateAsync();
         await t.ExecAsync(@"INSERT INTO gorev.personel (sicil_no, adi_soyadi, bolum) VALUES
             (N'1001', N'Erdem Efe', N'Proje'), (N'1002', N'Ahmet Sümbül', N'Saha'), (N'1003', N'Başka Sorumlu', N'Proje'), (N'1004', N'Pasif Kişi', N'Saha'), (N'1005', N'Yönetici Kişi', N'Merkez');
             UPDATE gorev.personel SET aktif = 0 WHERE sicil_no = N'1004';");

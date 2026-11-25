@@ -24,7 +24,7 @@ public class SenaryoTests
     private static async Task<Ortam> KurAsync()
     {
         var t = await TestDb.OlusturAsync();
-        await t.Migrator.UygulaAsync(false);
+        await t.MigrateAsync();
         await t.ExecAsync(@"INSERT INTO gorev.personel (sicil_no, adi_soyadi, bolum, gsm_no) VALUES
             (N'1001', N'Erdem Efe', N'Proje', N'0532 111 11 11'), (N'1002', N'Ahmet Sümbül', N'Teknik', N'0532 222 22 22'), (N'1005', N'Yönetici Kişi', N'Merkez', N'0532 555 55 55'), (N'1006', N'Ali Örnek', N'Teknik', N'0532 666 66 66');");
         var (hs, sorumlu) = await t.KisiAsync(); var (hy, yon) = await t.KisiAsync(); var (h1, saha1) = await t.KisiAsync(); var (h2, saha2) = await t.KisiAsync();
@@ -117,6 +117,9 @@ public class SenaryoTests
     public async Task Tavsiye_listesi_ek_bilgi_verir_ve_matris_yerleske_suzer()
     {
         var o = await KurAsync(); await using var _t = o.T; var p = Pazartesi();
+        await o.T.ExecAsync(@"UPDATE gorev.kullanici_yetki_istisna SET saha_mi = 1 WHERE sicil_no IN (N'1002', N'1006', N'1007');
+            INSERT INTO gorev.kullanici_yetki_istisna (hesap, sicil_no, saha_mi) SELECT N'sx-' + p.sicil_no, p.sicil_no, 1 FROM gorev.personel p
+            WHERE p.sicil_no IN (N'1002', N'1006', N'1007') AND NOT EXISTS (SELECT 1 FROM gorev.kullanici_yetki_istisna i WHERE i.sicil_no = p.sicil_no);");
         var t1 = await TalepAsync(o, "n", (D(p, 0), "TAM"), (D(p, 1), "OO"));
         await Ata(o, t1, "1002", D(p, 0), "TAM"); await Ata(o, t1, "1002", D(p, 1), "OO");
         var t2 = await TalepAsync(o, "n", (D(p, 7), "TAM"), (D(p, 8), "TAM"));
