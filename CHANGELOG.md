@@ -9,7 +9,8 @@ Her değişiklik önce **Yayınlanmamış** bölümüne yazılır; sürüm yüks
 - [x] 1. Ortak: pencere + tarih seçici, logo/filigran, CSS hizalama
 - [x] 2. Sayfalar: 3 sütunlu özet, Yetki tek sütun, Günlük Ayarlar'a, Havuz/Takvim ayrı, Revize & İkame düğmesi
 - [x] 3. Ekran görüntüleri, kılavuz, belgeler, `docs/test-dilim-17.md`
-- [ ] 4. Push, CI, PR (taban dilim-16-mantik-matris)
+- [x] 4. Push, CI yeşil, PR #23
+- [x] 5. Özet sütunu form özetiyle aynı satır düzenine getirildi (Murat 25.11.2026)
 
 ### Dilim 16 – Mantık ve matris (2026-11) — DEVAM EDİYOR (dal `dilim-16-mantik-matris`, Dilim 15 dalından; PR sırası … → #21 → bu)
 **Oturum devir notu (her adımda güncelle):**

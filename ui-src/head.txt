@@ -141,7 +141,7 @@ select,input[type=search],input.metin{padding:8px 10px;border:1px solid var(--ci
 .tk .govde3 .kol:first-child{border-left:0}
 .tk .govde3 .sag{flex:none;border-left:1px solid var(--cizgi);padding-left:16px}
 .tk .govde3 .bl{font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--baslik,#1b365d)}
-.tk .govde3 .kutular{grid-template-columns:1fr}
+.tk .ozsatir{display:flex;gap:8px;align-items:baseline;padding:7px 0;border-bottom:1px solid var(--cizgi)}.tk .ozsatir:last-child{border-bottom:0}.tk .oze{white-space:nowrap;color:var(--soluk);font-size:13px}.tk .ozd{font-weight:600;flex:1;min-width:0;overflow-wrap:anywhere;font-size:13px}
 @media (max-width:1000px){.tk .govde3,.tk .govde3.uc{grid-template-columns:1fr}.tk .govde3 .kol,.tk .govde3 .sag{border-left:0;border-top:1px solid var(--cizgi)}.tk .govde3 .kol:first-child{border-top:0}}
 .perde{position:fixed;inset:0;z-index:8000;background:rgba(15,23,42,.55);display:flex;align-items:flex-start;justify-content:center;padding:4vh 16px;overflow:auto}
 .pencere{background:var(--bg);color:var(--yazi);border:1px solid var(--cizgi);border-radius:var(--rad,12px);box-shadow:0 20px 50px rgba(0,0,0,.4);width:min(1100px,100%);display:flex;flex-direction:column;max-height:92vh}
