@@ -68,8 +68,9 @@ BEGIN
         THROW 50024, N'Seçilen gün/dilim talepte yok.', 1;
     -- İleriye dönük atama ufku: bugünden itibaren en fazla 14 gün (Dilim 16).
     DECLARE @ufuk INT = ISNULL((SELECT TRY_CAST(deger AS INT) FROM gorev.sistem_ayarlari WHERE anahtar = N'ATAMA_UFKU_GUN'), 14);
+    DECLARE @ufuk_msg NVARCHAR(200) = CONCAT(N'İleriye dönük atama sınırı ', @ufuk, N' gündür; daha ileri tarihe atama yapılamaz.');
     IF EXISTS (SELECT 1 FROM #n WHERE tarih > DATEADD(DAY, @ufuk, CAST(SYSDATETIME() AS DATE)))
-        THROW 50024, CONCAT(N'İleriye dönük atama sınırı ', @ufuk, N' gündür; daha ileri tarihe atama yapılamaz.'), 1;
+        THROW 50024, @ufuk_msg, 1;
     -- kapasite: dilim başına istenen kişi sayısı
     IF EXISTS (SELECT 1 FROM gorev.talep_gunleri g
                CROSS APPLY (SELECT COUNT(*) AS yeni FROM #n x WHERE x.tarih = g.tarih AND x.zaman = g.zaman_dilimi) y
