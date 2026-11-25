@@ -171,7 +171,7 @@ function ayarGorunum() {
     const tema = h('section', { class: 'kart' }, h('h2', null, 'Tema'), temaGovde);
     const sifirla = h('div', { class: 'satir' }, h('button', { type: 'button', onclick: () => { const ozel = a.fontlar; Object.assign(a, JSON.parse(JSON.stringify(GORUNUM_VARSAYILAN)), { fontlar: ozel }); duzen = null; kaydet(); ciz(); toast('Varsayılan görünüm yüklendi.'); } }, 'Yazı ve görünümü varsayılana döndür'),
       h('span', { class: 'alt', style: 'align-self:center' }, 'Bu ayarlar yalnız bu bilgisayardaki sizin görünümünüzü etkiler.'));
-    kap.replaceChildren(tema, yazi, yakin, sifirla);
+    kap.replaceChildren(tema, yazi, yakin, ayarLogo(), sifirla);
   }
   ciz();
   return kap;

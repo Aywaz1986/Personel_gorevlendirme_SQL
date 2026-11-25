@@ -3,6 +3,14 @@
 Her değişiklik önce **Yayınlanmamış** bölümüne yazılır; sürüm yükselince bölüm sürüm başlığına dönüştürülür.
 
 ## Yayınlanmamış
+### Dilim 17 – Görünüm (2026-11) — DEVAM EDİYOR (dal `dilim-17-gorunum`, Dilim 16 dalından; PR sırası … → #22 → bu)
+**Oturum devir notu (her adımda güncelle):**
+- İstek maddeleri: 3, 4, 5, 6, 8, 9, 10 (24.11.2026 listesi). Yalnız arayüz.
+- [x] 1. Ortak: pencere + tarih seçici, logo/filigran, CSS hizalama
+- [x] 2. Sayfalar: 3 sütunlu özet, Yetki tek sütun, Günlük Ayarlar'a, Havuz/Takvim ayrı, Revize & İkame düğmesi
+- [x] 3. Ekran görüntüleri, kılavuz, belgeler, `docs/test-dilim-17.md`
+- [ ] 4. Push, CI, PR (taban dilim-16-mantik-matris)
+
 ### Dilim 16 – Mantık ve matris (2026-11) — DEVAM EDİYOR (dal `dilim-16-mantik-matris`, Dilim 15 dalından; PR sırası … → #21 → bu)
 **Oturum devir notu (her adımda güncelle):**
 - İstek (Murat 24.11.2026, 16 madde): Dilim 16 = 1, 2, 7, 11–16; Dilim 17 = 3, 4, 5, 6, 8, 9, 10 (görünüm).

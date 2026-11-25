@@ -22,6 +22,7 @@ async function otoBaglan() {
 }
 (async () => {
   try { gorunumUygula(); } catch (e) { /* görünüm tercihi okunamazsa varsayılan */ }
+  try { logoUygula(); } catch (e) { /* logo okunamazsa yok say */ }
   try { const b = await Kopru.cagir('baglantiBilgi'); S.pencere = b.pencere; } catch (e) { /* konum okunamazsa pencere kendi yerinde açılır */ }
   await otoBaglan();
 })();

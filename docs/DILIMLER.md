@@ -90,3 +90,13 @@ Test listesi: `docs/test-dilim-16.md`. SQL: `017_dilim16.sql`. Yeni komutlar: `t
 - Haftalık Özet (eski "Ortak 7 Günlük Özet Matris"): varsayılan "Saha personeli (tümü)"; boş hafta içi günler yeşil "Müsait"; personel adı altında telefon (bölüm kaldırıldı); görev bloğu altında sorumlu + telefon. Telefonlar yalnız Yönetici ve Sorumluya (Saha göremez).
 - Sorumlu "İzin / Rapor Bilgisi": `sp_izin_rapor_bilgi`, yalnız okuma.
 - Otomatik yenileme denetimi: aşağıda (MIMARI).
+
+## Dilim 17 – Görünüm (Murat 24.11.2026 istek listesi 3, 4, 5, 6, 8, 9, 10)
+Test listesi: `docs/test-dilim-17.md`. Yalnız arayüz; SQL/komut değişikliği yok.
+- Yönetici talep kartı üç sütun: Özet | Görev ve Saha Bilgisi | Ana Proje Bazlı Geçmiş Görev Tavsiye Bloğu (`.govde3`).
+- Kullanıcı Yetki: tek sütun (Yönetici tanımı, bölüm→rol eşleştirme); işlem günlüğü Ayarlar › İşlem Günlüğü.
+- Proje Havuzu ve Akademik Takvim ayrı sekmeler; takvim 3×4 renkli ay başlıkları, altında ayrıntılar, "AKADEMİK TATİL VE RESMİ TATİL YÖNETİMİ" düğmesi yönetimi açılır pencerede açar.
+- Revize & İkame Uyarıları: Talepler sayfasında 4. düğme (Kapalı 5.).
+- Tarih seçici: `placeholder` içinde GG.AA.YYYY olan her metin kutusuna 📅 (`002b_pencere_tarih.js`, MutationObserver).
+- Logo: Ayarlar › Görünüm › Logo ve filigran (`004_logo.js`); sol üst logo + silik filigran, tarayıcı deposunda.
+- Hizalama: `.satir` kontrolleri 40 px, alt hizalı; Analiz tarih kutuları/düğmeleri düzeltildi.
