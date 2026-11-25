@@ -89,9 +89,9 @@ public class Dilim16Tests
     public async Task Sorumlu_izin_rapor_bilgisini_yalniz_okur()
     {
         var o = await KurAsync(); await using var _t = o.T;
-        await o.T.ExecAsync($@"INSERT INTO gorev.raporlar (sicil_no, ilk_tarih, son_tarih, durum) VALUES (N'1006', '{D(1)}', '{D(3)}', 'AKTIF');");
+        await IzinRaporService.RaporKaydetAsync(o.Saha1, null, D(1), D(3), "grip", System.Text.Encoding.ASCII.GetBytes("%PDF-1.4 ornek rapor"), "rapor.pdf");
         var l = Liste(await TalepService.IzinRaporBilgiAsync(o.Sorumlu, 14));
-        Assert.Contains(l, x => P(x, "sicil") == "1006" && P(x, "tur") == "RAPOR");
+        Assert.Contains(l, x => P(x, "sicil") == "1002" && P(x, "tur") == "RAPOR");
         Assert.Equal("yetki", await Kod(() => TalepService.IzinRaporBilgiAsync(o.Saha1, 14)));
     }
 }
