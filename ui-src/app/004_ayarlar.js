@@ -33,7 +33,7 @@ async function ayarGunluk() {
 async function ayarlarSayfa() {
   const yon = S.gorunum === 'YONETICI';
   const sekmeler = [['gorunum', 'Görünüm ve yazı', async () => ayarGorunum()]];
-  if (yon) sekmeler.push(['kadro', 'Kadro', kadroSayfa], ['eskiveri', 'Eski veri', eskiVeriSayfa], ['sistem', 'Sistem', sistemIcerik]);
+  if (yon) sekmeler.push(['kadro', 'Kadro', kadroSayfa], ['eskiveri', 'Eski veri', eskiVeriSayfa], ['sistem', 'Sistem', sistemIcerik], ['log', 'İşlem Günlüğü', ayarGunluk]);
   if (!sekmeler.some((x) => x[0] === S.ayarSekme)) S.ayarSekme = 'gorunum';
   const kap = h('div', { style: 'display:flex;flex-direction:column;gap:14px;min-width:0' });
   const govde = h('div', { style: 'min-width:0' });

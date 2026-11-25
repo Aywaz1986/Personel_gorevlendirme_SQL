@@ -44,7 +44,9 @@ C.push(...img("18_baglanti_penceresi","Yüzen bağlantı penceresi (Yönetici g�
 C.push(p("**Yönetici:** pencerede **Bağlantıyı değiştir** ile form açılır. **“Varsayılan olarak kaydet”** işaretlenirse sunucu/veritabanı exe klasörüne yazılır ve herkes formu görmeden bağlanır (parola/kullanıcı adı saklanmaz). **Varsayılan bağlantıyı sil** dosyayı kaldırır. Klasör yazılamıyorsa (ör. Program Files) hata gösterilir; dosyayı BT elle koyabilir."));
 C.push(...img("19_baglanti_formu","Bağlantı formu (yalnızca Yönetici)."));
 
-C.push(note("**Ayarlar sekmesi:** Üst sekme şeridinde ayrı bir sekmedir. Görünüm ve yazı (tema, buzlu cam, yazı tipi/boyutu; her rolde açık), Kadro, Eski veri ve Sistem alt sekmelerini içerir. Kullanıcı rolleri, yönetici tanımları ve işlem günlüğü artık **Kullanıcı Yetki** sekmesindedir; yeni yetkili **+ Yeni yetkili ekle** düğmesiyle (kullanıcılar alanının sağ üstü) eklenir."));
+C.push(note("**Ayarlar sekmesi:** Üst sekme şeridinde ayrı bir sekmedir. Görünüm ve yazı (tema, buzlu cam, yazı tipi/boyutu; her rolde açık), Kadro, Eski veri, Sistem ve İşlem Günlüğü alt sekmelerini içerir. Kullanıcı rolleri, yönetici tanımları ve işlem günlüğü artık **Kullanıcı Yetki** sekmesindedir; yeni yetkili **+ Yeni yetkili ekle** düğmesiyle (kullanıcılar alanının sağ üstü) eklenir."));
+C.push(note("**Dilim 17 yenilikleri:** (1) Yönetici talep kartı 3 sütundur: Özet | Görev ve Saha Bilgisi (görev metni, saha notu, önerilen personel) | Ana Proje Bazlı Geçmiş Görev Tavsiye Bloğu. (2) **Revize & İkame Uyarıları** ayrı sekme değil, Talepler sayfasında 4. düğmedir (Kapalı 5. sıradadır). (3) Her **GG.AA.YYYY** kutusunun yanında 📅 düğmesi takvimden tarih seçtirir. (4) **Ayarlar › Görünüm ve yazı › Logo ve filigran:** logo seçilir (PNG/JPG/SVG/WebP, en çok 300 KB); sol üstte görünür, arka planda silik filigran olur; koyuluğu ayarlanır, yalnız bu bilgisayarda saklanır. (5) Kullanıcı Yetki sayfası alt alta tek sütundur: Yönetici tanımı ve kişi istisnaları, sonra Özlük bölüm adı → sistem rolü eşleştirme. İşlem günlüğü Ayarlar › İşlem Günlüğü sekmesindedir."));
+C.push(...img("22_talep_ozet","Yönetici talep kartı: 3 sütunlu özet ekranı ve Revize & İkame Uyarıları düğmesi."));
 C.push(...img("16_ayarlar_gorunum","Ayarlar: Görünüm ve yazı sekmesi ve Yönetici sekmeleri."));
 C.push(h1("3. Kadro (Merkez Yönetici)"));
 C.push(p("Kadro Özlük’ten okunur; burada yalnızca beş alanlık kopyası tutulur (sicil, ad soyad, bölüm, telefon, kullanıcı adı, ayrılış). **Kadroyu Özlük’ten eşitle** düğmesi:"));
@@ -55,7 +57,7 @@ C.push(...img("01_kadro","Kadro sayfası: eşitleme sonucu ve kadro kopyası."))
 
 C.push(h1("4. Bölüm–rol eşleştirme"));
 C.push(p("Eşitlemeden sonra Özlük bölümlerinin listesi hazırdır. Her bölüm için **Proje Sorumlusu** ya da **Saha Personeli** seçin; seçim anında kaydedilir. “Rol yok” seçmek eşleşmeyi kaldırır. Eşleşmesi olmayan bölümdeki kişiler hiçbir şey göremez (uyarı satırında görünür). Merkez Yönetici rolü bölümden gelmez; yalnızca istisna ile verilir."));
-C.push(...img("02_eslestirme","Bölüm–rol eşleştirme."));
+C.push(...img("02_eslestirme","Bölüm–rol eşleştirme (Kullanıcı Yetki sayfasında alt alta, istisna kartının altında)."));
 
 C.push(h1("5. Kişi istisnaları"));
 C.push(p("Kadrodan bir kişi seçip Windows hesabına açıkça rol verirsiniz (Merkez Yönetici, Proje Sorumlusu, Saha Personeli birlikte işaretlenebilir). Aktif istisna varsa kişinin rolleri tam olarak bu işaretlerdir; bölüm kuralına bakılmaz. Pasife alınan istisna rol vermez."));
@@ -63,21 +65,21 @@ C.push(note("**Son aktif yönetici** kaldırılamaz, silinemez, pasife alınamaz
 C.push(...img("03_istisna","Kişi istisnaları."));
 
 C.push(h1("6. Proje / Görev Havuzu Yönetimi"));
-C.push(p("**Proje Havuzu & Akademik Takvim** sekmesinin sol üst kartıdır. Görev talepleri bu havuzdan seçilir. Havuz dört seviyelidir: **Ana Proje › Alt Proje › Faaliyet › Yerleşke**. Yalnızca Merkez Yönetici düzenler; rolü olan herkes okur."));
+C.push(p("**Proje Havuzu** sekmesidir (Akademik Takvim ayrı sekmedir). Görev talepleri bu havuzdan seçilir. Havuz dört seviyelidir: **Ana Proje › Alt Proje › Faaliyet › Yerleşke**. Yalnızca Merkez Yönetici düzenler; rolü olan herkes okur."));
 C.push(b("**Kademeli seçim:** Ana Proje seçilince Alt Proje listesi, Alt Proje seçilince Faaliyet, Faaliyet seçilince Yerleşke listesi kendiliğinden dolar. Seçili kaydın yanında işlem düğmeleri çıkar. Aynı ağaç aşağıda açılıp kapanır ve aranabilir."));
 C.push(b("**Ekle:** Ana Proje için “Yeni Ana Proje” kutusu; alt kayıt için seçili kaydın **+ Alt Proje / + Faaliyet / + Yerleşke** düğmesi. Aynı üstte aynı ad (büyük/küçük harf fark etmez) iki kez olamaz."));
 C.push(b("**Ad düzelt:** yazım hatasını düzeltir; geçmiş talepler yeni adı gösterir."));
 C.push(b("**Tamamlandı (pasife al) / Etkinleştir:** pasif kayıt yeni talep listelerinde görünmez; geçmiş talep, atama, analiz ve raporlar bozulmaz. Altındakiler de pasife alınır; etkinleştirmek için üst kaydın aktif olması gerekir."));
 C.push(b("**Birleştir…:** aynı seviyedeki iki kayıt (örn. aynı projenin iki yazılışı) veri kaybı olmadan birleştirilir. Altındakiler hedefe taşınır, aynı adlılar kendi içinde birleşir; kaynak silinmez, “Birleştirildi” rozetiyle hedefi gösterir. Geri alınamaz."));
 C.push(b("**Arşivle…:** reddedilen ya da geçerliliğini yitiren tanımlar nedeniyle (zorunlu) arşive alınır; altındakilerle birlikte yeni taleplerde gizlenir. **Arşivden çıkar** düğmesi kaydı pasif olarak geri getirir; sonra etkinleştirilebilir. “Pasif / arşiv / birleştirilenleri göster” kutusu hepsini listeler."));
-C.push(note("Havuzdaki her ekleme, ad düzeltme, pasife alma, birleştirme ve arşivleme işlem günlüğüne (Kullanıcı Yetki sekmesi) yazılır."));
-C.push(...img("06_havuz","Proje Havuzu & Akademik Takvim sekmesi: kademeli havuz paneli, takvim yönetimi ve yıllık çizelge.",600));
+C.push(note("Havuzdaki her ekleme, ad düzeltme, pasife alma, birleştirme ve arşivleme işlem günlüğüne (Ayarlar › İşlem Günlüğü) yazılır."));
+C.push(...img("06_havuz","Proje Havuzu sekmesi: kademeli havuz paneli ve sıralı ağaç.",600));
 
 C.push(h1("7. Akademik Takvim & Resmi Tatil Yönetimi"));
-C.push(p("Aynı sekmenin sağ üst kartıdır; altında tam genişlikte **Akademik Takvim – Yıllık Çizelge** bulunur. Her kayıt bir başlangıç, isteğe bağlı bitiş (boşsa tek gün), bir **tür** ve ad içerir. Tür seçimi üç seçenektir: **Yıllık İzin** (idari izin; “yıllık izinden kesilir” işaretiyle), **Resmi Tatil** ve **Yarım Gün** (ÖÖ ya da ÖS, yalnız tek günde)."));
+C.push(p("**Akademik Takvim** ayrı bir sekmedir: yıllık çizelge 3 sütun × 4 satır (renkli ay başlıkları) görünür, altında tatil ayrıntıları listelenir; sağ üstteki **AKADEMİK TATİL VE RESMİ TATİL YÖNETİMİ** düğmesi ekleme/düzenleme/toplu ekleme penceresini açar (Esc ile kapanır). Her kayıt bir başlangıç, isteğe bağlı bitiş (boşsa tek gün), bir **tür** ve ad içerir. Tür seçimi üç seçenektir: **Yıllık İzin** (idari izin; “yıllık izinden kesilir” işaretiyle), **Resmi Tatil** ve **Yarım Gün** (ÖÖ ya da ÖS, yalnız tek günde)."));
 C.push(note("**Tatil gününe atama engellenmez.** Atama ekranı tatil gününe atama yapılırken yöneticiyi uyarır; karar yöneticinindir. Yıllık izin hesabı bu sürümde yoktur: “Yıllık izinden kesilecek” toplamı yalnız bilgidir."));
 C.push(h2("7.1 Yıllık çizelge"));
-C.push(p("Yıl seçilir. Özet kutuları o yılın resmi tatil gününü, yıllık izin (idari) gününü ve yıllık izinden kesilecek iş gününü gösterir. Altında 12 aylık takvim vardır: mavi **resmi tatil**, turuncu **yıllık izin (idari)**, daire **yarım gün**, gri hafta sonudur; soldaki HFT sütunu ISO hafta numarasıdır. Üzerine gelince kaydın adı görünür."));
+C.push(p("Yıl seçilir. Özet kutuları o yılın resmi tatil gününü, yıllık izin (idari) gününü ve yıllık izinden kesilecek iş gününü gösterir. Altında 12 aylık takvim (3 sütun × 4 satır) vardır: mavi **resmi tatil**, turuncu **yıllık izin (idari)**, daire **yarım gün**, gri hafta sonudur; soldaki HFT sütunu ISO hafta numarasıdır. Üzerine gelince kaydın adı görünür."));
 C.push(h2("7.2 Tek tek ekleme"));
 C.push(p("Başlangıç (çok günlüyse bitiş) tarihini girin, ortadaki açılır listeden **Yıllık İzin** ya da **Resmi Tatil**’i seçin, gerekirse zaman dilimini (Tüm gün / ÖÖ / ÖS) ve adı yazıp **Takvime ekle**’ye basın. Kayıtlar listesindeki **Düzenle** / **Sil** düğmeleri seçili yıla aittir."));
 C.push(h2("7.3 Excel ile toplu ekleme"));
@@ -86,7 +88,8 @@ C.push(n("Her tarih satırı için **türü siz seçin**: Yıllık İzin, Resmi 
 C.push(n("**Doğrula**’ya basın: her satır Yeni, Güncellenecek, Aynı ya da hata olarak görünür; bu aşamada hiçbir şey kaydedilmez.","n7"));
 C.push(n("Hata yoksa **Seçilenleri takvime ekle**. Hatalı satır varsa hiçbiri eklenmez: hatayı düzeltip yeniden doğrulayın.","n7"));
 C.push(p("Sütunlu dosya biçimi: Başlangıç; Bitiş; Ad; Tür; Zaman dilimi; Yıllık sırasıyla (ilk satır başlık olabilir). Standart takvim dosyasında (ör. 2024_Takvim.xlsx) yıl sayfadaki 20xx hücresinden alınır."));
-C.push(...img("07_takvim","Excel ile toplu ekleme: tarih başına tür seçimi ve doğrulama.",600));
+C.push(...img("07_takvim","Yönetim penceresi: Excel ile toplu ekleme, tarih başına tür seçimi ve doğrulama.",600));
+C.push(...img("21_takvim","Akademik Takvim sekmesi: 3×4 yıllık çizelge, ayrıntılar ve yönetim düğmesi.",600));
 
 C.push(h1("8. Görev talebi (Proje Sorumlusu)"));
 C.push(p("Proje Sorumlusu **Görev Talep Arayüzü** sekmesini görür; Merkez Yönetici aynı ekranı **Talepler** adıyla görür ve tüm talepleri izler, talepleri vekâleten açabilir."));
@@ -150,7 +153,7 @@ C.push(...img("14_analiz","Analiz: ana proje bazlı adam-gün.",1500));
 C.push(h2("8.10 Ayarlar, işlem günlüğü ve rol bazlı listeler"));
 C.push(n("**Ayarlar › Görünüm ve yazı:** Hazır ve özel temalar, buzlu cam (blur) düzeyi, genel yazı boyutu (%85–%150), tablo/matris yazısı ve yazı tipi seçilir; varsayılan yazı tipi uygulamaya gömülüdür, tercih yalnız bu bilgisayarda saklanır. Yönetici ayrıca Kadro, Eski veri ve Sistem sekmelerini görür; roller ve işlem günlüğü **Kullanıcı Yetki** sekmesindedir.","n8"));
 C.push(n("**İşlem günlüğü:** Yönetici tarih aralığı, işlem türü ve metin ile süzerek kimin neyi ne zaman yaptığını görür (en yeni 500 kayıt). Kayıtlar değiştirilemez.","n8"));
-C.push(...img("17_gunluk","İşlem günlüğü."));
+C.push(...img("17_gunluk","Ayarlar › İşlem Günlüğü (yalnız Merkez Yönetici)."));
 C.push(n("**Rol bazlı listeler:** Talep formunda talep sahibi (Yönetici vekâleten açarken) yalnız Proje Sorumlusu rolündeki kişilerden, önerilen personel ise Saha Personeli rolündekilerden seçilir. Roller Kullanıcı Yetki sekmesinden gelir.","n8"));
 C.push(n("**Rapor tarihi düzeltme:** Yönetici, geçerli raporun satırında **Tarihi düzelt…** ile ilk/son günü değiştirir; yeni aralıktaki izinler iptal olur, çakışan görevler için uyarı verilir.","n8"));
 C.push(n("**Revizede kişi azaltma:** kişi sayısı düşen revizede **Onayla** çıkarılacak kişilerin seçim kutusunu açar; seçilenler görevden çıkarılır ve revize uygulanır. Eklenen günlerde atanmış kişilerin müsaitliği (müsait/görevde/izinli/raporlu) onaydan önce görünür.","n8"));
