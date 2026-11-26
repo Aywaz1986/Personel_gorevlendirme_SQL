@@ -113,3 +113,9 @@ Test listesi: `docs/test-dilim-19.md`. Yalnız arayüz (`004_matris.js`, CSS); s
 - KPI şeridi (adam-gün, izin/rapor, çakışma), hafta listesi, istemci tarafı arama, hazır + kişisel görünümler, 5 katmanlı çekmece, odak, gruplama, 📌 sabitleme, tatil rozetleri, ÖÖ/ÖS bölünmüş kartlar, ayrıntı/müsait/çakışma pencereleri.
 - Tercihler `localStorage` (bilgisayar başına; kalıcı olmayabilir). Çakışma = aynı gün/zaman diliminde atama + izin/rapor kaydı.
 - Prototipten alınmayanlar: rol önizleme seçici ve tema düğmesi (gerçek rol ve Ayarlar › Görünüm kullanılır); hızlı atama/ikame modalı yerine ilgili sekmeye yönlendirme (kural ve yetki sunucuda).
+
+## Dilim 20 – Kullanıcı Yetki Yönetimi (Murat 26.11.2026: "Kullanıcı Yetki Yönetimi" prototipi)
+Test listesi: `docs/test-dilim-20.md`. `004_yetki.js` yeniden yazıldı; `004_kadro.js`'ten eski eşleştirme/istisna sayfaları kaldırıldı.
+- 4 kart; Bölüm 1 istisna tablosu (rozetler, çoklu rol, son yönetici kilidi, güvenlik bandı), Yeni/Düzenle penceresi (personel arama, rol kartları, zorunlu gerekçe); Bölüm 2 bölüm→rol segmentleri, taslak + toplu kaydet, personel listesi, Özlükten Güncelle (= kadro eşitleme); Etkin Yetki Test Et.
+- Sunucu: `019_yetki_kapsam_disi.sql` — `rol_bolum_eslestirme.rol` artık `DISI` (kapsam dışı) de olabilir; satır yok = "eşleşme bekliyor". `eslestirmeListe` son güncelleyen/zamanı döner. DISI rol vermez. Bilinen sınır: 013'teki "BIRIM" ikame uyarısı, DISI satırı olan bölümde tetiklenmez (satır var sayılır).
+- Prototipten alınmayanlar: üst başlık/sekme çubuğu ve tema düğmesi (uygulama kabuğu var); örnek personel verisi yerine gerçek kadro.

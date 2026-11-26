@@ -22,8 +22,8 @@ Arayüz ham SQL göndermez; `window.chrome.webview.postMessage({id, cmd, args})`
 | `kadroOzet` | – | kişi/aktif sayısı, son eşitleme (zaman, kişi, sayılar) | ✔ | yalnız yönetici |
 | `kadroListe` | – | kadro kopyası + çözülen rol | ✔ | yalnız yönetici |
 | `kadroEsitle` | – | `{okunan, eklenen, guncellenen, pasifeAlinan, degismeyen}` | ✔ | yalnız yönetici; Özlük'te yönetici/tüm kapsam şartı; %80 kapısı; silmez |
-| `eslestirmeListe` | – | bölüm, rol, kişi sayısı (eşleşmesiz bölümler dahil) | ✔ | yalnız yönetici |
-| `eslestirmeKaydet` | `bolum, rol` | `{tamam}` | ✔ | rol SORUMLU/SAHA; boş rol eşleşmeyi kaldırır; YONETICI bölümden gelmez |
+| `eslestirmeListe` | – | bölüm, rol (SORUMLU/SAHA/DISI/boş=bekliyor), kişi sayısı, sonZaman, sonKullanici | ✔ | yalnız yönetici |
+| `eslestirmeKaydet` | `bolum, rol` | `{tamam}` | ✔ | rol SORUMLU/SAHA/DISI (kapsam dışı); boş rol eşleşmeyi kaldırır (bölüm 'bekliyor'); YONETICI bölümden gelmez |
 | `istisnaListe` | – | kişi istisnaları (+ kadrodan ad) | ✔ | yalnız yönetici |
 | `istisnaKaydet` | `hesap, sicilNo, yonetici, sorumlu, saha, aktif, aciklama` | `{tamam}` | ✔ | son aktif yöneticiyi kaldıran işlem reddedilir (`dogrulama`) |
 | `istisnaSil` | `hesap` | `{tamam}` | ✔ | son yönetici silinemez |
@@ -142,3 +142,5 @@ Değişen: `revizeOnayla` + `cikar?: [atamaId]` (çıkarılacaklar önce çıkar
 Dilim 16: `matrisHafta`/`matrisExcel` yeni `sadeceSaha`; `matrisHafta` satırında `gsm`, hücrede `sorumluGsm` (yalnız Yönetici/Sorumlu için dolu). `atamaAdaylar` yalnız SAHA rolü. `atamaOnayla` ufuktan ilerisini reddeder.
 
 Dilim 19: yeni komut yok; Haftalık Özet arayüzü yeniden düzenlendi (bkz. docs/DILIMLER.md).
+
+Dilim 20: `eslestirmeListe` + `sonZaman, sonKullanici`; `eslestirmeKaydet` rol `DISI` kabul eder (019_yetki_kapsam_disi.sql).

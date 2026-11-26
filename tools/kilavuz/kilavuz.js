@@ -55,14 +55,23 @@ C.push(b("Özlük’ten okunan satır sayısı mevcut aktif kadronun %80’inin 
 C.push(b("Özlük’te yönetici ya da tüm kurum kapsamlı (İK/görüntüleyici) bir hesapla çalıştırılmalıdır; aksi halde yetki hatası verir."));
 C.push(...img("01_kadro","Kadro sayfası: eşitleme sonucu ve kadro kopyası."));
 
-C.push(h1("4. Bölüm–rol eşleştirme"));
-C.push(p("Eşitlemeden sonra Özlük bölümlerinin listesi hazırdır. Her bölüm için **Proje Sorumlusu** ya da **Saha Personeli** seçin; seçim anında kaydedilir. “Rol yok” seçmek eşleşmeyi kaldırır. Eşleşmesi olmayan bölümdeki kişiler hiçbir şey göremez (uyarı satırında görünür). Merkez Yönetici rolü bölümden gelmez; yalnızca istisna ile verilir."));
-C.push(...img("02_eslestirme","Bölüm–rol eşleştirme (Kullanıcı Yetki sayfasında alt alta, istisna kartının altında)."));
-
-C.push(h1("5. Kişi istisnaları"));
-C.push(p("Kadrodan bir kişi seçip Windows hesabına açıkça rol verirsiniz (Merkez Yönetici, Proje Sorumlusu, Saha Personeli birlikte işaretlenebilir). Aktif istisna varsa kişinin rolleri tam olarak bu işaretlerdir; bölüm kuralına bakılmaz. Pasife alınan istisna rol vermez."));
-C.push(note("**Son aktif yönetici** kaldırılamaz, silinemez, pasife alınamaz: işlem sunucuda reddedilir (“en az bir aktif Merkez Yönetici bulunmalı”)."));
-C.push(...img("03_istisna","Kişi istisnaları."));
+C.push(h1("4. Kullanıcı Yetki Yönetimi: bölüm–rol eşleştirme ve kişi istisnaları"));
+C.push(p("**Kullanıcı Yetki** sekmesi (yalnız Merkez Yönetici) iki bölümden oluşur; üstte 4 kart vardır: aktif Merkez Yönetici sayısı (en az 1 zorunlu), aktif istisna kaydı, eşleştirilmiş Özlük bölümü oranı ve kapsamdaki aktif personel."));
+C.push(h2("4.1 Bölüm 1 — Yönetici tanımı ve kişi bazlı istisna roller"));
+C.push(b("Kişi bazlı tanım **her zaman** bölüm eşleştirmesinin önündedir: kişinin rolleri yalnızca burada işaretlenenlerdir. Merkez Yönetici yalnız buradan atanır."));
+C.push(b("**+ Yeni Yetki / İstisna Tanımla**: Özlük kadrosundan personel seçilir (ad yazılarak aranır), bölüm ve bölüm varsayılan rolü salt okunur görünür; roller kartlardan seçilir (birden fazla olabilir), **gerekçe zorunludur**. Birden fazla rol seçilirse kişi girişte üst menüde görünüm geçişi görür."));
+C.push(b("Tabloda arama (ad, sicil, Windows kimliği, bölüm) ve süzgeç: Tümü / Merkez Yöneticiler / İstisna-Çoklu Roller / Pasifler. **● Aktif / ○ Pasif** düğmesi durumu değiştirir; **✎ Düzenle**, **🗑️ Kaldır** (kişi bölüm kuralına döner)."));
+C.push(note("**Son aktif yönetici** kaldırılamaz, pasife alınamaz, yönetici rolü silinemez: satırda 🔒 Son Yönetici görünür, işlem sunucuda reddedilir ve kırmızı güvenlik bandı çıkar."));
+C.push(...img("03_istisna","Kullanıcı Yetki: kartlar, kişi bazlı istisnalar ve bölüm eşleştirme.",1500));
+C.push(...img("28_yetki_modal","Yeni yetki / istisna tanımlama penceresi."));
+C.push(h2("4.2 Bölüm 2 — Özlük bölüm adı → varsayılan sistem rolü"));
+C.push(b("Bölüm listesi kadro eşitlemesinden gelir (**🔄 Özlükten Güncelle** kadroyu Özlük'ten eşitler). Her bölüm için **Proje Sorumlusu**, **Saha Personeli** ya da **Kapsam Dışı (Erişimsiz)** seçilir. Henüz karar verilmemiş bölümler sarı bantla **Eşleşme Bekliyor** diye işaretlenir; bu bölümdeki kişiler (istisnası yoksa) hiçbir şey göremez."));
+C.push(b("Seçimler hemen kaydedilmez: **Kaydedilmedi** yazısı çıkar; **💾 Eşleştirmeleri Kaydet (n Değişiklik)** hepsini işler. Son güncelleyen ve zaman satırda görünür; her kayıt işlem günlüğüne düşer."));
+C.push(b("**👥 n Personel ▾** bölümün aktif personelini açar; istisnası olanlar ⚡ ile işaretlenir."));
+C.push(...img("02_eslestirme","Bölüm eşleştirme: personel listesi, rol seçimi ve kaydedilmemiş değişiklik.",1500));
+C.push(h2("4.3 Etkin Yetki Test Et"));
+C.push(p("**🔍 Etkin Yetki Test Et** bir personelin bölüm + istisna birleşik sonucunu gösterir: yetki kaynağı, roller, görünüm geçişi, açılış ekranı ve erişebildiği sekmeler. Kaydedilmiş kurallardan hesaplanan bir ön izlemedir; asıl yetkiyi giriş anında sunucu verir."));
+C.push(...img("29_yetki_simulator","Etkin yetki ön izleme."));
 
 C.push(h1("6. Proje / Görev Havuzu Yönetimi"));
 C.push(p("**Proje Havuzu** sekmesidir (Akademik Takvim ayrı sekmedir). Görev talepleri bu havuzdan seçilir. Havuz **Ana Proje › Alt Proje › Faaliyet › Yerleşke** hiyerarşisini tek bir **Ağaç-Tablo**da gösterir. Yalnızca Merkez Yönetici düzenler."));

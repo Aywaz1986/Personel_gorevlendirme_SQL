@@ -133,3 +133,6 @@ Kabuk (`005_kabuk.js`) her 30 sn: üst sayaçları (`sayaclar`: KPI + sekme roze
 
 ## Haftalık Özet matrisi (Dilim 19)
 `ui-src/app/004_matris.js`: sunucudan yalnız `matrisHafta`/`matrisSurum`/`takvimListe`/`havuzListe`; gün çözümleme (`gunCoz`) her personel×gün×dilim (OO/OS) için GOREV/IZIN/TATIL/MUSAIT üretir; KPI, gruplama, odak ve çakışma istemcide hesaplanır. Görünüm tercihleri `localStorage` (`gorev_hafta_*`).
+
+## Kullanıcı Yetki Yönetimi (Dilim 20)
+`ui-src/app/004_yetki.js`: `kadroListe` + `istisnaListe` + `eslestirmeListe` ile çalışır; "etkin yetki" (kart sayıları, Etkin Yetki Test Et) sunucudaki kuralın istemci yansımasıdır (istisna → bölüm rolü). Bölüm rol değişiklikleri istemcide taslak tutulur, Kaydet'te `eslestirmeKaydet` ile sırayla işlenir.

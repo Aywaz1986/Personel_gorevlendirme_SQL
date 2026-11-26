@@ -28,9 +28,9 @@ public static class KadroService
     }
 
     public static async Task<object> EslestirmeListeAsync(SqlService sql) =>
-        (await sql.ProcAsync("gorev.sp_eslestirme_listele")).Select(r => new { bolum = r["bolum"], rol = r["rol"], kisi = r["kisi"] }).ToList();
+        (await sql.ProcAsync("gorev.sp_eslestirme_listele")).Select(r => new { bolum = r["bolum"], rol = r["rol"], kisi = r["kisi"], sonZaman = r["son_zaman"], sonKullanici = r["son_kullanici"] }).ToList();
 
-    /// <param name="rol">SORUMLU, SAHA; boş ise eşleşme kaldırılır.</param>
+    /// <param name="rol">SORUMLU, SAHA, DISI (kapsam dışı); boş ise eşleşme kaldırılır (bölüm "bekliyor" olur).</param>
     public static Task EslestirmeKaydetAsync(SqlService sql, string bolum, string? rol) =>
         sql.ProcAsync("gorev.sp_eslestirme_kaydet", ("@bolum", bolum), ("@rol", string.IsNullOrWhiteSpace(rol) ? null : rol));
 

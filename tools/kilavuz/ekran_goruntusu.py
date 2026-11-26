@@ -19,7 +19,7 @@ VERI = {
   "surumDurum": {"durum": "tamam", "mesaj": "Sürüm uyumlu.", "engelle": False, "uygulama": "0.1.0", "hedefSema": 3, "sema": 3, "asgari": "0.1.0", "ortam": "TEST", "hesap": "ALAN\\ornek.yonetici", "pollingSaniye": 20},
   "kadroOzet": {"toplam": 4, "aktif": 3, "sonZaman": "2026-11-16T14:20:00", "sonKullanici": "ALAN\\ornek.yonetici", "sonAyrinti": json.dumps({"okunan": 4, "eklenen": 1, "guncellenen": 2, "pasife_alinan": 1, "degismeyen": 0})},
   "kadroListe": KADRO,
-  "eslestirmeListe": [{"bolum": "Örnek Bölüm A", "rol": "SORUMLU", "kisi": 14}, {"bolum": "Örnek Bölüm B", "rol": "SAHA", "kisi": 120}, {"bolum": "Örnek Bölüm D", "rol": None, "kisi": 9}],
+  "eslestirmeListe": [{"bolum": "Örnek Bölüm A", "rol": "SORUMLU", "kisi": 14, "sonKullanici": "ALAN\ornek.yonetici", "sonZaman": "2026-11-14T09:20:00"}, {"bolum": "Örnek Bölüm B", "rol": "SAHA", "kisi": 120, "sonKullanici": "ALAN\ornek.yonetici", "sonZaman": "2026-11-14T09:25:00"}, {"bolum": "Örnek Bölüm C", "rol": "DISI", "kisi": 4, "sonKullanici": "ALAN\ornek.yonetici", "sonZaman": "2026-11-15T11:05:00"}, {"bolum": "Örnek Bölüm D", "rol": None, "kisi": 9}],
   "havuzEfor": [{"id": 1, "adamGun": 12.5}, {"id": 2, "adamGun": 9.0}, {"id": 3, "adamGun": 9.0}, {"id": 4, "adamGun": 9.0}, {"id": 5, "adamGun": 3.5}, {"id": 6, "adamGun": 0.5}],
   "havuzListe": [
     {"id": 1, "ustId": None, "seviye": 1, "ad": "Örnek Ana Proje A", "aktif": True, "birlestirildiId": None, "arsiv": False, "arsivNeden": None},
@@ -106,7 +106,10 @@ VERI = {
   "sayaclar": {"bekleyenTalep": 2, "izinOnay": 1, "revizeBekleyen": 1, "ikameUyari": 1, "sahadaBugun": 3, "sahaToplam": 6, "onaylanan": 0, "reddedilen": 0, "bildirim": 0},
   "logIslemTurleri": [{"islem": "TALEP_KAYDET", "adet": 3}, {"islem": "ATAMA_ONAY", "adet": 2}],
   "logListe": [{"id": 5, "zaman": "2026-11-23 08:20:11", "kullanici": "ALAN\\ornek.yonetici", "adSoyad": "Örnek Yönetici", "islem": "ATAMA_ONAY", "nesne": "talepler", "nesneId": "1", "ayrinti": "TLP-0001: 2 atama"}],
-  "istisnaListe": [{"hesap": "ALAN\\ornek.yonetici", "adiSoyadi": "Örnek Yönetici", "yonetici": True, "sorumlu": True, "saha": False, "aktif": True, "aciklama": "", "sicilNo": "1000"}],
+  "istisnaListe": [
+    {"hesap": "ALAN\ornek.yonetici", "adiSoyadi": "Örnek Yönetici", "yonetici": True, "sorumlu": False, "saha": False, "aktif": True, "aciklama": "Kalite Yönetim Sistemleri baş sorumlusu: ana merkez yönetici yetkisi.", "sicilNo": "1000"},
+    {"hesap": "ALAN\ornek.personel2", "adiSoyadi": "Örnek Personel 2", "yonetici": False, "sorumlu": True, "saha": True, "aktif": True, "aciklama": "Hem görev talebi açıyor hem saha testlerine katılıyor.", "sicilNo": "1002"},
+    {"hesap": "ALAN\ornek.personel4", "adiSoyadi": "Örnek Personel 4", "yonetici": True, "sorumlu": False, "saha": False, "aktif": False, "aciklama": "Yıllık izin döneminde geçici vekalet (pasif).", "sicilNo": "1004"}],
 }
 def ben(kayitli, y, s, sa, g):
     return {"hesap": "ALAN\\ornek.kullanici", "kayitli": kayitli, "adiSoyadi": "Örnek Kullanıcı", "sicilNo": "1000", "bolum": "Örnek Bölüm A", "yonetici": y, "sorumlu": s, "saha": sa, "kaynak": "ISTISNA", "gorunumler": g, "varsayilan": g[0] if g else None}
@@ -134,9 +137,15 @@ with sync_playwright() as P:
     def sekme(ad): pg.locator('button', has_text=ad).first.click(); pg.wait_for_timeout(300)
     sh(pg, '16_ayarlar_gorunum'); sekme('Kadro'); sh(pg, '01_kadro')
     menu('Kullanıcı Yetki'); pg.wait_for_timeout(500)
-    pg.get_by_role('button', name='+ Yeni yetkili ekle').click(); pg.wait_for_timeout(200)
-    pg.set_viewport_size({'width': 1200, 'height': 1500}); sh(pg, '03_istisna')
+    pg.set_viewport_size({'width': 1400, 'height': 1500}); sh(pg, '03_istisna')
+    pg.get_by_role('button', name='+ Yeni Yetki / İstisna Tanımla').click(); pg.wait_for_timeout(300); sh(pg, '28_yetki_modal')
+    pg.get_by_role('button', name='Vazgeç').click(); pg.wait_for_timeout(200)
+    pg.get_by_role('button', name='👥 14 Personel ▾').click(); pg.wait_for_timeout(300)
+    pg.get_by_role('button', name='📋 Proje Sorumlusu').last.click(); pg.wait_for_timeout(200)
     pg.evaluate('window.scrollTo(0, document.body.scrollHeight)'); pg.wait_for_timeout(200); sh(pg, '02_eslestirme')
+    pg.evaluate('window.scrollTo(0, 0)'); pg.get_by_role('button', name='🔍 Etkin Yetki Test Et').first.click(); pg.wait_for_timeout(300)
+    pg.get_by_label('Test edilecek personel').fill('Örnek Personel 2 (Sicil: 1002)'); pg.wait_for_timeout(300); sh(pg, '29_yetki_simulator')
+    pg.keyboard.press('Escape'); pg.wait_for_timeout(200)
     pg.set_viewport_size({'width': 1200, 'height': 800})
     menu('Ayarlar'); pg.wait_for_timeout(300); sekme('İşlem Günlüğü'); pg.wait_for_timeout(500); sh(pg, '17_gunluk')
     menu('Proje Havuzu'); pg.wait_for_timeout(500)

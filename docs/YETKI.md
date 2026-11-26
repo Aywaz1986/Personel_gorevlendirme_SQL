@@ -68,3 +68,5 @@ Rol düğmeleri ve sekmeler yalnız kişinin sahip olduğu rollere göre çizili
 
 ## Dilim 16
 Telefon numaraları (matris) yalnız Yönetici ve Proje Sorumlusuna görünür. Atama adayları yalnız Saha rolündekilerdir. İzin/rapor bilgisi (Sorumlu) salt okunurdur; onay/giriş yetkisi Yönetici ve ilgili personelde kalır.
+
+Dilim 20: bölüm eşleştirmede üçüncü karar **DISI (Kapsam Dışı)**: satır vardır ama rol vermez (kişiler istisnası yoksa hiçbir şey göremez). Satır olmaması = "eşleşme bekliyor" (arayüzde uyarı bandı); davranış aynıdır, fark yalnızca yönetici kararının kayıtlı olmasıdır.

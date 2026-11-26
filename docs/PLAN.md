@@ -32,6 +32,7 @@ Ayrıntı: `docs/DILIMLER.md`.
 | 12 | Senaryo eksikleri + Ayarlar | evet | [~] kodlandı, CI/el sınaması bekliyor |
 | 13 | Gizli bağlantı yapılandırması + yüzen bağlantı penceresi | evet | [~] kodlandı, CI/el sınaması bekliyor |
 | 14 | Yeni arayüz tasarımı (rol düğmeleri, sekme şeridi, talep kartı, Kullanıcı Yetki, yazı/tema/cam) | evet | [~] kodlandı, CI/el sınaması bekliyor |
+| 20 | Kullanıcı Yetki Yönetimi (prototip uyarlaması, DISI rolü, 019) | PR bekliyor |
 | 19 | Haftalık Özet matrisi (prototip uyarlaması, yalnız arayüz) | PR bekliyor |
 | 18 | Proje Havuzu ağaç-tablo (prototip uyarlaması, efor sütunu, 018_havuz_efor.sql) | PR bekliyor |
 | 17 | Görünüm (3 sütunlu özet, Revize & İkame düğmesi, Havuz/Takvim ayrı, Yetki alt alta, Günlük Ayarlar'da, tarih seçici, logo/filigran, hizalama) | PR bekliyor |
