@@ -20,6 +20,7 @@ VERI = {
   "kadroOzet": {"toplam": 4, "aktif": 3, "sonZaman": "2026-11-16T14:20:00", "sonKullanici": "ALAN\\ornek.yonetici", "sonAyrinti": json.dumps({"okunan": 4, "eklenen": 1, "guncellenen": 2, "pasife_alinan": 1, "degismeyen": 0})},
   "kadroListe": KADRO,
   "eslestirmeListe": [{"bolum": "Örnek Bölüm A", "rol": "SORUMLU", "kisi": 14}, {"bolum": "Örnek Bölüm B", "rol": "SAHA", "kisi": 120}, {"bolum": "Örnek Bölüm D", "rol": None, "kisi": 9}],
+  "havuzEfor": [{"id": 1, "adamGun": 12.5}, {"id": 2, "adamGun": 9.0}, {"id": 3, "adamGun": 9.0}, {"id": 4, "adamGun": 9.0}, {"id": 5, "adamGun": 3.5}, {"id": 6, "adamGun": 0.5}],
   "havuzListe": [
     {"id": 1, "ustId": None, "seviye": 1, "ad": "Örnek Ana Proje A", "aktif": True, "birlestirildiId": None, "arsiv": False, "arsivNeden": None},
     {"id": 2, "ustId": 1, "seviye": 2, "ad": "Örnek Alt Proje 1", "aktif": True, "birlestirildiId": None, "arsiv": False, "arsivNeden": None},
@@ -27,6 +28,9 @@ VERI = {
     {"id": 4, "ustId": 3, "seviye": 4, "ad": "Örnek Yerleşke", "aktif": True, "birlestirildiId": None, "arsiv": False, "arsivNeden": None},
     {"id": 5, "ustId": 1, "seviye": 2, "ad": "Örnek Alt Proje 2", "aktif": True, "birlestirildiId": None, "arsiv": False, "arsivNeden": None},
     {"id": 6, "ustId": None, "seviye": 1, "ad": "Örnek Ana Proje B", "aktif": True, "birlestirildiId": None, "arsiv": False, "arsivNeden": None},
+    {"id": 7, "ustId": 3, "seviye": 4, "ad": "Örnek Yerleşke ", "aktif": True, "birlestirildiId": None, "arsiv": False, "arsivNeden": None},
+    {"id": 8, "ustId": 3, "seviye": 4, "ad": "Örnek Salon", "aktif": False, "birlestirildiId": None, "arsiv": False, "arsivNeden": None},
+    {"id": 9, "ustId": 3, "seviye": 4, "ad": "Eski Konum", "aktif": True, "birlestirildiId": 4, "arsiv": False, "arsivNeden": None},
   ],
   "talepAtananAdlar": [{"talepId": 1, "adlar": "Örnek Personel 2"}],
   "izinRaporBilgi": [{"sicil": "1006", "ad": "Örnek Personel 6", "gsm": "0532 666 66 66", "tur": "RAPOR", "ilkTarih": "2026-11-24", "sonTarih": "2026-11-27", "durum": "ONAYLI"}, {"sicil": "1007", "ad": "Örnek Personel 7", "gsm": "0532 777 77 77", "tur": "IZIN", "ilkTarih": "2026-11-26", "sonTarih": "2026-11-26", "durum": "BEKLIYOR"}],
@@ -136,9 +140,10 @@ with sync_playwright() as P:
     pg.set_viewport_size({'width': 1200, 'height': 800})
     menu('Ayarlar'); pg.wait_for_timeout(300); sekme('İşlem Günlüğü'); pg.wait_for_timeout(500); sh(pg, '17_gunluk')
     menu('Proje Havuzu'); pg.wait_for_timeout(500)
-    pg.set_viewport_size({'width': 1400, 'height': 1500})
-    pg.locator('select[aria-label="Ana Proje"]').select_option(label='Örnek Ana Proje A'); pg.locator('select[aria-label="Alt Proje"]').select_option(label='Örnek Alt Proje 1')
-    pg.wait_for_timeout(300); sh(pg, '06_havuz')
+    pg.set_viewport_size({'width': 1400, 'height': 1000})
+    pg.get_by_role('button', name='Tümünü Aç').click(); pg.wait_for_timeout(300); sh(pg, '06_havuz')
+    pg.get_by_role('button', name='⇄ Birleştir').first.click(); pg.wait_for_timeout(300); sh(pg, '25_havuz_birlestir')
+    pg.get_by_role('button', name='Vazgeç').first.click(); pg.wait_for_timeout(200)
     menu('Akademik Takvim'); pg.wait_for_timeout(600)
     pg.set_viewport_size({'width': 1400, 'height': 1700}); sh(pg, '21_takvim')
     pg.get_by_role('button', name='AKADEMİK TATİL VE RESMİ TATİL YÖNETİMİ').click(); pg.wait_for_timeout(300)

@@ -34,6 +34,7 @@ Yeni hata eşlemesi: sunucu 50022/50023 → `yetki`; 50020/50021/50024/50025 →
 | Komut | Bağımsız değişken | Sonuç | Kapı | Not |
 |---|---|---|---|---|
 | `havuzListe` | – | `[{id, ustId, seviye, ad, aktif, birlestirildiId}]` | ✔ | her rolde (rolü olan) okur |
+- `havuzEfor` (Yönetici): `[{id, adamGun}]` — her havuz düğümü için toplam aktif atama efor (adam-gün). Dilim 18.
 | `havuzEkle` | `ustId?, ad` | `{id}` | ✔ | yalnız yönetici; seviye üstten türer (1 Ana Proje … 4 Konum); kardeşler arasında ad tekil |
 | `havuzAdlandir` | `id, ad` | `{tamam}` | ✔ | birleştirilmiş kayıt değişmez |
 | `havuzDurum` | `id, aktif` | `{etkilenen}` | ✔ | pasife alma altını da alır; etkinleştirme için üst aktif olmalı |

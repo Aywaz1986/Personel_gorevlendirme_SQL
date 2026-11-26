@@ -3,6 +3,14 @@
 Her değişiklik önce **Yayınlanmamış** bölümüne yazılır; sürüm yükselince bölüm sürüm başlığına dönüştürülür.
 
 ## Yayınlanmamış
+### Dilim 18 – Proje Havuzu ağaç-tablo (2026-11) — DEVAM EDİYOR (dal `dilim-18-havuz-tablo`, Dilim 17 dalından)
+**Oturum devir notu (her adımda güncelle):**
+- Kaynak: Murat'ın "Proje / Görev Havuzu Yönetimi – Ağaç-Tablo Prototipi" HTML'i (25.11.2026).
+- [x] 1. `018_havuz_efor.sql` + `havuzEfor` komutu + SqlTests testi
+- [x] 2. `004_havuz.js` prototipe birebir ağaç-tablo (zincirli ekleme, mükerrer, Kısmi, birleştirme penceresi, düz liste, audit paneli) + `kurumsalcam` teması + ekran görüntüleri
+- [x] 3. Belgeler, kılavuz, test listesi
+- [ ] 4. Push, CI, PR (taban dilim-17-gorunum)
+
 ### Dilim 17 – Görünüm (2026-11) — DEVAM EDİYOR (dal `dilim-17-gorunum`, Dilim 16 dalından; PR sırası … → #22 → bu)
 **Oturum devir notu (her adımda güncelle):**
 - İstek maddeleri: 3, 4, 5, 6, 8, 9, 10 (24.11.2026 listesi). Yalnız arayüz.

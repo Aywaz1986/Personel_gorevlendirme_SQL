@@ -100,3 +100,10 @@ Test listesi: `docs/test-dilim-17.md`. Yalnız arayüz; SQL/komut değişikliği
 - Tarih seçici: `placeholder` içinde GG.AA.YYYY olan her metin kutusuna 📅 (`002b_pencere_tarih.js`, MutationObserver).
 - Logo: Ayarlar › Görünüm › Logo ve filigran (`004_logo.js`); sol üst logo + silik filigran, tarayıcı deposunda.
 - Hizalama: `.satir` kontrolleri 40 px, alt hizalı; Analiz tarih kutuları/düğmeleri düzeltildi.
+
+## Dilim 18 – Proje Havuzu ağaç-tablo (Murat 25.11.2026: "Ağaç-Tablo Prototipi")
+Test listesi: `docs/test-dilim-18.md`. Kademeli açılır listeler ve eski ağaç kalktı; tek ağaç-tablo: Hiyerarşi | Kapsam Özeti | Toplam Efor | Durum | Hızlı İşlemler.
+- Üstte özet kartları (Ana Proje/Alt Proje/Faaliyet/Yerleşke aktif–pasif sayıları, toplam adam-gün); arama; Tümü / Sadece Aktifler / Pasif-Arşiv; derinlik düğmeleri.
+- Satır içi ad düzeltme (Enter/Esc), "+ Alt kayıt", Pasife al/Aktifleştir, Birleştir, Arşivle (mevcut komutlar).
+- Yeni: `havuzEfor` komutu + `018_havuz_efor.sql` (`sp_havuz_efor`, yalnız Yönetici; TAM=1,0 ÖÖ/ÖS=0,5, üst düğümlere yuvarlanır).
+- Prototipten alınmayanlar: SQL çekmecesi ve ekran içi audit paneli (günlük Ayarlar'da).
