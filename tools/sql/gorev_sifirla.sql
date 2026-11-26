@@ -2,7 +2,8 @@
 -- Yalnızca SCHEMA_ID(N'gorev') altındaki nesnelere dokunur; dbo.* ve başka şemalara DOKUNMAZ.
 -- Korunanlar (yapılandırma): gorev.sema_surumleri, gorev.sistem_ayarlari, gorev.rol_bolum_eslestirme, gorev.kullanici_yetki_istisna, gorev.takvim_tatil
 -- (ORTAM ayarı, roller ve yöneticiler kalır; kadro kopyası ve iş verisi silinir, kadro yeniden eşitlenir).
--- Reddedilir: ORTAM = CANLI ise; ORTAM okunamıyorsa. Kimlik (IDENTITY) sayaçları sıfırlanmaz, numaralar kaldığı yerden sürer.
+-- Reddedilir: ORTAM = CANLI ise; ORTAM okunamıyorsa. Kimlik (IDENTITY) sayaçları sıfırlanmaz, numaralar kaldığı yerden sürer;
+-- tek istisna proje havuzu (gorev.proje_havuzu): satırları silinir ve numara sayacı da başa alınır (yeni proje kaydı 1'den başlar).
 --
 -- KULLANIM (SSMS): 1) Sol üstte veritabanı olarak SST_Ozluk seçili olsun.
 --                  2) Aşağıdaki @onay satırındaki tırnakların içine SIFIRLA yazın.
@@ -66,6 +67,10 @@ BEGIN
     EXEC (@komut);
     SET @sira += 1;
 END;
+
+-- Proje havuzu kayıtları tamamen sıfırlanır (satırlar yukarıda silindi); numara sayacı da başa alınır.
+IF EXISTS (SELECT 1 FROM sys.identity_columns WHERE object_id = OBJECT_ID(N'gorev.proje_havuzu') AND last_value IS NOT NULL)
+    DBCC CHECKIDENT (N'gorev.proje_havuzu', RESEED, 0) WITH NO_INFOMSGS;
 
 -- Günlük temizlendiği için bu işlemin kendisi ilk satır olarak yazılır.
 IF OBJECT_ID(N'gorev.islem_log', N'U') IS NOT NULL

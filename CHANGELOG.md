@@ -3,6 +3,10 @@
 Her değişiklik önce **Yayınlanmamış** bölümüne yazılır; sürüm yükselince bölüm sürüm başlığına dönüştürülür.
 
 ## Yayınlanmamış
+### Dilim 22 – Proje düzeltmeleri (2026-11) — DEVAM EDİYOR (dal `dilim-22-proje-duzeltme`, Dilim 21 dalından)
+- `gorev_sifirla.sql`: proje havuzu satırları zaten siliniyordu; artık numara sayacı da başa alınır (yeni kayıt #1). Test: `Sifirla_proje_havuzunu_temizler_ve_numarayi_basa_alir`. SINANMADI (CI).
+- Proje Havuzu: alt projesiz ana proje desteği. "Genel" aracı Alt Proje kaydı ağaçta gizlenir, faaliyetler doğrudan ana projenin altında görünür; ana proje satırında **+ Faaliyet**; yeni ana projede Alt Proje alanı boş bırakılabilir (arka planda "Genel" açılır, şema değişmedi). Talep formunda "boşsa Genel" yazısı kaldırıldı.
+- Eski veri aktarımı: `projeId`'siz/yetim atamalardaki serbest proje metni ("AİC/MCT Karapınar" = ad + lokasyon) artık eski projeye çözülür (ad birebir → ad+lokasyon → en uzun ad öneki + bilinen lokasyon); ayrı boş kök proje açılmaz, lokasyon Konum olur. Kuru çalıştırma raporu çözülen/çözülemeyen adları ayrı sayar. Birim testleri: `EskiAktarimTests`.
 ### Dilim 21 – Hafta Pazartesi başlar (2026-11) — DEVAM EDİYOR (dal `dilim-21-pazartesi`, Dilim 20 dalından)
 - Denetim: matris, takvim ızgarası, SQL (DATEFIRST'ten bağımsız) ve C# hafta hesapları zaten Pazartesi başlangıçlıydı.
 - Asıl açık: yerel `<input type="date">` seçicisi işletim sistemi dil ayarına göre haftayı Pazar/Cumartesi başlatabiliyordu. `tarihSeciciEkle` artık özel Pazartesi başlangıçlı takvim penceresi açar (Pzt…Paz, ay/yıl seçimi, Bugün/Temizle, Esc).

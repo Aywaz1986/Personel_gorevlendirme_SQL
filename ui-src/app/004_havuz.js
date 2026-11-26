@@ -8,6 +8,10 @@ async function havuzSayfa() {
   const D = { liste: [], acik: new Set(), ara: '', filtre: 'AKTIF', gorunum: 'AGAC', duzenle: null, ekle: null, arsiv: null, efor: {}, eforVar: false, sonKomut: null, gunluk: [], gunlukAcik: true, ilk: true };
   const kap = h('div', { class: 'hv' });
   const ad2 = (n) => ({ 1: 'Alt Proje', 2: 'Faaliyet', 3: 'Yerleşke' }[n]);
+  // "Genel" = alt projesi olmayan ana projenin görünmeyen aracı Alt Proje kaydı: ağaçta gösterilmez, faaliyetler doğrudan ana projenin altında görünür.
+  const genelMi = (x) => x.seviye === 2 && norm(x.ad) === 'genel';
+  const genelAlt = (anaId) => cocuk(anaId).find(genelMi) || null;
+  const gorunenCocuk = (x) => (x.seviye === 1 ? cocuk(x.id).flatMap((c) => (genelMi(c) ? cocuk(c.id) : [c])) : cocuk(x.id));
   const bul = (id) => D.liste.find((x) => x.id === id);
   const cocuk = (id) => D.liste.filter((x) => x.ustId === id && x.birlestirildiId == null);
   const trk = (t) => String(t).toLocaleLowerCase('tr-TR');
@@ -35,7 +39,7 @@ async function havuzSayfa() {
   function mukerrer(x) { const n = norm(x.ad); if (!n) return null; return cocuk(x.ustId).filter((k) => k.id < x.id && norm(k.ad) === n)[0] || null; }
   function sayilar(x) {
     const ys = dalYapraklari(x), alt = new Set(), fa = new Set();
-    ys.forEach((y) => { let c = y; while (c && c.id !== x.id) { if (c.seviye === 2) alt.add(c.id); if (c.seviye === 3) fa.add(c.id); c = c.ustId == null ? null : bul(c.ustId); } });
+    ys.forEach((y) => { let c = y; while (c && c.id !== x.id) { if (c.seviye === 2 && !genelMi(c)) alt.add(c.id); if (c.seviye === 3) fa.add(c.id); c = c.ustId == null ? null : bul(c.ustId); } });
     return { alt: alt.size, fa: fa.size, ye: ys.length };
   }
   function hl(t) {
@@ -77,14 +81,16 @@ async function havuzSayfa() {
   }
 
   // ---- Hızlı ekleme (zincirli) ----
-  const ALANLAR = { 1: ['Yeni Ana Proje *', 'İlk Alt Proje *', 'İlk Faaliyet *', 'İlk Yerleşke *'], 2: ['Yeni Alt Proje *', 'İlk Faaliyet *', 'İlk Yerleşke *'], 3: ['Yeni Faaliyet *', 'İlk Yerleşke *'], 4: ['Yeni Yerleşke / Konum adını yazıp Enter\'a basın *'] };
-  function hizliEkleSatiri(hedef, ustId, derin) {
+  const ALANLAR = { 1: ['Yeni Ana Proje *', 'İlk Alt Proje (yoksa boş bırakın)', 'İlk Faaliyet *', 'İlk Yerleşke *'], 2: ['Yeni Alt Proje *', 'İlk Faaliyet *', 'İlk Yerleşke *'], 3: ['Yeni Faaliyet *', 'İlk Yerleşke *'], 4: ['Yeni Yerleşke / Konum adını yazıp Enter\'a basın *'] };
+  function hizliEkleSatiri(hedef, ustId, derin, dogrudan) {
     const al = ALANLAR[hedef], girisler = al.map((ph) => h('input', { type: 'text', class: 'metin hv-gir', maxlength: '300', placeholder: ph, 'aria-label': ph }));
     const gonder = async () => {
       const adlar = girisler.map((g) => g.value.trim());
+      if (hedef === 1 && !adlar[1]) adlar[1] = 'Genel';
       if (adlar.some((a) => !a)) { toast('Tüm alanları doldurun.', 'uyari'); return; }
       try {
         let ust = ustId;
+        if (dogrudan) { const g = genelAlt(ustId); if (g) ust = g.id; else { const r0 = await Kopru.cagir('havuzEkle', { ustId, ad: 'Genel' }); ust = r0.id; } }
         for (let i = 0; i < adlar.length; i++) { D.sonKomut = 'havuzEkle ' + JSON.stringify({ ustId: ust, ad: adlar[i] }); const r = await Kopru.cagir('havuzEkle', { ustId: ust, ad: adlar[i] }); ust = r.id; }
         if (ustId != null) D.acik.add(ustId);
         toast('Eklendi.'); await yukle();
@@ -147,12 +153,12 @@ async function havuzSayfa() {
 
   function satirlar(x, derin, cik, sonMu) {
     const ara = !!D.ara.trim(), acik = ara || D.acik.has(x.id);
-    const alt = cocuk(x.id).filter(dalGorunur), s = istat(x), sy = sayilar(x);
+    const alt = gorunenCocuk(x).filter(dalGorunur), s = istat(x), sy = sayilar(x);
     const merged = D.liste.filter((k) => k.birlestirildiId === x.id).map((k) => '#' + k.id);
     const muk = mukerrer(x);
     const yaprak = x.seviye === 4;
     const sinif = ['', 'l1', 'l2', 'l3', 'l4'][x.seviye];
-    const ac = (!yaprak && (alt.length || cocuk(x.id).length)) ? h('button', { type: 'button', class: 'hv-ok ' + sinif, 'aria-label': acik ? 'Daralt' : 'Aç', onclick: () => toggle(x.id) }, acik ? '▾' : '▸') : (yaprak ? null : h('span', { class: 'hv-ok-bos' }));
+    const ac = (!yaprak && (alt.length || gorunenCocuk(x).length)) ? h('button', { type: 'button', class: 'hv-ok ' + sinif, 'aria-label': acik ? 'Daralt' : 'Aç', onclick: () => toggle(x.id) }, acik ? '▾' : '▸') : (yaprak ? null : h('span', { class: 'hv-ok-bos' }));
     const hiyer = h('div', { class: 'hv-hi' }, ...kilavuz(derin), yaprak ? h('span', { class: 'hv-dal' }, sonMu ? '└─' : '├─') : null, yaprak ? h('span', { class: 'hv-pin' }, '📍') : ac,
       yaprak ? null : h('span', { class: 'hv-sv ' + sinif }, HV_ROZET[x.seviye]),
       adHucresi(x, sinif),
@@ -164,6 +170,7 @@ async function havuzSayfa() {
     let isl = [];
     if (x.arsiv) isl = [dBtn('Arşivden çıkar', '', () => yap('havuzArsiv', { id: x.id, arsiv: false }, 'Arşivden çıkarıldı (pasif).'))];
     else {
+      if (x.seviye === 1) isl.push(dBtn('+ Faaliyet', 'vio', () => { D.ekle = { hedef: 3, ust: x.id, dogrudan: true }; D.duzenle = null; D.acik.add(x.id); ciz(); }, 'Alt proje olmadan doğrudan ana projeye faaliyet ekle'));
       if (!yaprak) isl.push(dBtn('+ ' + ad2(x.seviye), { 1: 'sky', 2: 'vio', 3: 'grn' }[x.seviye], () => { D.ekle = { hedef: x.seviye + 1, ust: x.id }; D.duzenle = null; D.acik.add(x.id); ciz(); }));
       isl.push(dBtn('✎ Düzenle', '', () => { D.duzenle = x.id; D.ekle = null; ciz(); }, 'Adı düzenle (Enter kaydet, Esc iptal)'));
       if (yaprak || muk) isl.push(dBtn('⇄ Birleştir', muk ? 'amb dolu' : 'sky-h', () => birlestirAc(x), 'Mükerrer kaydı doğru kayda birleştir'));
@@ -175,7 +182,7 @@ async function havuzSayfa() {
       h('td', { class: 'hv-efor ' + sinif }, D.eforVar ? adamGun(efor(x.id)) : '—'),
       h('td', { style: 'text-align:center' }, durumPill(s)),
       h('td', { style: 'text-align:right;white-space:nowrap' }, h('span', { class: 'hv-isl' }, isl))));
-    if (D.ekle && D.ekle.ust === x.id) cik.push(hizliEkleSatiri(D.ekle.hedef, x.id, derin + 1));
+    if (D.ekle && D.ekle.ust === x.id) cik.push(hizliEkleSatiri(D.ekle.hedef, x.id, derin + 1, D.ekle.dogrudan));
     if (D.arsiv === x.id) cik.push(arsivSatiri(x, derin + 1));
     if (acik) alt.forEach((c, i) => satirlar(c, derin + 1, cik, i === alt.length - 1));
   }

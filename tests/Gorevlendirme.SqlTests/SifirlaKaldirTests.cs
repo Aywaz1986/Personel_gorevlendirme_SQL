@@ -70,6 +70,19 @@ public class SifirlaKaldirTests
     }
 
     [SqlFact]
+    public async Task Sifirla_proje_havuzunu_temizler_ve_numarayi_basa_alir()
+    {
+        await using var t = await TestDb.OlusturAsync();
+        await t.Migrator.UygulaAsync(false);
+        await t.ExecAsync("INSERT INTO gorev.proje_havuzu (seviye, ad) VALUES (1, N'P1'), (1, N'P2')");
+        Assert.Equal(2, Convert.ToInt32(await t.SkalerAsync("SELECT COUNT(*) FROM gorev.proje_havuzu")));
+        await t.ExecAsync(TestDb.Onayli(TestDb.BetikOku("gorev_sifirla.sql"), "SIFIRLA"));
+        Assert.Equal(0, Convert.ToInt32(await t.SkalerAsync("SELECT COUNT(*) FROM gorev.proje_havuzu")));
+        await t.ExecAsync("INSERT INTO gorev.proje_havuzu (seviye, ad) VALUES (1, N'Yeni')");
+        Assert.Equal(1, Convert.ToInt32(await t.SkalerAsync("SELECT MIN(id) FROM gorev.proje_havuzu")));
+    }
+
+    [SqlFact]
     public async Task Sifirla_kadro_kopyasini_siler_yetki_yapilandirmasini_korur()
     {
         await using var t = await TestDb.OlusturAsync();
