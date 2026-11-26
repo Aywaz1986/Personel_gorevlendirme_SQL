@@ -78,4 +78,33 @@ public class EskiAktarimTests
         Assert.Equal(2, p.Sayilar["atama"]);            // pzt bir kez, sal bir kez
         Assert.Equal(1, p.Sayilar["cakisanAtlanan"]);
     }
+
+    [Fact]
+    public void ProjeAdi_ad_ve_lokasyon_birlesik_ise_ayri_kok_acilmaz()
+    {
+        var v = new EskiVeri();
+        v.Personel.Add(new EskiPersonel(1, "Ali Veli", "0100", true));
+        v.Projeler.Add(new EskiProje(89, "AİC/MCT", "KARAPINAR", true, null));
+        v.Projeler.Add(new EskiProje(90, "AİC/MCT", "TEMELLİ", true, null));
+        v.Projeler.Add(new EskiProje(91, "Alt A", "", true, 89));
+        v.Haftalar.Add(new EskiHafta(1, "2026-03-02"));
+        // haftasız (tarihsiz) ve projeId'siz; metin "Ad Lokasyon" biçiminde
+        v.Atamalar.Add(new EskiAtama(1, 99, 1, "Ali Veli", "{}", "gorevli", null, "AİC/MCT Karapınar", "", ""));
+        // tarihli, projeId'siz; "Ad - Lokasyon" biçimi
+        v.Atamalar.Add(new EskiAtama(2, 1, 1, "Ali Veli", "{\"pzt\":true}", "gorevli", null, "AİC/MCT - Temelli", "Montaj", ""));
+        var p = EskiAktarim.Planla(v, Kadro);
+        using var doc = JsonDocument.Parse(p.Json);
+        Assert.Equal("AİC/MCT", doc.RootElement.GetProperty("tarihsiz")[0].GetProperty("ana").GetString());
+        var g = doc.RootElement.GetProperty("gorevler")[0];
+        Assert.Equal("AİC/MCT", g.GetProperty("ana").GetString());
+        Assert.Equal("TEMELLİ", g.GetProperty("konum").GetString());
+    }
+
+    [Fact]
+    public void ProjeAdi_cozucu_bilinmeyen_lokasyonda_oneki_eslemez()
+    {
+        var cozucu = EskiAktarim.ProjeAdiCozucu(new[] { new EskiProje(1, "MORS", "ODTÜ", true, null) });
+        Assert.Equal(1, cozucu("MORS ODTÜ")!.Id);
+        Assert.Null(cozucu("MORS PROJESİ"));   // kalan metin bilinen lokasyon değil
+    }
 }

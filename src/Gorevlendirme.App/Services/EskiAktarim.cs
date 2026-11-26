@@ -10,6 +10,36 @@ public sealed record AktarimPlani(string Json, Dictionary<string, int> Sayilar, 
 /// müsait aktarılmaz. Aynı kişi+gün tek kayıtta kalır (rapor &gt; görev &gt; izin).</summary>
 public static class EskiAktarim
 {
+    private static string Ak(string? s) { var k = TakvimCozumleyici.Katla(s); var sb = new System.Text.StringBuilder(k.Length); foreach (var c in k) if (char.IsLetterOrDigit(c)) sb.Append(c); return sb.ToString(); }
+
+    /// <summary>Atamadaki serbest proje metnini (ProjeId yok/yetim) eski proje kaydına çözer; çözemezse null.
+    /// Sıra: (1) ad birebir (2) ad+lokasyon birleşik ("AİC/MCT Karapınar") (3) en uzun proje adı öneki + kalan metin bilinen bir lokasyon.
+    /// Amaç: "Ad Lokasyon" metni ayrı bir kök proje olarak AÇILMASIN, ilgili ana projenin Konum'u olsun.</summary>
+    internal static Func<string, EskiProje?> ProjeAdiCozucu(IEnumerable<EskiProje> projeler)
+    {
+        var liste = projeler.Where(p => Ak(p.Ad).Length > 0).OrderBy(p => p.Id).ToList();
+        var tamAd = new Dictionary<string, EskiProje>();
+        var adLok = new Dictionary<string, EskiProje>();
+        foreach (var p in liste) { tamAd.TryAdd(Ak(p.Ad), p); if (Ak(p.Lokasyon).Length > 0) adLok.TryAdd(Ak(p.Ad) + Ak(p.Lokasyon), p); }
+        var lokasyonlar = liste.Select(p => Ak(p.Lokasyon)).Where(l => l.Length > 0).ToHashSet();
+        return metin =>
+        {
+            var k = Ak(metin);
+            if (k.Length == 0) return null;
+            if (adLok.TryGetValue(k, out var al)) return al;
+            if (tamAd.TryGetValue(k, out var ta)) return ta;
+            foreach (var p in liste.OrderByDescending(x => Ak(x.Ad).Length))
+            {
+                var ad = Ak(p.Ad);
+                if (ad.Length < 3 || k.Length <= ad.Length || !k.StartsWith(ad, StringComparison.Ordinal)) continue;
+                var kalan = k[ad.Length..];
+                if (!lokasyonlar.Contains(kalan)) continue;
+                return adLok.TryGetValue(ad + kalan, out var eslesen) ? eslesen : p;
+            }
+            return null;
+        };
+    }
+
     private static readonly string[] GunAnahtarlari = { "pzt", "sal", "car", "per", "cum", "cmt", "paz" };
     private const int AzamiGun = 92;   // talepler.CK_talepler_tarih
 
@@ -19,6 +49,7 @@ public static class EskiAktarim
         var kadroAd = kadro.GroupBy(k => TakvimCozumleyici.Katla(k.Ad)).ToDictionary(g => g.Key, g => g.ToList());
         var personel = v.Personel.GroupBy(p => p.Id).ToDictionary(g => g.Key, g => g.First());
         var proje = v.Projeler.GroupBy(p => p.Id).ToDictionary(g => g.Key, g => g.First());
+        var adCoz = ProjeAdiCozucu(v.Projeler);
 
         string? SicilBul(string sicil, string ad)
         {
@@ -39,7 +70,8 @@ public static class EskiAktarim
         (string Ana, string Alt, string Faaliyet, string Konum, string Proje) Yol(EskiAtama a)
         {
             var zincir = new List<string>();
-            if (a.ProjeId is long pid && proje.TryGetValue(pid, out var pr))
+            var pr0 = a.ProjeId is long pid0 && proje.TryGetValue(pid0, out var pk0) ? pk0 : (a.ProjeAdi.Length > 0 ? adCoz(a.ProjeAdi) : null);
+            if (pr0 is { } pr)
             {
                 var cur = pr; var gor = new HashSet<long>();
                 while (cur != null && gor.Add(cur.Id))

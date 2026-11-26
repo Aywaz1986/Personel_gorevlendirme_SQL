@@ -2,7 +2,8 @@
 -- Yalnızca SCHEMA_ID(N'gorev') altındaki nesnelere dokunur; dbo.* ve başka şemalara DOKUNMAZ.
 -- Korunanlar (yapılandırma): gorev.sema_surumleri, gorev.sistem_ayarlari, gorev.rol_bolum_eslestirme, gorev.kullanici_yetki_istisna, gorev.takvim_tatil
 -- (ORTAM ayarı, roller ve yöneticiler kalır; kadro kopyası ve iş verisi silinir, kadro yeniden eşitlenir).
--- Reddedilir: ORTAM = CANLI ise; ORTAM okunamıyorsa. Kimlik (IDENTITY) sayaçları sıfırlanmaz, numaralar kaldığı yerden sürer.
+-- Reddedilir: ORTAM = CANLI ise; ORTAM okunamıyorsa. Kimlik (IDENTITY) sayaçları sıfırlanmaz, numaralar kaldığı yerden sürer;
+-- proje havuzu (gorev.proje_havuzu) satırları da silinir (numara sayacı sıfırlanmaz: dbo_koruma DBCC'yi yasaklar).
 --
 -- KULLANIM (SSMS): 1) Sol üstte veritabanı olarak SST_Ozluk seçili olsun.
 --                  2) Aşağıdaki @onay satırındaki tırnakların içine SIFIRLA yazın.

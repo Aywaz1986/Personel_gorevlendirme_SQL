@@ -407,8 +407,15 @@ public static class EskiVeriDenetimi
         Satir($"Kök (Ana Proje) sayısı: {kokler.Count} · havuzda aynı adla zaten olan: {zatenVar} (yeni oluşturulmaz, altına eklenir)");
         Satir("Kök projeler (en çok 25):");
         foreach (var p in kokler.Take(Ornek)) Satir($"   {(p.Aktif ? "" : "[pasif] ")}{p.Ad}");
-        var projesizAd = v.Atamalar.Where(a => TakvimCozumleyici.Katla(a.Durum) == "gorevli" && a.ProjeId == null && a.ProjeAdi.Length > 0).Select(a => TakvimCozumleyici.Katla(a.ProjeAdi)).Distinct().Count();
-        if (projesizAd > 0) Satir($"projeId'siz ama projeAdi'li farklı ad: {projesizAd} (Ana Proje altına ad ile açılır)");
+        var adCoz = EskiAktarim.ProjeAdiCozucu(v.Projeler);
+        var projesizAdlar = v.Atamalar.Where(a => TakvimCozumleyici.Katla(a.Durum) == "gorevli" && (a.ProjeId == null || !proje.ContainsKey(a.ProjeId.Value)) && a.ProjeAdi.Length > 0).Select(a => a.ProjeAdi).GroupBy(x => TakvimCozumleyici.Katla(x)).Select(g => g.First()).ToList();
+        if (projesizAdlar.Count > 0)
+        {
+            var cozulen = projesizAdlar.Where(x => adCoz(x) != null).ToList();
+            var cozulmeyen = projesizAdlar.Except(cozulen).ToList();
+            Satir($"projeId'siz/yetim ama projeAdi'li farklı ad: {projesizAdlar.Count} · bir eski projeye çözülen (ad ya da ad+lokasyon): {cozulen.Count} (ayrı kök açılmaz) · çözülemeyen: {cozulmeyen.Count} (Ana Proje altına ad ile açılır)");
+            foreach (var x in cozulmeyen.Take(Ornek)) Satir($"   ? \"{x}\"");
+        }
         sayi["projeKayit"] = v.Projeler.Count; sayi["projeYetim"] = yetim; sayi["projeDongu"] = dongu; sayi["projeAsiri"] = asiri + konumTasar;
 
         // ---------- genel ----------

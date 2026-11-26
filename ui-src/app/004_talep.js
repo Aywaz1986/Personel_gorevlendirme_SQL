@@ -412,7 +412,7 @@ async function talepSayfa() {
           sorumluBolum,
           h('section', { class: 'kart' }, h('h2', null, '2. Proje ve görev tanımı'),
             h('div', { style: 'display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px' },
-              alan('Ana Proje', r.ana), alan('Alt Proje (boşsa "Genel")', r.alt), alan('Faaliyet', r.faaliyet), alan('Konum', r.konum)),
+              alan('Ana Proje', r.ana), alan('Alt Proje (yoksa boş bırakın)', r.alt), alan('Faaliyet', r.faaliyet), alan('Konum', r.konum)),
             h('div', { style: 'margin-top:10px' }, r.yeni),
             h('div', { style: 'margin-top:12px' }, h('label', { style: 'font-size:13px;display:flex;flex-direction:column;gap:4px' }, 'Görev metni', r.metin)),
             h('div', { style: 'margin-top:10px' }, alan('Saha / Operasyon Notu (isteğe bağlı: araç, teçhizat, giriş, konaklama…)', r.nitelik))),
