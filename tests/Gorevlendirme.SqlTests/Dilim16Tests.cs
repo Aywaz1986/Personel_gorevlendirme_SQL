@@ -109,4 +109,19 @@ public class Dilim16Tests
         Assert.Equal("2.0", P(l.Single(x => P(x, "id") == kok.ToString()), "adamGun"));
         Assert.Equal("yetki", await Kod(() => HavuzService.EforAsync(o.Sorumlu)));
     }
+
+    [SqlFact]
+    public async Task Eslestirme_kapsam_disi_rol_vermez_ayri_kayitlanir_ve_son_guncelleyen_listelenir()
+    {
+        var o = await KurAsync(); await using var _t = o.T;
+        await KadroService.EslestirmeKaydetAsync(o.Yonetici, "Teknik", "DISI");
+        var l = Liste(await KadroService.EslestirmeListeAsync(o.Yonetici));
+        var teknik = l.Single(x => P(x, "bolum") == "Teknik");
+        Assert.Equal("DISI", P(teknik, "rol"));
+        Assert.NotEqual("", P(teknik, "sonKullanici"));
+        Assert.Equal("", P(l.Single(x => P(x, "bolum") == "Merkez"), "rol"));     // karar verilmemiş = bekliyor
+        // DISI bölümde istisnasız kişi hiçbir rol almaz
+        Assert.Empty(Liste(await SenaryoService.RolPersonelAsync(o.Yonetici, "SAHA", "Ali")));
+        Assert.Equal("dogrulama", await Kod(() => KadroService.EslestirmeKaydetAsync(o.Yonetici, "Teknik", "YONETICI")));
+    }
 }

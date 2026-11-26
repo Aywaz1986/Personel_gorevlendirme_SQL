@@ -3,6 +3,14 @@
 Her değişiklik önce **Yayınlanmamış** bölümüne yazılır; sürüm yükselince bölüm sürüm başlığına dönüştürülür.
 
 ## Yayınlanmamış
+### Dilim 20 – Kullanıcı Yetki Yönetimi (2026-11) — DEVAM EDİYOR (dal `dilim-20-yetki`, Dilim 19 dalından)
+**Oturum devir notu (her adımda güncelle):**
+- Kaynak: Murat'ın "Kullanıcı Yetki Yönetimi" prototipi (26.11.2026).
+- [x] 1. `019_yetki_kapsam_disi.sql` + `KadroService` + SqlTests testi
+- [x] 2. `004_yetki.js` yeniden yazıldı + CSS (yt-*), eski sayfalar 004_kadro.js'ten kaldırıldı
+- [x] 3. Ekran görüntüleri (02, 03, 28, 29), kılavuz bölüm 4, belgeler, test listesi
+- [ ] 4. Push, CI, PR (taban dilim-19-hafta-ozet)
+
 ### Dilim 19 – Haftalık Özet matrisi (2026-11) — DEVAM EDİYOR (dal `dilim-19-hafta-ozet`, Dilim 18 dalından)
 **Oturum devir notu (her adımda güncelle):**
 - Kaynak: Murat'ın "Haftalık Özet – 7 Günlük Personel Durum Matrisi" prototipi (26.11.2026). Yalnız arayüz.
