@@ -140,3 +140,5 @@ Değişen: `matrisHafta`/`matrisExcel` + `konum?` (yerleşke süzgeci, son iste�
 Değişen: `revizeOnayla` + `cikar?: [atamaId]` (çıkarılacaklar önce çıkarılır); `matrisHafta/matrisExcel` + `sadeceMusait?`. Arayüz: menüde Kadro/Eşleştirme/İstisna/Eski veri/Sistem yerine **Ayarlar** (sekmeli).
 
 Dilim 16: `matrisHafta`/`matrisExcel` yeni `sadeceSaha`; `matrisHafta` satırında `gsm`, hücrede `sorumluGsm` (yalnız Yönetici/Sorumlu için dolu). `atamaAdaylar` yalnız SAHA rolü. `atamaOnayla` ufuktan ilerisini reddeder.
+
+Dilim 19: yeni komut yok; Haftalık Özet arayüzü yeniden düzenlendi (bkz. docs/DILIMLER.md).
