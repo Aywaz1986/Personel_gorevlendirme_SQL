@@ -10,6 +10,9 @@ public static class HavuzService
             arsiv = r["arsiv"], arsivNeden = r["arsiv_neden"], arsivTarih = r["arsiv_tarih"],
         }).ToList();
 
+    public static async Task<object> EforAsync(SqlService sql) =>
+        (await sql.ProcAsync("gorev.sp_havuz_efor")).Select(r => new { id = r["id"], adamGun = r["adam_gun"] }).ToList();
+
     public static async Task<List<HavuzKaydi>> DuzListeAsync(SqlService sql) =>
         (await sql.ProcAsync("gorev.sp_havuz_listele")).Select(r =>
             new HavuzKaydi(Convert.ToInt32(r["id"]), r["ust_id"] == null ? null : Convert.ToInt32(r["ust_id"]), Convert.ToInt32(r["seviye"]), Convert.ToString(r["ad"]) ?? "")).ToList();

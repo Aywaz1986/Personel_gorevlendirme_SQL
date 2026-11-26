@@ -21,6 +21,7 @@ const TEMA_HAZIR = [
   { id: 'gokmavi', ad: 'Gök Mavi', hazir: true, cam: true, rad: 22, blur: 16, opak: 50, zemin: ['#9dc1f6', '#c9b8f4', '#92d3ee'], v: { bg: '#dbe6f6', kart: '#ffffff', yazi: '#10243f', soluk: '#546a88', cizgi: '#c4d6ee', vurgu: '#2f6fd0', vurguBg: '#e6effc', nav: '#2f5fb0', nav2: '#1d4592' } },
   { id: 'buzul', ad: 'Buzul', hazir: true, cam: true, rad: 16, blur: 16, opak: 55, zemin: ['#a9cdff', '#c6b8ff', '#9fdcf5'], v: { bg: '#d9e8fb', kart: '#ffffff', yazi: '#102a43', soluk: '#4a6580', cizgi: '#c3d6ee', vurgu: '#2f86f0', vurguBg: '#e8f2ff', nav: '#2c5fa8', nav2: '#1c4a80' } },
   { id: 'gececami', ad: 'Gece Camı', hazir: true, cam: true, rad: 16, blur: 18, opak: 62, zemin: ['#4a32c8', '#1b6fd1', '#a02d85'], v: { bg: '#0b1020', kart: '#1b1f48', yazi: '#eaf0ff', soluk: '#aab6d8', cizgi: '#3a3f6e', vurgu: '#8d7bff', vurguBg: '#1f2350', nav: '#141234', nav2: '#0c1a3a' } },
+  { id: 'kurumsalcam', ad: 'Kurumsal Cam (koyu lacivert)', hazir: true, cam: true, rad: 14, blur: 18, opak: 62, zemin: ['#070d19', '#0d192e', '#142644'], v: { bg: '#0a1426', kart: '#0f1c32', yazi: '#f1f5f9', soluk: '#94a3b8', cizgi: '#27364f', vurgu: '#38bdf8', vurguBg: '#0f2a44', nav: '#070d19', nav2: '#0d192e' } },
   { id: 'gunbatimi', ad: 'Gün Batımı', hazir: true, cam: true, rad: 16, blur: 16, opak: 52, zemin: ['#ffb98a', '#ff9fc0', '#cdb6ff'], v: { bg: '#fbe3d6', kart: '#ffffff', yazi: '#3a1f2e', soluk: '#7a5062', cizgi: '#efc9c9', vurgu: '#e0397a', vurguBg: '#ffe9de', nav: '#b0245e', nav2: '#6a2f4c' } },
   { id: 'okyanus', ad: 'Okyanus', hazir: true, cam: true, rad: 16, blur: 18, opak: 62, zemin: ['#0f8a86', '#146a9a', '#1b8a63'], v: { bg: '#04222c', kart: '#0a3844', yazi: '#e4fbff', soluk: '#9cc9cf', cizgi: '#1f5a66', vurgu: '#12c9c0', vurguBg: '#0d3a45', nav: '#05404a', nav2: '#062f3d' } },
 ];
@@ -52,7 +53,7 @@ const Tema = {
     const koyu = Tema.koyuMu(t), cam = t.cam && camAcik !== false;
     const v = t.v;
     s.setProperty('--bg', v.bg); s.setProperty('--yazi', v.yazi); s.setProperty('--soluk', v.soluk); s.setProperty('--cizgi', v.cizgi);
-    s.setProperty('--vurgu', v.vurgu); s.setProperty('--celik', v.vurgu); s.setProperty('--vurgu-bg', v.vurguBg); s.setProperty('--vurgu-yazi', koyu && t.id === 'okyanus' ? '#032028' : '#ffffff');
+    s.setProperty('--vurgu', v.vurgu); s.setProperty('--celik', v.vurgu); s.setProperty('--vurgu-bg', v.vurguBg); s.setProperty('--vurgu-yazi', koyu && (t.id === 'okyanus' || t.id === 'kurumsalcam') ? '#032028' : '#ffffff');
     s.setProperty('--nav', v.nav); s.setProperty('--nav2', v.nav2); s.setProperty('--baslik', koyu ? v.yazi : v.nav); s.setProperty('--anabtn', koyu ? v.vurgu : v.nav);
     s.setProperty('--kart', Tema.rgba(v.kart, cam ? t.opak : 100));
     s.setProperty('--rad', t.rad + 'px'); s.setProperty('--blur', (cam ? t.blur : 0) + 'px');

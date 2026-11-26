@@ -24,6 +24,7 @@ public static class HavuzTakvimCommands
 
     public static void Register(CommandRegistry r)
     {
+        r.Register("havuzEfor", async (st, a) => await HavuzService.EforAsync(st.RequireSql), kapiGerekli: true);
         r.Register("havuzListe", async (st, a) => await HavuzService.ListeAsync(st.RequireSql), kapiGerekli: true);
         r.Register("havuzEkle", async (st, a) => await HavuzService.EkleAsync(st.RequireSql, OptInt(a, "ustId"), Args.S(a, "ad")), kapiGerekli: true);
         r.Register("havuzAdlandir", async (st, a) =>

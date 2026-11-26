@@ -122,6 +122,9 @@ Onay/atama yordamları `SERIALIZABLE` + `UPDLOCK`: aynı personel, aynı gün ve
 ## Havuz ve takvim (Dilim 15)
 `016_havuz_arsiv.sql`: `proje_havuzu` üç arşiv sütunu, `sp_havuz_arsivle(@id,@arsiv,@neden)`. Arayüz: `004_havuz.js` (kademeli panel + ağaç), `004_takvim.js` (`takvimSayfa()` artık `{ust, alt}` döndürür: yönetim kartı ve yıllık çizelge), `004_havuz_takvim.js` (yerleşim). Takvim kategorileri arayüzde `YILLIK/RESMI/YARIM`; sunucuya `tur`+`zaman`+`yillik` olarak gider.
 
+## Proje Havuzu ağaç-tablo (Dilim 18)
+`004_havuz.js`: `havuzListe` + `havuzEfor` ile ağaç-tablo; filtre `AKTIF|PASIF|TUMU`, açık düğümler `durum.acik`, satır içi düzenleme `durum.duzenle`. Efor yüklenemezse sütun "—" gösterir (sayfa çalışır). `sp_havuz_efor` yalnız okur.
+
 ## Görünüm yardımcıları (Dilim 17)
 `002b_pencere_tarih.js`: `pencereAc(baslik, govde)` (Esc/dış tıklama ile kapanan pencere; takvim yönetimi bunu kullanır) ve tarih seçici (placeholder'ında GG.AA.YYYY geçen metin kutularına 📅 + gizli `type=date`, `showPicker`). `004_logo.js`: logo `localStorage` `ayar.logo` (data URL ≤300 KB), `#filigran` sabit katman. Talep kartı `.govde3`; Revize & İkame `durum.filtre='REVIZE'` ile talep sayfasında (kendi `S.yenile`'sini kurar, başka düğmeye geçince `talepYenile` geri gelir). `takvimSayfa()` `{ust: yönetim içeriği, alt: sayfa}` döndürür; sayfa `takvimSekmesi()`.
 

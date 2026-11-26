@@ -65,15 +65,18 @@ C.push(note("**Son aktif yönetici** kaldırılamaz, silinemez, pasife alınamaz
 C.push(...img("03_istisna","Kişi istisnaları."));
 
 C.push(h1("6. Proje / Görev Havuzu Yönetimi"));
-C.push(p("**Proje Havuzu** sekmesidir (Akademik Takvim ayrı sekmedir). Görev talepleri bu havuzdan seçilir. Havuz dört seviyelidir: **Ana Proje › Alt Proje › Faaliyet › Yerleşke**. Yalnızca Merkez Yönetici düzenler; rolü olan herkes okur."));
-C.push(b("**Kademeli seçim:** Ana Proje seçilince Alt Proje listesi, Alt Proje seçilince Faaliyet, Faaliyet seçilince Yerleşke listesi kendiliğinden dolar. Seçili kaydın yanında işlem düğmeleri çıkar. Aynı ağaç aşağıda açılıp kapanır ve aranabilir."));
-C.push(b("**Ekle:** Ana Proje için “Yeni Ana Proje” kutusu; alt kayıt için seçili kaydın **+ Alt Proje / + Faaliyet / + Yerleşke** düğmesi. Aynı üstte aynı ad (büyük/küçük harf fark etmez) iki kez olamaz."));
-C.push(b("**Ad düzelt:** yazım hatasını düzeltir; geçmiş talepler yeni adı gösterir."));
-C.push(b("**Tamamlandı (pasife al) / Etkinleştir:** pasif kayıt yeni talep listelerinde görünmez; geçmiş talep, atama, analiz ve raporlar bozulmaz. Altındakiler de pasife alınır; etkinleştirmek için üst kaydın aktif olması gerekir."));
-C.push(b("**Birleştir…:** aynı seviyedeki iki kayıt (örn. aynı projenin iki yazılışı) veri kaybı olmadan birleştirilir. Altındakiler hedefe taşınır, aynı adlılar kendi içinde birleşir; kaynak silinmez, “Birleştirildi” rozetiyle hedefi gösterir. Geri alınamaz."));
-C.push(b("**Arşivle…:** reddedilen ya da geçerliliğini yitiren tanımlar nedeniyle (zorunlu) arşive alınır; altındakilerle birlikte yeni taleplerde gizlenir. **Arşivden çıkar** düğmesi kaydı pasif olarak geri getirir; sonra etkinleştirilebilir. “Pasif / arşiv / birleştirilenleri göster” kutusu hepsini listeler."));
-C.push(note("Havuzdaki her ekleme, ad düzeltme, pasife alma, birleştirme ve arşivleme işlem günlüğüne (Ayarlar › İşlem Günlüğü) yazılır."));
-C.push(...img("06_havuz","Proje Havuzu sekmesi: kademeli havuz paneli ve sıralı ağaç.",600));
+C.push(p("**Proje Havuzu** sekmesidir (Akademik Takvim ayrı sekmedir). Görev talepleri bu havuzdan seçilir. Havuz **Ana Proje › Alt Proje › Faaliyet › Yerleşke** hiyerarşisini tek bir **Ağaç-Tablo**da gösterir. Yalnızca Merkez Yönetici düzenler."));
+C.push(b("**Üst kartlar:** Ana Proje, Alt Proje, Faaliyet, Yerleşke sayıları ve **Konsolide Toplam Efor** (Tam gün 1,0 • ÖÖ/ÖS 0,5 adam-gün)."));
+C.push(b("**Arama ve süzgeç:** kutuya proje/faaliyet/yerleşke adı ya da **#kayıt no** yazılır; eşleşen dallar açılır ve yazı işaretlenir. **Tümü / Sadece Aktifler / Pasifler** düğmeleri. **Derinlik:** Sadece Ana Projeler, Alt Projelere Kadar, Tümünü Aç."));
+C.push(b("**Satırlar:** seviyeye göre renkli ([ANA] / [ALT] / [FAALİYET]); ▸/▾ ile dal açılır; yerleşkeler 📍 ve **#no** ile gösterilir. Durum: **Aktif**, **Kısmi (a/t)** (alt dalların bir kısmı pasif), Pasif, Arşiv. Sağda her dalın toplam eforu görünür."));
+C.push(b("**Ekle:** Ana Proje için **+ Yeni Ana Proje**, satırdaki **+ Alt Proje / + Faaliyet / + Yerleşke** düğmesi. Satır altında çok alanlı ekleme satırı açılır (örn. yeni ana proje + ilk alt proje + faaliyet + yerleşke birlikte); **Enter** ya da ✓ Ekle."));
+C.push(b("**Düzenle:** ✎ Düzenle ile ad satırda yazılır; **Enter** kaydeder, **Esc** iptal eder."));
+C.push(b("**Pasife Al / Aktifleştir:** üst düğümde altındaki tüm dallara uygulanır; pasif kayıt yeni talep listelerinde görünmez, geçmiş kayıtlar bozulmaz. Pasif satırda **🗄 Arşivle** (neden zorunlu) çıkar; **Arşivden çıkar** kaydı pasif olarak geri getirir."));
+C.push(b("**⇄ Birleştir:** aynı ada benzer kayıt **Olası Mükerrer** rozetiyle işaretlenir. Birleştirme penceresinde doğru hedef seçilir; geçmiş talepler ve **efor hedefe aktarılır**, altındakiler hedefe taşınır, kaynak silinmez (“Birleştirildi” rozeti). Geri alınamaz."));
+C.push(b("**Eski Düz Liste:** sağ üstteki düğmeyle karşılaştırma görünümü; her satırda tüm ad zinciri tekrarlanır, mükerrer görmek için kullanılır."));
+C.push(b("**İşlem Günlüğü paneli (altta):** son gönderilen komut ve havuz kayıtlarının günlüğü (yalnız ekleme)."));
+C.push(note("Havuzdaki her işlem işlem günlüğüne (Ayarlar › İşlem Günlüğü) yazılır. Görünüm için Ayarlar › Görünüm'den **Kurumsal Cam (koyu lacivert)** teması seçilebilir."));
+C.push(...img("06_havuz","Proje Havuzu: Ağaç-Tablo, efor ve mükerrer rozeti.",600));
 
 C.push(h1("7. Akademik Takvim & Resmi Tatil Yönetimi"));
 C.push(p("**Akademik Takvim** ayrı bir sekmedir: yıllık çizelge 3 sütun × 4 satır (renkli ay başlıkları) görünür, altında tatil ayrıntıları listelenir; sağ üstteki **AKADEMİK TATİL VE RESMİ TATİL YÖNETİMİ** düğmesi ekleme/düzenleme/toplu ekleme penceresini açar (Esc ile kapanır). Her kayıt bir başlangıç, isteğe bağlı bitiş (boşsa tek gün), bir **tür** ve ad içerir. Tür seçimi üç seçenektir: **Yıllık İzin** (idari izin; “yıllık izinden kesilir” işaretiyle), **Resmi Tatil** ve **Yarım Gün** (ÖÖ ya da ÖS, yalnız tek günde)."));

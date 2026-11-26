@@ -94,4 +94,19 @@ public class Dilim16Tests
         Assert.Contains(l, x => P(x, "sicil") == "1002" && P(x, "tur") == "RAPOR");
         Assert.Equal("yetki", await Kod(() => TalepService.IzinRaporBilgiAsync(o.Saha1, 14)));
     }
+
+    [SqlFact]
+    public async Task Havuz_efor_atamalari_ust_dugumlere_yuvarlar_ve_yalniz_yonetici_gorur()
+    {
+        var o = await KurAsync(); await using var _t = o.T;
+        var id = await TalepAsync(o, 1, D(1), D(2));
+        await AtamaService.OnaylaAsync(o.Yonetici, id, new[] { new AtamaService.AtamaGirdisi("1002", D(1), "TAM"), new AtamaService.AtamaGirdisi("1002", D(2), "TAM") }, "REDDET");
+        var l = Liste(await HavuzService.EforAsync(o.Yonetici));
+        var yaprak = Convert.ToInt32(await o.T.SkalerAsync($"SELECT havuz_id FROM gorev.talepler WHERE id = {id}"));
+        var kok = Convert.ToInt32(await o.T.SkalerAsync($@"SELECT h1.id FROM gorev.proje_havuzu h4 JOIN gorev.proje_havuzu h3 ON h3.id = h4.ust_id
+            JOIN gorev.proje_havuzu h2 ON h2.id = h3.ust_id JOIN gorev.proje_havuzu h1 ON h1.id = h2.ust_id WHERE h4.id = {yaprak}"));
+        Assert.Equal("2.0", P(l.Single(x => P(x, "id") == yaprak.ToString()), "adamGun"));
+        Assert.Equal("2.0", P(l.Single(x => P(x, "id") == kok.ToString()), "adamGun"));
+        Assert.Equal("yetki", await Kod(() => HavuzService.EforAsync(o.Sorumlu)));
+    }
 }
