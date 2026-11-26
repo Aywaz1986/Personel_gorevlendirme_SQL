@@ -107,3 +107,9 @@ Test listesi: `docs/test-dilim-18.md`. Kademeli açılır listeler ve eski ağa�
 - Satır içi ad düzeltme (Enter/Esc), "+ Alt kayıt", Pasife al/Aktifleştir, Birleştir, Arşivle (mevcut komutlar).
 - Yeni: `havuzEfor` komutu + `018_havuz_efor.sql` (`sp_havuz_efor`, yalnız Yönetici; TAM=1,0 ÖÖ/ÖS=0,5, üst düğümlere yuvarlanır).
 - Prototipten alınmayanlar: SQL çekmecesi ve ekran içi audit paneli (günlük Ayarlar'da).
+
+## Dilim 19 – Haftalık Özet matrisi (Murat 26.11.2026: "7 Günlük Personel Durum Matrisi" prototipi)
+Test listesi: `docs/test-dilim-19.md`. Yalnız arayüz (`004_matris.js`, CSS); sunucu komutu değişmedi.
+- KPI şeridi (adam-gün, izin/rapor, çakışma), hafta listesi, istemci tarafı arama, hazır + kişisel görünümler, 5 katmanlı çekmece, odak, gruplama, 📌 sabitleme, tatil rozetleri, ÖÖ/ÖS bölünmüş kartlar, ayrıntı/müsait/çakışma pencereleri.
+- Tercihler `localStorage` (bilgisayar başına; kalıcı olmayabilir). Çakışma = aynı gün/zaman diliminde atama + izin/rapor kaydı.
+- Prototipten alınmayanlar: rol önizleme seçici ve tema düğmesi (gerçek rol ve Ayarlar › Görünüm kullanılır); hızlı atama/ikame modalı yerine ilgili sekmeye yönlendirme (kural ve yetki sunucuda).

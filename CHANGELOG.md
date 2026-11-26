@@ -3,6 +3,13 @@
 Her değişiklik önce **Yayınlanmamış** bölümüne yazılır; sürüm yükselince bölüm sürüm başlığına dönüştürülür.
 
 ## Yayınlanmamış
+### Dilim 19 – Haftalık Özet matrisi (2026-11) — DEVAM EDİYOR (dal `dilim-19-hafta-ozet`, Dilim 18 dalından)
+**Oturum devir notu (her adımda güncelle):**
+- Kaynak: Murat'ın "Haftalık Özet – 7 Günlük Personel Durum Matrisi" prototipi (26.11.2026). Yalnız arayüz.
+- [x] 1. `004_matris.js` yeniden yazıldı + CSS (hz-*)
+- [x] 2. Ekran görüntüleri (11, 26, 27), kılavuz 8.4, belgeler, test listesi
+- [ ] 3. Push, CI, PR (taban dilim-18-havuz-tablo)
+
 ### Dilim 18 – Proje Havuzu ağaç-tablo (2026-11) — DEVAM EDİYOR (dal `dilim-18-havuz-tablo`, Dilim 17 dalından)
 **Oturum devir notu (her adımda güncelle):**
 - Kaynak: Murat'ın "Proje / Görev Havuzu Yönetimi – Ağaç-Tablo Prototipi" HTML'i (25.11.2026).

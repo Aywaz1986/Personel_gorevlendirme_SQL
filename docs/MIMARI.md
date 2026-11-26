@@ -130,3 +130,6 @@ Onay/atama yordamları `SERIALIZABLE` + `UPDLOCK`: aynı personel, aynı gün ve
 
 ## Otomatik yenileme (denetim, Dilim 16)
 Kabuk (`005_kabuk.js`) her 30 sn: üst sayaçları (`sayaclar`: KPI + sekme rozetleri) yeniler; sayfa `S.yenile` tanımlıysa onu çağırır (sekme gizliyse ya da kullanıcı o sayfada bir giriş alanındaysa atlanır). Sayfa bazında: **Talepler** (yalnız liste görünümünde; tavsiye 5 dk önbellek), **İzin Onayları/Görevlerim** (liste), **Revize & İkame** (panel kapalıyken), **Haftalık Özet** (30 sn'de yalnız hafta sürümü sorulur, değişmişse tablo çekilir), **Analiz**, **İzin/Rapor Bilgisi** yenilenir. **Yenilenmeyenler:** Proje Havuzu & Takvim, Kullanıcı Yetki, Ayarlar (yönetici düzenleme sayfaları; elle ⟳ Yenile). Form/atama paneli açıkken yenileme yapılmaz (girişler silinmesin).
+
+## Haftalık Özet matrisi (Dilim 19)
+`ui-src/app/004_matris.js`: sunucudan yalnız `matrisHafta`/`matrisSurum`/`takvimListe`/`havuzListe`; gün çözümleme (`gunCoz`) her personel×gün×dilim (OO/OS) için GOREV/IZIN/TATIL/MUSAIT üretir; KPI, gruplama, odak ve çakışma istemcide hesaplanır. Görünüm tercihleri `localStorage` (`gorev_hafta_*`).

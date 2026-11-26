@@ -122,12 +122,15 @@ C.push(note("**Reddetme.** Onay bekleyen talepte **Reddet…** ile ret nedeni (z
 C.push(note("**Sorumlu tarafı.** Taleplerim sayfasının üstünde yeni bildirimler görünür (atandı, reddedildi, görevden çıkarıldı); **Tümünü okundu say** ile kapanır. Atama yapılmış talepte **Atananlar** düğmesi gün gün kimin atandığını gösterir."));
 
 C.push(h2("8.4 Haftalık Özet (herkes)"));
-C.push(p("**Haftalık Özet** sekmesi Yönetici, Proje Sorumlusu ve Saha personeli için açıktır; yalnız okunur. Satırlar personel, sütunlar haftanın yedi günüdür. Hücrenin üst yarısı öğleden önce, alt yarısı öğleden sonradır; tam gün görev tek blok olarak görünür. Renk Ana Projeyi gösterir, proje adı hücrede de yazılıdır."));
-C.push(n("Haftayı **◀ ▶** ile değiştirin, **Bu hafta**'ya basın ya da kutuya tarihi **GG.AA.YYYY** yazın (o tarihin haftası açılır).","n8"));
-C.push(n("**Ad ara**, **Bölüm** ve **Ana Proje** ile daraltın. Süzgeç listesinden **Saha personeli (tümü)** (varsayılan), **Görevli / izinli olanlar**, **Sadece müsaitler** ya da **Tüm personel** seçilir. Saha personelinin her günü görev, izin, rapor ya da yeşil kesikli **Müsait** olarak görünür; göreve atama yapılınca hücre otomatik göreve döner (30 sn içinde). Personelin adının altında iletişim numarası, görev bloğunun altında proje sorumlusu ve numarası yazar (numaralar yalnız Yönetici ve Proje Sorumlusuna görünür).","n8"));
-C.push(n("Bir göreve basınca altta talep kodu, Ana Proje › Alt Proje › Faaliyet, konum, saat ve proje sorumlusu açılır.","n8"));
-C.push(n("**Excel'e aktar** kayıt penceresi açar; görünen hafta ve filtrelerle bir .xlsx dosyası yazar (her gün için “ÖÖ: … / ÖS: …” metni).","n8"));
-C.push(...img("11_matris","Haftalık matris: ÖÖ/ÖS bölünmüş hücreler, filtreler ve ayrıntı kartı.",1500));
+C.push(p("**Haftalık Özet** sekmesi Yönetici, Proje Sorumlusu ve Saha personeli için açıktır; yalnız okunur. Satırda personel, sütunda 7 gün vardır; kart ÖÖ/ÖS bölünmüş olabilir."));
+C.push(n("**Üst kartlar:** Toplam Saha Personeli, Görevli / Müsait Adam-Gün (Tam = 1,0; ÖÖ/ÖS = 0,5), İzin / Rapor ve **İkame / Çakışma Uyarısı** (görevi olan günde izin ya da rapor çıkmışsa).","n8"));
+C.push(n("**Hafta gezgini:** ◀ Önceki / Sonraki ▶, hafta listesi (HFT numaralı), **Bu hafta**, **GG.AA.YYYY** kutusu. **Arama** personel, proje, faaliyet, yerleşke, talep no ve sorumluyu bulur; Bölüm / Ana Proje / Yerleşke / personel süzgeçleri korunur.","n8"));
+C.push(n("**Hazır Görünümler:** Tüm Ekip, Hızlı Atama (Müsaitler Üstte), Gölbaşı Saha Odak, Çakışma & İkame. **+ Görünümü Kaydet** mevcut ayarları kişisel sekme yapar; **↺ Varsayılana Sıfırla**. Ayarlar yalnız bu bilgisayarda saklanır.","n8"));
+C.push(n("**⚙️ Görünümü Özelleştir** (sağ çekmece, 5 katman): hücre yoğunluğu (Kompakt/Standart/Detaylı); bilgi alanları; satır gruplama (durum, ana proje, yerleşke) ve 📌 ile **personel sabitleme**; renk modu (durum, ana proje, yerleşke); akıllı odak (proje, yerleşke, sadece müsait, sadece çakışma) ve hafta sonu sütunu (normal, dar, gizle) ile takvim tatillerini yansıtma.","n8"));
+C.push(n("**Renkler:** yeşil kesikli = müsait, mavi = görevli, turuncu = izin (kesikli: onay bekliyor), kırmızı = rapor / çakışma, sarı-kırmızı üst rozet = resmi/idari tatil ya da 0,5 gün arife. Odak dışındaki kartlar silikleşir.","n8"));
+C.push(n("**Karta basınca** ayrıntı penceresi açılır (talep, proje, faaliyet, yerleşke, saat, sorumlu). Müsait günde Yönetici **Görev talebi gir (vekâleten)**'e, ⚠️ ikame gereken kartta **Revize & İkame** sekmesine geçebilir. İzin/rapor kayıtları Yönetici dışında 🔒 salt-okunurdur. **Excel'e aktar** görünen hafta ve süzgeçlerle .xlsx yazar.","n8"));
+C.push(...img("11_matris","Haftalık Özet: kartlar, hazır görünümler, renk lejantı ve bölünmüş hücreler.",1500));
+C.push(...img("26_matris_cekmece","Görünümü Özelleştir çekmecesi (5 katman).",1300));
 C.push(note("**Otomatik yenileme.** Ekran 30 saniyede bir haftanın atamalarında değişiklik olup olmadığına bakar; değişmişse tabloyu kendiliğinden tazeler (üstte “Son yenileme” saati görünür). Sarı sütun akademik takvimdeki tam gün tatildir. İzin ve rapor günleri sonraki dilimde bu tabloya eklenecektir."));
 
 C.push(h2("8.5 İzin, rapor ve görevlerim"));
