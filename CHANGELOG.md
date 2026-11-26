@@ -3,6 +3,10 @@
 Her değişiklik önce **Yayınlanmamış** bölümüne yazılır; sürüm yükselince bölüm sürüm başlığına dönüştürülür.
 
 ## Yayınlanmamış
+### Dilim 23 – Havuzda kayıt taşıma (2026-11) — DEVAM EDİYOR (dal `dilim-23-havuz-tasi`, Dilim 22 dalından)
+- `020_havuz_tasi.sql` / `sp_havuz_tasi` + komut `havuzTasi` + satırda **↗ Taşı** penceresi. Yapraklar (Yerleşke) seviye değiştirmez, talepler bozulmaz.
+- Yapılabilen taşımalar: Yerleşke → başka Faaliyet; Faaliyet → başka Alt Proje ya da doğrudan Ana Proje ("Genel" aracı otomatik); Alt Proje → başka Ana Proje ya da Ana Proje olarak; Ana Proje → başka Ana Projenin Alt Projesi (gerçek alt projesi yoksa; "Genel" araçları çözülür).
+- Sınırlar: Ana Projenin gerçek alt projeleri varsa önce onlar taşınmalı (aksi halde 5 seviye olurdu). Aynı adlı kayıt hedefte varsa önce birleştirilir. SINANMADI (CI).
 ### Dilim 22 – Proje düzeltmeleri (2026-11) — DEVAM EDİYOR (dal `dilim-22-proje-duzeltme`, Dilim 21 dalından)
 - `gorev_sifirla.sql`: proje havuzu satırları zaten siliniyordu (yapılandırma tabloları dışındaki her tablo); bunu kanıtlayan test eklendi: `Sifirla_proje_havuzu_kayitlarini_temizler`. Numara sayacı sıfırlanmaz (dbo_koruma DBCC'yi yasaklar; izin listesi yazılı onay ister). SINANMADI (CI).
 - Proje Havuzu: alt projesiz ana proje desteği. "Genel" aracı Alt Proje kaydı ağaçta gizlenir, faaliyetler doğrudan ana projenin altında görünür; ana proje satırında **+ Faaliyet**; yeni ana projede Alt Proje alanı boş bırakılabilir (arka planda "Genel" açılır, şema değişmedi). Talep formunda "boşsa Genel" yazısı kaldırıldı.
