@@ -150,7 +150,6 @@ select,input[type=search],input.metin{padding:8px 10px;border:1px solid var(--ci
 .tsec-sar{position:relative;display:inline-flex;align-items:center;gap:4px;vertical-align:middle}
 .tsec-sar>input{min-width:0}
 button.tsec{padding:0;width:36px;min-height:40px;box-sizing:border-box;font-size:16px;line-height:1;background:var(--kart)}
-.tsec-gizli{position:absolute;left:0;bottom:0;width:1px;height:1px;opacity:0;pointer-events:none;border:0;padding:0}
 #filigran{position:fixed;inset:0;z-index:50;pointer-events:none;background-repeat:no-repeat;background-position:center;background-size:min(46vw,46vh)}
 .ust2 .logo-img{width:40px;height:40px;border-radius:10px;object-fit:contain;background:rgba(255,255,255,.92);padding:3px;box-sizing:border-box}
 .satir>button,.satir>select,.satir>input,.satir .tsec-sar>input{min-height:40px;box-sizing:border-box}
@@ -315,6 +314,14 @@ button.tsec{padding:0;width:36px;min-height:40px;box-sizing:border-box;font-size
 .yt-bilgi{border:1px solid var(--cizgi);border-radius:8px;padding:8px 10px;background:var(--bg);font-size:13px}
 .yt-rk{display:flex;gap:10px;border:1px solid var(--cizgi);border-radius:10px;padding:9px 10px;cursor:pointer;background:var(--bg)}.yt-rk.on{border-color:var(--vurgu);background:var(--vurgu-bg)}
 .yt-sim{border:1px solid var(--cizgi);border-radius:10px;padding:10px;background:var(--bg);display:flex;flex-direction:column;gap:10px;font-size:13px}
+
+/* Özel tarih seçici (Pazartesi başlangıçlı) */
+.tsp{position:fixed;z-index:2000;width:288px;background:var(--kart);color:var(--yazi);border:1px solid var(--cizgi);border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.3);padding:10px}
+.tsp-ust{display:flex;gap:6px;align-items:center;margin-bottom:8px}.tsp-ust select{flex:1;min-width:0;min-height:34px}.tsp-ust button{min-height:34px;padding:0 10px}
+.tsp-izgara{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center}.tsp-b{font-size:11px;font-weight:800;color:var(--soluk);padding:4px 0}.tsp-b.hs{color:var(--kotu)}
+.tsp-g{min-height:34px;padding:0;border-radius:8px;border:1px solid transparent;background:transparent;font-weight:600;color:var(--yazi)}.tsp-g.hs{color:var(--kotu)}
+.tsp-g:hover{background:var(--vurgu-bg)}.tsp-g.bugun{border-color:var(--vurgu)}.tsp-g.sec{background:var(--vurgu);color:var(--vurgu-yazi,#fff)}
+.tsp-alt{display:flex;justify-content:space-between;margin-top:8px}.tsp-alt button{min-height:32px}
 </style>
 </head>
 <body>

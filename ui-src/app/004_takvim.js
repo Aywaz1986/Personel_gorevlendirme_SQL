@@ -96,8 +96,8 @@ async function takvimSayfa() {
   function form() {
     const d = durum.duzenle;
     const kat0 = d ? takvimKategoriSatirdan(d) : 'RESMI';
-    const bas = h('input', { type: 'date', class: 'metin', value: d ? d.baslangic : '', 'aria-label': 'Başlangıç' });
-    const bit = h('input', { type: 'date', class: 'metin', value: d && d.bitis !== d.baslangic ? d.bitis : '', 'aria-label': 'Bitiş (boşsa tek gün)' });
+    const bas = h('input', { type: 'text', class: 'metin', placeholder: 'GG.AA.YYYY', maxlength: '10', inputmode: 'numeric', value: d ? takvimTarihYaz(d.baslangic) : '', 'aria-label': 'Başlangıç' });
+    const bit = h('input', { type: 'text', class: 'metin', placeholder: 'GG.AA.YYYY', maxlength: '10', inputmode: 'numeric', value: d && d.bitis !== d.baslangic ? takvimTarihYaz(d.bitis) : '', 'aria-label': 'Bitiş (boşsa tek gün)' });
     const kat = h('select', { 'aria-label': 'Tür', style: 'font-weight:600' }, [['YILLIK', 'Yıllık İzin'], ['RESMI', 'Resmi Tatil']].concat(d && kat0 === 'YARIM' ? [['YARIM', 'Yarım Gün']] : []).map(([k, a]) => h('option', { value: k, selected: k === kat0 }, a)));
     const dilim = h('select', { 'aria-label': 'Zaman dilimi' }, ['TAM', 'OO', 'OS'].map((z) => h('option', { value: z, selected: d ? d.zaman === z : z === 'TAM' }, takvimZamanAd(z))));
     const ad = h('input', { type: 'text', class: 'metin', maxlength: '200', placeholder: 'Ad (ör. Ramazan Bayramı)', value: d ? d.ad : '', 'aria-label': 'Ad', style: 'flex:1 1 180px' });
@@ -111,7 +111,7 @@ async function takvimSayfa() {
           try {
             const a = takvimKategoriAlanlar(kat.value, dilim.value, d ? d.tur : 'RESMI', yil.checked);
             if (kat.value !== 'YARIM' && dilim.value !== 'TAM') a.zaman = dilim.value;   // seçilen dilim tek gün yarım gün kaydı üretir
-            await Kopru.cagir('takvimKaydet', { id: d ? d.id : null, baslangic: bas.value, bitis: bit.value, zaman: a.zaman, tur: a.tur, ad: ad.value, yillik: a.yillik });
+            await Kopru.cagir('takvimKaydet', { id: d ? d.id : null, baslangic: talepTarihOku(bas.value) || '', bitis: talepTarihOku(bit.value) || '', zaman: a.zaman, tur: a.tur, ad: ad.value, yillik: a.yillik });
             toast('Kaydedildi.'); durum.duzenle = null; await yukle();
           } catch (e) { hata(e); }
         } }, d ? 'Kaydet' : 'Takvime ekle'),
