@@ -41,6 +41,7 @@ Yeni hata eşlemesi: sunucu 50022/50023 → `yetki`; 50020/50021/50024/50025 →
 | `talepAtananAdlar` | – | `[{talepId, adlar}]` | ✔ (Yönetici/Sorumlu) | görev başlığında "atandı"; Sorumlu yalnız kendi talepleri |
 | `izinRaporBilgi` | `gun?` (7/14/30) | `[{sicil,ad,gsm,tur,ilkTarih,sonTarih,durum}]` | ✔ (Yönetici/Sorumlu) | salt okunur izin/rapor bilgisi |
 | `havuzArsiv` | `id, arsiv, neden?` | `{etkilenen}` | ✔ (Yönetici) | arşivle: neden zorunlu, altındakilerle pasif + arşiv; `arsiv:false` yalnız bayrağı kaldırır (pasif kalır). `havuzListe` artık `arsiv, arsivNeden, arsivTarih` döner |
+| `havuzTasi` | `id, yeniUstId?` | `{tasinan}` | ✔ | kaydı başka üst kaydın altına taşır (yapraklar seviye değiştirmez); `yeniUstId` boş = Alt Proje'yi Ana Proje yap; Faaliyet → Ana Proje'ye doğrudan (Genel aracı otomatik); Ana Proje → başka Ana Projenin Alt Projesi (gerçek alt projesi yoksa) |
 | `havuzBirlestir` | `kaynakId, hedefId` | `{birlesen, tasinan}` | ✔ | aynı seviye; çocuklar taşınır, aynı adlılar birleşir; kaynak pasif + `birlestirildiId` |
 | `takvimListe` | `yil?` | `[{id, baslangic(ISO), bitis(ISO), zaman, tur, ad, yillik, gun, kesilen}]` | ✔ | her rolde okur; `gun` takvim günü (yarım gün 0.5), `kesilen` yıllık izinden düşecek iş günü |
 | `takvimOzet` | `yil` | `{kayit, resmiGun, idariGun, kesilenGun}` | ✔ | her rolde okur; "kesilen" yalnız bilgi (yıllık izin modülü yok) |
