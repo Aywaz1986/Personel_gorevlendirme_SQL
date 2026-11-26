@@ -20,6 +20,7 @@ VERI = {
   "kadroOzet": {"toplam": 4, "aktif": 3, "sonZaman": "2026-11-16T14:20:00", "sonKullanici": "ALAN\\ornek.yonetici", "sonAyrinti": json.dumps({"okunan": 4, "eklenen": 1, "guncellenen": 2, "pasife_alinan": 1, "degismeyen": 0})},
   "kadroListe": KADRO,
   "eslestirmeListe": [{"bolum": "Örnek Bölüm A", "rol": "SORUMLU", "kisi": 14}, {"bolum": "Örnek Bölüm B", "rol": "SAHA", "kisi": 120}, {"bolum": "Örnek Bölüm D", "rol": None, "kisi": 9}],
+  "havuzEfor": [{"id": 1, "adamGun": 12.5}, {"id": 2, "adamGun": 9.0}, {"id": 3, "adamGun": 9.0}, {"id": 4, "adamGun": 9.0}, {"id": 5, "adamGun": 3.5}, {"id": 6, "adamGun": 0.5}],
   "havuzListe": [
     {"id": 1, "ustId": None, "seviye": 1, "ad": "Örnek Ana Proje A", "aktif": True, "birlestirildiId": None, "arsiv": False, "arsivNeden": None},
     {"id": 2, "ustId": 1, "seviye": 2, "ad": "Örnek Alt Proje 1", "aktif": True, "birlestirildiId": None, "arsiv": False, "arsivNeden": None},
@@ -27,8 +28,13 @@ VERI = {
     {"id": 4, "ustId": 3, "seviye": 4, "ad": "Örnek Yerleşke", "aktif": True, "birlestirildiId": None, "arsiv": False, "arsivNeden": None},
     {"id": 5, "ustId": 1, "seviye": 2, "ad": "Örnek Alt Proje 2", "aktif": True, "birlestirildiId": None, "arsiv": False, "arsivNeden": None},
     {"id": 6, "ustId": None, "seviye": 1, "ad": "Örnek Ana Proje B", "aktif": True, "birlestirildiId": None, "arsiv": False, "arsivNeden": None},
+    {"id": 7, "ustId": 3, "seviye": 4, "ad": "Örnek Yerleşke ", "aktif": True, "birlestirildiId": None, "arsiv": False, "arsivNeden": None},
+    {"id": 8, "ustId": 3, "seviye": 4, "ad": "Örnek Salon", "aktif": False, "birlestirildiId": None, "arsiv": False, "arsivNeden": None},
+    {"id": 9, "ustId": 3, "seviye": 4, "ad": "Eski Konum", "aktif": True, "birlestirildiId": 4, "arsiv": False, "arsivNeden": None},
   ],
-  "matrisHafta": [{"sicil": "1002", "ad": "Örnek Personel 2", "bolum": "Örnek Bölüm B", "hucreler": [{"tarih": "2026-11-23", "zaman": "TAM", "talepId": 1, "kod": "TLP-0001", "ana": "Örnek Ana Proje A", "alt": "Genel", "faaliyet": "Örnek Faaliyet", "konum": "Örnek Yerleşke", "saat": "07:30 - 16:35", "sorumlu": "Örnek Personel 1"}, {"tarih": "2026-11-24", "zaman": "TAM", "talepId": 1, "kod": "TLP-0001", "ana": "Örnek Ana Proje A", "alt": "Genel", "faaliyet": "Örnek Faaliyet", "konum": "Örnek Yerleşke", "saat": "07:30 - 16:35", "sorumlu": "Örnek Personel 1"}, {"tarih": "2026-11-25", "zaman": "OO", "talepId": 1, "kod": "TLP-0002", "ana": "Örnek Ana Proje B", "alt": "Genel", "faaliyet": "Kayıt", "konum": "Salon", "saat": "07:30 - 16:35", "sorumlu": "Örnek Personel 1"}]}, {"sicil": "1004", "ad": "Örnek Personel 4", "bolum": "Örnek Bölüm B", "hucreler": [{"tarih": "2026-11-25", "zaman": "OO", "talepId": 1, "kod": "TLP-0001", "ana": "Örnek Ana Proje A", "alt": "Genel", "faaliyet": "Örnek Faaliyet", "konum": "Örnek Yerleşke", "saat": "07:30 - 16:35", "sorumlu": "Örnek Personel 1"}, {"tarih": "2026-11-25", "zaman": "OS", "talepId": 1, "kod": "TLP-0002", "ana": "Örnek Ana Proje B", "alt": "Genel", "faaliyet": "Kayıt", "konum": "Salon", "saat": "07:30 - 16:35", "sorumlu": "Örnek Personel 1"}, {"tarih": "2026-11-27", "zaman": "TAM", "talepId": 1, "kod": "TLP-0002", "ana": "Örnek Ana Proje B", "alt": "Genel", "faaliyet": "Kayıt", "konum": "Örnek Yerleşke", "saat": "07:30 - 16:35", "sorumlu": "Örnek Personel 1"}]}, {"sicil": "1005", "ad": "Örnek Personel 5", "bolum": "Örnek Bölüm C", "hucreler": [{"tarih": "2026-11-24", "zaman": "TAM", "talepId": 1, "kod": "TLP-0002", "ana": "Örnek Ana Proje B", "alt": "Genel", "faaliyet": "Kayıt", "konum": "Örnek Yerleşke", "saat": "07:30 - 16:35", "sorumlu": "Örnek Personel 1"}, {"tarih": "2026-11-26", "zaman": "TAM", "talepId": 1, "kod": "TLP-0001", "ana": "Örnek Ana Proje A", "alt": "Genel", "faaliyet": "Örnek Faaliyet", "konum": "Örnek Yerleşke", "saat": "07:30 - 16:35", "sorumlu": "Örnek Personel 1"}]}],
+  "talepAtananAdlar": [{"talepId": 1, "adlar": "Örnek Personel 2"}],
+  "izinRaporBilgi": [{"sicil": "1006", "ad": "Örnek Personel 6", "gsm": "0532 666 66 66", "tur": "RAPOR", "ilkTarih": "2026-11-24", "sonTarih": "2026-11-27", "durum": "ONAYLI"}, {"sicil": "1007", "ad": "Örnek Personel 7", "gsm": "0532 777 77 77", "tur": "IZIN", "ilkTarih": "2026-11-26", "sonTarih": "2026-11-26", "durum": "BEKLIYOR"}],
+  "matrisHafta": [{"sicil": "1002", "ad": "Örnek Personel 2", "bolum": "Örnek Bölüm B", "gsm": "0532 222 22 22", "hucreler": [{"tarih": "2026-11-23", "zaman": "TAM", "talepId": 1, "kod": "TLP-0001", "ana": "Örnek Ana Proje A", "alt": "Genel", "faaliyet": "Örnek Faaliyet", "konum": "Örnek Yerleşke", "saat": "07:30 - 16:35", "sorumluGsm": "0532 111 11 11", "sorumlu": "Örnek Personel 1"}, {"tarih": "2026-11-24", "zaman": "TAM", "talepId": 1, "kod": "TLP-0001", "ana": "Örnek Ana Proje A", "alt": "Genel", "faaliyet": "Örnek Faaliyet", "konum": "Örnek Yerleşke", "saat": "07:30 - 16:35", "sorumlu": "Örnek Personel 1"}, {"tarih": "2026-11-25", "zaman": "OO", "talepId": 1, "kod": "TLP-0002", "ana": "Örnek Ana Proje B", "alt": "Genel", "faaliyet": "Kayıt", "konum": "Salon", "saat": "07:30 - 16:35", "sorumlu": "Örnek Personel 1"}]}, {"sicil": "1004", "ad": "Örnek Personel 4", "bolum": "Örnek Bölüm B", "hucreler": [{"tarih": "2026-11-25", "zaman": "OO", "talepId": 1, "kod": "TLP-0001", "ana": "Örnek Ana Proje A", "alt": "Genel", "faaliyet": "Örnek Faaliyet", "konum": "Örnek Yerleşke", "saat": "07:30 - 16:35", "sorumlu": "Örnek Personel 1"}, {"tarih": "2026-11-25", "zaman": "OS", "talepId": 1, "kod": "TLP-0002", "ana": "Örnek Ana Proje B", "alt": "Genel", "faaliyet": "Kayıt", "konum": "Salon", "saat": "07:30 - 16:35", "sorumlu": "Örnek Personel 1"}, {"tarih": "2026-11-27", "zaman": "TAM", "talepId": 1, "kod": "TLP-0002", "ana": "Örnek Ana Proje B", "alt": "Genel", "faaliyet": "Kayıt", "konum": "Örnek Yerleşke", "saat": "07:30 - 16:35", "sorumlu": "Örnek Personel 1"}]}, {"sicil": "1005", "ad": "Örnek Personel 5", "bolum": "Örnek Bölüm C", "hucreler": [{"tarih": "2026-11-24", "zaman": "TAM", "talepId": 1, "kod": "TLP-0002", "ana": "Örnek Ana Proje B", "alt": "Genel", "faaliyet": "Kayıt", "konum": "Örnek Yerleşke", "saat": "07:30 - 16:35", "sorumlu": "Örnek Personel 1"}, {"tarih": "2026-11-26", "zaman": "TAM", "talepId": 1, "kod": "TLP-0001", "ana": "Örnek Ana Proje A", "alt": "Genel", "faaliyet": "Örnek Faaliyet", "konum": "Örnek Yerleşke", "saat": "07:30 - 16:35", "sorumlu": "Örnek Personel 1"}]}],
   "izinListe": [
     {"id": 1, "kod": "IZN-0001", "sicil": "1000", "ad": "Örnek Kullanıcı", "bolum": "Örnek Bölüm A", "durum": "ONAY_BEKLIYOR", "tur": "Yıllık izin", "aciklama": None, "vekaleten": None, "retNedeni": None, "ilkTarih": "2026-12-07", "sonTarih": "2026-12-11", "gunSayisi": 5, "cakisanAtama": 0, "gunler": []},
     {"id": 2, "kod": "IZN-0002", "sicil": "1000", "ad": "Örnek Kullanıcı", "bolum": "Örnek Bölüm A", "durum": "ONAYLANDI", "tur": "Mazeret izni", "aciklama": "Örnek", "vekaleten": None, "retNedeni": None, "ilkTarih": "2026-11-26", "sonTarih": "2026-11-26", "gunSayisi": 1, "cakisanAtama": 0, "gunler": [{"tarih": "2026-11-26", "zaman": "OS", "durum": "ONAYLI"}]},
@@ -127,15 +133,27 @@ with sync_playwright() as P:
     menu('Ayarlar'); pg.wait_for_timeout(300)
     def sekme(ad): pg.locator('button', has_text=ad).first.click(); pg.wait_for_timeout(300)
     sh(pg, '16_ayarlar_gorunum'); sekme('Kadro'); sh(pg, '01_kadro')
-    menu('Kullanıcı Yetki'); pg.wait_for_timeout(500); sh(pg, '02_eslestirme')
-    pg.get_by_role('button', name='+ Yeni yetkili ekle').click(); pg.wait_for_timeout(200); sh(pg, '03_istisna')
-    pg.evaluate('window.scrollTo(0, document.body.scrollHeight)'); pg.wait_for_timeout(200); sh(pg, '17_gunluk')
+    menu('Kullanıcı Yetki'); pg.wait_for_timeout(500)
+    pg.get_by_role('button', name='+ Yeni yetkili ekle').click(); pg.wait_for_timeout(200)
+    pg.set_viewport_size({'width': 1200, 'height': 1500}); sh(pg, '03_istisna')
+    pg.evaluate('window.scrollTo(0, document.body.scrollHeight)'); pg.wait_for_timeout(200); sh(pg, '02_eslestirme')
+    pg.set_viewport_size({'width': 1200, 'height': 800})
+    menu('Ayarlar'); pg.wait_for_timeout(300); sekme('İşlem Günlüğü'); pg.wait_for_timeout(500); sh(pg, '17_gunluk')
     menu('Proje Havuzu'); pg.wait_for_timeout(500)
-    pg.set_viewport_size({'width': 1400, 'height': 1500})
-    pg.locator('select[aria-label="Ana Proje"]').select_option(label='Örnek Ana Proje A'); pg.locator('select[aria-label="Alt Proje"]').select_option(label='Örnek Alt Proje 1')
-    pg.wait_for_timeout(300); sh(pg, '06_havuz')
+    pg.set_viewport_size({'width': 1400, 'height': 1000})
+    pg.get_by_role('button', name='Tümünü Aç').click(); pg.wait_for_timeout(300); sh(pg, '06_havuz')
+    pg.get_by_role('button', name='⇄ Birleştir').first.click(); pg.wait_for_timeout(300); sh(pg, '25_havuz_birlestir')
+    pg.get_by_role('button', name='Vazgeç').first.click(); pg.wait_for_timeout(200)
+    menu('Akademik Takvim'); pg.wait_for_timeout(600)
+    pg.set_viewport_size({'width': 1400, 'height': 1700}); sh(pg, '21_takvim')
+    pg.get_by_role('button', name='AKADEMİK TATİL VE RESMİ TATİL YÖNETİMİ').click(); pg.wait_for_timeout(300)
     pg.locator('textarea').fill('08 NİSAN Pazartesi 1 gün İdari izin\n09 NİSAN Salı Ramazan Bayramı arifesi\n10-11-12 NİSAN Çarşamba-Perşembe-Cuma / 3 Gün Ramazan Bayramı\n01 MAYIS Çarşamba / 1 Gün Emek ve Dayanışma Günü'); pg.get_by_role('button', name='Dosyayı tara').click(); pg.wait_for_timeout(500)
     pg.get_by_role('button', name='Doğrula').click(); pg.wait_for_timeout(400); sh(pg, '07_takvim')
+    pg.keyboard.press('Escape')
+    pg.get_by_role('button', name='AKADEMİK TATİL VE RESMİ TATİL YÖNETİMİ').click(); pg.wait_for_timeout(300)
+    pg.get_by_role('button', name='Vazgeç').first.click() if False else None
+    pg.get_by_role('button', name='Düzenle').nth(1).click(); pg.wait_for_timeout(400); sh(pg, '24_takvim_duzenle')
+    pg.keyboard.press('Escape')
     pg.set_viewport_size({'width': 1200, 'height': 800})
     pg.evaluate('window.scrollTo(0, 0)'); sh(pg, '04_gorunum', '.ust2')
     sh(ac(ben(False, False, False, False, [])), '05_yetkisiz')
@@ -162,8 +180,12 @@ with sync_playwright() as P:
     py.locator('input[type=checkbox]').nth(1).check(); py.locator('input[type=checkbox]').nth(2).check()
     py.get_by_role('button', name='Seçili günlere ata').nth(1).click(); py.wait_for_timeout(200)
     py.set_viewport_size({'width': 1200, 'height': 1250}); sh(py, '10_atama_paneli')
+    pz = ac(ben(True, False, False, False, ["YONETICI"]))
+    pz.locator('nav.sekmeler button', has_text='Bekleyen Görev').first.click(); pz.wait_for_timeout(500)
+    pz.set_viewport_size({'width': 1400, 'height': 900}); sh(pz, '22_talep_ozet')
+    pz.get_by_role('button', name='Revize & İkame Uyarıları').click(); pz.wait_for_timeout(400); sh(pz, '23_revize_ikame')
     pm = ac(ben(True, False, False, True, ["SAHA"]))
-    pm.locator('nav.sekmeler button', has_text='Matris').first.click(); pm.wait_for_timeout(400)
+    pm.locator('nav.sekmeler button', has_text='Haftalık Özet').first.click(); pm.wait_for_timeout(400)
     pm.get_by_label('Haftaya git (tarih)').fill(''); pm.get_by_label('Haftaya git (tarih)').press_sequentially('23112026'); pm.wait_for_timeout(500)
     pm.get_by_role('button', name='Örnek Ana Proje A', exact=False).first.click(); pm.wait_for_timeout(200)
     pm.set_viewport_size({'width': 1200, 'height': 900}); sh(pm, '11_matris')

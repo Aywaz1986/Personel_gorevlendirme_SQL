@@ -25,7 +25,7 @@ public class Dilim12Tests
     private static async Task<Ortam> KurAsync()
     {
         var t = await TestDb.OlusturAsync();
-        await t.Migrator.UygulaAsync(false);
+        await t.MigrateAsync();
         await t.ExecAsync(@"INSERT INTO gorev.personel (sicil_no, adi_soyadi, bolum, gsm_no) VALUES
             (N'1001', N'Erdem Efe', N'Proje', N'0532 111 11 11'), (N'1002', N'Ahmet Sümbül', N'Teknik', N'0532 222 22 22'), (N'1005', N'Yönetici Kişi', N'Merkez', N'0532 555 55 55'),
             (N'1006', N'Ali Örnek', N'Teknik', N'0532 666 66 66'), (N'1007', N'Bölümden Saha', N'Operasyon', N'0532 777 77 77'), (N'1008', N'Bölümden Sorumlu', N'Yönetim', N'0532 888 88 88');

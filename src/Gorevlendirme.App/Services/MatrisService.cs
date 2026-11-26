@@ -5,10 +5,10 @@ namespace Gorevlendirme;
 /// <summary>Haftalık matris (Dilim 6, 008_matris.sql): yalnız okuma. Hafta başı sunucuda pazartesiye çekilir.</summary>
 public static class MatrisService
 {
-    public static async Task<object> HaftaAsync(SqlService sql, string bas, string? bolum, string? ana, string? q, bool sadeceGorevli, string? konum = null, bool sadeceMusait = false) =>
-        (await sql.ProcAsync("gorev.sp_matris_hafta", ("@bas", bas), ("@bolum", Bos(bolum)), ("@ana", Bos(ana)), ("@q", Bos(q)), ("@sadece_gorevli", sadeceGorevli), ("@konum", Bos(konum)), ("@sadece_musait", sadeceMusait))).Select(r => new
+    public static async Task<object> HaftaAsync(SqlService sql, string bas, string? bolum, string? ana, string? q, bool sadeceGorevli, string? konum = null, bool sadeceMusait = false, bool sadeceSaha = false) =>
+        (await sql.ProcAsync("gorev.sp_matris_hafta", ("@bas", bas), ("@bolum", Bos(bolum)), ("@ana", Bos(ana)), ("@q", Bos(q)), ("@sadece_gorevli", sadeceGorevli), ("@konum", Bos(konum)), ("@sadece_musait", sadeceMusait), ("@sadece_saha", sadeceSaha))).Select(r => new
         {
-            sicil = r["sicil_no"], ad = r["adi_soyadi"], bolum = r["bolum"], hucreler = JsonOku(r["hucreler_json"] as string), izinler = JsonOku(r["izinler_json"] as string),
+            sicil = r["sicil_no"], ad = r["adi_soyadi"], bolum = r["bolum"], gsm = r["gsm"], hucreler = JsonOku(r["hucreler_json"] as string), izinler = JsonOku(r["izinler_json"] as string),
         }).ToList();
 
     public static async Task<string> SurumAsync(SqlService sql, string bas) =>

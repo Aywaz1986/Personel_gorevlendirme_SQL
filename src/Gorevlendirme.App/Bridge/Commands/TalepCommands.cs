@@ -32,6 +32,8 @@ public static class TalepCommands
     public static void Register(CommandRegistry r)
     {
         r.Register("personelAra", async (st, a) => await TalepService.PersonelAraAsync(st.RequireSql, Args.S(a, "q")), kapiGerekli: true);
+        r.Register("talepAtananAdlar", async (st, a) => await TalepService.AtananAdlarAsync(st.RequireSql), kapiGerekli: true);
+        r.Register("izinRaporBilgi", async (st, a) => await TalepService.IzinRaporBilgiAsync(st.RequireSql, a.ValueKind == JsonValueKind.Object && a.TryGetProperty("gun", out var g) && g.TryGetInt32(out var gi) ? gi : 14), kapiGerekli: true);
         r.Register("talepListe", async (st, a) => await TalepService.ListeAsync(st.RequireSql, OptS(a, "durum")), kapiGerekli: true);
         r.Register("talepGetir", async (st, a) => await TalepService.GetirAsync(st.RequireSql, Args.I(a, "id")), kapiGerekli: true);
         r.Register("talepKaydet", async (st, a) => await TalepService.KaydetAsync(st.RequireSql, OptInt(a, "id"), OptS(a, "sorumluSicil"),

@@ -1,9 +1,9 @@
 // Kabuk (Dilim 14, yeni tasarım): iki katmanlı koyu üst çubuk, yetkiye göre rol düğmeleri, KPI kartları, sekme şeridi, alt bilgi.
 const SAYFALAR = {
-  YONETICI: [['talep', 'Bekleyen Görev Talepleri', talepSayfa], ['izin', 'İzin Onayları', izinRaporSayfa], ['revize', 'Revize & İkame Uyarıları', revizeIkameSayfa], ['matris', 'Ortak 7 Günlük Özet Matris', matrisSayfa],
-    ['analiz', 'Ana Proje & Personel Analizi', analizSayfa], ['havuz', 'Proje Havuzu & Akademik Takvim', havuzTakvimSayfa], ['yetki', 'Kullanıcı Yetki & Audit Log', yetkiSayfa], ['ayarlar', 'Ayarlar', ayarlarSayfa]],
-  SORUMLU: [['talep', 'Yeni Görev Talebi & Aktif Taleplerim', talepSayfa], ['matris', 'Ortak 7 Günlük Özet Matris', matrisSayfa], ['analiz', 'Ana Proje & Personel Analizi', analizSayfa], ['izin', 'İzin ve Rapor', izinRaporSayfa], ['ayarlar', 'Ayarlar', ayarlarSayfa]],
-  SAHA: [['gorevim', 'Görevlerim, İzin Talebi & Rapor Beyanı', izinRaporSayfa], ['matris', 'Ortak 7 Günlük Özet Matris', matrisSayfa], ['ayarlar', 'Ayarlar', ayarlarSayfa]],
+  YONETICI: [['talep', 'Bekleyen Görev Talepleri', talepSayfa], ['izin', 'İzin Onayları', izinRaporSayfa], ['matris', 'Haftalık Özet', matrisSayfa],
+    ['analiz', 'Ana Proje & Personel Analizi', analizSayfa], ['havuz', 'Proje Havuzu', havuzSekmesi], ['takvim', 'Akademik Takvim', takvimSekmesi], ['yetki', 'Kullanıcı Yetki', yetkiSayfa], ['ayarlar', 'Ayarlar', ayarlarSayfa]],
+  SORUMLU: [['talep', 'Yeni Görev Talebi & Aktif Taleplerim', talepSayfa], ['matris', 'Haftalık Özet', matrisSayfa], ['analiz', 'Ana Proje & Personel Analizi', analizSayfa], ['izin', 'İzin / Rapor Bilgisi', izinBilgiSayfa], ['ayarlar', 'Ayarlar', ayarlarSayfa]],
+  SAHA: [['gorevim', 'Görevlerim, İzin Talebi & Rapor Beyanı', izinRaporSayfa], ['matris', 'Haftalık Özet', matrisSayfa], ['ayarlar', 'Ayarlar', ayarlarSayfa]],
 };
 const ROL_DUGME = { YONETICI: 'Merkez Yönetici Paneli', SORUMLU: 'Proje Sorumlusu Talep Arayüzü', SAHA: 'Saha Personeli İzleme & Beyan' };
 const SAYFA_BASLIK = {
@@ -37,7 +37,7 @@ async function kabukCiz() {
       S.sonYenileme = Date.now();
       const topla = (...a) => a.reduce((t, x) => t + (Number(x) || 0), 0);
       const yon = S.gorunum === 'YONETICI';
-      const ver = { talep: yon ? topla(c.bekleyenTalep) : topla(c.onaylanan, c.reddedilen, c.revizeBekleyen, c.ikameUyari), izin: yon ? topla(c.izinOnay) : 0, revize: topla(c.revizeBekleyen, c.ikameUyari), gorevim: topla(c.bildirim) };
+      const ver = { talep: yon ? topla(c.bekleyenTalep, c.revizeBekleyen, c.ikameUyari) : topla(c.onaylanan, c.reddedilen, c.revizeBekleyen, c.ikameUyari), izin: yon ? topla(c.izinOnay) : 0, revize: topla(c.revizeBekleyen, c.ikameUyari), gorevim: topla(c.bildirim) };
       const ipucu = { talep: yon ? 'Bekleyen talep ' + (c.bekleyenTalep || 0) : 'Onaylanan ' + (c.onaylanan || 0) + ' · reddedilen ' + (c.reddedilen || 0) + ' · revize bekleyen ' + (c.revizeBekleyen || 0) + ' · ikame ihtiyacı ' + (c.ikameUyari || 0),
         izin: 'Onay bekleyen izin ' + (c.izinOnay || 0), revize: 'Revize ' + (c.revizeBekleyen || 0) + ' · ikame uyarısı ' + (c.ikameUyari || 0), gorevim: 'Okunmamış bildirim ' + (c.bildirim || 0) };
       const renk = { talep: '', izin: 'sari', revize: 'kirmizi', gorevim: '' };
@@ -71,7 +71,7 @@ async function kabukCiz() {
   const rolDugmeleri = h('div', { class: 'rolsec' }, h('span', { class: 'et' }, gl.length > 1 ? 'Görünüm geçişi:' : 'Görünüm:'),
     gl.filter((g) => ROL_DUGME[g]).map((g) => h('button', { class: g === S.gorunum ? 'secili' : '', title: ROLAD[g], onclick: () => { if (g === S.gorunum) return; S.gorunum = g; S.sayfa = null; tercihYaz(g); kabukCiz(); } }, ROL_DUGME[g])));
   const ust2 = h('div', { class: 'ust2' + camSinif() },
-    h('div', { class: 'marka' }, h('div', { class: 'logo' }, '👥'), h('div', null, h('h1', null, 'Merkezi Personel Görevlendirme, Talep ve İzleme Sistemi'),
+    h('div', { class: 'marka' }, logoKutusu(), h('div', null, h('h1', null, 'Merkezi Personel Görevlendirme, Talep ve İzleme Sistemi'),
       h('p', { class: 'alt' }, 'Özlük Entegreli Operasyon Planlama • Tam Gün (1.0) / ÖÖ (0.5) / ÖS (0.5) Zaman Dilimi Motoru'))), rolDugmeleri);
 
   // Sayfa başlığı: Yönetici/Sorumlu için başlık bloğu; Saha için kimlik şeridi.

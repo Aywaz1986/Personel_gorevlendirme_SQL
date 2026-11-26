@@ -13,7 +13,7 @@ function matrisHaftaYazi(bas) {
 
 async function matrisSayfa() {
   const GUN = ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'];
-  const d = { bas: takvimIso(matrisPazartesi(new Date())), bolum: '', ana: '', konum: '', q: '', sadece: true, musait: false, veri: [], surum: null, tatiller: [], anaListe: [], secili: null, yenileme: null };
+  const d = { bas: takvimIso(matrisPazartesi(new Date())), bolum: '', ana: '', konum: '', q: '', sadece: false, saha: true, musait: false, veri: [], surum: null, tatiller: [], anaListe: [], secili: null, yenileme: null };
   const kap = h('div', { style: 'display:flex;flex-direction:column;gap:12px;min-width:0' });
   const tabloKap = h('div', { style: 'min-width:0' }), ayrintiKap = h('div'), notKap = h('div', { class: 'alt', style: 'color:var(--soluk);font-size:13px' });
   const yenileYazi = h('span', { class: 'alt', style: 'font-size:13px;color:var(--soluk)' });
@@ -28,7 +28,7 @@ async function matrisSayfa() {
   async function yukle(sessiz) {
     try {
       const [veri, surum] = await Promise.all([
-        Kopru.cagir('matrisHafta', { bas: d.bas, bolum: d.bolum, ana: d.ana, konum: d.konum, q: d.q, sadeceGorevli: d.sadece, sadeceMusait: d.musait }),
+        Kopru.cagir('matrisHafta', { bas: d.bas, bolum: d.bolum, ana: d.ana, konum: d.konum, q: d.q, sadeceGorevli: d.sadece, sadeceMusait: d.musait, sadeceSaha: d.saha }),
         Kopru.cagir('matrisSurum', { bas: d.bas }),
       ]);
       d.veri = veri; d.surum = surum.surum; d.secili = null;
@@ -53,8 +53,8 @@ async function matrisSayfa() {
   anaSec.addEventListener('change', () => { d.ana = anaSec.value; yukle(); });
   const konumSec = h('select', { 'aria-label': 'Yerleşke' }, h('option', { value: '' }, 'Tüm yerleşkeler'));
   konumSec.addEventListener('change', () => { d.konum = konumSec.value; yukle(); });
-  const modSec = h('select', { 'aria-label': 'Personel süzgeci' }, h('option', { value: 'gorevli' }, 'Görevli / izinli olanlar'), h('option', { value: 'musait' }, 'Sadece müsaitler'), h('option', { value: 'tum' }, 'Tüm personel'));
-  modSec.addEventListener('change', () => { d.sadece = modSec.value === 'gorevli'; d.musait = modSec.value === 'musait'; yukle(); });
+  const modSec = h('select', { 'aria-label': 'Personel süzgeci' }, h('option', { value: 'saha' }, 'Saha personeli (tümü)'), h('option', { value: 'gorevli' }, 'Görevli / izinli olanlar'), h('option', { value: 'musait' }, 'Sadece müsaitler'), h('option', { value: 'tum' }, 'Tüm personel'));
+  modSec.addEventListener('change', () => { d.sadece = modSec.value === 'gorevli'; d.musait = modSec.value === 'musait'; d.saha = modSec.value === 'saha'; yukle(); });
 
   function renkHaritasi() {
     const adlar = [...new Set(d.veri.flatMap((k) => k.hucreler.map((c) => c.ana)))].sort((a, b) => a.localeCompare(b, 'tr'));
@@ -67,9 +67,10 @@ async function matrisSayfa() {
       if (!c) return h('div', { style: 'height:' + boy + 'px' });
       const [bg, fg] = renk.get(c.ana);
       const etiket = c.ana + (c.alt && c.alt !== 'Genel' ? ' › ' + c.alt : '');
-      return h('button', { type: 'button', title: c.kod + ' · ' + c.ana + ' › ' + c.alt + ' › ' + c.faaliyet, 'aria-label': k.ad + ', ' + takvimTarihYaz(iso) + ', ' + atamaTamAd(c.zaman) + ', ' + c.ana + ', ' + c.kod,
-        style: 'display:block;width:calc(100% - 6px);margin:1px 3px;height:' + boy + 'px;min-height:0;padding:0 4px;border:0;border-radius:5px;font-weight:600;font-size:13px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;cursor:pointer;background:' + bg + ';color:' + fg,
-        onclick: () => { d.secili = { ad: k.ad, iso, c }; ayrintiCiz(); } }, etiket);
+      return h('button', { type: 'button', title: c.kod + ' · ' + c.ana + ' › ' + c.alt + ' › ' + c.faaliyet + ' · Sorumlu: ' + c.sorumlu + (c.sorumluGsm ? ' ' + c.sorumluGsm : ''), 'aria-label': k.ad + ', ' + takvimTarihYaz(iso) + ', ' + atamaTamAd(c.zaman) + ', ' + c.ana + ', ' + c.kod,
+        style: 'display:block;width:calc(100% - 6px);margin:1px 3px;height:' + boy + 'px;min-height:0;padding:0 4px;border:0;border-radius:5px;font-weight:600;font-size:13px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;cursor:pointer;text-align:left;line-height:1.25;background:' + bg + ';color:' + fg,
+        onclick: () => { d.secili = { ad: k.ad, iso, c }; ayrintiCiz(); } },
+        boy > 40 ? [h('div', { style: 'overflow:hidden;text-overflow:ellipsis' }, etiket), h('div', { style: 'font-weight:400;font-size:11px;overflow:hidden;text-overflow:ellipsis' }, '🧍 ' + c.sorumlu + (c.sorumluGsm ? ' · ' + c.sorumluGsm : ''))] : etiket);
     };
     const izYari = (k, iso, c, boy) => {
       const rapor = c.tur === 'RAPOR', bekl = c.durum === 'BEKLIYOR';
@@ -88,7 +89,9 @@ async function matrisSayfa() {
       const bg = t ? 'background:var(--uyari-bg,#fff4d6)' : i >= 5 ? 'background:var(--bg)' : '';
       const yarim = (a, z, ik) => a ? yari(k, iso, a, 26) : (ik || izTam) ? izYari(k, iso, ik || izTam, 26) : yari(k, iso, null, 26);
       return h('td', { style: 'padding:0;width:12%;min-width:110px;vertical-align:top;border-bottom:1px solid var(--cizgi);border-right:1px solid var(--cizgi);' + bg },
-        tam ? yari(k, iso, tam, 54) : izTam && !oo && !os ? izYari(k, iso, izTam, 54) : [yarim(oo, 'OO', izOO), yarim(os, 'OS', izOS)]);
+        tam ? yari(k, iso, tam, 54) : izTam && !oo && !os ? izYari(k, iso, izTam, 54)
+          : !oo && !os && !izOO && !izOS ? h('div', { title: 'Müsait', style: 'margin:1px 3px;height:54px;display:flex;align-items:center;justify-content:center;font-size:12px;border-radius:5px;' + (t || i >= 5 ? 'color:var(--soluk)' : 'background:#ecfdf5;color:#047857;border:1px dashed #86efac') }, t ? 'Tatil' : i >= 5 ? '' : 'Müsait')
+          : [yarim(oo, 'OO', izOO), yarim(os, 'OS', izOS)]);
     };
     const toplam = gunIso.map((iso) => d.veri.filter((k) => k.hucreler.some((c) => c.tarih === iso)).length);
     const kolon = (x, i) => { const t = tatilMi(x); return h('th', { style: 'padding:8px 4px;text-align:center;font-size:14px;border-bottom:1px solid var(--cizgi);border-right:1px solid var(--cizgi);' + (t ? 'background:var(--uyari-bg,#fff4d6)' : i >= 5 ? 'background:var(--bg);color:var(--soluk)' : ''), title: t ? t.ad : '' },
@@ -96,13 +99,13 @@ async function matrisSayfa() {
     const tablo = h('table', { style: 'border-collapse:collapse;width:100%;min-width:900px' },
       h('thead', null, h('tr', null, h('th', { style: 'position:sticky;left:0;background:var(--kart);text-align:left;padding:8px 12px;min-width:180px;border-bottom:1px solid var(--cizgi);border-right:1px solid var(--cizgi)' }, 'Personel (' + d.veri.length + ')'), gunIso.map(kolon))),
       h('tbody', null, d.veri.map((k) => h('tr', null,
-        h('th', { style: 'position:sticky;left:0;background:var(--kart);text-align:left;padding:6px 12px;border-bottom:1px solid var(--cizgi);border-right:1px solid var(--cizgi)' }, h('div', null, k.ad), h('div', { style: 'font-weight:400;font-size:12px;color:var(--soluk)' }, k.bolum || '')),
+        h('th', { style: 'position:sticky;left:0;background:var(--kart);text-align:left;padding:6px 12px;border-bottom:1px solid var(--cizgi);border-right:1px solid var(--cizgi)' }, h('div', null, k.ad), h('div', { style: 'font-weight:400;font-size:12px;color:var(--soluk)' }, k.gsm ? '📞 ' + k.gsm : '')),
         gunIso.map((iso, i) => hucre(k, iso, i))))),
       h('tfoot', null, h('tr', null, h('th', { style: 'position:sticky;left:0;background:var(--kart);text-align:left;padding:8px 12px;border-right:1px solid var(--cizgi)' }, 'Günlük görevli sayısı'),
         toplam.map((n) => h('td', { style: 'text-align:center;font-weight:600;padding:8px' }, String(n))))));
     tabloKap.replaceChildren(d.veri.length ? h('div', { class: 'kart', style: 'padding:0;overflow:auto' }, tablo)
       : h('div', { class: 'kart', style: 'text-align:center;color:var(--soluk)' }, d.musait ? 'Bu hafta hafta içi boş günü olan personel yok.' : d.sadece || d.ana ? 'Bu hafta, seçili filtrelerle görevlendirilmiş personel yok.' : 'Eşleşen personel yok.'));
-    notKap.replaceChildren(h('div', { style: 'margin-bottom:6px' }, 'Üst yarı = öğleden önce (ÖÖ), alt yarı = öğleden sonra (ÖS), tek blok = tam gün. Boş hücre = görev yok. Gri blok = izin (kesikli çerçeve: onay bekliyor), kırmızı blok = rapor. Renk Ana Projeyi gösterir; ad hücrede de yazılıdır. Sarı sütun = tatil. Hücreye basınca ayrıntı açılır.'),
+    notKap.replaceChildren(h('div', { style: 'margin-bottom:6px' }, 'Üst yarı = öğleden önce (ÖÖ), alt yarı = öğleden sonra (ÖS), tek blok = tam gün. Yeşil kesikli "Müsait" = o gün görev/izin yok. Gri blok = izin (kesikli çerçeve: onay bekliyor), kırmızı blok = rapor. Renk Ana Projeyi gösterir; ad hücrede de yazılıdır. Sarı sütun = tatil. Hücreye basınca ayrıntı açılır.'),
       ...[...renk].map(([a, [bg, fg]]) => h('span', { class: 'rozet', style: 'background:' + bg + ';color:' + fg + ';margin-right:6px' }, a)));
     ayrintiCiz();
   }
@@ -111,19 +114,26 @@ async function matrisSayfa() {
     ayrintiKap.replaceChildren(...(s ? [h('section', { class: 'kart', style: 'max-width:520px' },
       h('div', { class: 'satir', style: 'align-items:center' }, h('b', null, s.ad + ' · ' + takvimGun(s.iso) + ' ' + takvimTarihYaz(s.iso) + ' · ' + atamaTamAd(s.c.zaman)), h('span', { style: 'flex:1' }),
         h('button', { type: 'button', 'aria-label': 'Ayrıntıyı kapat', onclick: () => { d.secili = null; ayrintiCiz(); } }, '✕')),
-      h('div', { style: 'line-height:1.7;margin-top:6px' }, h('div', null, s.c.kod + ' · ' + s.c.ana + ' › ' + s.c.alt + ' › ' + s.c.faaliyet),
-        h('div', null, '📍 ' + s.c.konum + ' · 🕣 ' + String(s.c.saat).replace(/:/g, '.')), h('div', null, '🧍‍♂️ Proje sorumlusu: ' + s.c.sorumlu)))] : []));
+      h('div', { style: 'margin-top:6px' }, [
+        ['🔖', 'Talep', s.c.kod],
+        ['📑', 'Proje', s.c.ana + (s.c.alt && s.c.alt !== 'Genel' ? ' › ' + s.c.alt : '')],
+        ['📡', 'Faaliyet', s.c.faaliyet],
+        ['📍', 'Konum', s.c.konum],
+        ['🕣', 'Saat', String(s.c.saat).replace(/:/g, '.')],
+        ['📅', 'Tarih', takvimTarihYaz(s.iso) + ' ' + takvimGun(s.iso) + ' · ' + atamaTamAd(s.c.zaman)],
+        ['🧍‍♂️', 'Proje sorumlusu', s.c.sorumlu + (s.c.sorumluGsm ? '  📞 ' + s.c.sorumluGsm : '')],
+      ].map(([em, ad, v]) => h('div', { class: 'ozsatir' }, h('span', { class: 'oze' }, em + ' ' + ad + ':'), h('span', { class: 'ozd' }, v)))))] : []));
   }
 
   async function excel() {
     try {
-      const o = await Kopru.cagir('matrisExcel', { bas: d.bas, bolum: d.bolum, ana: d.ana, konum: d.konum, q: d.q, sadeceGorevli: d.sadece, sadeceMusait: d.musait });
+      const o = await Kopru.cagir('matrisExcel', { bas: d.bas, bolum: d.bolum, ana: d.ana, konum: d.konum, q: d.q, sadeceGorevli: d.sadece, sadeceMusait: d.musait, sadeceSaha: d.saha });
       if (!o.iptal) toast('Excel kaydedildi (' + o.satir + ' personel): ' + o.yol, 'iyi');
     } catch (e) { hata(e); }
   }
 
   kap.append(
-    h('div', { class: 'satir', style: 'align-items:center' }, h('h1', { style: 'margin:0' }, 'Haftalık matris'), h('span', { style: 'flex:1' }), yenileYazi, h('button', { type: 'button', onclick: excel }, "Excel'e aktar")),
+    h('div', { class: 'satir', style: 'align-items:center' }, h('h1', { style: 'margin:0' }, 'Haftalık Özet'), h('span', { style: 'flex:1' }), yenileYazi, h('button', { type: 'button', onclick: excel }, "Excel'e aktar")),
     h('div', { class: 'satir', style: 'align-items:center' }, h('button', { type: 'button', 'aria-label': 'Önceki hafta', onclick: git(-1) }, '◀'), haftaYazi,
       h('button', { type: 'button', 'aria-label': 'Sonraki hafta', onclick: git(1) }, '▶'), h('button', { class: 'ana', type: 'button', onclick: () => haftayaGit(takvimIso(matrisPazartesi(new Date()))) }, 'Bu hafta'), basKutu),
     h('div', { class: 'satir', style: 'align-items:center' }, qKutu, bolumSec, anaSec, konumSec, modSec),

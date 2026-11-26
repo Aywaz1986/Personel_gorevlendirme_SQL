@@ -65,3 +65,6 @@ Rol listeleri (`fn_rol_kisileri`): kişi başı aktif istisna kaydı varsa yaln�
 
 ## Arayüz görünürlüğü (Dilim 14)
 Rol düğmeleri ve sekmeler yalnız kişinin sahip olduğu rollere göre çizilir; yetkisiz roller gizlidir. Bu yalnızca kolaylıktır: gerçek yetki sunucuda (`fn_yonetici_mi` vb., 50023) denetlenir. Yeni yetkili ekleme/rol atama Kullanıcı Yetki sekmesindedir (Yönetici). Yazı/tema tercihi sunucuya yazılmaz.
+
+## Dilim 16
+Telefon numaraları (matris) yalnız Yönetici ve Proje Sorumlusuna görünür. Atama adayları yalnız Saha rolündekilerdir. İzin/rapor bilgisi (Sorumlu) salt okunurdur; onay/giriş yetkisi Yönetici ve ilgili personelde kalır.

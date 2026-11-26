@@ -32,4 +32,7 @@ Ayrıntı: `docs/DILIMLER.md`.
 | 12 | Senaryo eksikleri + Ayarlar | evet | [~] kodlandı, CI/el sınaması bekliyor |
 | 13 | Gizli bağlantı yapılandırması + yüzen bağlantı penceresi | evet | [~] kodlandı, CI/el sınaması bekliyor |
 | 14 | Yeni arayüz tasarımı (rol düğmeleri, sekme şeridi, talep kartı, Kullanıcı Yetki, yazı/tema/cam) | evet | [~] kodlandı, CI/el sınaması bekliyor |
+| 18 | Proje Havuzu ağaç-tablo (prototip uyarlaması, efor sütunu, 018_havuz_efor.sql) | PR bekliyor |
+| 17 | Görünüm (3 sütunlu özet, Revize & İkame düğmesi, Havuz/Takvim ayrı, Yetki alt alta, Günlük Ayarlar'da, tarih seçici, logo/filigran, hizalama) | PR bekliyor |
+| 16 | Mantık + matris (yıllı kod, hızlı Ata, 14 gün ufku, saha durumları, iletişim, Sorumlu izin bilgisi) | evet | [~] kodlandı, CI/el sınaması bekliyor |
 | 15 | Akademik takvim yönetimi (Yıllık İzin/Resmi Tatil/Yarım Gün, Excel tarama + tür seçimi, yıllık çizelge) + Proje/Görev Havuzu merkezî panel (kademeli liste, arşiv) | evet | [~] kodlandı, CI/el sınaması bekliyor |

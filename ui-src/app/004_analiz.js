@@ -26,13 +26,13 @@ async function analizSayfa() {
   }
 
   function filtre() {
-    const bas = h('input', { type: 'text', class: 'metin', value: takvimTarihYaz(d.bas), style: 'width:120px', 'aria-label': 'Başlangıç' });
-    const bit = h('input', { type: 'text', class: 'metin', value: takvimTarihYaz(d.bit), style: 'width:120px', 'aria-label': 'Bitiş' });
+    const bas = h('input', { type: 'text', class: 'metin', placeholder: 'GG.AA.YYYY', value: takvimTarihYaz(d.bas), style: 'width:120px', 'aria-label': 'Başlangıç' });
+    const bit = h('input', { type: 'text', class: 'metin', placeholder: 'GG.AA.YYYY', value: takvimTarihYaz(d.bit), style: 'width:120px', 'aria-label': 'Bitiş' });
     const uygula = () => { const b = talepTarihOku(bas.value), s = talepTarihOku(bit.value); if (!b || !s) { toast('Tarihi GG.AA.YYYY biçiminde yazın.', 'kotu'); return; } d.bas = b; d.bit = s; yukle(); };
     const hizli = (ad, f) => h('button', { type: 'button', onclick: () => { const [b, s] = f(); d.bas = analizIso(b); d.bit = analizIso(s); yukle(); } }, ad);
     const y = bugun.getFullYear(), a = bugun.getMonth();
     const ana = h('select', { 'aria-label': 'Ana proje', onchange: (e) => { d.ana = e.target.value; yukle(); } }, h('option', { value: '' }, 'Tüm ana projeler'), d.anaListe.map((x) => h('option', { value: x, selected: x === d.ana }, x)));
-    return h('div', { class: 'satir', style: 'align-items:center' },
+    return h('div', { class: 'satir' },
       d.sekme === 'arsiv' ? null : [h('label', null, 'Başlangıç ', bas), h('label', null, 'Bitiş ', bit), h('button', { class: 'ana', type: 'button', onclick: uygula }, 'Uygula'),
         hizli('Bu ay', () => [new Date(y, a, 1), bugun]), hizli('Son 3 ay', () => [new Date(y, a - 2, 1), bugun]), hizli('Bu yıl', () => [new Date(y, 0, 1), bugun]), hizli('Geçen yıl', () => [new Date(y - 1, 0, 1), new Date(y - 1, 11, 31)])],
       d.sekme === 'personel' ? null : ana);
