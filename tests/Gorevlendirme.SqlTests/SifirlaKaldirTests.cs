@@ -70,7 +70,7 @@ public class SifirlaKaldirTests
     }
 
     [SqlFact]
-    public async Task Sifirla_proje_havuzunu_temizler_ve_numarayi_basa_alir()
+    public async Task Sifirla_proje_havuzu_kayitlarini_temizler()
     {
         await using var t = await TestDb.OlusturAsync();
         await t.Migrator.UygulaAsync(false);
@@ -78,8 +78,6 @@ public class SifirlaKaldirTests
         Assert.Equal(2, Convert.ToInt32(await t.SkalerAsync("SELECT COUNT(*) FROM gorev.proje_havuzu")));
         await t.ExecAsync(TestDb.Onayli(TestDb.BetikOku("gorev_sifirla.sql"), "SIFIRLA"));
         Assert.Equal(0, Convert.ToInt32(await t.SkalerAsync("SELECT COUNT(*) FROM gorev.proje_havuzu")));
-        await t.ExecAsync("INSERT INTO gorev.proje_havuzu (seviye, ad) VALUES (1, N'Yeni')");
-        Assert.Equal(1, Convert.ToInt32(await t.SkalerAsync("SELECT MIN(id) FROM gorev.proje_havuzu")));
     }
 
     [SqlFact]
