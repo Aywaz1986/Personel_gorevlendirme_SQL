@@ -3,6 +3,10 @@
 Her değişiklik önce **Yayınlanmamış** bölümüne yazılır; sürüm yükselince bölüm sürüm başlığına dönüştürülür.
 
 ## Yayınlanmamış
+### Dilim 21 – Hafta Pazartesi başlar (2026-11) — DEVAM EDİYOR (dal `dilim-21-pazartesi`, Dilim 20 dalından)
+- Denetim: matris, takvim ızgarası, SQL (DATEFIRST'ten bağımsız) ve C# hafta hesapları zaten Pazartesi başlangıçlıydı.
+- Asıl açık: yerel `<input type="date">` seçicisi işletim sistemi dil ayarına göre haftayı Pazar/Cumartesi başlatabiliyordu. `tarihSeciciEkle` artık özel Pazartesi başlangıçlı takvim penceresi açar (Pzt…Paz, ay/yıl seçimi, Bugün/Temizle, Esc).
+- Takvim (resmî tatil/özel gün) formu: başlangıç/bitiş alanları GG.AA.YYYY metin + 📅 seçici.
 ### Dilim 20 – Kullanıcı Yetki Yönetimi (2026-11) — DEVAM EDİYOR (dal `dilim-20-yetki`, Dilim 19 dalından)
 **Oturum devir notu (her adımda güncelle):**
 - Kaynak: Murat'ın "Kullanıcı Yetki Yönetimi" prototipi (26.11.2026).
