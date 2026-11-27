@@ -1,0 +1,6 @@
+/* Akademik takvim prototipi uygulama uyarlamaları */
+.tkv{border-radius:16px;padding:0 0 24px;color:var(--text-primary);font-family:inherit}
+.tkv .glass-header{position:static;border-radius:16px 16px 0 0}
+.tkv .container-max{max-width:none}
+.tkv .tsec-sar{display:flex;width:100%}.tkv .tsec-sar>input{flex:1;min-width:0}
+.tkv button{font-family:inherit}

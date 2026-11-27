@@ -147,4 +147,14 @@ public class Dilim16Tests
         Assert.Equal(1, Convert.ToInt32(await o.T.SkalerAsync("SELECT seviye FROM gorev.proje_havuzu WHERE id = " + a)));
         Assert.Equal("yetki", await Kod(() => HavuzService.TasiAsync(o.Sorumlu, a, b)));
     }
+
+    [SqlFact]
+    public async Task Takvim_akademik_tatil_turu_kaydedilir_ve_ozete_girer()
+    {
+        var o = await KurAsync(); await using var _t = o.T;
+        await TakvimService.KaydetAsync(o.Yonetici, null, "2026-09-07", "2026-09-09", "TAM", "AKADEMIK", "Güz akademik tatil", false);
+        var oz = await TakvimService.OzetAsync(o.Yonetici, 2026);
+        Assert.Equal(3m, Convert.ToDecimal(oz.GetType().GetProperty("akademikGun")!.GetValue(oz)));
+        Assert.Equal("dogrulama", await Kod(() => TakvimService.KaydetAsync(o.Yonetici, null, "2026-09-20", "2026-09-20", "TAM", "DIGER", "x", false)));
+    }
 }

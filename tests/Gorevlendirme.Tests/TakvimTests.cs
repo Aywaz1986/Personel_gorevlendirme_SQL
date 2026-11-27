@@ -41,8 +41,8 @@ public class TakvimCozumleyiciTests
     public void Zaman_dilimi_turkce_karsiliklari_kodlara_cevrilir(string girdi, string beklenen) => Assert.Equal(beklenen, TakvimCozumleyici.ZamanCevir(girdi));
 
     [Theory]
-    [InlineData("Resmi", "RESMI")] [InlineData("RESMİ TATİL", "RESMI")] [InlineData("resmi", "RESMI")] [InlineData("Akademik", "Akademik")] [InlineData("İdari", "IDARI")] [InlineData("idari izin", "IDARI")] [InlineData("Kurumsal", "IDARI")] [InlineData("", "RESMI")] [InlineData("Diger", "Diger")]
-    public void Tur_turkce_karsiliklari_kodlara_cevrilir_akademik_artik_tanimsiz(string girdi, string beklenen) => Assert.Equal(beklenen, TakvimCozumleyici.TurCevir(girdi));
+    [InlineData("Resmi", "RESMI")] [InlineData("RESMİ TATİL", "RESMI")] [InlineData("resmi", "RESMI")] [InlineData("Akademik", "AKADEMIK")] [InlineData("Akademik Tatil", "AKADEMIK")] [InlineData("İdari", "IDARI")] [InlineData("idari izin", "IDARI")] [InlineData("Kurumsal", "IDARI")] [InlineData("", "RESMI")] [InlineData("Diger", "Diger")]
+    public void Tur_turkce_karsiliklari_kodlara_cevrilir_akademik_dahil(string girdi, string beklenen) => Assert.Equal(beklenen, TakvimCozumleyici.TurCevir(girdi));
 
     [Theory]
     [InlineData("29.10.2026", "2026-10-29")] [InlineData("9.5.2026", "2026-05-09")] [InlineData("2026-05-09", "2026-05-09")] [InlineData("09/05/2026", "2026-05-09")] [InlineData("29.10.2026 00:00", "2026-10-29")] [InlineData("bozuk", "bozuk")]

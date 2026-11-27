@@ -145,3 +145,5 @@ Dilim 16: `matrisHafta`/`matrisExcel` yeni `sadeceSaha`; `matrisHafta` satırın
 Dilim 19: yeni komut yok; Haftalık Özet arayüzü yeniden düzenlendi (bkz. docs/DILIMLER.md).
 
 Dilim 20: `eslestirmeListe` + `sonZaman, sonKullanici`; `eslestirmeKaydet` rol `DISI` kabul eder (019_yetki_kapsam_disi.sql).
+
+Dilim 24: yeni komut yok; `takvimOzet` + `akademikGun`; `takvimKaydet`/`takvimUygula` tür `AKADEMIK` kabul eder (021).
