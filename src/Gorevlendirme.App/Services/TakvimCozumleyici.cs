@@ -74,6 +74,7 @@ public static class TakvimCozumleyici
     {
         "" or "resmi" or "resmi tatil" => "RESMI",
         "idari" or "idari tatil" or "idari izin" or "kurumsal" or "kurumsal tatil" => "IDARI",
+        "akademik" or "akademik tatil" => "AKADEMIK",
         _ => (s ?? "").Trim(),
     };
 

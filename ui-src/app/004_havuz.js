@@ -132,6 +132,30 @@ async function havuzSayfa() {
     kapat = pencereAc('⇄ Mükerrer Birleştirme — Kayıt Birleştirme ve Efor Aktarımı', govde);
   }
 
+  function tasiAc(x) {
+    const ok = (k) => k.birlestirildiId == null && !k.arsiv && k.aktif && k.id !== x.id;
+    let hedefler = [];
+    if (x.seviye === 1) { if (cocuk(x.id).some((c) => c.seviye === 2 && !genelMi(c))) { toast('Bu ana projenin alt projeleri var; önce alt projelerini başka bir ana projeye taşıyın.', 'uyari'); return; } hedefler = D.liste.filter((k) => k.seviye === 1 && ok(k)); }
+    else if (x.seviye === 2) hedefler = D.liste.filter((k) => k.seviye === 1 && ok(k) && k.id !== x.ustId);
+    else if (x.seviye === 3) hedefler = D.liste.filter((k) => (k.seviye === 2 && ok(k) && k.id !== x.ustId) || (k.seviye === 1 && ok(k) && !(bul(x.ustId) && genelMi(bul(x.ustId)) && bul(x.ustId).ustId === k.id)));
+    else hedefler = D.liste.filter((k) => k.seviye === 3 && ok(k) && k.id !== x.ustId);
+    hedefler = hedefler.filter((k) => !genelMi(k)).sort((a, b) => yolYaz(a).localeCompare(yolYaz(b), 'tr'));
+    const secenek = [];
+    if (x.seviye === 2) secenek.push(h('option', { value: '' }, '⬆ Ana Proje olarak (üst kayıt yok)'));
+    hedefler.forEach((k) => secenek.push(h('option', { value: k.id }, '#' + k.id + ' • ' + (k.seviye === 1 ? '[Ana] ' : k.seviye === 2 ? '[Alt] ' : '[Faaliyet] ') + yolYaz(k))));
+    if (!secenek.length) { toast('Taşınabilecek uygun hedef yok.', 'uyari'); return; }
+    const sec = h('select', { class: 'metin', 'aria-label': 'Yeni üst kayıt', style: 'width:100%;min-height:40px' }, secenek);
+    const ipucu = { 1: 'Ana proje, seçilen ana projenin ALT PROJESİ olur (faaliyet ve yerleşkeleri birlikte gelir).', 2: 'Alt proje seçilen ana projenin altına taşınır; ya da ilk seçenekle ana proje olur.', 3: 'Faaliyet seçilen alt projenin altına taşınır; ana proje seçilirse alt proje olmadan doğrudan ana projeye bağlanır.', 4: 'Yerleşke seçilen faaliyetin altına taşınır.' }[x.seviye];
+    let kapat = () => {};
+    const govde = h('div', { class: 'hv-mod' },
+      h('div', { class: 'hv-mod-kart' }, h('div', { class: 'alt' }, 'Taşınacak kayıt (alt dalıyla birlikte):'), h('div', { class: 'hv-mod-kaynak' }, '#' + x.id + ' • ' + yolYaz(x))),
+      h('label', { style: 'display:block;font-weight:700;margin:10px 0 4px' }, 'Yeni üst kayıt:'), sec,
+      h('div', { class: 'hv-mod-garanti' }, ipucu + ' Geçmiş talepler ve efor bozulmaz; kayıt numaraları aynı kalır.'),
+      h('div', { class: 'satir', style: 'justify-content:flex-end;margin-top:12px' }, h('button', { type: 'button', onclick: () => kapat() }, 'Vazgeç'),
+        h('button', { type: 'button', class: 'ana', onclick: () => { kapat(); const v = sec.value; if (v) D.acik.add(Number(v)); yap('havuzTasi', { id: x.id, yeniUstId: v === '' ? null : Number(v) }, 'Taşındı.'); } }, '↗ Taşı')));
+    kapat = pencereAc('↗ Kaydı Taşı', govde);
+  }
+
   // ---- Satır parçaları ----
   const dBtn = (ad, sinif, fn, baslik) => h('button', { type: 'button', class: 'hv-b ' + (sinif || ''), title: baslik || '', onclick: fn }, ad);
   function durumPill(s) {
@@ -172,6 +196,7 @@ async function havuzSayfa() {
     else {
       if (x.seviye === 1) isl.push(dBtn('+ Faaliyet', 'vio', () => { D.ekle = { hedef: 3, ust: x.id, dogrudan: true }; D.duzenle = null; D.acik.add(x.id); ciz(); }, 'Alt proje olmadan doğrudan ana projeye faaliyet ekle'));
       if (!yaprak) isl.push(dBtn('+ ' + ad2(x.seviye), { 1: 'sky', 2: 'vio', 3: 'grn' }[x.seviye], () => { D.ekle = { hedef: x.seviye + 1, ust: x.id }; D.duzenle = null; D.acik.add(x.id); ciz(); }));
+      isl.push(dBtn('↗ Taşı', 'sky-h', () => tasiAc(x), 'Başka bir üst kaydın altına taşı (ana proje ↔ alt proje dahil)'));
       isl.push(dBtn('✎ Düzenle', '', () => { D.duzenle = x.id; D.ekle = null; ciz(); }, 'Adı düzenle (Enter kaydet, Esc iptal)'));
       if (yaprak || muk) isl.push(dBtn('⇄ Birleştir', muk ? 'amb dolu' : 'sky-h', () => birlestirAc(x), 'Mükerrer kaydı doğru kayda birleştir'));
       isl.push(dBtn('⏻ ' + (s.durum === 'ACTIVE' ? 'Pasife Al' : 'Aktifleştir'), 'amb-h', () => yaprak ? yap('havuzDurum', { id: x.id, aktif: !x.aktif }, x.aktif ? 'Pasife alındı.' : 'Aktifleştirildi.') : zincirDurum(x, s.durum !== 'ACTIVE'), yaprak ? '' : 'Tüm alt dalları toplu aktif/pasif yap'));

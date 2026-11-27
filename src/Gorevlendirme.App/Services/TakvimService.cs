@@ -19,7 +19,7 @@ public static class TakvimService
     public static async Task<object> OzetAsync(SqlService sql, int yil)
     {
         var r = (await sql.ProcAsync("gorev.sp_takvim_ozet", ("@yil", yil))).First();
-        return new { kayit = r["kayit"], resmiGun = r["resmi_gun"], idariGun = r["idari_gun"], kesilenGun = r["kesilen_gun"] };
+        return new { kayit = r["kayit"], resmiGun = r["resmi_gun"], idariGun = r["idari_gun"], akademikGun = r["akademik_gun"], kesilenGun = r["kesilen_gun"] };
     }
 
     public static async Task<object> KaydetAsync(SqlService sql, int? id, string baslangic, string? bitis, string zaman, string tur, string ad, bool yillik)

@@ -124,4 +124,37 @@ public class Dilim16Tests
         Assert.Empty(Liste(await SenaryoService.RolPersonelAsync(o.Yonetici, "SAHA", "Ali")));
         Assert.Equal("dogrulama", await Kod(() => KadroService.EslestirmeKaydetAsync(o.Yonetici, "Teknik", "YONETICI")));
     }
+
+    [SqlFact]
+    public async Task Havuz_tasi_faaliyet_ana_projeye_ve_ana_projeyi_alt_proje_yapar()
+    {
+        var o = await KurAsync(); await using var _t = o.T;
+        async Task<int> E(int? ust, string ad) => Convert.ToInt32(((dynamic)await HavuzService.EkleAsync(o.Yonetici, ust, ad)).id);
+        var a = await E(null, "ASAF"); var alt = await E(a, "Alt1"); var fa = await E(alt, "Faal"); var ye = await E(fa, "Yer");
+        // Faaliyet doğrudan ana projeye: Genel aracı kayıt otomatik, yaprak seviyesi aynı
+        await HavuzService.TasiAsync(o.Yonetici, fa, a);
+        Assert.Equal("Genel", (string)await o.T.SkalerAsync("SELECT g.ad FROM gorev.proje_havuzu f JOIN gorev.proje_havuzu g ON g.id = f.ust_id WHERE f.id = " + fa));
+        Assert.Equal(4, Convert.ToInt32(await o.T.SkalerAsync("SELECT seviye FROM gorev.proje_havuzu WHERE id = " + ye)));
+        // Ana proje başka ana projenin alt projesi: Genel aracı çözülür
+        var b = await E(null, "BASKA");
+        await HavuzService.TasiAsync(o.Yonetici, alt, b);   // gerçek alt proje önce taşınır
+        await HavuzService.TasiAsync(o.Yonetici, a, b);
+        Assert.Equal(2, Convert.ToInt32(await o.T.SkalerAsync("SELECT seviye FROM gorev.proje_havuzu WHERE id = " + a)));
+        Assert.Equal(a, Convert.ToInt32(await o.T.SkalerAsync("SELECT ust_id FROM gorev.proje_havuzu WHERE id = " + fa)));
+        Assert.Equal("dogrulama", await Kod(() => HavuzService.TasiAsync(o.Yonetici, b, a)));   // kendi alt dalı / seviye
+        // Alt proje -> ana proje
+        await HavuzService.TasiAsync(o.Yonetici, a, null);
+        Assert.Equal(1, Convert.ToInt32(await o.T.SkalerAsync("SELECT seviye FROM gorev.proje_havuzu WHERE id = " + a)));
+        Assert.Equal("yetki", await Kod(() => HavuzService.TasiAsync(o.Sorumlu, a, b)));
+    }
+
+    [SqlFact]
+    public async Task Takvim_akademik_tatil_turu_kaydedilir_ve_ozete_girer()
+    {
+        var o = await KurAsync(); await using var _t = o.T;
+        await TakvimService.KaydetAsync(o.Yonetici, null, "2026-09-07", "2026-09-09", "TAM", "AKADEMIK", "Güz akademik tatil", false);
+        var oz = await TakvimService.OzetAsync(o.Yonetici, 2026);
+        Assert.Equal(3m, Convert.ToDecimal(oz.GetType().GetProperty("akademikGun")!.GetValue(oz)));
+        Assert.Equal("dogrulama", await Kod(() => TakvimService.KaydetAsync(o.Yonetici, null, "2026-09-20", "2026-09-20", "TAM", "DIGER", "x", false)));
+    }
 }

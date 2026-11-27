@@ -3,6 +3,16 @@
 Her değişiklik önce **Yayınlanmamış** bölümüne yazılır; sürüm yükselince bölüm sürüm başlığına dönüştürülür.
 
 ## Yayınlanmamış
+### Dilim 24 – Akademik ve Kurumsal Takvim prototipi (2026-11) — DEVAM EDİYOR (dal `dilim-24-takvim-prototip`, Dilim 23 dalından)
+- Murat'ın "Akademik ve Kurumsal Takvim Yönetimi" prototipi %100'e yakın uygulandı: üst başlık + yıl seçici, KPI kartları, renk lejantı, 3×4 yıllık matris (HFT, hafta sonu gül tonu, çapraz yarım gün), hover ipucu, liste (arama + tür süzgeci), kesinti bandı, tekil/toplu/silme pencereleri, CSV şablonu. Tema anahtarı yok (uygulama teması geçerli; koyu temada prototipin koyu paleti).
+- Prototip CSS'i `tools/proto_css.py` ile `.tkv` altına kapsanarak `ui-src/css/tkv.css`'e üretildi; uyarlamalar `tkv_uyum.css`. `build.py` `css/*.css` dosyalarını ekler.
+- `021_takvim_akademik.sql`: üçüncü tür **AKADEMIK** (kontrol kısıtı, kaydet/önizle, özet `akademik_gun`); C# `TurCevir` "akademik" kabul eder.
+- Sunucu kaydı aralıktır; ekran gün gün çizer, listede aralık satırı gösterir. Toplu aralık eklemede "hafta sonlarını hariç tut" ardışık iş günlerini tek kayda toplar.
+- Eski "yönetim penceresi" ve tür seçtirmeli tarama akışı kaldırıldı; dosya (.xlsx/.csv) artık yapıştırma kutusuna satır olarak dökülür. SINANMADI (CI).
+### Dilim 23 – Havuzda kayıt taşıma (2026-11) — DEVAM EDİYOR (dal `dilim-23-havuz-tasi`, Dilim 22 dalından)
+- `020_havuz_tasi.sql` / `sp_havuz_tasi` + komut `havuzTasi` + satırda **↗ Taşı** penceresi. Yapraklar (Yerleşke) seviye değiştirmez, talepler bozulmaz.
+- Yapılabilen taşımalar: Yerleşke → başka Faaliyet; Faaliyet → başka Alt Proje ya da doğrudan Ana Proje ("Genel" aracı otomatik); Alt Proje → başka Ana Proje ya da Ana Proje olarak; Ana Proje → başka Ana Projenin Alt Projesi (gerçek alt projesi yoksa; "Genel" araçları çözülür).
+- Sınırlar: Ana Projenin gerçek alt projeleri varsa önce onlar taşınmalı (aksi halde 5 seviye olurdu). Aynı adlı kayıt hedefte varsa önce birleştirilir. SINANMADI (CI).
 ### Dilim 22 – Proje düzeltmeleri (2026-11) — DEVAM EDİYOR (dal `dilim-22-proje-duzeltme`, Dilim 21 dalından)
 - `gorev_sifirla.sql`: proje havuzu satırları zaten siliniyordu (yapılandırma tabloları dışındaki her tablo); bunu kanıtlayan test eklendi: `Sifirla_proje_havuzu_kayitlarini_temizler`. Numara sayacı sıfırlanmaz (dbo_koruma DBCC'yi yasaklar; izin listesi yazılı onay ister). SINANMADI (CI).
 - Proje Havuzu: alt projesiz ana proje desteği. "Genel" aracı Alt Proje kaydı ağaçta gizlenir, faaliyetler doğrudan ana projenin altında görünür; ana proje satırında **+ Faaliyet**; yeni ana projede Alt Proje alanı boş bırakılabilir (arka planda "Genel" açılır, şema değişmedi). Talep formunda "boşsa Genel" yazısı kaldırıldı.

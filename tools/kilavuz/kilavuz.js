@@ -79,6 +79,7 @@ C.push(b("**Üst kartlar:** Ana Proje, Alt Proje, Faaliyet, Yerleşke sayıları
 C.push(b("**Arama ve süzgeç:** kutuya proje/faaliyet/yerleşke adı ya da **#kayıt no** yazılır; eşleşen dallar açılır ve yazı işaretlenir. **Tümü / Sadece Aktifler / Pasifler** düğmeleri. **Derinlik:** Sadece Ana Projeler, Alt Projelere Kadar, Tümünü Aç."));
 C.push(b("**Satırlar:** seviyeye göre renkli ([ANA] / [ALT] / [FAALİYET]); ▸/▾ ile dal açılır; yerleşkeler 📍 ve **#no** ile gösterilir. Durum: **Aktif**, **Kısmi (a/t)** (alt dalların bir kısmı pasif), Pasif, Arşiv. Sağda her dalın toplam eforu görünür."));
 C.push(b("**Alt projesi olmayan projeler:** her projenin alt projesi olması gerekmez. Ana projenin satırındaki **+ Faaliyet** düğmesi faaliyeti doğrudan ana projeye bağlar; \"Genel\" adlı alt proje ağaçta görünmez. Yeni ana proje eklerken Alt Proje alanı boş bırakılabilir."));
+C.push(b("**Taşı:** satırdaki **↗ Taşı** düğmesi kaydı alt dalıyla birlikte başka bir üst kaydın altına taşır: faaliyeti doğrudan ana projeye, alt projeyi başka ana projeye ya da ana proje olarak, ana projeyi başka bir ana projenin alt projesi olarak. Ana projenin gerçek alt projeleri varsa önce onlar taşınır. Geçmiş talepler ve efor bozulmaz."));
 C.push(b("**Ekle:** Ana Proje için **+ Yeni Ana Proje**, satırdaki **+ Alt Proje / + Faaliyet / + Yerleşke** düğmesi. Satır altında çok alanlı ekleme satırı açılır (örn. yeni ana proje + ilk alt proje + faaliyet + yerleşke birlikte); **Enter** ya da ✓ Ekle."));
 C.push(b("**Düzenle:** ✎ Düzenle ile ad satırda yazılır; **Enter** kaydeder, **Esc** iptal eder."));
 C.push(b("**Pasife Al / Aktifleştir:** üst düğümde altındaki tüm dallara uygulanır; pasif kayıt yeni talep listelerinde görünmez, geçmiş kayıtlar bozulmaz. Pasif satırda **🗄 Arşivle** (neden zorunlu) çıkar; **Arşivden çıkar** kaydı pasif olarak geri getirir."));
@@ -88,21 +89,21 @@ C.push(b("**İşlem Günlüğü paneli (altta):** son gönderilen komut ve havuz
 C.push(note("Havuzdaki her işlem işlem günlüğüne (Ayarlar › İşlem Günlüğü) yazılır. Görünüm için Ayarlar › Görünüm'den **Kurumsal Cam (koyu lacivert)** teması seçilebilir."));
 C.push(...img("06_havuz","Proje Havuzu: Ağaç-Tablo, efor ve mükerrer rozeti.",600));
 
-C.push(h1("7. Akademik Takvim & Resmi Tatil Yönetimi"));
-C.push(p("**Akademik Takvim** ayrı bir sekmedir: yıllık çizelge 3 sütun × 4 satır (renkli ay başlıkları) görünür, altında tatil ayrıntıları listelenir; sağ üstteki **AKADEMİK TATİL VE RESMİ TATİL YÖNETİMİ** düğmesi ekleme/düzenleme/toplu ekleme penceresini açar (Esc ile kapanır). Her kayıt bir başlangıç, isteğe bağlı bitiş (boşsa tek gün), bir **tür** ve ad içerir. Tür seçimi üç seçenektir: **Yıllık İzin** (idari izin; “yıllık izinden kesilir” işaretiyle), **Resmi Tatil** ve **Yarım Gün** (ÖÖ ya da ÖS, yalnız tek günde)."));
-C.push(note("**Tatil gününe atama engellenmez.** Atama ekranı tatil gününe atama yapılırken yöneticiyi uyarır; karar yöneticinindir. Yıllık izin hesabı bu sürümde yoktur: “Yıllık izinden kesilecek” toplamı yalnız bilgidir."));
-C.push(h2("7.1 Yıllık çizelge"));
-C.push(p("Yıl seçilir. Özet kutuları o yılın resmi tatil gününü, yıllık izin (idari) gününü ve yıllık izinden kesilecek iş gününü gösterir. Altında 12 aylık takvim (3 sütun × 4 satır) vardır: mavi **resmi tatil**, turuncu **yıllık izin (idari)**, daire **yarım gün**, gri hafta sonudur; soldaki HFT sütunu ISO hafta numarasıdır. Üzerine gelince kaydın adı görünür."));
-C.push(h2("7.2 Tek tek ekleme"));
-C.push(p("Başlangıç (çok günlüyse bitiş) tarihini girin, ortadaki açılır listeden **Yıllık İzin** ya da **Resmi Tatil**’i seçin, gerekirse zaman dilimini (Tüm gün / ÖÖ / ÖS) ve adı yazıp **Takvime ekle**’ye basın. Kayıtlar listesindeki **Düzenle** / **Sil** düğmeleri seçili yıla aittir."));
-C.push(h2("7.3 Excel ile toplu ekleme"));
-C.push(n("**Dosyayı seçin** (.xlsx, CSV) ya da listeyi kutuya yapıştırıp **Dosyayı tara**’ya basın. Sistem dosyada bulduğu tüm tarihleri listeler (ne kadar bulunduğu yazar).","n7"));
-C.push(n("Her tarih satırı için **türü siz seçin**: Yıllık İzin, Resmi Tatil ya da Yarım Gün (ÖÖ/ÖS). Başlangıç seçimi dosyadaki bilgiye göre gelir. “Hepsini şuna çevir…” hepsini tek seferde değiştirir; eklenmesini istemediğiniz satırın işaretini kaldırın.","n7"));
-C.push(n("**Doğrula**’ya basın: her satır Yeni, Güncellenecek, Aynı ya da hata olarak görünür; bu aşamada hiçbir şey kaydedilmez.","n7"));
-C.push(n("Hata yoksa **Seçilenleri takvime ekle**. Hatalı satır varsa hiçbiri eklenmez: hatayı düzeltip yeniden doğrulayın.","n7"));
-C.push(p("Sütunlu dosya biçimi: Başlangıç; Bitiş; Ad; Tür; Zaman dilimi; Yıllık sırasıyla (ilk satır başlık olabilir). Standart takvim dosyasında (ör. 2024_Takvim.xlsx) yıl sayfadaki 20xx hücresinden alınır."));
-C.push(...img("07_takvim","Yönetim penceresi: Excel ile toplu ekleme, tarih başına tür seçimi ve doğrulama.",600));
-C.push(...img("21_takvim","Akademik Takvim sekmesi: 3×4 yıllık çizelge, ayrıntılar ve yönetim düğmesi.",600));
+C.push(h1("7. Akademik ve Kurumsal Takvim Yönetimi"));
+C.push(p("**Akademik Takvim** ayrı bir sekmedir. Üstte yıl seçici (◀ Yıl ▶) ve üç düğme vardır: **+ Yeni Tatil Günü Ekle**, **📋 Toplu Tatil Ekle**, **📥 Excel Şablonu İndir (CSV)**. Altında özet kartları, renk kodları, 12 aylık takvim (3×4) ve tatil listesi yer alır. Yalnız Merkez Yönetici düzenler; hafta Pazartesi başlar."));
+C.push(note("**Üç tatil türü:** Resmi Tatil (mavi), İdari / Kurumsal Tatil (turuncu; yıllık izinden kesilir), Akademik Tatil (turkuaz). Yarım gün (ÖÖ / ÖS) hücrede çapraz bölünmüş görünür. Tatil gününe atama engellenmez, yalnız uyarı verilir."));
+C.push(h2("7.1 Takvim ve liste"));
+C.push(p("Takvimdeki bir güne tıklamak o günü ekler ya da düzenler; fare ile üzerine gelince tarih, tür ve açıklama görünür. Alttaki listede tarih/açıklama araması ve tür süzgeci vardır; her satırda **Düzenle** ve **Sil** bulunur. Sağ altta o yılın **yıllık izinden kesilecek toplamı** yazar (Tam gün = 1,0; ÖÖ/ÖS = 0,5)."));
+C.push(h2("7.2 Tek gün / çok günlü ekleme"));
+C.push(p("**+ Yeni Tatil Günü Ekle**: tarih, zaman dilimi, (çok günlüyse) bitiş tarihi, tür ve açıklama girilip **Kaydet**’e basılır. Tarih alanlarındaki 📅 düğmesi Pazartesi başlangıçlı takvim açar."));
+C.push(h2("7.3 Toplu ekleme"));
+C.push(n("**Tarih Aralığı Ekle** sekmesi: başlangıç/bitiş, tür, zaman dilimi ve “hafta sonlarını hariç tut” seçilir; kaç gün ekleneceği önceden yazılır.","n7"));
+C.push(n("**Excel Satırları Yapıştır** sekmesi: “10-11-12 NİSAN Çarşamba-Perşembe-Cuma / Ramazan Bayramı” ya da “GG.AA.YYYY;Tür;Dilim;Açıklama” satırları yapıştırılır; ya da .xlsx / .csv dosyası seçilir, satırlar kutuya dökülür, gözden geçirilip eklenir.","n7"));
+C.push(n("**Excel Şablonu İndir (CSV)** seçili yılın kayıtlarını (yoksa örnek satırları) Excel’de açılacak biçimde indirir.","n7"));
+C.push(...img("07_takvim","Toplu Tatil Ekle penceresi: Excel satırları yapıştırma.",600));
+C.push(...img("24_takvim_duzenle","Tatil günü düzenleme penceresi.",600));
+C.push(...img("21_takvim","Akademik ve Kurumsal Takvim Yönetimi ekranı.",600));
+
 
 C.push(h1("8. Görev talebi (Proje Sorumlusu)"));
 C.push(p("Proje Sorumlusu **Görev Talep Arayüzü** sekmesini görür; Merkez Yönetici aynı ekranı **Talepler** adıyla görür ve tüm talepleri izler, talepleri vekâleten açabilir."));

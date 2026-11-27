@@ -158,7 +158,7 @@ public class HavuzTakvimTests
         Assert.Equal("dogrulama", await Kod(() => TakvimService.KaydetAsync(y, null, "2024-01-01", "2024-03-30", "TAM", "RESMI", "60 günden uzun", false)));
         Assert.Equal("dogrulama", await Kod(() => TakvimService.KaydetAsync(y, null, "2024-08-05", "2024-08-01", "TAM", "RESMI", "Bitiş önce", false)));
         Assert.Equal("dogrulama", await Kod(() => TakvimService.KaydetAsync(y, null, "2024-08-01", null, "XX", "RESMI", "x", false)));
-        Assert.Equal("dogrulama", await Kod(() => TakvimService.KaydetAsync(y, null, "2024-08-01", null, "TAM", "AKADEMIK", "x", false)));       // tür kaldırıldı
+        Assert.Equal("dogrulama", await Kod(() => TakvimService.KaydetAsync(y, null, "2024-08-01", null, "TAM", "BILINMEYEN", "x", false)));     // geçersiz tür
         Assert.Equal("dogrulama", await Kod(() => TakvimService.KaydetAsync(y, null, "2024-08-01", null, "TAM", "RESMI", " ", false)));
         Assert.Equal("dogrulama", await Kod(() => TakvimService.KaydetAsync(y, null, "bozuk", null, "TAM", "RESMI", "x", false)));
 

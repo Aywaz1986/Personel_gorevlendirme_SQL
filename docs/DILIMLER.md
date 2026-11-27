@@ -119,3 +119,6 @@ Test listesi: `docs/test-dilim-20.md`. `004_yetki.js` yeniden yazıldı; `004_ka
 - 4 kart; Bölüm 1 istisna tablosu (rozetler, çoklu rol, son yönetici kilidi, güvenlik bandı), Yeni/Düzenle penceresi (personel arama, rol kartları, zorunlu gerekçe); Bölüm 2 bölüm→rol segmentleri, taslak + toplu kaydet, personel listesi, Özlükten Güncelle (= kadro eşitleme); Etkin Yetki Test Et.
 - Sunucu: `019_yetki_kapsam_disi.sql` — `rol_bolum_eslestirme.rol` artık `DISI` (kapsam dışı) de olabilir; satır yok = "eşleşme bekliyor". `eslestirmeListe` son güncelleyen/zamanı döner. DISI rol vermez. Bilinen sınır: 013'teki "BIRIM" ikame uyarısı, DISI satırı olan bölümde tetiklenmez (satır var sayılır).
 - Prototipten alınmayanlar: üst başlık/sekme çubuğu ve tema düğmesi (uygulama kabuğu var); örnek personel verisi yerine gerçek kadro.
+
+## Dilim 24 – Akademik ve Kurumsal Takvim (Murat 26-27.11.2026: prototip %100'e yakın)
+Bkz. CHANGELOG Dilim 24; sınama: docs/test-dilim-24.md. Üçüncü tür AKADEMIK (021).

@@ -78,7 +78,7 @@ VERI = {
     {"id": 4, "baslangic": "2024-05-01", "bitis": "2024-05-01", "zaman": "TAM", "tur": "RESMI", "ad": "Emek ve Dayanışma Günü", "yillik": False, "gun": 1, "kesilen": 0},
     {"id": 5, "baslangic": "2024-06-15", "bitis": "2024-06-21", "zaman": "TAM", "tur": "RESMI", "ad": "Kurban Bayramı", "yillik": False, "gun": 7, "kesilen": 0},
   ],
-  "takvimOzet": {"kayit": 5, "resmiGun": 11.5, "idariGun": 1, "kesilenGun": 1},
+  "takvimOzet": {"kayit": 5, "resmiGun": 11.5, "idariGun": 1, "akademikGun": 0, "kesilenGun": 1},
   "takvimMetinOku": {"satirlar": [
     {"sira": 5, "baslangic": "2024-05-01", "bitis": "", "zaman": "TAM", "tur": "RESMI", "ad": "Emek ve Dayanışma Günü", "yillik": False},
     {"sira": 6, "baslangic": "2024-04-08", "bitis": "", "zaman": "TAM", "tur": "IDARI", "ad": "İdari izin", "yillik": True},
@@ -154,14 +154,13 @@ with sync_playwright() as P:
     pg.get_by_role('button', name='⇄ Birleştir').first.click(); pg.wait_for_timeout(300); sh(pg, '25_havuz_birlestir')
     pg.get_by_role('button', name='Vazgeç').first.click(); pg.wait_for_timeout(200)
     menu('Akademik Takvim'); pg.wait_for_timeout(600)
-    pg.set_viewport_size({'width': 1400, 'height': 1700}); sh(pg, '21_takvim')
-    pg.get_by_role('button', name='AKADEMİK TATİL VE RESMİ TATİL YÖNETİMİ').click(); pg.wait_for_timeout(300)
-    pg.locator('textarea').fill('08 NİSAN Pazartesi 1 gün İdari izin\n09 NİSAN Salı Ramazan Bayramı arifesi\n10-11-12 NİSAN Çarşamba-Perşembe-Cuma / 3 Gün Ramazan Bayramı\n01 MAYIS Çarşamba / 1 Gün Emek ve Dayanışma Günü'); pg.get_by_role('button', name='Dosyayı tara').click(); pg.wait_for_timeout(500)
-    pg.get_by_role('button', name='Doğrula').click(); pg.wait_for_timeout(400); sh(pg, '07_takvim')
-    pg.keyboard.press('Escape')
-    pg.get_by_role('button', name='AKADEMİK TATİL VE RESMİ TATİL YÖNETİMİ').click(); pg.wait_for_timeout(300)
-    pg.get_by_role('button', name='Vazgeç').first.click() if False else None
-    pg.get_by_role('button', name='Düzenle').nth(1).click(); pg.wait_for_timeout(400); sh(pg, '24_takvim_duzenle')
+    pg.locator('.tkv select.year-select').select_option('2024'); pg.wait_for_timeout(500)
+    pg.set_viewport_size({'width': 1400, 'height': 1900}); sh(pg, '21_takvim')
+    pg.get_by_role('button', name='📋 Toplu Tatil Ekle').click(); pg.wait_for_timeout(300)
+    pg.get_by_role('button', name='Excel Satırları Yapıştır').click(); pg.wait_for_timeout(200)
+    pg.locator('#tk-yapistir').fill('10-11-12 NİSAN Çarşamba-Perşembe-Cuma / Ramazan Bayramı\n11-12 KASIM Pazartesi-Salı / Kurumsal Tatil - Yıllık İzinden Kesilecek'); sh(pg, '07_takvim')
+    pg.get_by_role('button', name='Vazgeç').first.click(); pg.wait_for_timeout(200)
+    pg.get_by_role('button', name='✎ Düzenle').nth(1).click(); pg.wait_for_timeout(400); sh(pg, '24_takvim_duzenle')
     pg.keyboard.press('Escape')
     pg.set_viewport_size({'width': 1200, 'height': 800})
     pg.evaluate('window.scrollTo(0, 0)'); sh(pg, '04_gorunum', '.ust2')
