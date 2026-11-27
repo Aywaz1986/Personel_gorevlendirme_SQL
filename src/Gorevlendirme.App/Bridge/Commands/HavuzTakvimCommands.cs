@@ -35,6 +35,7 @@ public static class HavuzTakvimCommands
         r.Register("havuzDurum", async (st, a) => await HavuzService.DurumAsync(st.RequireSql, Args.I(a, "id"), Args.B(a, "aktif")), kapiGerekli: true);
         r.Register("havuzArsiv", async (st, a) => await HavuzService.ArsivAsync(st.RequireSql, Args.I(a, "id"), Args.B(a, "arsiv"), OptS(a, "neden")), kapiGerekli: true);
         r.Register("havuzTasi", async (st, a) => await HavuzService.TasiAsync(st.RequireSql, Args.I(a, "id"), OptInt(a, "yeniUstId")), kapiGerekli: true);
+        r.Register("havuzSil", async (st, a) => await HavuzService.SilAsync(st.RequireSql, Args.I(a, "id")), kapiGerekli: true);
         r.Register("havuzBirlestir", async (st, a) => await HavuzService.BirlestirAsync(st.RequireSql, Args.I(a, "kaynakId"), Args.I(a, "hedefId")), kapiGerekli: true);
 
         r.Register("takvimListe", async (st, a) => await TakvimService.ListeAsync(st.RequireSql, OptInt(a, "yil")), kapiGerekli: true);

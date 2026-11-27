@@ -81,7 +81,9 @@ function talepTarihOku(s) {
 
 async function talepSayfa() {
   const yonetici = S.gorunum === 'YONETICI';
-  const durum = { gorunum: 'liste', filtre: '', liste: [], havuz: [], tatiller: [], f: null, bildirim: [], atama: null, atananAcik: {}, iletisimAcik: {}, ikame: [], tav: {}, adlar: {} };
+  const durum = { gorunum: 'liste', filtre: '', liste: [], havuz: [], tatiller: [], f: null, bildirim: [], atama: null, atananAcik: {}, iletisimAcik: {}, ikame: [], tav: {}, adlar: {}, ara: '' };
+  const araEl = h('input', { type: 'search', class: 'metin', placeholder: 'Ara: talep no, proje, faaliyet, konum, sorumlu, atanan personel…', style: 'min-width:300px;flex:1', 'aria-label': 'Talep ara' });
+  araEl.addEventListener('input', () => { durum.ara = araEl.value; ciz(); araEl.focus(); try { araEl.setSelectionRange(araEl.value.length, araEl.value.length); } catch (e) { /* arama kutusu seçimi desteklenmiyorsa geç */ } });
   const kap = h('div', { style: 'display:flex;flex-direction:column;gap:14px' });
 
   async function yukle() {
@@ -168,7 +170,10 @@ async function talepSayfa() {
   function liste() {
     const f = durum.filtre;
     if (f === 'REVIZE' && yonetici && durum.revizeKap) return h('div', { style: 'display:flex;flex-direction:column;gap:12px' }, bildirimBandi(), sekmeSatiri(), durum.revizeKap);
-    const goster = durum.liste.filter((x) => !f || (f === 'BEKLEYEN' ? ['TASLAK', 'ONAY_BEKLIYOR'].includes(x.durum) : f === 'ATANMIS' ? ['KISMEN_ATANDI', 'TAMAMEN_ATANDI'].includes(x.durum) : ['REDDEDILDI', 'GERI_CEKILDI', 'IPTAL'].includes(x.durum)));
+    const goster0 = durum.liste.filter((x) => !f || (f === 'BEKLEYEN' ? ['TASLAK', 'ONAY_BEKLIYOR'].includes(x.durum) : f === 'ATANMIS' ? ['KISMEN_ATANDI', 'TAMAMEN_ATANDI'].includes(x.durum) : ['REDDEDILDI', 'GERI_CEKILDI', 'IPTAL'].includes(x.durum)));
+    const q = durum.ara.trim().toLocaleLowerCase('tr-TR');
+    const bul = (x) => !q || [x.kod, x.ana, x.alt, x.faaliyet, x.konum, x.sorumluAdi, durum.adlar[x.id]].some((v) => v && String(v).toLocaleLowerCase('tr-TR').includes(q));
+    const goster = goster0.filter(bul);
     const sayi = (fn) => durum.liste.filter(fn).length;
     const chip = (kod, ad, n) => h('button', { class: durum.filtre === kod ? 'secili ana' : '', onclick: async () => {
       try {
@@ -183,6 +188,7 @@ async function talepSayfa() {
       yonetici ? chip('REVIZE', 'Revize & İkame Uyarıları', durum.revizeSayi) : null,
       chip('KAPALI', 'Kapalı', sayi((x) => ['REDDEDILDI', 'GERI_CEKILDI', 'IPTAL'].includes(x.durum))),
       h('span', { style: 'flex:1' }), h('button', { class: 'ana', onclick: () => formAc(null, false) }, 'Yeni talep'));
+    araEl.value = durum.ara;
     const durumRenk = { iyi: 'background:#d1fae5;color:#047857', uyari: 'background:#fef3c7;color:#b45309', kotu: 'background:#fee2e2;color:#b91c1c', bilgi: 'background:#e0e7ff;color:#4338ca', soluk: 'background:#e2e8f0;color:#475569' };
     const kartlar = goster.map((x) => {
       const bekleyen = ['ONAY_BEKLIYOR', 'KISMEN_ATANDI'].includes(x.durum);
@@ -212,7 +218,7 @@ async function talepSayfa() {
         atamaVar ? h('div', { class: 'ana2' }, h('button', { class: 'ana', onclick: () => atamaAc(x.id) }, '✔ Atama Yap / Gün Bazlı Böl'), h('button', { class: 'ret', onclick: () => atamaAc(x.id, true) }, '✖ Zorunlu Açıklamayla Reddet')) : null,
         h('div', { class: 'ikinci' },
           x.atanan > 0 ? h('button', { onclick: async () => { try { if (durum.atananAcik[x.id]) delete durum.atananAcik[x.id]; else durum.atananAcik[x.id] = await Kopru.cagir('talepGetir', { id: x.id }); ciz(); } catch (e) { hata(e); } } }, 'Atananlar') : null,
-          yonetici || x.atanan > 0 ? h('button', { onclick: async () => { try { if (durum.iletisimAcik[x.id]) delete durum.iletisimAcik[x.id]; else durum.iletisimAcik[x.id] = await Kopru.cagir('talepIletisim', { talepId: x.id }); ciz(); } catch (e) { hata(e); } } }, 'İletişim') : null,
+          h('button', { title: 'Saha notu, sorumlu ve atanan personel iletişimi', onclick: async () => { try { if (durum.iletisimAcik[x.id]) delete durum.iletisimAcik[x.id]; else durum.iletisimAcik[x.id] = await Kopru.cagir('talepIletisim', { talepId: x.id }); ciz(); } catch (e) { hata(e); } } }, 'İletişim'),
           ['KISMEN_ATANDI', 'TAMAMEN_ATANDI'].includes(x.durum) ? h('button', { onclick: () => yonetAc(x.id) }, 'Yönet…') : null,
           h('button', { onclick: async () => { try { await formAc(await Kopru.cagir('talepGetir', { id: x.id }), true); } catch (e) { hata(e); } } }, '📋 Kopyala'),
           talepDegistirilebilir(x.durum) ? h('button', { onclick: async () => { try { await formAc(await Kopru.cagir('talepGetir', { id: x.id }), false); } catch (e) { hata(e); } } }, 'Revize') : null,
@@ -224,7 +230,8 @@ async function talepSayfa() {
     return h('div', { style: 'display:flex;flex-direction:column;gap:12px' },
       bildirimBandi(),
       sekmeSatiri(),
-      kartlar.length ? kartlar : h('div', { class: 'kart', style: 'text-align:center;border-style:dashed;color:var(--soluk)' }, 'Henüz talep yok. "Yeni talep" ile başlayın.'));
+      h('div', { class: 'satir', style: 'align-items:center' }, araEl, q ? h('span', { class: 'alt' }, goster.length + ' / ' + goster0.length + ' kayıt') : null),
+      kartlar.length ? kartlar : h('div', { class: 'kart', style: 'text-align:center;border-style:dashed;color:var(--soluk)' }, q ? 'Aramaya uyan talep yok.' : 'Henüz talep yok. "Yeni talep" ile başlayın.'));
   }
 
   function form() {

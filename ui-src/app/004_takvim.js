@@ -70,6 +70,7 @@ async function takvimSayfa() {
   const kok = h('div', { class: 'tkv' });
   const TK = {};
   window.TK = TK;
+  const SO = S.gorunum !== 'YONETICI';   // Proje Sorumlusu / Saha: yalnız görüntüleme (sunucu da yazmayı reddeder)
 
   const gunKayitlari = () => {   // iso -> {id, tur, dilim, aciklama} (yarım gün tam günü ezmez)
     const m = new Map();
@@ -111,7 +112,7 @@ async function takvimSayfa() {
           else {
             const iso = takvimIso(new Date(D.yil, m, imlec)), it = harita.get(iso); let cls = 'day-btn';
             if (it) { const sf = it.dilim === 'TAM' ? 'tam' : it.dilim === 'OO' ? 'oo' : 'os'; cls += ' cell-' + (it.tur === 'RESMI_TATIL' ? 'resmi' : it.tur === 'IDARI_IZIN' ? 'idari' : 'akademik') + '-' + sf; }
-            td += `<td class="${hsCls}"><button type="button" class="${cls}" onclick="TK.tek('${iso}')" onmouseenter="TK.ipucu(event,'${iso}')" onmousemove="TK.ipucuTasi(event)" onmouseleave="TK.ipucuGizle()"><span>${imlec}</span>${it && it.dilim !== 'TAM' ? '<span class="half-dot"></span>' : ''}</button></td>`;
+            td += `<td class="${hsCls}"><button type="button" class="${cls}" ${SO ? 'style="cursor:default"' : `onclick="TK.tek('${iso}')"`} onmouseenter="TK.ipucu(event,'${iso}')" onmousemove="TK.ipucuTasi(event)" onmouseleave="TK.ipucuGizle()"><span>${imlec}</span>${it && it.dilim !== 'TAM' ? '<span class="half-dot"></span>' : ''}</button></td>`;
           }
           imlec++;
         }
@@ -130,8 +131,8 @@ async function takvimSayfa() {
     if (q) satirlar = satirlar.filter((x) => aralikYaz(x).includes(q) || x.ad.toLocaleLowerCase('tr-TR').includes(q));
     const govde = satirlar.length ? satirlar.map((x) => {
       const t = TK_TUR_PROTO[x.tur] || 'RESMI_TATIL', yarim = x.zaman !== 'TAM';
-      return `<tr><td style="font-family:var(--font-mono); font-weight:800; white-space:nowrap;">${aralikYaz(x)}</td><td style="font-weight:600;">${tkEsc(x.ad)}</td><td><span class="type-badge ${tkRozet(t)}">${tkTurEtiket(t)}</span></td><td><span class="slot-badge ${yarim ? 'slot-badge-half' : ''}">${tkDilimEtiket(x.zaman)}</span></td><td style="text-align:right; white-space:nowrap;"><div style="display:inline-flex; align-items:center; gap:6px;"><button type="button" class="btn btn-ghost" style="min-height:30px; padding:4px 10px; font-size:0.73rem;" onclick="TK.tekKayit(${x.id})" title="Düzenle">✎ Düzenle</button><button type="button" class="btn btn-danger" style="min-height:30px; padding:4px 10px; font-size:0.73rem;" onclick="TK.silSor(${x.id})" title="Sil">🗑 Sil</button></div></td></tr>`;
-    }).join('') : `<tr><td colspan="5" style="text-align:center; padding:28px; color:var(--text-muted);">${D.yil} yılı için seçili kriterlere uygun kayıt bulunamadı.</td></tr>`;
+      return `<tr><td style="font-family:var(--font-mono); font-weight:800; white-space:nowrap;">${aralikYaz(x)}</td><td style="font-weight:600;">${tkEsc(x.ad)}</td><td><span class="type-badge ${tkRozet(t)}">${tkTurEtiket(t)}</span></td><td><span class="slot-badge ${yarim ? 'slot-badge-half' : ''}">${tkDilimEtiket(x.zaman)}</span></td>${SO ? '' : `<td style="text-align:right; white-space:nowrap;"><div style="display:inline-flex; align-items:center; gap:6px;"><button type="button" class="btn btn-ghost" style="min-height:30px; padding:4px 10px; font-size:0.73rem;" onclick="TK.tekKayit(${x.id})" title="Düzenle">✎ Düzenle</button><button type="button" class="btn btn-danger" style="min-height:30px; padding:4px 10px; font-size:0.73rem;" onclick="TK.silSor(${x.id})" title="Sil">🗑 Sil</button></div></td></tr>`}`;
+    }).join('') : `<tr><td colspan="${SO ? 4 : 5}" style="text-align:center; padding:28px; color:var(--text-muted);">${D.yil} yılı için seçili kriterlere uygun kayıt bulunamadı.</td></tr>`;
     return { govde, adet: satirlar.length };
   }
 
@@ -146,19 +147,20 @@ async function takvimSayfa() {
   <div><h1 class="brand-title">Akademik ve Kurumsal Takvim Yönetimi</h1><p class="brand-subtitle">Yıllık Resmi Tatil, İdari İzin ve Akademik Takvim Planlama</p></div></div>
   <div class="header-controls">
     <div class="year-selector-box" role="group" aria-label="Takvim Yılı Seçici"><button type="button" class="year-step-btn" onclick="TK.yil(-1)" title="Önceki Yıl"${D.yil <= MIN ? ' disabled' : ''}>◀</button><div class="year-select-wrapper"><span class="year-select-label">Yıl:</span><select class="year-select" onchange="TK.yilSec(this.value)" aria-label="Takvim Yılı">${yilSecenek.join('')}</select></div><button type="button" class="year-step-btn" onclick="TK.yil(1)" title="Sonraki Yıl"${D.yil >= MAX ? ' disabled' : ''}>▶</button></div>
-    <button type="button" class="btn btn-primary" onclick="TK.tek()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg><span>+ Yeni Tatil Günü Ekle</span></button>
-    <button type="button" class="btn btn-success" onclick="TK.toplu('RANGE')"><span>📋 Toplu Tatil Ekle</span></button>
-    <button type="button" class="btn btn-ghost" onclick="TK.csv()"><span>📥 Excel Şablonu İndir (CSV)</span></button>
+    ${SO ? '<span class="slot-badge">🔒 Salt okunur</span>' : ''}
+    ${SO ? '' : `<button type="button" class="btn btn-primary" onclick="TK.tek()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg><span>+ Yeni Tatil Günü Ekle</span></button>`}
+    ${SO ? '' : `<button type="button" class="btn btn-success" onclick="TK.toplu('RANGE')"><span>📋 Toplu Tatil Ekle</span></button>`}
+    ${SO ? '' : `<button type="button" class="btn btn-ghost" onclick="TK.csv()"><span>📥 Excel Şablonu İndir (CSV)</span></button>`}
   </div></div></header>
 <main class="container-max main-stack">
   <section class="kpi-grid">${kpi()}</section>
   <section class="glass-panel legend-bar"><div class="legend-items"><span style="font-weight:800; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.04em; color:var(--text-muted);">Renk Kodları:</span>
     <span class="legend-item"><span class="swatch cell-resmi-tam">29</span><span>Resmi Tatil</span></span><span class="legend-item"><span class="swatch cell-idari-tam">19</span><span>İdari / Kurumsal Tatil</span></span><span class="legend-item"><span class="swatch cell-akademik-tam">15</span><span>Akademik Tatil</span></span><span class="legend-item"><span class="swatch cell-idari-half">9</span><span>Yarım Gün (ÖÖ / ÖS)</span></span><span class="legend-item"><span class="swatch" style="background:var(--cal-weekend-header-bg); color:var(--cal-weekend-header-text); border-color:var(--cal-weekend-divider);">CT</span><span>Hafta Sonu (CT / PZ)</span></span></div>
-    <div style="font-size:0.74rem; font-weight:600; color:var(--color-resmi);">Takvim üzerindeki herhangi bir güne tıklayarak tatil ekleyebilir veya düzenleyebilirsiniz.</div></section>
+    <div style="font-size:0.74rem; font-weight:600; color:var(--color-resmi);">${SO ? 'Takvim yalnızca görüntüleme içindir; değişiklik Merkez Yönetici tarafından yapılır.' : 'Takvim üzerindeki herhangi bir güne tıklayarak tatil ekleyebilir veya düzenleyebilirsiniz.'}</div></section>
   <section class="calendar-matrix" aria-label="12 Aylık Takvim Matrisi">${matris()}</section>
   <section class="glass-panel list-section"><div class="list-header"><div><h2 class="list-title"><span>${D.yil} Yılı Tatil ve İdari İzin Listesi</span><span class="count-badge">${t.adet} Kayıt</span></h2></div>
     <div class="list-toolbar"><input type="text" class="search-box" placeholder="Tarih veya açıklama ara..." value="${tkEsc(D.ara)}" oninput="TK.ara(this.value)" id="tk-ara" /><div class="filter-pills"><button type="button" class="filter-pill${aktif('ALL')}" onclick="TK.filtre('ALL')">Tümü</button><button type="button" class="filter-pill${aktif('RESMI_TATIL')}" onclick="TK.filtre('RESMI_TATIL')">Resmi Tatil</button><button type="button" class="filter-pill${aktif('IDARI_IZIN')}" onclick="TK.filtre('IDARI_IZIN')">İdari / Kurumsal Tatil</button><button type="button" class="filter-pill${aktif('AKADEMIK_TATIL')}" onclick="TK.filtre('AKADEMIK_TATIL')">Akademik Tatil</button></div></div></div>
-    <div class="table-responsive"><table class="data-table"><thead><tr><th>Tarih</th><th>Tatil / İdari İzin Açıklaması</th><th>Tatil Türü</th><th>Zaman Dilimi</th><th style="text-align:right;">İşlemler</th></tr></thead><tbody>${t.govde}</tbody></table></div>
+    <div class="table-responsive"><table class="data-table"><thead><tr><th>Tarih</th><th>Tatil / İdari İzin Açıklaması</th><th>Tatil Türü</th><th>Zaman Dilimi</th>${SO ? '' : '<th style="text-align:right;">İşlemler</th>'}</tr></thead><tbody>${t.govde}</tbody></table></div>
     <div class="deduction-banner"><div><div class="deduction-banner-title">Yıllık İzinden Kesilecek Toplam: ${tkTr(kes)} Gün</div><div class="deduction-banner-sub">${D.yil} takvim yılındaki turuncu (#FF9900) İdari / Kurumsal Tatil günlerinin otomatik toplamıdır (Tam Gün = 1,0 • ÖÖ/ÖS = 0,5).</div></div><div style="display:flex; flex-wrap:wrap; gap:6px;"><span class="type-badge type-badge-resmi">Resmi Tatil</span><span class="type-badge type-badge-idari">İdari & Kurumsal Tatil</span><span class="type-badge type-badge-akademik">Akademik Tatil</span></div></div>
   </section>
 </main>
@@ -199,6 +201,7 @@ async function takvimSayfa() {
   // 1) Tekil ekle / düzenle (güne tıklayınca o günü içeren kayıt düzenlenir)
   TK.tekKayit = (id) => { const x = D.liste.find((k) => k.id === id); if (x) TK.tek(x.baslangic); };
   TK.tek = (iso) => {
+    if (SO) return;
     const tarih = iso || D.yil + '-' + new Date().toISOString().slice(5, 10);
     const var_ = gunKayitlari().get(tarih), x = var_ ? var_.rec : null, ay = (v, d) => (v === d ? ' selected' : '');
     const turSunucu = x ? x.tur : 'RESMI';

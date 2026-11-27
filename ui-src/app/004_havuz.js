@@ -13,6 +13,7 @@ async function havuzSayfa() {
   const genelAlt = (anaId) => cocuk(anaId).find(genelMi) || null;
   const gorunenCocuk = (x) => (x.seviye === 1 ? cocuk(x.id).flatMap((c) => (genelMi(c) ? cocuk(c.id) : [c])) : cocuk(x.id));
   const bul = (id) => D.liste.find((x) => x.id === id);
+  const altSayi = (x) => cocuk(x.id).reduce((t, c) => t + 1 + altSayi(c), 0);
   const cocuk = (id) => D.liste.filter((x) => x.ustId === id && x.birlestirildiId == null);
   const trk = (t) => String(t).toLocaleLowerCase('tr-TR');
   const norm = (t) => trk(t).replace(/[^a-z0-9ığüşöç]+/g, '');
@@ -145,6 +146,17 @@ async function havuzSayfa() {
     hedefler.forEach((k) => secenek.push(h('option', { value: k.id }, '#' + k.id + ' • ' + (k.seviye === 1 ? '[Ana] ' : k.seviye === 2 ? '[Alt] ' : '[Faaliyet] ') + yolYaz(k))));
     if (!secenek.length) { toast('Taşınabilecek uygun hedef yok.', 'uyari'); return; }
     const sec = h('select', { class: 'metin', 'aria-label': 'Yeni üst kayıt', style: 'width:100%;min-height:40px' }, secenek);
+    // Hedefte aynı adlı kayıt varsa Taşı yerine Birleştir sunulur
+    const cakisan = () => {
+      if (x.seviye === 1) return null;
+      const v = sec.value; let p = v === '' ? null : Number(v);
+      if (p != null && x.seviye === 3) { const hk = bul(p); if (hk && hk.seviye === 1) { const g = D.liste.find((k) => k.ustId === p && genelMi(k) && k.birlestirildiId == null); p = g ? g.id : -1; } }
+      return D.liste.find((k) => k.ustId === p && k.ad === x.ad && k.birlestirildiId == null && k.id !== x.id && k.seviye === x.seviye) || null;
+    };
+    const uyari = h('div', { class: 'hv-mod-garanti', style: 'display:none;border-color:#f59e0b;color:#b45309' });
+    const dugme = h('button', { type: 'button', class: 'ana' }, '↗ Taşı');
+    const guncelle = () => { const c = cakisan(); uyari.style.display = c ? '' : 'none'; if (c) uyari.textContent = '⚠ Hedefte aynı adlı kayıt var (#' + c.id + '). Taşıma yerine bu kayıtla birleştirilir; alt dalı ve efor hedefe aktarılır.'; dugme.textContent = c ? '⇄ Birleştir' : '↗ Taşı'; };
+    sec.addEventListener('change', guncelle);
     const ipucu = { 1: 'Ana proje, seçilen ana projenin ALT PROJESİ olur (faaliyet ve yerleşkeleri birlikte gelir).', 2: 'Alt proje seçilen ana projenin altına taşınır; ya da ilk seçenekle ana proje olur.', 3: 'Faaliyet seçilen alt projenin altına taşınır; ana proje seçilirse alt proje olmadan doğrudan ana projeye bağlanır.', 4: 'Yerleşke seçilen faaliyetin altına taşınır.' }[x.seviye];
     let kapat = () => {};
     const govde = h('div', { class: 'hv-mod' },
@@ -152,8 +164,11 @@ async function havuzSayfa() {
       h('label', { style: 'display:block;font-weight:700;margin:10px 0 4px' }, 'Yeni üst kayıt:'), sec,
       h('div', { class: 'hv-mod-garanti' }, ipucu + ' Geçmiş talepler ve efor bozulmaz; kayıt numaraları aynı kalır.'),
       h('div', { class: 'satir', style: 'justify-content:flex-end;margin-top:12px' }, h('button', { type: 'button', onclick: () => kapat() }, 'Vazgeç'),
-        h('button', { type: 'button', class: 'ana', onclick: () => { kapat(); const v = sec.value; if (v) D.acik.add(Number(v)); yap('havuzTasi', { id: x.id, yeniUstId: v === '' ? null : Number(v) }, 'Taşındı.'); } }, '↗ Taşı')));
+        dugme));
+    govde.insertBefore(uyari, govde.lastChild);
+    dugme.onclick = () => { kapat(); const c = cakisan(); if (c) { if (c.ustId) D.acik.add(c.ustId); yap('havuzBirlestir', { kaynakId: x.id, hedefId: c.id }, 'Birleştirildi; efor ve alt dal hedefe aktarıldı.'); return; } const v = sec.value; if (v) D.acik.add(Number(v)); yap('havuzTasi', { id: x.id, yeniUstId: v === '' ? null : Number(v) }, 'Taşındı.'); };
     kapat = pencereAc('↗ Kaydı Taşı', govde);
+    guncelle();
   }
 
   // ---- Satır parçaları ----
@@ -198,8 +213,9 @@ async function havuzSayfa() {
       if (!yaprak) isl.push(dBtn('+ ' + ad2(x.seviye), { 1: 'sky', 2: 'vio', 3: 'grn' }[x.seviye], () => { D.ekle = { hedef: x.seviye + 1, ust: x.id }; D.duzenle = null; D.acik.add(x.id); ciz(); }));
       isl.push(dBtn('↗ Taşı', 'sky-h', () => tasiAc(x), 'Başka bir üst kaydın altına taşı (ana proje ↔ alt proje dahil)'));
       isl.push(dBtn('✎ Düzenle', '', () => { D.duzenle = x.id; D.ekle = null; ciz(); }, 'Adı düzenle (Enter kaydet, Esc iptal)'));
-      if (yaprak || muk) isl.push(dBtn('⇄ Birleştir', muk ? 'amb dolu' : 'sky-h', () => birlestirAc(x), 'Mükerrer kaydı doğru kayda birleştir'));
+      isl.push(dBtn('⇄ Birleştir', muk ? 'amb dolu' : 'sky-h', () => birlestirAc(x), 'Aynı seviyedeki başka bir kayda birleştir (alt dalı ve efor hedefe aktarılır)'));
       isl.push(dBtn('⏻ ' + (s.durum === 'ACTIVE' ? 'Pasife Al' : 'Aktifleştir'), 'amb-h', () => yaprak ? yap('havuzDurum', { id: x.id, aktif: !x.aktif }, x.aktif ? 'Pasife alındı.' : 'Aktifleştirildi.') : zincirDurum(x, s.durum !== 'ACTIVE'), yaprak ? '' : 'Tüm alt dalları toplu aktif/pasif yap'));
+      if (D.eforVar && efor(x.id) === 0) isl.push(dBtn('🗑 Sil', 'amb-h', () => { if (confirm('#' + x.id + ' • ' + x.ad + (alt.length ? ' ve alt dalındaki ' + (altSayi(x)) + ' kayıt' : '') + ' kalıcı silinsin mi? (Efor yok; geri alınamaz.)')) yap('havuzSil', { id: x.id }, 'Silindi.'); }, 'Efor kaydı olmayan kaydı kalıcı sil (eforlu kayıt yalnız pasife alınır)'));
       if (s.durum === 'PASSIVE') isl.push(dBtn('🗄 Arşivle', 'amb-h', () => { D.arsiv = x.id; D.ekle = null; D.duzenle = null; ciz(); }, 'Geçersiz tanım olarak arşive al'));
     }
     cik.push(h('tr', { class: 'hv-r ' + sinif + (x.aktif && !x.arsiv ? '' : ' pasif') },
