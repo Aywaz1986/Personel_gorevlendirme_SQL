@@ -173,6 +173,13 @@ public class Dilim16Tests
         await HavuzService.SilAsync(o.Yonetici, bos);
         Assert.Equal(0, Convert.ToInt32(await o.T.SkalerAsync("SELECT COUNT(*) FROM gorev.proje_havuzu WHERE id = " + bos)));
         Assert.Equal("dogrulama", await Kod(() => HavuzService.SilAsync(o.Yonetici, hedef)));
+        // Yalnız eski geçmiş görevi olan kayıt silinir; geçmiş satırı kalır, bağı kopar, proje adı korunur
+        var gec = Convert.ToInt32(((dynamic)await HavuzService.EkleAsync(o.Yonetici, null, "GECMISLI")).id);
+        await o.T.ExecAsync("INSERT INTO gorev.gecmis_gorev (personel_adi_eski, gorev_metni, havuz_id) VALUES (N'Eski2', N'y', " + gec + ");");
+        await HavuzService.SilAsync(o.Yonetici, gec);
+        Assert.Equal(0, Convert.ToInt32(await o.T.SkalerAsync("SELECT COUNT(*) FROM gorev.proje_havuzu WHERE id = " + gec)));
+        Assert.Equal("GECMISLI", Convert.ToString(await o.T.SkalerAsync("SELECT proje_adi_eski FROM gorev.gecmis_gorev WHERE personel_adi_eski = N'Eski2'")));
+        Assert.Equal(1, Convert.ToInt32(await o.T.SkalerAsync("SELECT COUNT(*) FROM gorev.gecmis_gorev WHERE personel_adi_eski = N'Eski2' AND havuz_id IS NULL")));
     }
 
     [SqlFact]

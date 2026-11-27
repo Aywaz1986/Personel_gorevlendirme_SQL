@@ -191,6 +191,7 @@ async function takvimSayfa() {
   TK.kapat = () => kok.querySelector('.modal-backdrop').classList.remove('open');
   TK.ipucu = (ev, iso) => {
     const tip = kok.querySelector('.cal-tooltip'), it = gunKayitlari().get(iso);
+    if (!it && SO) { tip.style.display = 'none'; return; }   // salt okunur kullanıcıda yalnız tatil olan günde ipucu çıkar ("tatil eklemek için tıklayın" yalnız Yönetici'ye)
     tip.innerHTML = !it ? `<div style="font-weight:800; color:var(--text-primary);">${takvimTarihYaz(iso)}</div><div style="color:var(--text-muted); margin-top:2px;">Standart Takvim Günü</div><div style="color:var(--color-resmi); font-weight:700; margin-top:5px;">Tatil eklemek için tıklayın →</div>`
       : `<div style="font-weight:800; color:var(--text-primary); margin-bottom:5px;">${takvimTarihYaz(iso)}</div><div style="display:flex; flex-wrap:wrap; gap:5px; margin-bottom:6px;"><span class="type-badge ${tkRozet(it.tur)}">${tkTurEtiket(it.tur)}</span><span class="slot-badge ${it.dilim !== 'TAM' ? 'slot-badge-half' : ''}">${tkDilimEtiket(it.dilim)}</span></div><div style="font-weight:600; color:var(--text-primary); line-height:1.35;">${tkEsc(it.aciklama)}</div>`;
     tip.style.display = 'block'; TK.ipucuTasi(ev);

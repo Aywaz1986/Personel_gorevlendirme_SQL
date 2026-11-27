@@ -211,8 +211,9 @@ async function matrisSayfa() {
     const sinif = 'hz-kart gor' + (d.t.renk !== 'DURUM' ? ' ozel' : '') + (s.cakisma ? ' cak' : '') + dimSinif(s) + (yarim ? ' yarim' : '');
     const zE = yarim ? (z === 'OO' ? 'ÖÖ · ' : 'ÖS · ') : '';
     let ic;
-    if (yarim || ya === 'KOMPAKT') ic = [h('div', { class: 'hz-bas' }, zE + c.ana + (d.t.konum && c.konum ? ' • ' + c.konum : ''))];
-    else ic = [h('div', { class: 'hz-bas' }, c.ana), ya === 'DETAYLI' && c.faaliyet ? h('div', { class: 'hz-alt' }, c.faaliyet) : null, d.t.konum && c.konum ? h('div', { class: 'hz-alt' }, '📍 ' + c.konum) : null,
+    const altAd = c.alt && c.alt !== 'Genel' ? c.alt : '';   // Alt Proje doğrudan görünür (imleçle üzerine gelmek gerekmez)
+    if (yarim || ya === 'KOMPAKT') ic = [h('div', { class: 'hz-bas' }, zE + c.ana + (altAd ? ' › ' + altAd : '') + (d.t.konum && c.konum ? ' • ' + c.konum : ''))];
+    else ic = [h('div', { class: 'hz-bas' }, c.ana), altAd ? h('div', { class: 'hz-alt', style: 'font-weight:600' }, '↳ ' + altAd) : null, ya === 'DETAYLI' && c.faaliyet ? h('div', { class: 'hz-alt' }, c.faaliyet) : null, d.t.konum && c.konum ? h('div', { class: 'hz-alt' }, '📍 ' + c.konum) : null,
       d.t.kod && c.kod ? h('div', { class: 'hz-kod' }, c.kod) : null, d.t.sorumlu && c.sorumlu ? h('div', { class: 'hz-sor' }, '👤 ' + c.sorumlu + (d.t.gsm && c.sorumluGsm ? ' • ' + c.sorumluGsm : '')) : null];
     return h('button', { type: 'button', class: sinif, style: st, title: c.kod + ' · ' + c.ana + ' › ' + c.alt + ' › ' + c.faaliyet + ' · Sorumlu: ' + c.sorumlu, 'aria-label': k.ad + ', ' + takvimTarihYaz(g.iso) + ', ' + atamaTamAd(c.zaman) + ', ' + c.ana + ', ' + c.kod,
       onclick: () => hucreTikla(k, g, s) }, s.cakisma ? h('span', { class: 'hz-cakpil' }, '⚠️ İkame Gerekli') : null, ic);

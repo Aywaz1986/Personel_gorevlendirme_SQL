@@ -57,8 +57,22 @@ async function kabukCiz() {
     const a = document.activeElement;
     return !!(a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName) && icerik.contains(a));
   };
+  // Yetki/rol/kimlik yeniden okunur (yönetici yetkisi, saha/sorumlu rolü, istisna, bölüm eşleştirmesi, kadro). Değişiklik varsa kabuk yeniden kurulur; uygulamayı kapatıp açmak gerekmez.
+  async function kimlikYenile() {
+    try {
+      const y = await Kopru.cagir('ben', { tercih: S.gorunum || tercihOku() });
+      const imza = (x) => JSON.stringify([x.kayitli, x.gorunumler, x.yonetici, x.sorumlu, x.saha, x.sicilNo, x.adiSoyadi, x.bolum, x.hesap]);
+      if (imza(y) === imza(S.kimlik)) return false;
+      S.kimlik = y;
+      if (!y.kayitli) { yetkisizSayfa(y); return true; }
+      if (!(y.gorunumler || []).includes(S.gorunum)) { S.gorunum = y.varsayilan; S.sayfa = null; }
+      await kabukCiz();
+      return true;
+    } catch (e) { return false; }   // okunamazsa mevcut yetkiyle devam; sunucu zaten her komutta yetkiyi yeniden denetler
+  }
   async function elleYenile() {   // tüm uygulama: önbellekler, sayaçlar/KPI, etkin sayfanın tüm verisi (talep, atama, matris, izin/rapor, havuz, takvim)
     for (const a of Object.keys(talepRolOnbellek)) delete talepRolOnbellek[a];
+    if (await kimlikYenile()) { toast('Yetki ve rol değişiklikleri uygulandı.'); return; }
     await sayacYukle();
     if (S.yenile) { try { await S.yenile(); } catch (e) { hata(e); return; } } else { kabukCiz(); return; }
     toast('Tüm veriler yenilendi.');
@@ -112,6 +126,7 @@ async function kabukCiz() {
   S.zaman = setInterval(async () => {
     if (!sekmeler.isConnected) { clearInterval(S.zaman); return; }
     if (document.hidden) return;
+    if (!mesgul() && await kimlikYenile()) return;
     sayacYukle();
     if (S.yenile && !mesgul()) { try { await S.yenile(); } catch (e) { /* sessiz */ } }
   }, 30000);

@@ -137,3 +137,6 @@ Bkz. CHANGELOG Dilim 28; sınama: docs/test-dilim-28.md.
 
 ## Dilim 29 – Dört düzeltme (Murat 28.11.2026)
 Bkz. CHANGELOG Dilim 29; sınama: docs/test-dilim-29.md.
+
+## Dilim 30 – Yedi düzeltme (Murat 28.11.2026)
+Bkz. CHANGELOG Dilim 30; sınama: docs/test-dilim-30.md.

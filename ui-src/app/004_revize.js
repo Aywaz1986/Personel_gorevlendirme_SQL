@@ -152,23 +152,55 @@ async function talepYonetPaneli(talepId, geri) {
 
   function revizeFormu() {
     const t = st.t;
-    if (!st.rv) st.rv = { metin: t.gorevMetni || '', nitelik: t.nitelik || '', sb: t.saatBaslangic, sbit: t.saatBitis, gunler: t.gunler.map((g) => ({ tarih: g.tarih, zaman: g.zaman, kisi: g.kisi, atanan: (g.atananlar || []).length })) };
+    if (!st.rv) st.rv = { metin: t.gorevMetni || '', nitelik: t.nitelik || '', sb: t.saatBaslangic, sbit: t.saatBitis, son: null, gunler: t.gunler.map((g) => ({ tarih: g.tarih, zaman: g.zaman, kisi: g.kisi, atanan: (g.atananlar || []).length })) };
     const r = st.rv;
     const metin = h('textarea', { class: 'metin', rows: '3', maxlength: '1000', style: 'width:100%;box-sizing:border-box' }, r.metin);
     const nitelik = h('input', { type: 'text', class: 'metin', maxlength: '1000', value: r.nitelik, style: 'width:100%;box-sizing:border-box', 'aria-label': 'Saha / Operasyon Notu' });
     const sb = h('input', { type: 'text', class: 'metin', value: r.sb, style: 'width:90px', 'aria-label': 'Başlangıç saati' }), sbit = h('input', { type: 'text', class: 'metin', value: r.sbit, style: 'width:90px', 'aria-label': 'Bitiş saati' });
     const neden = alan('Revize nedeni (isteğe bağlı)');
-    const kisiler = r.gunler.map((g) => { const i = h('input', { type: 'number', class: 'metin', min: String(Math.max(1, g.atanan)), max: '500', value: String(g.kisi), style: 'width:80px', 'aria-label': takvimTarihYaz(g.tarih) + ' kişi sayısı' }); i.addEventListener('input', () => { g.kisi = Number(i.value) || g.kisi; }); return h('div', { class: 'satir', style: 'align-items:center' }, h('span', { style: 'min-width:190px' }, takvimTarihYaz(g.tarih) + ' ' + takvimGun(g.tarih) + ' · ' + atamaTamAd(g.zaman)), i, h('span', { class: 'alt' }, 'atanan ' + g.atanan)); });
+    const kisiler = r.gunler.map((g) => { const i = h('input', { type: 'number', class: 'metin', min: String(Math.max(1, g.atanan)), max: '500', value: String(g.kisi), style: 'width:80px', 'aria-label': takvimTarihYaz(g.tarih) + ' kişi sayısı' }); i.addEventListener('input', () => { g.kisi = Number(i.value) || g.kisi; }); return h('div', { class: 'satir', style: 'align-items:center' }, h('span', { style: 'min-width:190px' }, takvimTarihYaz(g.tarih) + ' ' + takvimGun(g.tarih) + ' · ' + atamaTamAd(g.zaman)), i, h('span', { class: 'alt' }, g.yeni ? '＋ yeni gün' : 'atanan ' + g.atanan)); });
+    // Süre: yeni son tarih (uzat ya da kısalt). Uzatmada hafta sonu ve tatiller atlanır; kısaltmada sonraki günler çıkar (atanmış kişi varsa Yönetici için "erken bitir" uygulanır).
+    if (st.tatil === undefined) { st.tatil = []; izinTatiller().then((l) => { st.tatil = l; if (st.acik === 'revize') ciz(); }).catch(() => {}); }
+    const orijSon = t.gunler.map((g) => g.tarih).sort().pop(), ilkGun = t.gunler.map((g) => g.tarih).sort()[0];
+    const sonKutu = h('input', { type: 'text', class: 'metin', inputmode: 'numeric', maxlength: '10', value: takvimTarihYaz(r.son || orijSon), style: 'width:120px', 'aria-label': 'Yeni son tarih' });
+    sonKutu.addEventListener('input', () => { const x = sonKutu.value.replace(/\D/g, '').slice(0, 8); sonKutu.value = x.length > 4 ? x.slice(0, 2) + '.' + x.slice(2, 4) + '.' + x.slice(4) : x.length > 2 ? x.slice(0, 2) + '.' + x.slice(2) : x; });
+    sonKutu.addEventListener('change', () => {
+      const iso = talepTarihOku(sonKutu.value);
+      if (!iso) { toast('Tarihi GG.AA.YYYY biçiminde yazın.', 'kotu'); return; }
+      if (iso < ilkGun) { toast('Yeni son tarih görevin ilk gününden önce olamaz; görevi iptal edin.', 'kotu'); return; }
+      const eski = new Map(r.gunler.map((g) => [g.tarih + '|' + g.zaman, g]));
+      const tutulan = t.gunler.filter((g) => g.tarih <= iso).map((g) => eski.get(g.tarih + '|' + g.zaman) || { tarih: g.tarih, zaman: g.zaman, kisi: g.kisi, atanan: (g.atananlar || []).length });
+      let eklenen = [];
+      if (iso > orijSon) {
+        const bas = takvimIso(new Date(new Date(orijSon + 'T00:00:00').getTime() + 86400000));
+        const son = t.gunler.filter((g) => g.tarih === orijSon).pop();
+        eklenen = talepGunleriUret(bas, iso, son ? son.kisi : 1, st.tatil || []).gunler.map((g) => ({ ...g, atanan: 0, yeni: true }));
+        if (!eklenen.length) toast('Seçilen aralıkta çalışılacak gün yok (hafta sonu / tatil).', 'uyari');
+      }
+      r.son = iso; r.gunler = tutulan.concat(eklenen); ciz();
+    });
+    const cikan = t.gunler.filter((g) => r.son && g.tarih > r.son), cikanAtanan = cikan.reduce((n, g) => n + (g.atananlar || []).length, 0);
+    const sureBilgi = !r.son || r.son === orijSon ? 'Süreyi değiştirmek için yeni son tarihi yazıp Enter\'a basın.' : r.son > orijSon ? '＋ ' + r.gunler.filter((g) => g.yeni).length + ' gün eklenecek (hafta sonu/tatil atlanır); yeni günlere kişi ataması revize sonrası yapılır.' : '− ' + cikan.length + ' gün çıkarılacak' + (cikanAtanan ? ' · bu günlerde ' + cikanAtanan + ' atama var: ' + (yon ? 'uygulandığında atanmış kişiler görevden çıkarılır (erken bitir).' : 'önce kişilerin görevden çıkarılması gerekir.') : '.');
+    const sureSatiri = h('div', { class: 'satir', style: 'align-items:center;flex-wrap:wrap' }, h('label', null, 'Yeni son tarih ', sonKutu), h('span', { class: 'alt' }, 'Şimdiki: ' + takvimTarihYaz(orijSon)), h('div', { class: 'alt', style: 'flex-basis:100%' }, sureBilgi));
     return h('section', { class: 'kart' }, h('h2', null, yon ? 'Revize (doğrudan uygulanır)' : 'Revize iste'),
-      h('div', { class: 'alt', style: 'margin-bottom:8px' }, (yon ? 'Değişiklik hemen uygulanır.' : 'Değişiklik Yönetici onayından sonra uygulanır.') + ' Atanmış kişiden az kişi sayısı yazılamaz; önce kişiyi çıkarın.'),
+      h('div', { class: 'alt', style: 'margin-bottom:8px' }, (yon ? 'Değişiklik hemen uygulanır.' : 'Değişiklik Yönetici onayından sonra uygulanır.') + ' Atanmış kişiden az kişi sayısı yazılamaz; önce kişiyi çıkarın. Süre uzatma/kısaltma da buradan yapılır.'),
       h('div', { style: 'display:flex;flex-direction:column;gap:10px' }, h('label', null, 'Görev metni'), metin, h('label', null, 'Saha / Operasyon Notu'), nitelik,
-        h('div', { class: 'satir' }, h('label', null, 'Saat ', sb), h('label', null, '– ', sbit)), h('label', null, 'Gün başına kişi sayısı'), ...kisiler, neden,
+        h('div', { class: 'satir' }, h('label', null, 'Saat ', sb), h('label', null, '– ', sbit)), h('label', null, 'Süre (uzat / kısalt)'), sureSatiri, h('label', null, 'Gün başına kişi sayısı'), ...kisiler, neden,
         h('div', { class: 'satir' }, h('button', { class: 'ana', type: 'button', onclick: () => {
           const gonder = { talepId, neden: neden.value };
           if (metin.value.trim() !== (t.gorevMetni || '')) gonder.gorevMetni = metin.value;
           if (nitelik.value.trim() !== (t.nitelik || '')) gonder.nitelik = nitelik.value;
           if (sb.value.trim() !== t.saatBaslangic || sbit.value.trim() !== t.saatBitis) { gonder.saatBaslangic = sb.value.trim(); gonder.saatBitis = sbit.value.trim(); }
-          if (r.gunler.some((g, i) => g.kisi !== t.gunler[i].kisi)) gonder.gunler = r.gunler.map((g) => ({ tarih: g.tarih, zaman: g.zaman, kisi: g.kisi }));
+          const gunDegisti = r.gunler.length !== t.gunler.length || r.gunler.some((g, i) => g.tarih !== t.gunler[i].tarih || g.zaman !== t.gunler[i].zaman || g.kisi !== t.gunler[i].kisi);
+          const kisalt = r.son && r.son < orijSon && cikanAtanan > 0;
+          if (kisalt) {
+            if (!yon) { toast('Kısaltılan günlerde atanmış kişi var; önce kişileri görevden çıkarın.', 'kotu'); return; }
+            if (!confirm('Yeni son tarih ' + takvimTarihYaz(r.son) + ': sonraki günlerdeki ' + cikanAtanan + ' atama kaldırılacak ve kişilere bildirim gidecek. Devam edilsin mi?')) return;
+            const diger = Object.keys(gonder).length > 2;
+            dene(async () => { await Kopru.cagir('talepErkenBitir', { id: talepId, yeniSon: r.son, neden: neden.value }); if (diger) await Kopru.cagir('revizeIste', gonder); }, 'Görev ' + takvimTarihYaz(r.son) + ' tarihinde bitirildi.');
+            return;
+          }
+          if (gunDegisti) gonder.gunler = r.gunler.map((g) => ({ tarih: g.tarih, zaman: g.zaman, kisi: g.kisi }));
           if (Object.keys(gonder).length === 2) { toast('Değişen bir alan yok.', 'kotu'); return; }
           dene(() => Kopru.cagir('revizeIste', gonder), yon ? 'Revize uygulandı.' : 'Revize isteği gönderildi; Yönetici onayı bekleniyor.');
         } }, yon ? 'Revizeyi uygula' : 'Revize iste'), h('button', { type: 'button', onclick: () => { st.acik = ''; st.rv = null; ciz(); } }, 'Vazgeç'))));
