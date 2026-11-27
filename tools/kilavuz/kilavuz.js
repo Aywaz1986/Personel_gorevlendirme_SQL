@@ -90,6 +90,7 @@ C.push(note("Havuzdaki her işlem işlem günlüğüne (Ayarlar › İşlem Gün
 C.push(...img("06_havuz","Proje Havuzu: Ağaç-Tablo, efor ve mükerrer rozeti.",600));
 
 C.push(h1("7. Akademik ve Kurumsal Takvim Yönetimi"));
+C.push(note("**Salt okunur görünüm.** Akademik Takvim sekmesi Proje Sorumlusu ve Saha rollerinde de görünür; bu roller yalnızca görüntüler (başlıkta \"Salt okunur\" rozeti), ekleme, düzenleme, silme ve toplu yükleme yalnızca Merkez Yöneticidedir."));
 C.push(p("**Akademik Takvim** ayrı bir sekmedir. Üstte yıl seçici (◀ Yıl ▶) ve üç düğme vardır: **+ Yeni Tatil Günü Ekle**, **📋 Toplu Tatil Ekle**, **📥 Excel Şablonu İndir (CSV)**. Altında özet kartları, renk kodları, 12 aylık takvim (3×4) ve tatil listesi yer alır. Yalnız Merkez Yönetici düzenler; hafta Pazartesi başlar."));
 C.push(note("**Üç tatil türü:** Resmi Tatil (mavi), İdari / Kurumsal Tatil (turuncu; yıllık izinden kesilir), Akademik Tatil (turkuaz). Yarım gün (ÖÖ / ÖS) hücrede çapraz bölünmüş görünür. Tatil gününe atama engellenmez, yalnız uyarı verilir."));
 C.push(h2("7.1 Takvim ve liste"));
@@ -184,6 +185,7 @@ C.push(h2("8.9 Saha notu, iletişim, rozetler ve ikame uyarısı"));
 C.push(n("**Saha / Operasyon Notu:** talep formunda araç, teçhizat (KKD), giriş kişisi, konaklama gibi bilgiler çok satırlı yazılır (en fazla 1000 karakter). Eski \"Aranan nitelik\" alanının yerini almıştır.","n8"));
 C.push(n("**İletişim:** talep listesinde ve Saha'nın Görevlerim sayfasında **İletişim / Göster** saha notunu ve Proje Sorumlusunun telefonunu açar. Yönetici ve Proje Sorumlusu ayrıca atananların telefonlarını görür; Saha görmez.","n8"));
 C.push(n("**Sekme rozetleri:** Talepler, İzin Onayları ve Görevlerim sekmelerindeki kırmızı sayı bekleyen işi gösterir; üzerine gelince dökümü çıkar. Sayfalar 30 saniyede bir kendiliğinden yenilenir (yazı yazarken bozulmaz); üstteki **Yenile** düğmesi anında yeniler.","n8"));
+C.push(p("**⟳ Yenile:** sağ üstteki düğme önbellekleri, sayaçları ve açık sekmenin tüm verisini (talepler, atamalar, haftalık özet, izin/rapor, havuz, takvim) yeniden yükler. 30 saniyelik otomatik yenileme açık bir pencere ya da yazmakta olduğunuz alan varken çalışmaz. **Bekleyen Görev Talepleri** ekranında üstteki arama kutusu talep no, proje, faaliyet, konum, sorumlu ve atanan personele göre anında süzer; **İletişim** düğmesi talep işlem görmüş olsa da her zaman açıktır."));
 C.push(n("**İkame bekleyen görevler:** raporlanan, kadrodan ayrılan ya da birimi değişen kişinin ileri tarihli atamaları Talepler sayfasındaki uyarı kutusunda listelenir; **Yönet…** ile ikame yapılır.","n8"));
 C.push(n("**Analiz ve atama:** aday kartında projedeki görev sayısı, adam-gün, yerleşke ve müsait gün görünür; Personel analizinde müsait gün, tatil günü ve tatilde çalışma sütunları vardır. Matriste **Yerleşke** süzgeci bulunur; rapor evrakı **Ad_Soyad_yyyymmdd_KOD** adıyla iner.","n8"));
 C.push(h2("8.8 Eski veri aktarımı ve canlıya geçiş"));

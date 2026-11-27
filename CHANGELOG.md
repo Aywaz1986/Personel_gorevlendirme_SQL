@@ -3,6 +3,11 @@
 Her değişiklik önce **Yayınlanmamış** bölümüne yazılır; sürüm yükselince bölüm sürüm başlığına dönüştürülür.
 
 ## Yayınlanmamış
+### Dilim 26 – Görünürlük, Yenile, talep arama (2026-11-27) — DEVAM EDİYOR (dal `dilim-26-gorunurluk-yenile`, Dilim 25 dalından)
+- Madde 1: Akademik Takvim sekmesi Proje Sorumlusu ve Saha'da da görünür, salt okunur (ekle/düzenle/sil/toplu/CSV düğmeleri ve gün tıklaması yok; "Salt okunur" rozeti). Sunucu yazma yordamları zaten Yönetici ister (50023).
+- Madde 3: Yenile düğmesi rol önbelleğini temizler, sayaçları ve etkin sayfanın tüm verisini yeniler; otomatik yenileme açık pencere (`.perde`, takvim modalı) ya da yazılan alan varken atlanır.
+- Madde 7: Bekleyen Görev Talepleri'nde kalıcı arama kutusu (talep no, proje, alt proje, faaliyet, konum, sorumlu, atanan personel; Türkçe büyük/küçük duyarsız; yazarken odak kalır); İletişim düğmesi artık koşulsuz görünür/aktif. SQL/komut değişmedi. SINANMADI (CI).
+- Sıradakiler: Dilim 27 (madde 4–5 havuz), Dilim 28 (madde 2 ve 6 Haftalık Özet'ten yönetim + atanmış görev düzenleme).
 ### Dilim 25 – İzin ve Sağlık Raporu ekranı prototipi (2026-11) — DEVAM EDİYOR (dal `dilim-25-izin-prototip`, Dilim 24 dalından)
 - Murat'ın "Personel İzin ve Sağlık Raporu Yönetimi" prototipi %100'e yakın uygulandı (yalnız arayüz; SQL/komut değişmedi). `004_izin_rapor.js` baştan yazıldı; prototip CSS'i `tools/proto_css.py` ile `.izv` altına kapsanarak `ui-src/css/izv.css`, uyarlamalar `izv_uyum.css`.
 - **Yönetici:** KPI kartları (istemcide hesaplanır), 3 sekme: İzin onayları (arama + durum/tür süzgeci, gün rozetleri, Onayla/Reddet/Erken dönüş-kısalt/İzni iptal pencereleri, çakışma kararı penceresi), Sağlık raporları ve ikame uyarıları (ikame bandı + evrak inceleme/düzeltme/iptal penceresi), Arşiv (birleşik liste + CSV). Vekaleten pencere: izin / rapor sekmeli, kişi aramalı.
