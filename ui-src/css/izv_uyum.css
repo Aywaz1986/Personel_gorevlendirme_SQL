@@ -1,0 +1,12 @@
+/* İzin ve sağlık raporu prototipi uygulama uyarlamaları */
+.izv{min-height:0;background:none;border-radius:16px;color:var(--text-primary);font-family:inherit}
+.izv-sayfa .main-stack{padding:0}
+.izv button,.izv input,.izv select,.izv textarea{font-family:inherit}
+.izv .glass-panel,.izv .glass-card{backdrop-filter:none;-webkit-backdrop-filter:none}
+.izv-modal{max-width:680px;margin:0 auto;width:100%;background:none}
+.izv-modal .modal-body{padding:4px 2px 8px}
+.izv .brand-title{margin:0}
+.izv .info-callout{margin:0}
+.izv .form-control{max-width:100%}
+.izv .data-table td,.izv .data-table th{vertical-align:top}
+.izv .pill-group{max-width:100%}

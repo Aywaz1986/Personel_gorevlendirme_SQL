@@ -122,3 +122,6 @@ Test listesi: `docs/test-dilim-20.md`. `004_yetki.js` yeniden yazıldı; `004_ka
 
 ## Dilim 24 – Akademik ve Kurumsal Takvim (Murat 26-27.11.2026: prototip %100'e yakın)
 Bkz. CHANGELOG Dilim 24; sınama: docs/test-dilim-24.md. Üçüncü tür AKADEMIK (021).
+
+## Dilim 25 – İzin ve Sağlık Raporu ekranı (Murat 27.11.2026: prototip %100'e yakın)
+Bkz. CHANGELOG Dilim 25; sınama: docs/test-dilim-25.md. Yalnız arayüz (`.izv`).

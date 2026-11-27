@@ -3,6 +3,12 @@
 Her değişiklik önce **Yayınlanmamış** bölümüne yazılır; sürüm yükselince bölüm sürüm başlığına dönüştürülür.
 
 ## Yayınlanmamış
+### Dilim 25 – İzin ve Sağlık Raporu ekranı prototipi (2026-11) — DEVAM EDİYOR (dal `dilim-25-izin-prototip`, Dilim 24 dalından)
+- Murat'ın "Personel İzin ve Sağlık Raporu Yönetimi" prototipi %100'e yakın uygulandı (yalnız arayüz; SQL/komut değişmedi). `004_izin_rapor.js` baştan yazıldı; prototip CSS'i `tools/proto_css.py` ile `.izv` altına kapsanarak `ui-src/css/izv.css`, uyarlamalar `izv_uyum.css`.
+- **Yönetici:** KPI kartları (istemcide hesaplanır), 3 sekme: İzin onayları (arama + durum/tür süzgeci, gün rozetleri, Onayla/Reddet/Erken dönüş-kısalt/İzni iptal pencereleri, çakışma kararı penceresi), Sağlık raporları ve ikame uyarıları (ikame bandı + evrak inceleme/düzeltme/iptal penceresi), Arşiv (birleşik liste + CSV). Vekaleten pencere: izin / rapor sekmeli, kişi aramalı.
+- **Sorumlu / Saha:** yan yana izin talebi ve rapor beyanı kartları (zaman dilimi kartları, canlı net izin süresi, Saha'da görev çakışma uyarısı, dosya adı önizlemesi) + kişisel kayıt tablosu; Saha'da Görevlerim tablosu.
+- Erken dönüş penceresi gün işaretiyle çalışır ama sunucu yalnız "yeni son gün" bildiğinden yalnız sondaki günler kısaltılabilir (`izinKisalt`); hepsi kalkarsa `izinGeriCek`.
+- Bilerek yok: rol/tema düğmesi, kalan yıllık izin, hastane alanı, ağ arşiv yolu, örnek/hatalı dosya düğmeleri (bkz. docs/test-dilim-25.md). Kılavuz Bölüm 10 ve ekran görüntüleri (12–12e) güncellendi. SINANMADI (CI).
 ### Dilim 24 – Akademik ve Kurumsal Takvim prototipi (2026-11) — DEVAM EDİYOR (dal `dilim-24-takvim-prototip`, Dilim 23 dalından)
 - Murat'ın "Akademik ve Kurumsal Takvim Yönetimi" prototipi %100'e yakın uygulandı: üst başlık + yıl seçici, KPI kartları, renk lejantı, 3×4 yıllık matris (HFT, hafta sonu gül tonu, çapraz yarım gün), hover ipucu, liste (arama + tür süzgeci), kesinti bandı, tekil/toplu/silme pencereleri, CSV şablonu. Tema anahtarı yok (uygulama teması geçerli; koyu temada prototipin koyu paleti).
 - Prototip CSS'i `tools/proto_css.py` ile `.tkv` altına kapsanarak `ui-src/css/tkv.css`'e üretildi; uyarlamalar `tkv_uyum.css`. `build.py` `css/*.css` dosyalarını ekler.

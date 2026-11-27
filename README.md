@@ -40,6 +40,7 @@ Ayrıntı: [`docs/PLAN.md`](docs/PLAN.md), dilim içerikleri: [`docs/DILIMLER.md
 | 20 | **Kullanıcı Yetki Yönetimi** (prototip): 4 kart, Bölüm 1 istisna tablosu + modal, Bölüm 2 bölüm→rol (Kapsam Dışı / Eşleşme Bekliyor), taslak kaydetme, Etkin Yetki Test Et; `019_yetki_kapsam_disi.sql` | PR bekliyor |
 | 21–23 | Hafta Pazartesi (özel tarih seçici); Proje düzeltmeleri (alt projesiz faaliyet, eski veri proje adı çözümü); Havuzda ↗ Taşı (`020`). Ayrıntı: CHANGELOG | PR #28–#30 |
 | 24 | **Akademik ve Kurumsal Takvim** (prototip): yıl seçici, KPI, 3×4 matris, liste, toplu ekleme, CSV; üçüncü tür Akademik Tatil (`021`) | `dilim-24-takvim-prototip` |
+| 25 | **İzin ve Sağlık Raporu ekranı** (prototip): KPI, 3 sekmeli yönetici görünümü, vekaleten pencere, saha/sorumlu self-servis kartları, arşiv CSV (yalnız arayüz) | `dilim-25-izin-prototip` |
 | 19 | **Haftalık Özet matrisi** (prototip): KPI şeridi, hazır/kişisel görünümler, 5 katmanlı özelleştirme çekmecesi, odak, gruplama, sabitleme, çakışma işareti (yalnız arayüz) | PR bekliyor |
 | 18 | **Proje Havuzu ağaç-tablo** (Murat'un prototipine göre): özet kartları, Kapsam Özeti, Toplam Efor (adam-gün, `sp_havuz_efor`), derinlik/durum filtreleri, satır içi ad düzeltme, hızlı işlemler | PR bekliyor |
 
