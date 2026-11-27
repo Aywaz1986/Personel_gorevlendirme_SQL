@@ -97,6 +97,7 @@ Girdi sütunları (başlık yoksa sıra): Tarih; Ad; Zaman dilimi; Tür (son iki
 ## Dilim 8 komutları (iptal, erken bitiş, ikame, revize, devir)
 | Komut | Girdi | Çıktı | Yetki | Not |
 |---|---|---|---|---|
+| `talepProjeDegistir` | `talepId, ana, alt?, faaliyet, konum, neden?` | `{id, havuzId}` | Yönetici | yalnız KISMEN/TAMAMEN_ATANDI; adlarla yol çözülür (yoksa oluşturulur; pasif/birleştirilmiş ad reddedilir); atamalar korunur, bildirim + log |
 | `talepIptal` | `id, neden` (≥3) | `{tamam}` | Yönetici; Sorumlu kendi talebi | yalnız KISMEN/TAMAMEN_ATANDI ve geçmiş günü AKTIF atama yoksa; atamalar kalkar, kişilere `GOREV_IPTAL` bildirimi |
 | `talepErkenBitir` | `id, yeniSon, neden` | `{talepId, durum}` | Yönetici; Sorumlu kendi talebi | yeni son gün sonrası gün ve atamalar kalkar (`ERKEN_BITIS` bildirimi) |
 | `atamaCikar` | `talepId, sicil, tarih?, zaman?, neden` | `{talepId, durum, cikarilan}` | Yönetici | tarih boşsa kişinin tüm aktif atamaları |

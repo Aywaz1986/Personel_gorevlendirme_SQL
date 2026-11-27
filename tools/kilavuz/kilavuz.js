@@ -136,6 +136,7 @@ C.push(note("**Reddetme.** Onay bekleyen talepte **Reddet…** ile ret nedeni (z
 C.push(note("**Sorumlu tarafı.** Taleplerim sayfasının üstünde yeni bildirimler görünür (atandı, reddedildi, görevden çıkarıldı); **Tümünü okundu say** ile kapanır. Atama yapılmış talepte **Atananlar** düğmesi gün gün kimin atandığını gösterir."));
 
 C.push(h2("8.4 Haftalık Özet (herkes)"));
+C.push(note("**Yönetici:** Haftalık Özet'te bir görev kartına tıklayınca açılan pencerede **⚙ Görevi yönet** düğmesi vardır. Açılan panelde görevli personeli çıkarabilir/ikame atayabilir, sorumluyu devredebilir, metin, saha notu, saat ve gün başına kişi sayısını değiştirebilir, görevi erken bitirebilir ya da iptal edebilir ve **Proje bağlamı…** ile Ana Proje › Alt Proje › Faaliyet › Yerleşke yolunu değiştirebilirsiniz. Atamalar korunur; etkilenen kişilere bildirim gider."));
 C.push(p("**Haftalık Özet** sekmesi Yönetici, Proje Sorumlusu ve Saha personeli için açıktır; yalnız okunur. Satırda personel, sütunda 7 gün vardır; kart ÖÖ/ÖS bölünmüş olabilir."));
 C.push(n("**Üst kartlar:** Toplam Saha Personeli, Görevli / Müsait Adam-Gün (Tam = 1,0; ÖÖ/ÖS = 0,5), İzin / Rapor ve **İkame / Çakışma Uyarısı** (görevi olan günde izin ya da rapor çıkmışsa).","n8"));
 C.push(n("**Hafta gezgini:** ◀ Önceki / Sonraki ▶, hafta listesi (HFT numaralı), **Bu hafta**, **GG.AA.YYYY** kutusu. **Arama** personel, proje, faaliyet, yerleşke, talep no ve sorumluyu bulur; Bölüm / Ana Proje / Yerleşke / personel süzgeçleri korunur.","n8"));

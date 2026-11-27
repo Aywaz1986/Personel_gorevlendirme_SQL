@@ -63,6 +63,23 @@ public class RevizeTests
     }
 
     [SqlFact]
+    public async Task Proje_baglami_atanmis_talepte_yalniz_yonetici_degistirir_atamalar_korunur_bildirim_gider()
+    {
+        var o = await KurAsync(); await using var _t = o.T;
+        var id = await TalepAsync(o, G(D(40)), G(D(41)));
+        Assert.Equal("dogrulama", await Kod(() => TalepService.ProjeDegistirAsync(o.Yonetici, id, "Yeni Ana", null, "Yeni Faaliyet", "Mersin", null)));   // henüz atama yok
+        await Ata(o, id, "1002", D(40));
+        Assert.Equal("yetki", await Kod(() => TalepService.ProjeDegistirAsync(o.Sorumlu, id, "Yeni Ana", null, "Yeni Faaliyet", "Mersin", null)));
+        Assert.Equal("dogrulama", await Kod(() => TalepService.ProjeDegistirAsync(o.Yonetici, id, "", null, "F", "K", null)));
+        Assert.Equal("dogrulama", await Kod(() => TalepService.ProjeDegistirAsync(o.Yonetici, id, "Toroman", null, "AY Kabul", "Ankara İvedik", null))); // aynı yol
+        await TalepService.ProjeDegistirAsync(o.Yonetici, id, "Yeni Ana", null, "Yeni Faaliyet", "Mersin", "yanlış girilmişti");
+        Assert.Equal("Yeni Ana", Convert.ToString(await o.T.SkalerAsync($"SELECT a.ad FROM gorev.talepler t JOIN gorev.proje_havuzu k ON k.id = t.havuz_id JOIN gorev.proje_havuzu f ON f.id = k.ust_id JOIN gorev.proje_havuzu al ON al.id = f.ust_id JOIN gorev.proje_havuzu a ON a.id = al.ust_id WHERE t.id = {id}")));
+        Assert.Equal(1, await Aktif(o, id, "1002"));
+        Assert.Equal(1, await Bildirim(o.Saha1, "PROJE_DEGISTI"));
+        Assert.Equal(1, N(await o.T.SkalerAsync("SELECT COUNT(*) FROM gorev.islem_log WHERE islem = N'TALEP_PROJE_DEGISTI'")));
+    }
+
+    [SqlFact]
     public async Task Baslamis_gorev_iptal_edilmez_erken_bitis_sonraki_gunleri_kaldirir()
     {
         var o = await KurAsync(); await using var _t = o.T;

@@ -39,6 +39,7 @@ public static class TalepCommands
         r.Register("talepKaydet", async (st, a) => await TalepService.KaydetAsync(st.RequireSql, OptInt(a, "id"), OptS(a, "sorumluSicil"),
             Args.S(a, "ana"), OptS(a, "alt"), Args.S(a, "faaliyet"), Args.S(a, "konum"), Args.S(a, "saatBaslangic"), Args.S(a, "saatBitis"),
             Args.S(a, "gorevMetni"), OptS(a, "nitelik"), Gunler(a), Oneri(a), Args.B(a, "gonder")), kapiGerekli: true);
+        r.Register("talepProjeDegistir", async (st, a) => await TalepService.ProjeDegistirAsync(st.RequireSql, Args.I(a, "talepId"), Args.S(a, "ana"), OptS(a, "alt"), Args.S(a, "faaliyet"), Args.S(a, "konum"), OptS(a, "neden")), kapiGerekli: true);
         r.Register("talepGeriCek", async (st, a) =>
         {
             await TalepService.GeriCekAsync(st.RequireSql, Args.I(a, "id"));

@@ -3,6 +3,10 @@
 Her değişiklik önce **Yayınlanmamış** bölümüne yazılır; sürüm yükselince bölüm sürüm başlığına dönüştürülür.
 
 ## Yayınlanmamış
+### Dilim 28 – Haftalık Özet'ten görev yönetimi, atanmış talepte proje bağlamı (2026-11-27) — DEVAM EDİYOR (dal `dilim-28-ozet-yonetim`, Dilim 27 dalından)
+- Madde 2: Haftalık Özet'te görev kartı → "⚙ Görevi yönet" (yalnız Yönetici): mevcut talep yönet paneli pencerede açılır (kişi çıkar, ikame, sorumlu devri, revize [metin/saha notu/saat/gün başına kişi], erken bitir, iptal). Kapanınca matris yenilenir.
+- Madde 6: panele "Proje bağlamı…" (yalnız Yönetici): Ana › Alt › Faaliyet › Yerleşke havuzdan seçilir ya da yazılır. Migration 023 `sp_talep_proje_degistir` + `talepProjeDegistir`: yalnız KISMEN/TAMAMEN_ATANDI talep; atama/gün korunur, efor yeni yolda sayılır, kişilere ve sorumluya bildirim (`PROJE_DEGISTI`), audit log `TALEP_PROJE_DEGISTI`. Görev metni/saha notu/süre uzatma-kısaltma zaten Revize ve Erken bitir ile Yönetici'ce doğrudan uygulanır.
+- SQL 023 SINANMADI (CI SqlTests: `Proje_baglami_atanmis_talepte_…`).
 ### Dilim 27 – Havuz birleştirme/taşıma düzeltmeleri, efora göre silme (2026-11-27) — DEVAM EDİYOR (dal `dilim-27-havuz-duzeltme`, Dilim 26 dalından)
 - Migration 022: `sp_havuz_birlestir` artık kaynağa bağlı talepleri ve geçmiş görevleri (efor) hedefe aktarır, önceki birleştirmeleri hedefe yönlendirir (eskiden talepler pasif kaynakta kalıp efor eski faaliyet/yerleşke altında görünüyordu — madde 4a/4b'nin kök nedeni olarak değerlendirildi). Onarım betiği: mevcut birleştirilmiş kayıtlara bağlı talep/geçmiş görevler hedefe çekilir.
 - Yeni `sp_havuz_sil` + `havuzSil` komutu: efor/talep/geçmiş görev bağı olmayan kayıt (alt dalı ve ona birleştirilmiş boş kaynaklarla) kalıcı silinir; bağlı kayıt varsa reddeder → pasife alın. Arayüzde 🗑 Sil yalnız efor = 0 satırda görünür.
