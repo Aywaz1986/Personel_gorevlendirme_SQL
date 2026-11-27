@@ -4,7 +4,7 @@ function revizeDurumTur(d) { return ({ BEKLIYOR: 'uyari', ONAYLANDI: 'iyi', REDD
 
 async function talepYonetPaneli(talepId, geri) {
   const yon = S.gorunum === 'YONETICI';
-  const st = { t: null, revizeler: [], devir: [], acik: '', ikame: null, cakisma: null, yeniKisi: null, rv: null, musait: {}, fazla: null };
+  const st = { t: null, revizeler: [], devir: [], acik: '', ikame: null, cakisma: null, yeniKisi: null, rv: null, musait: {}, fazla: null, havuz: null, pr: null };
   const kap = h('div', { style: 'display:flex;flex-direction:column;gap:14px;min-width:0' });
 
   async function yukle() {
@@ -48,7 +48,7 @@ async function talepYonetPaneli(talepId, geri) {
       sorun.length ? sorun.map((r) => r.ad + ' ' + takvimTarihYaz(r.tarih) + ' ' + atamaTamAd(r.zaman) + ' ' + MUSAIT_AD[r.durum]).join(' · ') : 'hepsi müsait');
   }
   async function dene(is, mesaj, kapat) {
-    try { await is(); if (mesaj) toast(mesaj); st.acik = ''; st.ikame = null; st.cakisma = null; st.yeniKisi = null; st.rv = null; if (kapat) geri(true); else await yukle(); } catch (e) { hata(e); }
+    try { await is(); if (mesaj) toast(mesaj); st.acik = ''; st.ikame = null; st.cakisma = null; st.yeniKisi = null; st.rv = null; st.pr = null; st.havuz = null; if (kapat) geri(true); else await yukle(); } catch (e) { hata(e); }
   }
   const alan = (yer, uz) => h('input', { type: 'text', class: 'metin', placeholder: yer, 'aria-label': yer, maxlength: '300', style: 'flex:1;min-width:' + (uz || 240) + 'px' });
 
@@ -125,6 +125,31 @@ async function talepYonetPaneli(talepId, geri) {
         h('button', { type: 'button', onclick: () => { st.acik = ''; st.yeniKisi = null; ciz(); } }, 'Vazgeç')));
   }
 
+  // Proje bağlamı (Yönetici): Ana › Alt › Faaliyet › Yerleşke yolu; yazılan ad havuzda yoksa oluşturulur, pasif/birleştirilmiş ad reddedilir.
+  function projeFormu() {
+    if (!st.havuz) { Kopru.cagir('havuzListe', {}).then((l) => { st.havuz = l; ciz(); }).catch(hata); return h('section', { class: 'kart' }, h('div', { class: 'alt' }, 'Proje havuzu yükleniyor…')); }
+    if (!st.pr) st.pr = { ana: st.t.ana, alt: st.t.alt, faaliyet: st.t.faaliyet, konum: st.t.konum };
+    const pr = st.pr, hv = st.havuz.filter((x) => x.aktif && !x.birlestirildiId);
+    const bul = (sev, ust, ad) => hv.find((x) => x.seviye === sev && (x.ustId || 0) === (ust || 0) && x.ad === ad);
+    const anaK = bul(1, 0, pr.ana), altK = anaK && bul(2, anaK.id, pr.alt || 'Genel'), fK = altK && bul(3, altK.id, pr.faaliyet);
+    const oner = (sev, ust) => hv.filter((x) => x.seviye === sev && (x.ustId || 0) === (ust || 0)).map((x) => x.ad);
+    const girdi = (ad, anahtar, liste, kisa) => {
+      const id = 'pr-' + anahtar, dl = h('datalist', { id }, liste.map((v) => h('option', { value: v })));
+      const i = h('input', { type: 'text', class: 'metin', list: id, value: pr[anahtar] || '', maxlength: '300', style: 'width:100%;box-sizing:border-box', 'aria-label': ad });
+      i.addEventListener('change', () => { pr[anahtar] = i.value.trim(); ciz(); });
+      i.addEventListener('input', () => { pr[anahtar] = i.value; });
+      return h('label', { style: 'display:flex;flex-direction:column;gap:4px;flex:1;min-width:200px' }, h('span', null, ad), i, dl, kisa ? h('span', { class: 'alt' }, kisa) : null);
+    };
+    const neden = alan('Neden (isteğe bağlı)');
+    return h('section', { class: 'kart' }, h('h2', null, 'Proje bağlamını değiştir'),
+      h('div', { class: 'alt', style: 'margin-bottom:8px' }, 'Atamalar ve günler korunur; görev yeni yolun altında sayılır, atanan kişilere ve sorumluya bildirim gider. Listede olmayan ad yazarsanız havuzda yeni oluşturulur.'),
+      h('div', { class: 'satir' }, girdi('Ana Proje', 'ana', oner(1, 0)), girdi('Alt Proje', 'alt', anaK ? oner(2, anaK.id) : [], 'Boşsa “Genel”'), girdi('Faaliyet', 'faaliyet', altK ? oner(3, altK.id) : []), girdi('Yerleşke', 'konum', fK ? oner(4, fK.id) : [])),
+      h('div', { class: 'satir', style: 'margin-top:8px' }, neden, h('button', { class: 'ana', type: 'button', onclick: () => {
+        if (!pr.ana.trim() || !pr.faaliyet.trim() || !pr.konum.trim()) { toast('Ana Proje, Faaliyet ve Yerleşke boş olamaz.', 'kotu'); return; }
+        dene(() => Kopru.cagir('talepProjeDegistir', { talepId, ana: pr.ana.trim(), alt: (pr.alt || '').trim(), faaliyet: pr.faaliyet.trim(), konum: pr.konum.trim(), neden: neden.value }), 'Proje bağlamı değiştirildi.');
+      } }, 'Uygula'), h('button', { type: 'button', onclick: () => { st.acik = ''; st.pr = null; ciz(); } }, 'Vazgeç')));
+  }
+
   function revizeFormu() {
     const t = st.t;
     if (!st.rv) st.rv = { metin: t.gorevMetni || '', nitelik: t.nitelik || '', sb: t.saatBaslangic, sbit: t.saatBitis, gunler: t.gunler.map((g) => ({ tarih: g.tarih, zaman: g.zaman, kisi: g.kisi, atanan: (g.atananlar || []).length })) };
@@ -166,13 +191,13 @@ async function talepYonetPaneli(talepId, geri) {
 
   function ciz() {
     const t = st.t, acik = t.durum === 'KISMEN_ATANDI' || t.durum === 'TAMAMEN_ATANDI';
-    const dugme = (id, ad) => h('button', { type: 'button', class: st.acik === id ? 'ana' : '', onclick: () => { st.acik = st.acik === id ? '' : id; st.yeniKisi = null; st.rv = null; ciz(); } }, ad);
+    const dugme = (id, ad) => h('button', { type: 'button', class: st.acik === id ? 'ana' : '', onclick: () => { st.acik = st.acik === id ? '' : id; st.yeniKisi = null; st.rv = null; st.pr = null; ciz(); } }, ad);
     const kapat = [h('h1', { style: 'margin:0;font-size:20px' }, t.kod + ' · yönet'), rozet(talepDurumAd(t.durum), talepDurumTur(t.durum)), h('span', { style: 'flex:1' }), h('button', { type: 'button', onclick: () => geri(false) }, 'Listeye dön')];
     kap.replaceChildren(...[h('div', { class: 'satir', style: 'align-items:center' }, ...kapat),
       h('section', { class: 'kart' }, h('div', { style: 'line-height:1.7' }, h('div', null, '📑 ' + t.ana + ' › ' + t.alt + ' › ' + t.faaliyet), h('div', null, '📍 ' + t.konum + ' · 🕣 ' + String(t.saatBaslangic).replace(':', '.') + ' - ' + String(t.saatBitis).replace(':', '.')),
         h('div', null, '🧍‍♂️ Proje sorumlusu: ' + t.sorumluAdi), t.gorevMetni ? h('div', { style: 'color:var(--soluk)' }, t.gorevMetni) : null), h('div', { style: 'margin-top:8px' }, gunTablo())),
-      acik ? h('div', { class: 'satir' }, dugme('revize', yon ? 'Revize…' : 'Revize iste…'), dugme('erken', 'Erken bitir…'), dugme('iptal', 'Görevi iptal et…'), yon ? dugme('devir', 'Sorumlu devret…') : null) : h('div', { class: 'mesaj bilgi' }, 'Bu durumdaki talepte işlem yapılamaz.'),
-      cakismaKutusu(), ikameFormu(), cikarFormu(), st.acik === 'revize' ? revizeFormu() : null, st.acik === 'erken' ? erkenFormu() : null, st.acik === 'iptal' ? iptalFormu() : null, st.acik === 'devir' ? devirFormu() : null,
+      acik ? h('div', { class: 'satir' }, dugme('revize', yon ? 'Revize…' : 'Revize iste…'), yon ? dugme('proje', 'Proje bağlamı…') : null, dugme('erken', 'Erken bitir…'), dugme('iptal', 'Görevi iptal et…'), yon ? dugme('devir', 'Sorumlu devret…') : null) : h('div', { class: 'mesaj bilgi' }, 'Bu durumdaki talepte işlem yapılamaz.'),
+      cakismaKutusu(), ikameFormu(), cikarFormu(), st.acik === 'revize' ? revizeFormu() : null, st.acik === 'proje' && yon ? projeFormu() : null, st.acik === 'erken' ? erkenFormu() : null, st.acik === 'iptal' ? iptalFormu() : null, st.acik === 'devir' ? devirFormu() : null,
       revizeListesi(),
       st.devir.length ? h('section', { class: 'kart' }, h('h2', null, 'Sorumlu devir geçmişi'), st.devir.map((d) => h('div', { class: 'alt' }, String(d.tarih).slice(0, 16).replace('T', ' ') + ' · ' + d.eski + ' → ' + d.yeni + (d.neden ? ' · ' + d.neden : '')))) : null].filter(Boolean));
   }

@@ -62,5 +62,11 @@ public static class TalepService
         return new { id = r["id"], kod = r["kod"], durum = r["durum"], uyari = r["uyari"] };
     }
 
+    public static async Task<object> ProjeDegistirAsync(SqlService sql, int talepId, string ana, string? alt, string faaliyet, string konum, string? neden)
+    {
+        var r = (await sql.ProcAsync("gorev.sp_talep_proje_degistir", ("@talep_id", talepId), ("@ana", ana), ("@alt", alt), ("@faaliyet", faaliyet), ("@konum", konum), ("@neden", neden))).First();
+        return new { id = r["id"], havuzId = r["havuz_id"] };
+    }
+
     public static Task GeriCekAsync(SqlService sql, int id) => sql.ProcAsync("gorev.sp_talep_geri_cek", ("@id", id));
 }

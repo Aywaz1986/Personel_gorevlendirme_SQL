@@ -131,3 +131,6 @@ Bkz. CHANGELOG Dilim 26; sınama: docs/test-dilim-26.md.
 
 ## Dilim 27 – Havuz düzeltmeleri (Murat 27.11.2026 madde 4–5)
 Bkz. CHANGELOG Dilim 27; sınama: docs/test-dilim-27.md.
+
+## Dilim 28 – Haftalık Özet'ten yönetim, proje bağlamı (Murat 27.11.2026 madde 2, 6)
+Bkz. CHANGELOG Dilim 28; sınama: docs/test-dilim-28.md.
