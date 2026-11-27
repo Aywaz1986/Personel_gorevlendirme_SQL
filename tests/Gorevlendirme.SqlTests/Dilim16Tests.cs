@@ -149,6 +149,33 @@ public class Dilim16Tests
     }
 
     [SqlFact]
+    public async Task Havuz_birlestirme_talep_ve_eforu_hedefe_aktarir_sil_yalniz_baglantisiz_kaydi_siler()
+    {
+        var o = await KurAsync(); await using var _t = o.T;
+        async Task<int> Talep(string konum, string gun)
+        {
+            var a = await TalepService.KaydetAsync(o.Sorumlu, null, null, "Toroman", null, "AY Kabul", konum, "07:30", "16:35", "İş", "not",
+                new[] { new TalepService.GunGirdisi(gun, "TAM", 1) }, Array.Empty<string>(), true);
+            return Convert.ToInt32(Al(a, "id"));
+        }
+        var t1 = await Talep("Ankara İvedik", D(1)); var t2 = await Talep("Konya Ereğli", D(2));
+        int Hv(int talep) => Convert.ToInt32(o.T.SkalerAsync("SELECT havuz_id FROM gorev.talepler WHERE id = " + talep).Result);
+        var kaynak = Hv(t1); var hedef = Hv(t2);
+        Assert.NotEqual(kaynak, hedef);
+        await o.T.ExecAsync("INSERT INTO gorev.gecmis_gorev (personel_adi_eski, proje_adi_eski, gorev_metni, havuz_id) VALUES (N'Eski', N'Eski Proje', N'x', " + kaynak + ");");
+        await HavuzService.BirlestirAsync(o.Yonetici, kaynak, hedef);
+        Assert.Equal(hedef, Hv(t1));   // talep hedefe geçti
+        Assert.Equal(hedef, Convert.ToInt32(await o.T.SkalerAsync("SELECT havuz_id FROM gorev.gecmis_gorev WHERE personel_adi_eski = N'Eski'")));
+        Assert.Equal(hedef, Convert.ToInt32(await o.T.SkalerAsync("SELECT birlestirildi_id FROM gorev.proje_havuzu WHERE id = " + kaynak)));
+        // Silme: bağlantısız kayıt silinir; talepli kayıt ve yetkisiz çağrı reddedilir
+        var bos = Convert.ToInt32(((dynamic)await HavuzService.EkleAsync(o.Yonetici, null, "SILINECEK")).id);
+        Assert.Equal("yetki", await Kod(() => HavuzService.SilAsync(o.Sorumlu, bos)));
+        await HavuzService.SilAsync(o.Yonetici, bos);
+        Assert.Equal(0, Convert.ToInt32(await o.T.SkalerAsync("SELECT COUNT(*) FROM gorev.proje_havuzu WHERE id = " + bos)));
+        Assert.Equal("dogrulama", await Kod(() => HavuzService.SilAsync(o.Yonetici, hedef)));
+    }
+
+    [SqlFact]
     public async Task Takvim_akademik_tatil_turu_kaydedilir_ve_ozete_girer()
     {
         var o = await KurAsync(); await using var _t = o.T;

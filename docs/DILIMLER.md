@@ -128,3 +128,6 @@ Bkz. CHANGELOG Dilim 25; sınama: docs/test-dilim-25.md. Yalnız arayüz (`.izv`
 
 ## Dilim 26 – Görünürlük, Yenile, talep arama (Murat 27.11.2026 madde 1, 3, 7)
 Bkz. CHANGELOG Dilim 26; sınama: docs/test-dilim-26.md.
+
+## Dilim 27 – Havuz düzeltmeleri (Murat 27.11.2026 madde 4–5)
+Bkz. CHANGELOG Dilim 27; sınama: docs/test-dilim-27.md.

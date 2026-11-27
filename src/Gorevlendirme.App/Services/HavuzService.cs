@@ -44,6 +44,12 @@ public static class HavuzService
         return new { tasinan = r["tasinan"] };
     }
 
+    public static async Task<object> SilAsync(SqlService sql, int id)
+    {
+        var r = (await sql.ProcAsync("gorev.sp_havuz_sil", ("@id", id))).First();
+        return new { silinen = r["silinen"] };
+    }
+
     public static async Task<object> ArsivAsync(SqlService sql, int id, bool arsiv, string? neden)
     {
         var r = (await sql.ProcAsync("gorev.sp_havuz_arsivle", ("@id", id), ("@arsiv", arsiv), ("@neden", neden))).First();

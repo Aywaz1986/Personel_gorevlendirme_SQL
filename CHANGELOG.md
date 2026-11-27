@@ -3,6 +3,11 @@
 Her değişiklik önce **Yayınlanmamış** bölümüne yazılır; sürüm yükselince bölüm sürüm başlığına dönüştürülür.
 
 ## Yayınlanmamış
+### Dilim 27 – Havuz birleştirme/taşıma düzeltmeleri, efora göre silme (2026-11-27) — DEVAM EDİYOR (dal `dilim-27-havuz-duzeltme`, Dilim 26 dalından)
+- Migration 022: `sp_havuz_birlestir` artık kaynağa bağlı talepleri ve geçmiş görevleri (efor) hedefe aktarır, önceki birleştirmeleri hedefe yönlendirir (eskiden talepler pasif kaynakta kalıp efor eski faaliyet/yerleşke altında görünüyordu — madde 4a/4b'nin kök nedeni olarak değerlendirildi). Onarım betiği: mevcut birleştirilmiş kayıtlara bağlı talep/geçmiş görevler hedefe çekilir.
+- Yeni `sp_havuz_sil` + `havuzSil` komutu: efor/talep/geçmiş görev bağı olmayan kayıt (alt dalı ve ona birleştirilmiş boş kaynaklarla) kalıcı silinir; bağlı kayıt varsa reddeder → pasife alın. Arayüzde 🗑 Sil yalnız efor = 0 satırda görünür.
+- Arayüz: ⇄ Birleştir her seviyede görünür (eskiden yalnız yaprak/mükerrer); ↗ Taşı penceresi hedefte aynı adlı kayıt bulursa uyarır ve Birleştir'e döner (madde 4c).
+- Not: yerleşke taşımanın kendisi (`sp_havuz_tasi`) doğruydu; "eski faaliyette kalıyor" şikâyetinin birleştirmedeki talep bağlantısından geldiği varsayıldı — Murat'ın sınamasında hâlâ görülürse kayıt numaralarıyla bildirilmeli. SINANMADI (CI).
 ### Dilim 26 – Görünürlük, Yenile, talep arama (2026-11-27) — DEVAM EDİYOR (dal `dilim-26-gorunurluk-yenile`, Dilim 25 dalından)
 - Madde 1: Akademik Takvim sekmesi Proje Sorumlusu ve Saha'da da görünür, salt okunur (ekle/düzenle/sil/toplu/CSV düğmeleri ve gün tıklaması yok; "Salt okunur" rozeti). Sunucu yazma yordamları zaten Yönetici ister (50023).
 - Madde 3: Yenile düğmesi rol önbelleğini temizler, sayaçları ve etkin sayfanın tüm verisini yeniler; otomatik yenileme açık pencere (`.perde`, takvim modalı) ya da yazılan alan varken atlanır.
