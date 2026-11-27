@@ -2,8 +2,8 @@
 const SAYFALAR = {
   YONETICI: [['talep', 'Bekleyen Görev Talepleri', talepSayfa], ['izin', 'İzin Onayları', izinRaporSayfa], ['matris', 'Haftalık Özet', matrisSayfa],
     ['analiz', 'Ana Proje & Personel Analizi', analizSayfa], ['havuz', 'Proje Havuzu', havuzSekmesi], ['takvim', 'Akademik Takvim', takvimSekmesi], ['yetki', 'Kullanıcı Yetki', yetkiSayfa], ['ayarlar', 'Ayarlar', ayarlarSayfa]],
-  SORUMLU: [['talep', 'Yeni Görev Talebi & Aktif Taleplerim', talepSayfa], ['matris', 'Haftalık Özet', matrisSayfa], ['analiz', 'Ana Proje & Personel Analizi', analizSayfa], ['izin', 'İzin / Rapor Bilgisi', izinBilgiSayfa], ['ayarlar', 'Ayarlar', ayarlarSayfa]],
-  SAHA: [['gorevim', 'Görevlerim, İzin Talebi & Rapor Beyanı', izinRaporSayfa], ['matris', 'Haftalık Özet', matrisSayfa], ['ayarlar', 'Ayarlar', ayarlarSayfa]],
+  SORUMLU: [['talep', 'Yeni Görev Talebi & Aktif Taleplerim', talepSayfa], ['matris', 'Haftalık Özet', matrisSayfa], ['analiz', 'Ana Proje & Personel Analizi', analizSayfa], ['izin', 'İzin / Rapor Bilgisi', izinBilgiSayfa], ['takvim', 'Akademik Takvim', takvimSekmesi], ['ayarlar', 'Ayarlar', ayarlarSayfa]],
+  SAHA: [['gorevim', 'Görevlerim, İzin Talebi & Rapor Beyanı', izinRaporSayfa], ['matris', 'Haftalık Özet', matrisSayfa], ['takvim', 'Akademik Takvim', takvimSekmesi], ['ayarlar', 'Ayarlar', ayarlarSayfa]],
 };
 const ROL_DUGME = { YONETICI: 'Merkez Yönetici Paneli', SORUMLU: 'Proje Sorumlusu Talep Arayüzü', SAHA: 'Saha Personeli İzleme & Beyan' };
 const SAYFA_BASLIK = {
@@ -51,10 +51,17 @@ async function kabukCiz() {
     } catch (e) { /* sayaç yüklenemezse menü yine çalışır */ }
   }
   S.sayacYukle = sayacYukle;
-  async function elleYenile() {
+  // Açık pencere (modal) ya da yazılmakta olan alan varken arka plan yenilemesi yapılmaz.
+  const mesgul = () => {
+    if (document.querySelector('.perde, .modal-backdrop.open')) return true;
+    const a = document.activeElement;
+    return !!(a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName) && icerik.contains(a));
+  };
+  async function elleYenile() {   // tüm uygulama: önbellekler, sayaçlar/KPI, etkin sayfanın tüm verisi (talep, atama, matris, izin/rapor, havuz, takvim)
+    for (const a of Object.keys(talepRolOnbellek)) delete talepRolOnbellek[a];
     await sayacYukle();
-    if (S.yenile) { try { await S.yenile(); } catch (e) { hata(e); } } else { kabukCiz(); return; }
-    toast('Yenilendi.');
+    if (S.yenile) { try { await S.yenile(); } catch (e) { hata(e); return; } } else { kabukCiz(); return; }
+    toast('Tüm veriler yenilendi.');
   }
   const sayacEl = h('b', null, '30 sn');
   S.sonYenileme = Date.now();
@@ -106,8 +113,7 @@ async function kabukCiz() {
     if (!sekmeler.isConnected) { clearInterval(S.zaman); return; }
     if (document.hidden) return;
     sayacYukle();
-    const a = document.activeElement;
-    if (S.yenile && !(a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName) && icerik.contains(a))) { try { await S.yenile(); } catch (e) { /* sessiz */ } }
+    if (S.yenile && !mesgul()) { try { await S.yenile(); } catch (e) { /* sessiz */ } }
   }, 30000);
   try { icerik.replaceChildren(await sayfa[2]()); } catch (e) { icerik.replaceChildren(mesajKutu('kotu', e.message)); }
 }

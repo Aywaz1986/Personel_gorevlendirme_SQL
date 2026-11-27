@@ -125,3 +125,6 @@ Bkz. CHANGELOG Dilim 24; sınama: docs/test-dilim-24.md. Üçüncü tür AKADEMI
 
 ## Dilim 25 – İzin ve Sağlık Raporu ekranı (Murat 27.11.2026: prototip %100'e yakın)
 Bkz. CHANGELOG Dilim 25; sınama: docs/test-dilim-25.md. Yalnız arayüz (`.izv`).
+
+## Dilim 26 – Görünürlük, Yenile, talep arama (Murat 27.11.2026 madde 1, 3, 7)
+Bkz. CHANGELOG Dilim 26; sınama: docs/test-dilim-26.md.
