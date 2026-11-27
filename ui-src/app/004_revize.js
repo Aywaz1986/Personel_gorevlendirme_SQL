@@ -2,9 +2,9 @@
 function revizeDurumAd(d) { return ({ BEKLIYOR: 'Onay bekliyor', ONAYLANDI: 'Uygulandı', REDDEDILDI: 'Reddedildi', GERI_CEKILDI: 'Geri çekildi' })[d] || d; }
 function revizeDurumTur(d) { return ({ BEKLIYOR: 'uyari', ONAYLANDI: 'iyi', REDDEDILDI: 'kotu', GERI_CEKILDI: 'soluk' })[d] || 'soluk'; }
 
-async function talepYonetPaneli(talepId, geri) {
+async function talepYonetPaneli(talepId, geri, ilkAcik) {
   const yon = S.gorunum === 'YONETICI';
-  const st = { t: null, revizeler: [], devir: [], acik: '', ikame: null, cakisma: null, yeniKisi: null, rv: null, musait: {}, fazla: null, havuz: null, pr: null };
+  const st = { t: null, revizeler: [], devir: [], acik: ilkAcik || '', ikame: null, cakisma: null, yeniKisi: null, rv: null, musait: {}, fazla: null, havuz: null, pr: null };
   const kap = h('div', { style: 'display:flex;flex-direction:column;gap:14px;min-width:0' });
 
   async function yukle() {
@@ -174,13 +174,13 @@ async function talepYonetPaneli(talepId, geri) {
       if (iso > orijSon) {
         const bas = takvimIso(new Date(new Date(orijSon + 'T00:00:00').getTime() + 86400000));
         const son = t.gunler.filter((g) => g.tarih === orijSon).pop();
-        eklenen = talepGunleriUret(bas, iso, son ? son.kisi : 1, st.tatil || []).gunler.map((g) => ({ ...g, atanan: 0, yeni: true }));
-        if (!eklenen.length) toast('Seçilen aralıkta çalışılacak gün yok (hafta sonu / tatil).', 'uyari');
+        // Hafta sonu ve tatillerde de görev olabildiğinden uzatmada takvimdeki TÜM günler eklenir (hafta sonu/tatil günleri bilgi satırında belirtilir).
+        for (let dd = new Date(bas + 'T00:00:00'); takvimIso(dd) <= iso; dd.setDate(dd.getDate() + 1)) eklenen.push({ tarih: takvimIso(dd), zaman: 'TAM', kisi: son ? son.kisi : 1, atanan: 0, yeni: true });
       }
       r.son = iso; r.gunler = tutulan.concat(eklenen); ciz();
     });
     const cikan = t.gunler.filter((g) => r.son && g.tarih > r.son), cikanAtanan = cikan.reduce((n, g) => n + (g.atananlar || []).length, 0);
-    const sureBilgi = !r.son || r.son === orijSon ? 'Süreyi değiştirmek için yeni son tarihi yazıp Enter\'a basın.' : r.son > orijSon ? '＋ ' + r.gunler.filter((g) => g.yeni).length + ' gün eklenecek (hafta sonu/tatil atlanır); yeni günlere kişi ataması revize sonrası yapılır.' : '− ' + cikan.length + ' gün çıkarılacak' + (cikanAtanan ? ' · bu günlerde ' + cikanAtanan + ' atama var: ' + (yon ? 'uygulandığında atanmış kişiler görevden çıkarılır (erken bitir).' : 'önce kişilerin görevden çıkarılması gerekir.') : '.');
+    const sureBilgi = !r.son || r.son === orijSon ? 'Süreyi değiştirmek için yeni son tarihi yazıp Enter\'a basın.' : r.son > orijSon ? (() => { const y = r.gunler.filter((g) => g.yeni), hs = y.filter((g) => [0, 6].includes(new Date(g.tarih + 'T00:00:00').getDay())).length, tt = y.filter((g) => (st.tatil || []).some((x) => x.zaman === 'TAM' && x.baslangic <= g.tarih && (x.bitis || x.baslangic) >= g.tarih)).length; return '＋ ' + y.length + ' gün eklenecek' + (hs || tt ? ' (' + [hs ? hs + ' hafta sonu' : null, tt ? tt + ' tatil' : null].filter(Boolean).join(', ') + ' günü de göreve dahil edilir)' : '') + '; yeni günlere kişi ataması revize sonrası yapılır.'; })() : '− ' + cikan.length + ' gün çıkarılacak' + (cikanAtanan ? ' · bu günlerde ' + cikanAtanan + ' atama var: ' + (yon ? 'uygulandığında atanmış kişiler görevden çıkarılır (erken bitir).' : 'önce kişilerin görevden çıkarılması gerekir.') : '.');
     const sureSatiri = h('div', { class: 'satir', style: 'align-items:center;flex-wrap:wrap' }, h('label', null, 'Yeni son tarih ', sonKutu), h('span', { class: 'alt' }, 'Şimdiki: ' + takvimTarihYaz(orijSon)), h('div', { class: 'alt', style: 'flex-basis:100%' }, sureBilgi));
     return h('section', { class: 'kart' }, h('h2', null, yon ? 'Revize (doğrudan uygulanır)' : 'Revize iste'),
       h('div', { class: 'alt', style: 'margin-bottom:8px' }, (yon ? 'Değişiklik hemen uygulanır.' : 'Değişiklik Yönetici onayından sonra uygulanır.') + ' Atanmış kişiden az kişi sayısı yazılamaz; önce kişiyi çıkarın. Süre uzatma/kısaltma da buradan yapılır.'),

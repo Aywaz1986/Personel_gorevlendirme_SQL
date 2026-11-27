@@ -242,10 +242,10 @@ async function matrisSayfa() {
   // ---- Hücre etkileşimi (modal) ----
   const satir = (em, ad, v) => h('div', { class: 'ozsatir' }, h('span', { class: 'oze' }, em + ' ' + ad + ':'), h('span', { class: 'ozd' }, v));
   // Haftalık Özet'ten görev yönetimi: talep yönet paneli (kişi çıkar/ikame, sorumlu devri, revize: metin/saat/süre, erken bitir, iptal, proje bağlamı) pencerede açılır.
-  async function gorevYonet(talepId, kod) {
+  async function gorevYonet(talepId, kod, acik) {
     let kapat = () => {};
     try {
-      const panel = await talepYonetPaneli(talepId, async () => { kapat(); await yukle(); if (S.sayacYukle) S.sayacYukle(); });
+      const panel = await talepYonetPaneli(talepId, async () => { kapat(); await yukle(); if (S.sayacYukle) S.sayacYukle(); }, acik);
       kapat = pencereAc('⚙ ' + (kod || 'Görev') + ' · yönetim', panel);
     } catch (e) { hata(e); }
   }
@@ -260,7 +260,7 @@ async function matrisSayfa() {
       kapat = pencereAc((s.cakisma ? '⚠️ ' : '') + 'Görev / Durum Detayı', h('div', null, h('div', { class: 'alt', style: 'margin-bottom:6px' }, baslik + ' · ' + atamaTamAd(c.zaman) + (k.gsm ? ' · 📞 ' + k.gsm : '')), cakis,
         satir('🔖', 'Talep', c.kod), satir('📑', 'Ana Proje', c.ana + (c.alt && c.alt !== 'Genel' ? ' › ' + c.alt : '')), satir('📡', 'Faaliyet', c.faaliyet), satir('📍', 'Yerleşke', c.konum), satir('🕣', 'Saat', String(c.saat).replace(/:/g, '.')),
         satir('🧍‍♂️', 'Proje sorumlusu', c.sorumlu + (c.sorumluGsm ? '  📞 ' + c.sorumluGsm : '')),
-        h('div', { class: 'satir', style: 'justify-content:flex-end;margin-top:12px' }, yonetici && c.talepId ? h('button', { type: 'button', class: 'ana', onclick: () => { kapat(); gorevYonet(c.talepId, c.kod); } }, '⚙ Görevi yönet') : null, kapatBtn())));
+        h('div', { class: 'satir', style: 'justify-content:flex-end;margin-top:12px' }, yonetici && c.talepId ? h('button', { type: 'button', class: 'ana', onclick: () => { kapat(); gorevYonet(c.talepId, c.kod); } }, '⚙ Görevi yönet') : null, yonetici && c.talepId ? h('button', { type: 'button', onclick: () => { kapat(); gorevYonet(c.talepId, c.kod, 'revize'); } }, '⏱ Süre uzat / Revize') : null, kapatBtn())));
       return;
     }
     if (s.tur === 'IZIN') {
