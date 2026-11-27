@@ -169,7 +169,6 @@ async function talepSayfa() {
 
   function liste() {
     const f = durum.filtre;
-    if (f === 'REVIZE' && yonetici && durum.revizeKap) return h('div', { style: 'display:flex;flex-direction:column;gap:12px' }, bildirimBandi(), sekmeSatiri(), durum.revizeKap);
     const goster0 = durum.liste.filter((x) => !f || (f === 'BEKLEYEN' ? ['TASLAK', 'ONAY_BEKLIYOR'].includes(x.durum) : f === 'ATANMIS' ? ['KISMEN_ATANDI', 'TAMAMEN_ATANDI'].includes(x.durum) : ['REDDEDILDI', 'GERI_CEKILDI', 'IPTAL'].includes(x.durum)));
     const q = durum.ara.trim().toLocaleLowerCase('tr-TR');
     const bul = (x) => !q || [x.kod, x.ana, x.alt, x.faaliyet, x.konum, x.sorumluAdi, durum.adlar[x.id]].some((v) => v && String(v).toLocaleLowerCase('tr-TR').includes(q));
@@ -189,6 +188,8 @@ async function talepSayfa() {
       chip('KAPALI', 'Kapalı', sayi((x) => ['REDDEDILDI', 'GERI_CEKILDI', 'IPTAL'].includes(x.durum))),
       h('span', { style: 'flex:1' }), h('button', { class: 'ana', onclick: () => formAc(null, false) }, 'Yeni talep'));
     araEl.value = durum.ara;
+    // (sekmeSatiri const olduğundan çağrı tanımdan sonra olmalı; önce çağrılırsa TDZ hatası verip ekran açılmıyordu)
+    if (f === 'REVIZE' && yonetici && durum.revizeKap) return h('div', { style: 'display:flex;flex-direction:column;gap:12px' }, bildirimBandi(), sekmeSatiri(), durum.revizeKap);
     const durumRenk = { iyi: 'background:#d1fae5;color:#047857', uyari: 'background:#fef3c7;color:#b45309', kotu: 'background:#fee2e2;color:#b91c1c', bilgi: 'background:#e0e7ff;color:#4338ca', soluk: 'background:#e2e8f0;color:#475569' };
     const kartlar = goster.map((x) => {
       const bekleyen = ['ONAY_BEKLIYOR', 'KISMEN_ATANDI'].includes(x.durum);

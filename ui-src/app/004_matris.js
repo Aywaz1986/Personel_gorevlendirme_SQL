@@ -24,6 +24,7 @@ const HZ_AG = { TAM: 1, OO: 0.5, OS: 0.5 };
 function hzOku(k, yedek) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : yedek; } catch (e) { return yedek; } }
 function hzYaz(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* kalıcı olmayabilir; ekran yine çalışır */ } }
 const hzTr = (n) => Number(n || 0).toFixed(1).replace('.', ',');
+const hzNorm = (x) => String(x || '').toLocaleLowerCase('tr-TR').replace(/ı/g, 'i').normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 const hzMerkez = (k) => /gölbaşı|golbasi/i.test(k || '');
 
 async function matrisSayfa() {
@@ -107,7 +108,7 @@ async function matrisSayfa() {
     if (od === 'MUSAIT') return s.tur === 'MUSAIT';
     if (od === 'CAKISMA') return s.tur === 'GOREV' && !!s.cakisma;
     if (od.startsWith('PROJ:')) return s.tur === 'GOREV' && s.c.ana === od.slice(5);
-    if (od.startsWith('LOC:')) return s.tur === 'GOREV' && s.c.konum === od.slice(4);
+    if (od.startsWith('LOC:')) return s.tur === 'GOREV' && hzNorm(s.c.konum).includes(hzNorm(od.slice(4)));   // Gölbaşı → "Ankara Gölbaşı …" gibi adlar da eşleşir
     return true;
   }
   function kategori(k) {
@@ -115,13 +116,19 @@ async function matrisSayfa() {
     for (let i = 0; i < 5; i++) { const g = gunCoz(k, matrisGunEkle(d.bas, i), i); for (const z of ['OO', 'OS']) { const s = g[z]; if (s.tur === 'MUSAIT') musait = true; if (s.tur === 'GOREV') { ana = ana || s.c.ana; konum = konum || s.c.konum; } } }
     return { musait, ana, konum };
   }
+  // Odak etkinken (hazır görünümler dahil) haftada odağa uyan hücresi olmayan personel satırı gizlenir; uyan hücreler vurgulu, kalanlar soluk kalır.
+  function odakSatir(k) {
+    if (!d.t.odak || d.t.odak === 'YOK') return true;
+    for (let i = 0; i < 7; i++) { const g = gunCoz(k, matrisGunEkle(d.bas, i), i); if (odakUyar(g.OO) || odakUyar(g.OS)) return true; }
+    return false;
+  }
   function aramaUyar(k) {
     if (!d.q) return true;
     if (k.ad.toLocaleLowerCase('tr-TR').includes(d.q) || (k.gsm || '').includes(d.q)) return true;
     return k.hucreler.some((c) => [c.ana, c.alt, c.faaliyet, c.konum, c.kod, c.sorumlu].some((x) => (x || '').toLocaleLowerCase('tr-TR').includes(d.q)));
   }
   function gruplar() {
-    const l = d.veri.filter(aramaUyar), sb = l.filter((k) => d.sabit.has(k.sicil)), dg = l.filter((k) => !d.sabit.has(k.sicil)), g = [];
+    const l = d.veri.filter(aramaUyar).filter(odakSatir), sb = l.filter((k) => d.sabit.has(k.sicil)), dg = l.filter((k) => !d.sabit.has(k.sicil)), g = [];
     if (sb.length) g.push({ b: '📌 Sabitlenen Personel', l: sb });
     if (d.t.grup === 'YOK') { if (dg.length) g.push({ b: sb.length ? 'Tüm Saha Personeli' : null, l: dg }); }
     else if (d.t.grup === 'DURUM') {
@@ -160,7 +167,15 @@ async function matrisSayfa() {
       h('span', { style: 'flex:1' }),
       h('button', { type: 'button', class: 'hz-kb', onclick: kaydetAc }, '+ Görünümü Kaydet'), h('button', { type: 'button', class: 'hz-kb', onclick: () => { d.t = { ...HZ_VARSAYILAN }; d.aktif = 'H_TUM'; tercihYaz(); ciz(); toast('Varsayılana sıfırlandı.'); } }, '↺ Varsayılana Sıfırla'));
   }
-  function hazirUygula(p) { d.t = { ...HZ_VARSAYILAN, ...p.t }; d.aktif = p.id; tercihYaz(); ciz(); toast('"' + p.ad + '" görünümü yüklendi.'); }
+  // Hazır görünüm tekrarlanabilir olsun: araç çubuğu süzgeçleri (bölüm, proje, yerleşke, arama, personel süzgeci) varsayılana döner.
+  function hazirUygula(p) {
+    d.t = { ...HZ_VARSAYILAN, ...p.t }; d.aktif = p.id; tercihYaz();
+    const degisti = d.bolum || d.ana || d.konum || d.sadece || d.musait || !d.saha;
+    d.bolum = ''; d.ana = ''; d.konum = ''; d.q = ''; d.sadece = false; d.musait = false; d.saha = true;
+    bolumSec.value = ''; anaSec.value = ''; konumSec.value = ''; modSec.value = 'saha'; qKutu.value = '';
+    if (degisti) yukle(); else ciz();
+    toast('"' + p.ad + '" görünümü yüklendi.');
+  }
   function kaydetAc() {
     const gir = h('input', { type: 'text', class: 'metin', maxlength: '60', placeholder: 'Örn: 🎯 Konya AKSS Takip', style: 'width:100%' });
     let kapat = () => {};
@@ -277,7 +292,7 @@ async function matrisSayfa() {
           gorunen.map((i) => hucre(k, gunCoz(k, gunIso[i], i)))));
       });
     });
-    if (!govde.length) govde.push(h('tr', null, h('td', { colspan: String(say), style: 'text-align:center;padding:28px;color:var(--soluk)' }, d.q ? 'Arama kriterine uygun personel veya görev kaydı bulunamadı.' : d.musait ? 'Bu hafta hafta içi boş günü olan personel yok.' : d.sadece || d.ana ? 'Bu hafta, seçili filtrelerle görevlendirilmiş personel yok.' : 'Eşleşen personel yok.')));
+    if (!govde.length) govde.push(h('tr', null, h('td', { colspan: String(say), style: 'text-align:center;padding:28px;color:var(--soluk)' }, d.q ? 'Arama kriterine uygun personel veya görev kaydı bulunamadı.' : d.t.odak && d.t.odak !== 'YOK' ? 'Bu hafta seçili odağa uyan personel yok (Odağı kaldırarak tümünü görebilirsiniz).' : d.musait ? 'Bu hafta hafta içi boş günü olan personel yok.' : d.sadece || d.ana ? 'Bu hafta, seçili filtrelerle görevlendirilmiş personel yok.' : 'Eşleşen personel yok.')));
     const tablo = h('table', { class: 'hz-tablo yog-' + d.t.yogunluk },
       h('thead', null, h('tr', null, h('th', { class: 'hz-pers' }, h('div', { style: 'font-weight:800' }, 'Saha Personeli'), h('div', { class: 'alt', style: 'font-size:11px;font-weight:600' }, 'Sabitleme (📌) • Ad Soyad')), gorunen.map(kolon))),
       h('tbody', null, govde),

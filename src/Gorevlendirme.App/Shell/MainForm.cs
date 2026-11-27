@@ -77,6 +77,7 @@ public class MainForm : Form
             TalepCommands.Register(reg);
             AtamaCommands.Register(reg);
             MatrisCommands.Register(reg);
+            DosyaCommands.Register(reg);
             IzinRaporCommands.Register(reg);
             RevizeCommands.Register(reg);
             AnalizCommands.Register(reg);

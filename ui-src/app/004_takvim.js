@@ -311,9 +311,7 @@ ${sekme === 'RANGE' ? `<div class="form-grid-2"><div><label class="form-label" f
     const gunler = []; D.liste.forEach((x) => tkGunler(x.baslangic, x.bitis || x.baslangic, false).forEach((g) => gunler.push([g, x])));
     if (gunler.length) gunler.sort((a, b) => a[0].localeCompare(b[0])).forEach(([g, x]) => satir.push(takvimTarihYaz(g) + ';' + tkTurEtiket(TK_TUR_PROTO[x.tur]) + ';' + tkDilimEtiket(x.zaman) + ';"' + x.ad.replace(/"/g, '""') + '"'));
     else { satir.push('01.01.' + D.yil + ';Resmi Tatil;Tam Gün;"Yılbaşı"'); satir.push('23.04.' + D.yil + ';Resmi Tatil;Tam Gün;"Ulusal Egemenlik ve Çocuk Bayramı"'); satir.push('28.10.' + D.yil + ';İdari & Kurumsal Tatil;Öğleden Sonra (ÖS);"Cumhuriyet Bayramı Arifesi"'); }
-    const a = h('a', { href: URL.createObjectURL(new Blob(['﻿' + satir.join('\r\n')], { type: 'text/csv;charset=utf-8;' })), download: 'Akademik_Kurumsal_Takvim_' + D.yil + '.csv' });
-    document.body.append(a); a.click(); a.remove();
-    bildir('CSV Şablonu İndirildi', D.yil + ' yılına ait Excel uyumlu CSV şablonu oluşturuldu.', '#0070C0');
+    dosyaKaydet('Akademik_Kurumsal_Takvim_' + D.yil + '.csv', satir.join('\r\n')).then((tamam) => { if (tamam) bildir('CSV Şablonu Kaydedildi', D.yil + ' yılına ait Excel uyumlu CSV şablonu kaydedildi.', '#0070C0'); });
   };
 
   await yukle();

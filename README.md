@@ -42,6 +42,7 @@ Ayrıntı: [`docs/PLAN.md`](docs/PLAN.md), dilim içerikleri: [`docs/DILIMLER.md
 | 24 | **Akademik ve Kurumsal Takvim** (prototip): yıl seçici, KPI, 3×4 matris, liste, toplu ekleme, CSV; üçüncü tür Akademik Tatil (`021`) | `dilim-24-takvim-prototip` |
 | 25 | **İzin ve Sağlık Raporu ekranı** (prototip): KPI, 3 sekmeli yönetici görünümü, vekaleten pencere, saha/sorumlu self-servis kartları, arşiv CSV (yalnız arayüz) | `dilim-25-izin-prototip` |
 | 26 | **Görünürlük + Yenile + talep arama**: takvim Sorumlu/Saha'da salt okunur, Yenile tüm veriyi yeniler, otomatik yenileme pencereyi bozmaz, talep araması, İletişim hep açık (yalnız arayüz) | `dilim-26-gorunurluk-yenile` |
+| 29 | **Dört düzeltme:** Revize&İkame uyarıları, hazır görünümler, CSV kayıt (`dosyaKaydet`), istisnada saha listesine ekle (024) | `dilim-29-dort-duzeltme` |
 | 28 | **Haftalık Özet'ten görev yönetimi** (kart → Görevi yönet) + atanmış talepte proje bağlamı değiştirme (023, `talepProjeDegistir`) | `dilim-28-ozet-yonetim` |
 | 27 | **Havuz düzeltmeleri**: birleştirmede talep/efor aktarımı (022), her seviyede Birleştir, aynı isimde Taşı→Birleştir, efor 0 kayıt silme (`havuzSil`) | `dilim-27-havuz-duzeltme` |
 | 19 | **Haftalık Özet matrisi** (prototip): KPI şeridi, hazır/kişisel görünümler, 5 katmanlı özelleştirme çekmecesi, odak, gruplama, sabitleme, çakışma işareti (yalnız arayüz) | PR bekliyor |

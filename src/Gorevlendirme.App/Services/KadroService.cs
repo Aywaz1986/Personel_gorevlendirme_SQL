@@ -38,13 +38,13 @@ public static class KadroService
         (await sql.ProcAsync("gorev.sp_istisna_listele")).Select(r => new
         {
             hesap = r["hesap"], sicilNo = r["sicil_no"], adiSoyadi = r["adi_soyadi"],
-            yonetici = r["yonetici_mi"], sorumlu = r["sorumlu_mu"], saha = r["saha_mi"], aktif = r["aktif"], aciklama = r["aciklama"],
+            yonetici = r["yonetici_mi"], sorumlu = r["sorumlu_mu"], saha = r["saha_mi"], sahaListede = r["saha_listede"], aktif = r["aktif"], aciklama = r["aciklama"],
         }).ToList();
 
-    public static Task IstisnaKaydetAsync(SqlService sql, string hesap, string? sicilNo, bool yonetici, bool sorumlu, bool saha, bool aktif, string? aciklama) =>
+    public static Task IstisnaKaydetAsync(SqlService sql, string hesap, string? sicilNo, bool yonetici, bool sorumlu, bool saha, bool aktif, string? aciklama, bool sahaListede = true) =>
         sql.ProcAsync("gorev.sp_istisna_kaydet", ("@hesap", hesap), ("@sicil_no", string.IsNullOrWhiteSpace(sicilNo) ? null : sicilNo),
             ("@yonetici_mi", yonetici), ("@sorumlu_mu", sorumlu), ("@saha_mi", saha), ("@aktif", aktif),
-            ("@aciklama", string.IsNullOrWhiteSpace(aciklama) ? null : aciklama));
+            ("@aciklama", string.IsNullOrWhiteSpace(aciklama) ? null : aciklama), ("@saha_listede", sahaListede));
 
     public static Task IstisnaSilAsync(SqlService sql, string hesap) => sql.ProcAsync("gorev.sp_istisna_sil", ("@hesap", hesap));
 }

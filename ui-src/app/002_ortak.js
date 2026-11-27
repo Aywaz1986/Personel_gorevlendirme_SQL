@@ -27,3 +27,16 @@ const tarih = (s) => { if (!s) return '-'; const d = new Date(s); return isNaN(d
 const ROLAD = { YONETICI: 'Merkez Yönetici', SORUMLU: 'Proje Sorumlusu', SAHA: 'Saha Personeli', ISTISNA: 'İstisna' };
 function tercihOku() { try { return localStorage.getItem('gorunum') || ''; } catch (e) { return ''; } }
 function tercihYaz(v) { try { localStorage.setItem('gorunum', v); } catch (e) { /* depolama yoksa sorun değil */ } }
+
+// Metin dosyası kaydı (CSV/TXT): WebView2'de <a download> çalışmadığından C# kayıt penceresi (dosyaKaydet) kullanılır. Tarayıcıda (önizleme) bağlantıya düşer.
+async function dosyaKaydet(ad, metin) {
+  try {
+    const r = await Kopru.cagir('dosyaKaydet', { ad, metin });
+    if (r && r.iptal) return false;
+    toast('Dosya kaydedildi.', 'iyi'); return true;
+  } catch (e) {
+    if (window.chrome && window.chrome.webview) { hata(e); return false; }
+    const a = h('a', { href: URL.createObjectURL(new Blob(['\ufeff' + metin], { type: 'text/plain;charset=utf-8' })), download: ad });
+    document.body.append(a); a.click(); a.remove(); return true;
+  }
+}

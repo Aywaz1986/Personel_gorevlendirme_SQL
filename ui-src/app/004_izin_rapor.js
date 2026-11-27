@@ -32,10 +32,7 @@ function izvPill(opts, ilk, sec) {
 function izvModal(baslik, alt, ...icerik) {
   return pencereAc(baslik, h('div', { class: 'izv izv-modal' }, h('div', { class: 'modal-body' }, alt ? h('p', { class: 'form-card-sub', style: 'margin:0' }, alt) : null, ...icerik)));
 }
-function izvIndir(ad, satirlar) {
-  const a = h('a', { href: URL.createObjectURL(new Blob(['﻿' + satirlar.join('\r\n')], { type: 'text/csv;charset=utf-8' })), download: ad });
-  document.body.append(a); a.click(); a.remove();
-}
+function izvIndir(ad, satirlar) { return dosyaKaydet(ad, satirlar.join('\r\n')); }
 
 async function izinTatiller() {
   const y = new Date().getFullYear(); let l = [];
