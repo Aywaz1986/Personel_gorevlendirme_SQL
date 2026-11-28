@@ -3,6 +3,11 @@
 Her değişiklik önce **Yayınlanmamış** bölümüne yazılır; sürüm yükselince bölüm sürüm başlığına dönüştürülür.
 
 ## Yayınlanmamış
+### Dilim 34 – Vekâleten talep, takvim ÖÖ/ÖS, şablon yükleme (2026-11-28) — DEVAM EDİYOR (dal `dilim-34-vekalet-takvim`, Dilim 33 dalından)
+- **Vekâleten talep (SQL 027):** Proje Sorumlusu, talep formunda kendi adı otomatik gelirken istersen başka bir Proje Sorumlusu adına talep açabilir (talep sahibi o kişi olur; vekil yalnız Sorumlu rolündeki biri olabilir, aksi `dogrulama`). Gerçek açan hesap `acan_hesap`'ta kalır; açan kişi talebi listede görür ve taslağını düzenler (`sp_talep_kaydet/listele/getir/atanan_adlar`). `sp_rol_personel` Sorumlu'ya SORUMLU listesini de verir. Sınanmadı: `Sorumlu_baska_sorumlu_adina_vekaleten_talep_acar`.
+- **Akademik Takvim ÖÖ + ÖS:** Aynı güne ayrı ayrı eklenen öğleden önce ve öğleden sonra kayıtlarının ikisi de görünür (aynı türse tam gün görünümü, farklı türse iki renkli çapraz; ipucunda ikisi). Güne tıklayınca açılan pencerede "diğer yarım günü ekle / düzenle" düğmesi: ikinci yarım artık birincinin üzerine yazılmaz.
+- **Şablon Yükle (önizlemeli):** Akademik Takvim üst çubuğunda yeni düğme; CSV/TXT/Excel yüklenir → önizleme tablosu (yeni/güncellenecek/aynı/hatalı, `takvimOnizle`) → "Onayla ve takvime ekle" (`takvimUygula`). Hatalı satır varsa ekleme yapılmaz.
+- Oturum devir notu: Dilim 34 yapıldı; kalan Dilim 35 (Görevi Yönet prototipi: Görev/Durum Detayı + Görev Yönetim ekranı, Bekleyen Talepler Yönet düğmesi), Dilim 36 (Ana Proje & Personel Analizi prototipi).
 ### Dilim 33 – Sekme düzeni, zaman aşımı, simge (2026-11-28) — DEVAM EDİYOR (dal `dilim-33-sekme-duzeni`, Dilim 32 dalından)
 - **Ayarlar** sekme şeridinden kalktı; üst çubukta **⟳ Yenile** yanında **⚙ Ayarlar** düğmesi (her rolde).
 - **Bekleyen Görev Talepleri → Bekleyen Talepler.** Alt sekmeler: **Atanmış** (ilk, varsayılan) · Bekleyen · Revize & İkame (Yönetici) · **İzin Onayları** (Yönetici; eski üst sekme buraya taşındı, vekâleten izin/rapor girişi yönlendirmesi de buraya gelir). **Tümü** kaldırıldı. Sekme rozeti izin onaylarını da sayar.
