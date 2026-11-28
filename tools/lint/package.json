@@ -1,0 +1,2 @@
+{ "name": "arayuz-lint", "private": true, "version": "1.0.0", "description": "Arayüz betiği için ESLint (yalnız CI/geliştirme aracı; uygulamaya girmez)",
+  "devDependencies": { "eslint": "9.15.0", "globals": "15.12.0" } }
