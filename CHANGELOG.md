@@ -3,6 +3,10 @@
 Her değişiklik önce **Yayınlanmamış** bölümüne yazılır; sürüm yükselince bölüm sürüm başlığına dönüştürülür.
 
 ## Yayınlanmamış
+### Dilim 32 – Süre uzatmada otomatik atama + tarih seçici (2026-11-28) — DEVAM EDİYOR (dal `dilim-32-uzatma-atama`, Dilim 31 dalından)
+- **SQL 026:** `sp_revize_uygula` artık uzatmayla eklenen günlere, görevde zaten aktif atamalı kişileri otomatik atar (aynı dilim). Atlananlar: onaylı izin/aktif rapor günü, başka görevde aktif atama (kimse çıkarılmaz), gün kapasitesi. Atananlara `GOREV_UZATILDI` bildirimi; log `REVIZE_OTO_ATAMA`. `sp_revize_iste` sonucu `uyari` ile "X atama yapıldı; Y yapılamadı" özetini döner, arayüz bunu bildirimde gösterir. Haftalık Özet atamalardan okuduğu için yeni günler hemen yansır. Sınanmadı (SQL Server): `RevizeTests.Sure_uzatma_...`.
+- **Tarih seçici:** "Yeni son tarih" kutusunda yer tutucu yoktu, bu yüzden 📅 seçici eklenmiyordu; düzeltildi. `tools/arayuz_denetim.py`: tarih kutusunda `GG.AA.YYYY` yer tutucusu yoksa CI kırılır (yeni tarih alanı seçicisiz kalamaz).
+- Oturum devir notu: yapıldı (026, servis, arayüz, test, denetim, belgeler); kalan: CI + PR #40.
 ### Dilim 31 – Test altyapısı (2026-11-28) — DEVAM EDİYOR (dal `dilim-31-test-altyapi`, Dilim 30 dalından)
 Amaç: "düğme var, işlev yok / ekran hiç açılmıyor" türü hataları dilim teslim edilmeden CI'da yakalamak.
 - `tools/arayuz_denetim.py` (+ kendi testi `tools/test_arayuz_denetim.py`): arayüzün çağırdığı her köprü komutu C#'ta kayıtlı mı, C# komutları `docs/ARAYUZ.md`'de belgeli mi, arayüzün gönderdiği alan adları işleyicinin okuduklarıyla uyuşuyor mu. İlk koşuda 131 çağrı / 105 komut: 0 hata.

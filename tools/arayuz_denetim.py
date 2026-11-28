@@ -118,6 +118,15 @@ def main():
     for komut in sorted(cs):
         if f"`{komut}`" not in belge and komut not in izin['belgesiz_komutlar']:
             hatalar.append(f"docs/ARAYUZ.md: '{komut}' komutu belgelenmemiş")
+    # Tarih seçici (Dilim 32): tarih alanı olan her metin kutusunda 'GG.AA.YYYY' yer tutucusu olmalı; tarama bu yer tutucuya bakar.
+    for dosya in js_dosyalari():
+        for n, satir in enumerate(oku(dosya).split('\n'), 1):
+            for m in re.finditer(r"h\('input',\s*\{[^}]*type:\s*'text'[^}]*\}", satir):
+                k = m.group(0)
+                tarihli = 'takvimTarihYaz(' in k or re.search(r"aria-label':\s*'[^']*(tarih|gün|ilk gün|son gün|Başlangıç'|Bitiş')", k, re.I)
+                saatli = re.search(r"saat", k, re.I)
+                if tarihli and not saatli and 'GG.AA.YYYY' not in k:
+                    hatalar.append(f"{os.path.basename(dosya)}:{n}: tarih kutusunda 'GG.AA.YYYY' yer tutucusu yok (tarih seçici eklenemez)")
     metin = js_metinleri()
     kullanilmayan = [k for k in sorted(cs) if k not in kullanilan and f"'{k}'" not in metin and k not in izin['arayuzsuz_komutlar']]
 

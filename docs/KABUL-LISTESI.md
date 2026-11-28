@@ -33,3 +33,6 @@ Her satır: ✔ çalışıyor · ✘ hata (not) · — uygulanamaz.
 
 ## Yetki sınırı (negatif)
 - [ ] Sorumlu/Saha yönetici ekranlarına ve komutlarına ulaşamaz (arayüzde menü yok; zorlansa bile sunucu yetki hatası verir — `YetkiMatrisiTests` otomatik doğrular).
+
+- [ ] Revize > Yeni son tarih ile uzatma: atanmış kişiler yeni günlere otomatik atanır, Haftalık Özet'te görünür; atlananlar bildirimde sayılır (Dilim 32).
+- [ ] Her tarih kutusunun yanında 📅 seçici var (Dilim 32).
