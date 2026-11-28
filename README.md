@@ -42,6 +42,7 @@ Ayrıntı: [`docs/PLAN.md`](docs/PLAN.md), dilim içerikleri: [`docs/DILIMLER.md
 | 24 | **Akademik ve Kurumsal Takvim** (prototip): yıl seçici, KPI, 3×4 matris, liste, toplu ekleme, CSV; üçüncü tür Akademik Tatil (`021`) | `dilim-24-takvim-prototip` |
 | 25 | **İzin ve Sağlık Raporu ekranı** (prototip): KPI, 3 sekmeli yönetici görünümü, vekaleten pencere, saha/sorumlu self-servis kartları, arşiv CSV (yalnız arayüz) | `dilim-25-izin-prototip` |
 | 26 | **Görünürlük + Yenile + talep arama**: takvim Sorumlu/Saha'da salt okunur, Yenile tüm veriyi yeniler, otomatik yenileme pencereyi bozmaz, talep araması, İletişim hep açık (yalnız arayüz) | `dilim-26-gorunurluk-yenile` |
+| 33 | **Sekme düzeni + zaman aşımı + simge:** Ayarlar Yenile yanında, Bekleyen Talepler (Atanmış/Bekleyen/Revize/İzin Onayları), 20 dk boşta kapanma | `dilim-33-sekme-duzeni` |
 | 32 | **Süre uzatmada otomatik atama** (026) + tarih kutularında seçici denetimi | `dilim-32-uzatma-atama` |
 | 31 | **Test altyapısı:** komut/alan denetimi, ESLint, Playwright duman testi, yetki matrisi testi, kabul listesi | `dilim-31-test-altyapi` |
 | 30 | **Yedi düzeltme:** havuz silme nedeni (025), geniş alan, Revize süre uzat/kısalt, takvim ipucu, Yenile=yetki/rol, özet alt proje, iletişim açık | `dilim-30-yedi-duzeltme` |

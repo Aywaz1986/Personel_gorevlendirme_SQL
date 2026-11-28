@@ -1,6 +1,6 @@
 // Kabuk (Dilim 14, yeni tasarım): iki katmanlı koyu üst çubuk, yetkiye göre rol düğmeleri, KPI kartları, sekme şeridi, alt bilgi.
 const SAYFALAR = {
-  YONETICI: [['talep', 'Bekleyen Görev Talepleri', talepSayfa], ['izin', 'İzin Onayları', izinRaporSayfa], ['matris', 'Haftalık Özet', matrisSayfa],
+  YONETICI: [['talep', 'Bekleyen Talepler', talepSayfa], ['matris', 'Haftalık Özet', matrisSayfa],
     ['analiz', 'Ana Proje & Personel Analizi', analizSayfa], ['havuz', 'Proje Havuzu', havuzSekmesi], ['takvim', 'Akademik Takvim', takvimSekmesi], ['yetki', 'Kullanıcı Yetki', yetkiSayfa], ['ayarlar', 'Ayarlar', ayarlarSayfa]],
   SORUMLU: [['talep', 'Yeni Görev Talebi & Aktif Taleplerim', talepSayfa], ['matris', 'Haftalık Özet', matrisSayfa], ['analiz', 'Ana Proje & Personel Analizi', analizSayfa], ['izin', 'İzin / Rapor Bilgisi', izinBilgiSayfa], ['takvim', 'Akademik Takvim', takvimSekmesi], ['ayarlar', 'Ayarlar', ayarlarSayfa]],
   SAHA: [['gorevim', 'Görevlerim, İzin Talebi & Rapor Beyanı', izinRaporSayfa], ['matris', 'Haftalık Özet', matrisSayfa], ['takvim', 'Akademik Takvim', takvimSekmesi], ['ayarlar', 'Ayarlar', ayarlarSayfa]],
@@ -14,17 +14,44 @@ function bosSayfa(baslik, metin) {
   return h('div', { class: 'icerik', style: 'padding:0' }, h('h1', null, baslik), h('div', { class: 'kart', style: 'text-align:center;border-style:dashed;color:var(--soluk)' }, metin));
 }
 
+// Boşta kalma zaman aşımı (Dilim 33): Sorumlu ve Saha rollerinde 20 dk işlem olmazsa uygulama kapanır (açık unutulmasına karşı).
+// Yönetici yetkisi olan kişi muaftır. 19. dakikada uyarı bandı çıkar; fare/klavye/dokunma hareketi sayacı sıfırlar.
+const BOSTA_SINIR_DK = 20;
+function bostaIzleBaslat() {
+  if (S.bostaIzleme) return;
+  S.bostaIzleme = true;
+  let son = Date.now(), uyari = null;
+  const sifirla = () => { son = Date.now(); if (uyari) { uyari.remove(); uyari = null; } };
+  for (const o of ['mousedown', 'keydown', 'wheel', 'touchstart', 'click']) document.addEventListener(o, sifirla, true);
+  let hareket = 0; document.addEventListener('mousemove', () => { const t = Date.now(); if (t - hareket > 2000) { hareket = t; sifirla(); } }, true);
+  setInterval(async () => {
+    const k = S.kimlik;
+    if (!k || !k.kayitli || (k.gorunumler || []).includes('YONETICI')) return;
+    const gecen = Date.now() - son, sinir = BOSTA_SINIR_DK * 60000;
+    if (gecen >= sinir) {
+      document.body.replaceChildren(h('div', { class: 'tam' }, h('div', { class: 'kutu' }, h('h1', { style: 'font-size:20px;margin:0' }, 'Oturum zaman aşımı'), h('p', { style: 'margin:0' }, BOSTA_SINIR_DK + ' dakika işlem yapılmadığı için uygulama kapatılıyor.'))));
+      try { await Kopru.cagir('uygulamaKapat', {}); } catch (e) { /* kapanmazsa pencere açık kalır; veri gösterilmez */ }
+    } else if (gecen >= sinir - 60000 && !uyari) {
+      uyari = h('div', { class: 'toast uyari', role: 'alert', style: 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:99999' }, 'Uzun süredir işlem yapılmadı: uygulama 1 dakika içinde kapanacak. Devam etmek için fareyi oynatın ya da bir tuşa basın.');
+      document.body.append(uyari);
+    }
+  }, 15000);
+}
+
 async function kabukCiz() {
+  bostaIzleBaslat();
   const k = S.kimlik;
   if (!document.getElementById('bglPen')) baglantiPenceresi();
   const gl = k.gorunumler;
   const sayfalar = SAYFALAR[S.gorunum];
+  if (S.gorunum === 'YONETICI' && S.sayfa === 'izin') { S.sayfa = 'talep'; S.talepSekme = 'IZIN'; }   // İzin Onayları, Bekleyen Talepler içinde alt sekme
   if (!S.sayfa || !sayfalar.some((x) => x[0] === S.sayfa)) S.sayfa = sayfalar[0][0];
   const icerik = h('div', { class: 'icerik' });
   const rozetler = {};
   const kpiKutu = h('div', { class: 'kpiler', hidden: true });
   const sekmeler = h('nav', { class: 'sekmeler', 'aria-label': 'Ana menü' });
   for (const [id, ad] of sayfalar) {
+    if (id === 'ayarlar') continue;   // Ayarlar sekme değil; Yenile düğmesinin yanındaki ⚙ düğmesiyle açılır
     const r = h('span', { class: 'sayac', hidden: true });
     rozetler[id] = r;
     sekmeler.append(h('button', { class: id === S.sayfa ? 'secili' : '', onclick: () => { S.sayfa = id; kabukCiz(); } }, ad, r));
@@ -37,7 +64,7 @@ async function kabukCiz() {
       S.sonYenileme = Date.now();
       const topla = (...a) => a.reduce((t, x) => t + (Number(x) || 0), 0);
       const yon = S.gorunum === 'YONETICI';
-      const ver = { talep: yon ? topla(c.bekleyenTalep, c.revizeBekleyen, c.ikameUyari) : topla(c.onaylanan, c.reddedilen, c.revizeBekleyen, c.ikameUyari), izin: yon ? topla(c.izinOnay) : 0, revize: topla(c.revizeBekleyen, c.ikameUyari), gorevim: topla(c.bildirim) };
+      const ver = { talep: yon ? topla(c.bekleyenTalep, c.revizeBekleyen, c.ikameUyari, c.izinOnay) : topla(c.onaylanan, c.reddedilen, c.revizeBekleyen, c.ikameUyari), izin: yon ? topla(c.izinOnay) : 0, revize: topla(c.revizeBekleyen, c.ikameUyari), gorevim: topla(c.bildirim) };
       const ipucu = { talep: yon ? 'Bekleyen talep ' + (c.bekleyenTalep || 0) : 'Onaylanan ' + (c.onaylanan || 0) + ' · reddedilen ' + (c.reddedilen || 0) + ' · revize bekleyen ' + (c.revizeBekleyen || 0) + ' · ikame ihtiyacı ' + (c.ikameUyari || 0),
         izin: 'Onay bekleyen izin ' + (c.izinOnay || 0), revize: 'Revize ' + (c.revizeBekleyen || 0) + ' · ikame uyarısı ' + (c.ikameUyari || 0), gorevim: 'Okunmamış bildirim ' + (c.bildirim || 0) };
       const renk = { talep: '', izin: 'sari', revize: 'kirmizi', gorevim: '' };
@@ -87,7 +114,8 @@ async function kabukCiz() {
       ortam ? h('span', { class: 'cip', style: ortam === 'CANLI' ? 'background:#7f1d1d;color:#fff' : '' }, ortam) : null,
       gl.length > 1 ? h('span', { class: 'cip' }, 'Kurulumsuz Merkezi Ağ İstemcisi • Çoklu Rol Yetkili') : h('span', { class: 'cip' }, 'Kurulumsuz Merkezi Ağ İstemcisi')),
     h('div', { class: 'g' }, h('span', { class: 'say', title: 'Veriler 30 saniyede bir kendiliğinden yenilenir' }, 'Oto-Yenileme: ', sayacEl),
-      h('button', { class: 'yen', onclick: elleYenile, title: 'Verileri şimdi yenile' }, '⟳ Yenile')));
+      h('button', { class: 'yen', onclick: elleYenile, title: 'Verileri şimdi yenile' }, '⟳ Yenile'),
+      h('button', { class: 'yen' + (S.sayfa === 'ayarlar' ? ' secili' : ''), title: 'Ayarlar (görünüm, yazı, kadro, sistem)', 'aria-label': 'Ayarlar', onclick: () => { S.sayfa = 'ayarlar'; kabukCiz(); } }, '⚙ Ayarlar')));
   // Yetkisi olmayan rollere ait düğmeler hiç gösterilmez; yalnızca kişinin rolleri listelenir.
   const rolDugmeleri = h('div', { class: 'rolsec' }, h('span', { class: 'et' }, gl.length > 1 ? 'Görünüm geçişi:' : 'Görünüm:'),
     gl.filter((g) => ROL_DUGME[g]).map((g) => h('button', { class: g === S.gorunum ? 'secili' : '', title: ROLAD[g], onclick: () => { if (g === S.gorunum) return; S.gorunum = g; S.sayfa = null; tercihYaz(g); kabukCiz(); } }, ROL_DUGME[g])));

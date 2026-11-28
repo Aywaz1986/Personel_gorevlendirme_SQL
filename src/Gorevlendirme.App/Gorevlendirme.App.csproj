@@ -15,6 +15,7 @@
     <Version>0.1.0</Version>
     <DebugType>none</DebugType>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>uygulama.ico</ApplicationIcon>
 
     <!-- Kurulum gerektirmeyen tek .exe: .NET çalışma zamanı içine gömülür -->
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>

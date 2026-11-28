@@ -5,6 +5,7 @@ Arayüz ham SQL göndermez; `window.chrome.webview.postMessage({id, cmd, args})`
 
 | Komut | Args | Dönüş | Kapı | Not |
 |---|---|---|---|---|
+| `uygulamaKapat` | – | `{kapaniyor}` | – | Boşta zaman aşımı (Dilim 33): Sorumlu/Saha 20 dk işlemsizse arayüz uygulamayı kapatır. |
 | `ping` | – | `{pong, time}` | – | |
 | `runtime` | – | uygulama/WebView2 sürümü, Windows kullanıcısı | – | |
 | `baglantiDene` | – | `{kayit:false}` ya da bağlantı sonucu (`kaynak`: ortak/ozluk/yerel) | – | `Gorevlendirme.baglanti.json` → `Ozluk.baglanti.json` → kullanıcıya özel (DPAPI) sırasıyla |

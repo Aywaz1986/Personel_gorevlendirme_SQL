@@ -3,6 +3,12 @@
 Her değişiklik önce **Yayınlanmamış** bölümüne yazılır; sürüm yükselince bölüm sürüm başlığına dönüştürülür.
 
 ## Yayınlanmamış
+### Dilim 33 – Sekme düzeni, zaman aşımı, simge (2026-11-28) — DEVAM EDİYOR (dal `dilim-33-sekme-duzeni`, Dilim 32 dalından)
+- **Ayarlar** sekme şeridinden kalktı; üst çubukta **⟳ Yenile** yanında **⚙ Ayarlar** düğmesi (her rolde).
+- **Bekleyen Görev Talepleri → Bekleyen Talepler.** Alt sekmeler: **Atanmış** (ilk, varsayılan) · Bekleyen · Revize & İkame (Yönetici) · **İzin Onayları** (Yönetici; eski üst sekme buraya taşındı, vekâleten izin/rapor girişi yönlendirmesi de buraya gelir). **Tümü** kaldırıldı. Sekme rozeti izin onaylarını da sayar.
+- **20 dk boşta zaman aşımı:** Sorumlu ve Saha rollerinde (Yönetici yetkisi olan muaf) 20 dk fare/klavye/dokunma yoksa uygulama kapanır; 19. dakikada uyarı. Yeni köprü komutu `uygulamaKapat`.
+- **Uygulama simgesi:** gönderilen simge (lacivert kare; takvim, takım elbiseli kişi, onay işareti) `src/Gorevlendirme.App/uygulama.ico` olarak exe ve pencere simgesi.
+- Oturum devir notu: Dilim 33 yapıldı; kalan Dilim 34 (vekâleten talep, takvim ÖÖ/ÖS izin görünürlüğü, takvim şablon yükleme+önizleme), 35 (Görevi Yönet prototipi), 36 (Analiz prototipi).
 ### Dilim 32 – Süre uzatmada otomatik atama + tarih seçici (2026-11-28) — DEVAM EDİYOR (dal `dilim-32-uzatma-atama`, Dilim 31 dalından)
 - **SQL 026:** `sp_revize_uygula` artık uzatmayla eklenen günlere, görevde zaten aktif atamalı kişileri otomatik atar (aynı dilim). Atlananlar: onaylı izin/aktif rapor günü, başka görevde aktif atama (kimse çıkarılmaz), gün kapasitesi. Atananlara `GOREV_UZATILDI` bildirimi; log `REVIZE_OTO_ATAMA`. `sp_revize_iste` sonucu `uyari` ile "X atama yapıldı; Y yapılamadı" özetini döner, arayüz bunu bildirimde gösterir. Haftalık Özet atamalardan okuduğu için yeni günler hemen yansır. Sınanmadı (SQL Server): `RevizeTests.Sure_uzatma_...`.
 - **Tarih seçici:** "Yeni son tarih" kutusunda yer tutucu yoktu, bu yüzden 📅 seçici eklenmiyordu; düzeltildi. `tools/arayuz_denetim.py`: tarih kutusunda `GG.AA.YYYY` yer tutucusu yoksa CI kırılır (yeni tarih alanı seçicisiz kalamaz).

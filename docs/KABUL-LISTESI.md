@@ -12,7 +12,7 @@ Her satır: ✔ çalışıyor · ✘ hata (not) · — uygulanamaz.
 ## Yönetici
 | Sekme | Kontrol |
 |---|---|
-| Bekleyen Görev Talepleri | Anlık arama (talep no, proje/faaliyet, talep sahibi, personel) · Revize & İkame Uyarıları açılır · İletişim varsayılan açık, gizle/göster · Atama onayı (çakışma seçenekleri) · Reddet/iptal · Yönet paneli: kişi çıkar, ikame, sorumlu devri, Revize (metin, saat, kişi sayısı, yeni son tarih → hafta sonu/tatil dahil), Erken bitir, Proje bağlamı, İptal |
+| Bekleyen Talepler | Anlık arama (talep no, proje/faaliyet, talep sahibi, personel) · Revize & İkame Uyarıları açılır · İletişim varsayılan açık, gizle/göster · Atama onayı (çakışma seçenekleri) · Reddet/iptal · Yönet paneli: kişi çıkar, ikame, sorumlu devri, Revize (metin, saat, kişi sayısı, yeni son tarih → hafta sonu/tatil dahil), Erken bitir, Proje bağlamı, İptal |
 | İzin Onayları | İzin/rapor kaydı, çakışma penceresi, ret, kısaltma, iptal, arşiv, CSV kaydı (Kaydet penceresi) |
 | Haftalık Özet | Hazır görünümler (odak, süzgeç sıfırlama) · arama · bölüm/proje/yerleşke süzgeçleri · kartta Ana + Alt Proje · karta tıkla: Görevi yönet / Süre uzat-Revize · izin/rapor kartları |
 | Ana Proje & Personel Analizi | Tablo/grafik açılır, süzgeçler çalışır |
@@ -36,3 +36,6 @@ Her satır: ✔ çalışıyor · ✘ hata (not) · — uygulanamaz.
 
 - [ ] Revize > Yeni son tarih ile uzatma: atanmış kişiler yeni günlere otomatik atanır, Haftalık Özet'te görünür; atlananlar bildirimde sayılır (Dilim 32).
 - [ ] Her tarih kutusunun yanında 📅 seçici var (Dilim 32).
+
+- [ ] Ayarlar yalnız Yenile yanındaki düğmeden açılır; Bekleyen Talepler alt sekmeleri Atanmış/Bekleyen/Revize/İzin Onayları (Dilim 33).
+- [ ] Sorumlu/Saha 20 dk boşta uygulama kapanır, Yönetici kapanmaz (Dilim 33).
