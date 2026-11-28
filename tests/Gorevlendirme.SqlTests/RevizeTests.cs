@@ -182,4 +182,21 @@ public class RevizeTests
         Assert.Contains("yapılamadı", P(r, "uyari"));
         Assert.Equal(1, await Bildirim(o.Saha1, "GOREV_UZATILDI"));
     }
+
+    [SqlFact]
+    public async Task Sorumlu_baska_sorumlu_adina_vekaleten_talep_acar()
+    {
+        var o = await KurAsync(); await using var _t = o.T;
+        await o.T.ExecAsync("INSERT INTO gorev.kullanici_yetki_istisna (hesap, sicil_no, sorumlu_mu) VALUES (N'TESTALAN\\vekil.sorumlu', N'1007', 1);");
+        Task<object> Ac(string? sahip) => TalepService.KaydetAsync(o.Sorumlu, null, sahip, "Toroman", null, "AY Kabul", "Ankara İvedik", "07:30", "16:35", "İş", null,
+            new[] { new TalepService.GunGirdisi(D(40), "TAM", 1) }, Array.Empty<string>(), false);
+        Assert.Equal("dogrulama", await Kod(() => Ac("1006")));                                                    // Sorumlu rolünde olmayan kişi adına açılamaz
+        var a = await Ac("1007");
+        var id = N(a.GetType().GetProperty("id")!.GetValue(a));
+        Assert.Equal("1007", Convert.ToString(await o.T.SkalerAsync($"SELECT sorumlu_sicil_no FROM gorev.talepler WHERE id = {id}")));
+        Assert.Contains(Liste(await TalepService.ListeAsync(o.Sorumlu, null)), x => N(x.GetType().GetProperty("id")!.GetValue(x)) == id);   // açan kişi listede görür
+        Assert.Equal("1007", Convert.ToString(await o.T.SkalerAsync($"SELECT sorumlu_sicil_no FROM gorev.talepler WHERE id = {id}")));
+        var pers = Liste(await SenaryoService.RolPersonelAsync(o.Sorumlu, "SORUMLU", null));
+        Assert.Contains(pers, x => P(x, "sicil") == "1007");                                                       // Sorumlu da vekil listesini okur
+    }
 }

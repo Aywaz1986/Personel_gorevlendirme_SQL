@@ -55,7 +55,7 @@ public class Dilim12Tests
         Assert.Equal(new HashSet<string> { "1001", "1008" }, sor);
         Assert.Single(Liste(await SenaryoService.RolPersonelAsync(o.Yonetici, "SAHA", "Sümbül")));
         Assert.Equal(3, Liste(await SenaryoService.RolPersonelAsync(o.Sorumlu, "SAHA", null)).Count);       // Sorumlu saha listesini görür
-        Assert.Equal("yetki", await Kod(() => SenaryoService.RolPersonelAsync(o.Sorumlu, "SORUMLU", null)));
+        Assert.Equal(sor, Liste(await SenaryoService.RolPersonelAsync(o.Sorumlu, "SORUMLU", null)).Select(x => P(x, "sicil")).ToHashSet());   // Sorumlu vekâleten talep için Sorumlu listesini de görür (Dilim 34)
         Assert.Equal("yetki", await Kod(() => SenaryoService.RolPersonelAsync(o.Saha1, "SAHA", null)));
         Assert.Equal("dogrulama", await Kod(() => SenaryoService.RolPersonelAsync(o.Yonetici, "YONETICI", null)));
     }

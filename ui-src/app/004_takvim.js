@@ -76,8 +76,14 @@ async function takvimSayfa() {
     const m = new Map();
     D.liste.forEach((x) => tkGunler(x.baslangic, x.bitis || x.baslangic, false).forEach((g) => {
       const t = TK_TUR_PROTO[x.tur] || 'RESMI_TATIL'; const k = m.get(g);
-      if (!k || x.zaman === 'TAM') m.set(g, { id: x.id, tur: t, dilim: x.zaman, aciklama: x.ad, rec: x });
+      if (!k || x.zaman === 'TAM') m.set(g, { id: x.id, tur: t, dilim: x.zaman, aciklama: x.ad, rec: x, yarimlar: x.zaman === 'TAM' ? [] : [x] });
+      else if (k.dilim !== 'TAM' && !k.yarimlar.some((y) => y.zaman === x.zaman)) k.yarimlar.push(x);   // aynı güne ÖÖ + ÖS birlikte eklenmiş: ikisi de görünür (Dilim 34)
     }));
+    for (const k of m.values()) if (k.yarimlar.length === 2) {
+      const oo = k.yarimlar.find((y) => y.zaman === 'OO'), os = k.yarimlar.find((y) => y.zaman === 'OS');
+      k.cift = { oo, os, ooTur: TK_TUR_PROTO[oo.tur] || 'RESMI_TATIL', osTur: TK_TUR_PROTO[os.tur] || 'RESMI_TATIL' };
+      k.aciklama = 'ÖÖ: ' + oo.ad + ' · ÖS: ' + os.ad;
+    }
     return m;
   };
   async function yukle() {
@@ -111,8 +117,12 @@ async function takvimSayfa() {
           if (imlec < 1 || imlec > gun) td += `<td class="${hsCls}"></td>`;
           else {
             const iso = takvimIso(new Date(D.yil, m, imlec)), it = harita.get(iso); let cls = 'day-btn';
-            if (it) { const sf = it.dilim === 'TAM' ? 'tam' : it.dilim === 'OO' ? 'oo' : 'os'; cls += ' cell-' + (it.tur === 'RESMI_TATIL' ? 'resmi' : it.tur === 'IDARI_IZIN' ? 'idari' : 'akademik') + '-' + sf; }
-            td += `<td class="${hsCls}"><button type="button" class="${cls}" ${SO ? 'style="cursor:default"' : `onclick="TK.tek('${iso}')"`} onmouseenter="TK.ipucu(event,'${iso}')" onmousemove="TK.ipucuTasi(event)" onmouseleave="TK.ipucuGizle()"><span>${imlec}</span>${it && it.dilim !== 'TAM' ? '<span class="half-dot"></span>' : ''}</button></td>`;
+            let stl = '';
+            if (it && it.cift) {   // ÖÖ + ÖS birlikte: aynı türse tam gün görünümü, farklı türse iki renkli çapraz
+              if (it.cift.ooTur === it.cift.osTur) { cls += ' cell-' + (it.cift.ooTur === 'RESMI_TATIL' ? 'resmi' : it.cift.ooTur === 'IDARI_IZIN' ? 'idari' : 'akademik') + '-tam'; }
+              else { const rk = (t) => (t === 'RESMI_TATIL' ? 'var(--color-resmi)' : t === 'IDARI_IZIN' ? 'var(--color-idari)' : 'var(--color-akademik)'); stl = `background:linear-gradient(135deg, ${rk(it.cift.ooTur)} 50%, ${rk(it.cift.osTur)} 50%);color:#fff;font-weight:800;`; }
+            } else if (it) { const sf = it.dilim === 'TAM' ? 'tam' : it.dilim === 'OO' ? 'oo' : 'os'; cls += ' cell-' + (it.tur === 'RESMI_TATIL' ? 'resmi' : it.tur === 'IDARI_IZIN' ? 'idari' : 'akademik') + '-' + sf; }
+            td += `<td class="${hsCls}"><button type="button" class="${cls}" ${SO || stl ? `style="${SO ? 'cursor:default;' : ''}${stl}"` : ''} ${SO ? '' : `onclick="TK.tek('${iso}')"`} onmouseenter="TK.ipucu(event,'${iso}')" onmousemove="TK.ipucuTasi(event)" onmouseleave="TK.ipucuGizle()"><span>${imlec}</span>${it && it.dilim !== 'TAM' && !it.cift ? '<span class="half-dot"></span>' : ''}</button></td>`;
           }
           imlec++;
         }
@@ -151,6 +161,7 @@ async function takvimSayfa() {
     ${SO ? '' : `<button type="button" class="btn btn-primary" onclick="TK.tek()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg><span>+ Yeni Tatil Günü Ekle</span></button>`}
     ${SO ? '' : `<button type="button" class="btn btn-success" onclick="TK.toplu('RANGE')"><span>📋 Toplu Tatil Ekle</span></button>`}
     ${SO ? '' : `<button type="button" class="btn btn-ghost" onclick="TK.csv()"><span>📥 Excel Şablonu İndir (CSV)</span></button>`}
+    ${SO ? '' : `<button type="button" class="btn btn-success" onclick="TK.sablon()"><span>📤 Şablon Yükle (Önizlemeli)</span></button>`}
   </div></div></header>
 <main class="container-max main-stack">
   <section class="kpi-grid">${kpi()}</section>
@@ -193,7 +204,7 @@ async function takvimSayfa() {
     const tip = kok.querySelector('.cal-tooltip'), it = gunKayitlari().get(iso);
     if (!it && SO) { tip.style.display = 'none'; return; }   // salt okunur kullanıcıda yalnız tatil olan günde ipucu çıkar ("tatil eklemek için tıklayın" yalnız Yönetici'ye)
     tip.innerHTML = !it ? `<div style="font-weight:800; color:var(--text-primary);">${takvimTarihYaz(iso)}</div><div style="color:var(--text-muted); margin-top:2px;">Standart Takvim Günü</div><div style="color:var(--color-resmi); font-weight:700; margin-top:5px;">Tatil eklemek için tıklayın →</div>`
-      : `<div style="font-weight:800; color:var(--text-primary); margin-bottom:5px;">${takvimTarihYaz(iso)}</div><div style="display:flex; flex-wrap:wrap; gap:5px; margin-bottom:6px;"><span class="type-badge ${tkRozet(it.tur)}">${tkTurEtiket(it.tur)}</span><span class="slot-badge ${it.dilim !== 'TAM' ? 'slot-badge-half' : ''}">${tkDilimEtiket(it.dilim)}</span></div><div style="font-weight:600; color:var(--text-primary); line-height:1.35;">${tkEsc(it.aciklama)}</div>`;
+      : `<div style="font-weight:800; color:var(--text-primary); margin-bottom:5px;">${takvimTarihYaz(iso)}</div><div style="display:flex; flex-wrap:wrap; gap:5px; margin-bottom:6px;"><span class="type-badge ${tkRozet(it.tur)}">${tkTurEtiket(it.tur)}</span><span class="slot-badge ${it.dilim !== 'TAM' ? 'slot-badge-half' : ''}">${it.cift ? 'ÖÖ + ÖS (iki yarım gün)' : tkDilimEtiket(it.dilim)}</span></div><div style="font-weight:600; color:var(--text-primary); line-height:1.35;">${tkEsc(it.aciklama)}</div>`;
     tip.style.display = 'block'; TK.ipucuTasi(ev);
   };
   TK.ipucuTasi = (ev) => { const tip = kok.querySelector('.cal-tooltip'); if (tip.style.display !== 'block') return; let l = ev.clientX + 14, t = ev.clientY + 14; if (l + 295 > innerWidth) l = ev.clientX - 295; if (t + 125 > innerHeight) t = ev.clientY - 125; tip.style.left = Math.max(8, l) + 'px'; tip.style.top = Math.max(8, t) + 'px'; };
@@ -201,17 +212,22 @@ async function takvimSayfa() {
 
   // 1) Tekil ekle / düzenle (güne tıklayınca o günü içeren kayıt düzenlenir)
   TK.tekKayit = (id) => { const x = D.liste.find((k) => k.id === id); if (x) TK.tek(x.baslangic); };
-  TK.tek = (iso) => {
+  TK.tek = (iso, dil) => {
     if (SO) return;
     const tarih = iso || D.yil + '-' + new Date().toISOString().slice(5, 10);
-    const var_ = gunKayitlari().get(tarih), x = var_ ? var_.rec : null, ay = (v, d) => (v === d ? ' selected' : '');
+    const var_ = gunKayitlari().get(tarih), ay = (v, d) => (v === d ? ' selected' : '');
+    // Aynı güne ÖÖ ve ÖS ayrı kayıt olarak eklenebilir (Dilim 34): dil verilirse o dilimin kaydı düzenlenir, yoksa yeni eklenir.
+    const yarimlar = var_ ? var_.yarimlar : [];
+    const x = dil ? (yarimlar.find((y) => y.zaman === dil) || null) : (var_ ? var_.rec : null);
+    const yeniDilim = dil && !x ? dil : null;
     const turSunucu = x ? x.tur : 'RESMI';
     modalAc(`<div class="modal-header"><div><h3 style="font-size:1rem; font-weight:800;">${x ? 'Tatil Günü Düzenle' : 'Yeni Tatil Günü Ekle'}</h3><p style="font-size:0.74rem; color:var(--text-muted); margin-top:2px;">Tam Gün veya Yarım Gün (ÖÖ / ÖS) olarak tanımlayabilirsiniz</p></div><button type="button" class="btn btn-ghost btn-icon" onclick="TK.kapat()">✕</button></div>
 <div class="modal-body"><div class="form-grid-2"><div><label class="form-label" for="tk-tarih">Tarih:</label><input type="text" id="tk-tarih" class="form-control" placeholder="GG.AA.YYYY" maxlength="10" inputmode="numeric" value="${takvimTarihYaz(x ? x.baslangic : tarih)}" /></div>
-<div><label class="form-label" for="tk-dilim">Zaman Dilimi:</label><select id="tk-dilim" class="form-control"><option value="TAM"${ay(x && x.zaman, 'TAM')}>Tam Gün</option><option value="OO"${ay(x && x.zaman, 'OO')}>Öğleden Önce (ÖÖ)</option><option value="OS"${ay(x && x.zaman, 'OS')}>Öğleden Sonra (ÖS)</option></select></div></div>
+<div><label class="form-label" for="tk-dilim">Zaman Dilimi:</label><select id="tk-dilim" class="form-control"><option value="TAM"${ay(x ? x.zaman : yeniDilim, 'TAM')}>Tam Gün</option><option value="OO"${ay(x ? x.zaman : yeniDilim, 'OO')}>Öğleden Önce (ÖÖ)</option><option value="OS"${ay(x ? x.zaman : yeniDilim, 'OS')}>Öğleden Sonra (ÖS)</option></select></div></div>
 <div class="form-grid-2"><div><label class="form-label" for="tk-bitis">Bitiş Tarihi (boşsa tek gün):</label><input type="text" id="tk-bitis" class="form-control" placeholder="GG.AA.YYYY" maxlength="10" inputmode="numeric" value="${x && x.bitis !== x.baslangic ? takvimTarihYaz(x.bitis) : ''}" /></div>
 <div><label class="form-label" for="tk-tur">Tatil Türü:</label><select id="tk-tur" class="form-control"><option value="RESMI_TATIL"${ay(turSunucu, 'RESMI')}>Resmi Tatil (Mavi #0070C0)</option><option value="IDARI_IZIN"${ay(turSunucu, 'IDARI')}>İdari & Kurumsal Tatil (Turuncu #FF9900)</option><option value="AKADEMIK_TATIL"${ay(turSunucu, 'AKADEMIK')}>Akademik Tatil (Turkuaz #0F766E)</option></select></div></div>
 <div><label class="form-label" for="tk-ad">Tatil / İdari İzin Açıklaması:</label><input type="text" id="tk-ad" class="form-control" maxlength="200" value="${x ? tkEsc(x.ad) : ''}" placeholder="Örn: Ramazan Bayramı Arifesi - Yıllık İzinden Kesilecek" /></div>
+${(x && x.zaman !== 'TAM') || yeniDilim ? `<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">${['OO', 'OS'].map((d) => { const var2 = yarimlar.find((y) => y.zaman === d); const gec = (x ? x.zaman : yeniDilim); return d === gec ? '' : `<button type="button" class="btn btn-ghost" onclick="TK.tek('${tarih}','${d}')">${var2 ? '✎ ' + tkDilimEtiket(d) + ' kaydını düzenle' : '＋ ' + tkDilimEtiket(d) + ' ekle (aynı güne)'}</button>`; }).join('')}</div>` : ''}
 <div class="modal-footer">${x ? `<button type="button" class="btn btn-danger" onclick="TK.silSor(${x.id})">🗑 Sil</button>` : '<span></span>'}<div style="display:flex; gap:8px;"><button type="button" class="btn btn-ghost" onclick="TK.kapat()">Vazgeç</button><button type="button" class="btn btn-success" onclick="TK.tekKaydet(${x ? x.id : 'null'})">Kaydet</button></div></div></div>`);
   };
   TK.tekKaydet = async (id) => {
@@ -266,6 +282,38 @@ ${sekme === 'RANGE' ? `<div class="form-grid-2"><div><label class="form-label" f
       ok.satirlar.forEach((x) => tkGunler(x.baslangic, x.bitis || x.baslangic, false).forEach((g) => satir.push(takvimTarihYaz(g) + ';' + tkTurEtiket(TK_TUR_PROTO[x.tur] || 'RESMI_TATIL') + ';' + tkDilimEtiket(x.zaman) + ';' + x.ad)));
       el('tk-yapistir').value = satir.join('\n'); bildir('Dosya Okundu', satir.length + ' gün satırı listeye eklendi; gözden geçirip "Satırları Ayrıştır ve Ekle"ye basın.', '#0070C0');
     } catch (e) { bildir('Dosya Okunamadı', e && e.message ? e.message : String(e), '#ef4444'); }
+  };
+
+  // 2b) Şablon dosyası yükle → önizleme (yazmaz) → onay → takvime ekle (Dilim 34). Dosya: şablondan indirilen CSV/TXT ya da Excel (.xlsx).
+  const sablonDurumAd = { YENI: 'Yeni', GUNCELLE: 'Güncellenecek', AYNI: 'Aynı (değişmez)', HATA: 'Hata' };
+  TK.sablon = () => {
+    D.sablon = null;
+    modalAc(`<div class="modal-header"><div><h3 style="font-size:1rem; font-weight:800;">📤 Şablon Dosyası Yükle</h3><p style="font-size:0.74rem; color:var(--text-muted); margin-top:2px;">Önce "Excel Şablonu İndir (CSV)" ile şablonu alıp doldurun; yüklediğinizde önizleme görürsünüz, onaylayınca takvime eklenir.</p></div><button type="button" class="btn btn-ghost btn-icon" onclick="TK.kapat()">✕</button></div>
+<div class="modal-body"><div><input type="file" id="tk-sablon-dosya" accept=".csv,.txt,.xlsx" onchange="TK.sablonOku(this)" aria-label="Şablon dosyası seç" /></div>
+<div id="tk-sablon-onizle" style="margin-top:10px;color:var(--text-muted)">Dosya seçin. Yıl bilgisi olmayan satırlar ${D.yil} yılına yazılır.</div>
+<div class="modal-footer"><span></span><div style="display:flex; gap:8px;"><button type="button" class="btn btn-ghost" onclick="TK.kapat()">Vazgeç</button><button type="button" class="btn btn-success" id="tk-sablon-onay" disabled onclick="TK.sablonOnayla()">Onayla ve takvime ekle</button></div></div></div>`);
+  };
+  TK.sablonOku = async (inp) => {
+    if (!inp.files || !inp.files.length) return;
+    const kutuEl = el('tk-sablon-onizle'), onay = el('tk-sablon-onay'); onay.disabled = true; D.sablon = null;
+    try {
+      const o = await takvimDosyaOku(inp.files[0]);
+      const ok = o.xlsx ? await Kopru.cagir('takvimXlsxOku', { base64: o.xlsx, yil: D.yil }) : await Kopru.cagir('takvimMetinOku', { metin: o.metin, yil: D.yil });
+      if (!ok.satirlar.length) { kutuEl.textContent = 'Dosyada tarih satırı bulunamadı.'; return; }
+      const satirlar = ok.satirlar.map((x, i) => ({ sira: i + 1, baslangic: x.baslangic, bitis: x.bitis || x.baslangic, zaman: x.zaman, tur: x.tur, ad: x.ad, yillik: x.yillik !== undefined ? x.yillik : x.tur === 'IDARI' }));
+      const on = await Kopru.cagir('takvimOnizle', { satirlar });
+      D.sablon = satirlar;
+      const say = (d) => on.filter((x) => x.durum === d).length, hata = say('HATA');
+      const sat = on.map((x) => `<tr><td>${x.sira}</td><td style="white-space:nowrap">${aralikYaz(x)}</td><td>${tkEsc(tkTurEtiket(TK_TUR_PROTO[x.tur] || 'RESMI_TATIL'))}</td><td>${tkEsc(tkDilimEtiket(x.zaman))}</td><td>${tkEsc(x.ad)}</td><td style="font-weight:700;color:${x.durum === 'HATA' ? '#b91c1c' : x.durum === 'AYNI' ? 'var(--text-muted)' : '#047857'}">${sablonDurumAd[x.durum] || x.durum}${x.hata ? ': ' + tkEsc(x.hata) : ''}</td></tr>`).join('');
+      kutuEl.innerHTML = `<div style="margin-bottom:6px;color:var(--text-primary);font-weight:700">${on.length} satır: ${say('YENI')} yeni · ${say('GUNCELLE')} güncellenecek · ${say('AYNI')} aynı · <span style="color:${hata ? '#b91c1c' : 'inherit'}">${hata} hatalı</span></div>
+<div style="max-height:320px;overflow:auto;border:1px solid var(--border-color,#cbd5e1);border-radius:8px"><table style="width:100%;border-collapse:collapse;font-size:0.8rem"><thead><tr><th>#</th><th>Tarih</th><th>Tür</th><th>Dilim</th><th>Açıklama</th><th>Durum</th></tr></thead><tbody>${sat}</tbody></table></div>${hata ? '<div style="margin-top:6px;color:#b91c1c">Hatalı satır varken ekleme yapılmaz; dosyayı düzeltip yeniden yükleyin.</div>' : ''}`;
+      onay.disabled = hata > 0 || (say('YENI') + say('GUNCELLE')) === 0;
+    } catch (e) { kutuEl.textContent = 'Dosya okunamadı: ' + (e && e.message ? e.message : String(e)); }
+  };
+  TK.sablonOnayla = async () => {
+    if (!D.sablon) return;
+    const n = D.sablon.length, r = await sunucu('takvimUygula', { satirlar: D.sablon }, null);
+    if (r) { D.sablon = null; TK.kapat(); bildir('Şablon Eklendi', n + ' satır takvime işlendi.', '#10b981'); }
   };
   TK.yapistirKaydet = async () => {
     const ham = el('tk-yapistir').value.trim();

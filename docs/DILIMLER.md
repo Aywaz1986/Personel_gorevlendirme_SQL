@@ -149,3 +149,6 @@ Bkz. CHANGELOG Dilim 32; sınama: docs/test-dilim-32.md.
 
 ## Dilim 33 – Sekme düzeni, zaman aşımı, simge (Murat 28.11.2026)
 Bkz. CHANGELOG Dilim 33; sınama: docs/test-dilim-33.md.
+
+## Dilim 34 – Vekâleten talep, takvim ÖÖ/ÖS, şablon yükleme (Murat 28.11.2026)
+Bkz. CHANGELOG Dilim 34; sınama: docs/test-dilim-34.md.

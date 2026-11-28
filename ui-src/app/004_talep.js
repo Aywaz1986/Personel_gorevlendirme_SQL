@@ -103,7 +103,7 @@ async function talepSayfa() {
       const tar = gunler.map((g) => g.tarih).sort();
       durum.f = {
         id: t && !kopya ? t.id : null, kod: t && !kopya ? t.kod : null,
-        sorumlu: t && !kopya && yonetici ? { sicil: t.sorumluSicil, ad: t.sorumluAdi } : null,
+        sorumlu: t && !kopya && (yonetici || t.sorumluSicil !== S.kimlik.sicilNo) ? { sicil: t.sorumluSicil, ad: t.sorumluAdi } : null,
         ana: t ? t.ana : '', alt: t && t.alt !== 'Genel' ? t.alt : '', faaliyet: t ? t.faaliyet : '', konum: t ? t.konum : '',
         sb: t ? t.saatBaslangic : '07:30', sbt: t ? t.saatBitis : '16:35', metin: t ? t.gorevMetni : '', nitelik: t && t.nitelik ? t.nitelik : '',
         bas: t && !kopya && tar.length ? tar[0] : '', bit: t && !kopya && tar.length ? tar[tar.length - 1] : '', kisi: 1,
@@ -321,7 +321,7 @@ async function talepSayfa() {
     function ozetGuncelle() {
       const v = (x) => String(x || '').trim() || '—';
       const alt = r.alt.value.trim();
-      const sorumlu = yonetici ? (f.sorumlu ? f.sorumlu.ad : 'Seçilmedi') : S.kimlik.adiSoyadi;
+      const sorumlu = f.sorumlu ? f.sorumlu.ad : (yonetici ? 'Seçilmedi' : S.kimlik.adiSoyadi);
       const d = {
         konum: v(r.konum.value), saat: r.sb.value && r.sbt.value ? r.sb.value.replace(':', '.') + ' - ' + r.sbt.value.replace(':', '.') : '—',
         tarih: talepTarihOzet(f.gunler), proje: v(r.ana.value) + (alt ? ' › ' + alt : ''), faaliyet: v(r.faaliyet.value),
@@ -341,10 +341,7 @@ async function talepSayfa() {
 
     // 1. Talep sahibi
     let sorumluBolum;
-    if (!yonetici) {
-      sorumluBolum = h('section', { class: 'kart' }, h('h2', null, '1. Talep sahibi (Proje Sorumlusu)'),
-        h('div', { class: 'satir', style: 'align-items:center' }, rozet(S.kimlik.adiSoyadi, 'bilgi'), h('span', { class: 'alt' }, 'Windows oturumunuzdan otomatik gelir.')));
-    } else {
+    {   // Yönetici: talep sahibi seçer; Sorumlu: kendisi otomatik, istersen başka bir Proje Sorumlusu adına vekâleten açar (Dilim 34)
       const dl = h('datalist', { id: 'dl-sorumlu' });
       let secenek = new Map(f.sorumlu ? [[f.sorumlu.ad + ' (' + f.sorumlu.sicil + ')', f.sorumlu]] : []); let zm = 0;
       const kutu = h('input', { type: 'text', class: 'metin', list: 'dl-sorumlu', placeholder: 'Ad yazın, listeden seçin…', 'aria-label': 'Talep sahibi', style: 'width:100%;box-sizing:border-box', value: f.sorumlu ? f.sorumlu.ad + ' (' + f.sorumlu.sicil + ')' : '' });
@@ -361,7 +358,8 @@ async function talepSayfa() {
         if (!l.length) kutu.placeholder = 'Sorumlu rolünde kişi yok (Ayarlar › Rol eşleştirme)';
       }).catch(hata);
       sorumluBolum = h('section', { class: 'kart' }, h('h2', null, '1. Talep sahibi (Proje Sorumlusu)'),
-        alan('Vekâleten açıyorsanız Proje Sorumlusu havuzundan seçin', kutu), dl);
+        yonetici ? null : h('div', { class: 'satir', style: 'align-items:center;margin-bottom:6px' }, rozet(S.kimlik.adiSoyadi, 'bilgi'), h('span', { class: 'alt' }, 'Windows oturumunuzdan otomatik gelir; aşağıyı boş bırakırsanız talep sizin adınıza açılır.')),
+        alan(yonetici ? 'Vekâleten açıyorsanız Proje Sorumlusu havuzundan seçin' : 'Vekâleten: başka bir Proje Sorumlusu adına açıyorsanız seçin (boş = siz)', kutu), dl);
     }
 
     // 3. Gün ve zaman dilimi

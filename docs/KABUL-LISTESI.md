@@ -39,3 +39,6 @@ Her satır: ✔ çalışıyor · ✘ hata (not) · — uygulanamaz.
 
 - [ ] Ayarlar yalnız Yenile yanındaki düğmeden açılır; Bekleyen Talepler alt sekmeleri Atanmış/Bekleyen/Revize/İzin Onayları (Dilim 33).
 - [ ] Sorumlu/Saha 20 dk boşta uygulama kapanır, Yönetici kapanmaz (Dilim 33).
+
+- [ ] Sorumlu vekâleten başka Sorumlu adına talep açar; açan listede görür (Dilim 34).
+- [ ] Takvimde aynı güne ÖÖ + ÖS eklenir ve ikisi görünür; Şablon Yükle önizlemeli (Dilim 34).
