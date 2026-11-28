@@ -46,7 +46,7 @@ public static class RevizeService
         var g = gunler?.ToList();
         var r = (await sql.ProcAsync("gorev.sp_revize_iste", ("@talep_id", talepId), ("@gorev_metni", Bos(gorevMetni)), ("@nitelik", Bos(nitelik)),
             ("@saat_baslangic", Bos(saatBaslangic)), ("@saat_bitis", Bos(saatBitis)), ("@gunler_json", g == null || g.Count == 0 ? null : GunlerJson(g)), ("@neden", Bos(neden)))).First();
-        return new { id = r["id"], kod = r["kod"], durum = r["durum"] };
+        return new { id = r["id"], kod = r["kod"], durum = r["durum"], uyari = r.TryGetValue("uyari", out var u) && u is string us ? us : null };
     }
 
     public static async Task<object> RevizeOnaylaAsync(SqlService sql, int id, IEnumerable<int>? cikar = null)

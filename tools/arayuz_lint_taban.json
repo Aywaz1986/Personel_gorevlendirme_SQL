@@ -1,0 +1,15 @@
+[
+ "no-use-before-define | 'ROL_DUGME' was used before it was defined. | const acilis = gorunumler.length ? (SAYFALAR[gorunumler[0]][0][1] + ' (' + ROL_DUGME[gorunumler[0]] + ')') : 'Erişim Engellendi (Kapsam Dışı",
+ "no-use-before-define | 'SAYFALAR' was used before it was defined. | const acilis = gorunumler.length ? (SAYFALAR[gorunumler[0]][0][1] + ' (' + ROL_DUGME[gorunumler[0]] + ')') : 'Erişim Engellendi (Kapsam Dışı",
+ "no-use-before-define | 'SAYFALAR' was used before it was defined. | const sekmeler = [...new Set(gorunumler.flatMap((v) => (SAYFALAR[v] || []).map((x) => x[1])))];",
+ "no-use-before-define | 'basKutu' was used before it was defined. | async function haftayaGit(bas) { d.bas = bas; await tatilYukle(); await yukle(); basKutu.value = takvimTarihYaz(d.bas); haftaSecYenile(); }",
+ "no-use-before-define | 'cocuk' was used before it was defined. | const altSayi = (x) => cocuk(x.id).reduce((t, c) => t + 1 + altSayi(c), 0);",
+ "no-use-before-define | 'cocuk' was used before it was defined. | const genelAlt = (anaId) => cocuk(anaId).find(genelMi) || null;",
+ "no-use-before-define | 'cocuk' was used before it was defined. | const gorunenCocuk = (x) => (x.seviye === 1 ? cocuk(x.id).flatMap((c) => (genelMi(c) ? cocuk(c.id) : [c])) : cocuk(x.id));",
+ "no-use-before-define | 'disTik' was used before it was defined. | const kapat = () => { kutu.remove(); document.removeEventListener('mousedown', disTik, true); document.removeEventListener('keydown', esc, t",
+ "no-use-before-define | 'esc' was used before it was defined. | const kapat = () => { kutu.remove(); document.removeEventListener('mousedown', disTik, true); document.removeEventListener('keydown', esc, t",
+ "no-use-before-define | 'esc' was used before it was defined. | const kapat = () => { perde.remove(); yan.remove(); document.removeEventListener('keydown', esc); };",
+ "no-use-before-define | 'kapat' was used before it was defined. | const esc = (e) => { if (e.key === 'Escape') kapat(); };",
+ "no-use-before-define | 'norm' was used before it was defined. | const genelMi = (x) => x.seviye === 2 && norm(x.ad) === 'genel';",
+ "no-use-before-define | 'toggle' was used before it was defined. | if (D.duzenle !== x.id) return h('span', { class: 'hv-ad ' + sinif + (x.aktif && !x.arsiv ? '' : ' pasif'), onclick: x.seviye < 4 ? () => to"
+]

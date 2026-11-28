@@ -48,7 +48,7 @@ async function talepYonetPaneli(talepId, geri, ilkAcik) {
       sorun.length ? sorun.map((r) => r.ad + ' ' + takvimTarihYaz(r.tarih) + ' ' + atamaTamAd(r.zaman) + ' ' + MUSAIT_AD[r.durum]).join(' · ') : 'hepsi müsait');
   }
   async function dene(is, mesaj, kapat) {
-    try { await is(); if (mesaj) toast(mesaj); st.acik = ''; st.ikame = null; st.cakisma = null; st.yeniKisi = null; st.rv = null; st.pr = null; st.havuz = null; if (kapat) geri(true); else await yukle(); } catch (e) { hata(e); }
+    try { const sonuc = await is(); if (mesaj) toast(mesaj + (sonuc && sonuc.uyari ? ' ' + sonuc.uyari : '')); st.acik = ''; st.ikame = null; st.cakisma = null; st.yeniKisi = null; st.rv = null; st.pr = null; st.havuz = null; if (kapat) geri(true); else await yukle(); } catch (e) { hata(e); }
   }
   const alan = (yer, uz) => h('input', { type: 'text', class: 'metin', placeholder: yer, 'aria-label': yer, maxlength: '300', style: 'flex:1;min-width:' + (uz || 240) + 'px' });
 
@@ -162,7 +162,7 @@ async function talepYonetPaneli(talepId, geri, ilkAcik) {
     // Süre: yeni son tarih (uzat ya da kısalt). Uzatmada hafta sonu ve tatiller atlanır; kısaltmada sonraki günler çıkar (atanmış kişi varsa Yönetici için "erken bitir" uygulanır).
     if (st.tatil === undefined) { st.tatil = []; izinTatiller().then((l) => { st.tatil = l; if (st.acik === 'revize') ciz(); }).catch(() => {}); }
     const orijSon = t.gunler.map((g) => g.tarih).sort().pop(), ilkGun = t.gunler.map((g) => g.tarih).sort()[0];
-    const sonKutu = h('input', { type: 'text', class: 'metin', inputmode: 'numeric', maxlength: '10', value: takvimTarihYaz(r.son || orijSon), style: 'width:120px', 'aria-label': 'Yeni son tarih' });
+    const sonKutu = h('input', { type: 'text', class: 'metin', inputmode: 'numeric', maxlength: '10', placeholder: 'GG.AA.YYYY', value: takvimTarihYaz(r.son || orijSon), style: 'width:120px', 'aria-label': 'Yeni son tarih' });
     sonKutu.addEventListener('input', () => { const x = sonKutu.value.replace(/\D/g, '').slice(0, 8); sonKutu.value = x.length > 4 ? x.slice(0, 2) + '.' + x.slice(2, 4) + '.' + x.slice(4) : x.length > 2 ? x.slice(0, 2) + '.' + x.slice(2) : x; });
     sonKutu.addEventListener('change', () => {
       const iso = talepTarihOku(sonKutu.value);

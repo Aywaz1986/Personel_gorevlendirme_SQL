@@ -39,3 +39,9 @@ Proje: Merkezi Personel Görevlendirme, Talep ve İzleme Sistemi. Özlük (SQL S
 - Depoya veri, parola, fotoğraf, Excel, `.db`, bağlantı bilgisi KONMAZ (`.gitignore`). Sınama verisi uydurmadır.
 - Kullanıcı Türkçe konuşur (Murat); yazışma, belge ve arayüz metinleri Türkçe.
 - Eski araç (`personel-gorevlendirme-araci`) ayrı bir projedir; karıştırma. Yalnızca atama mantığı ve veri kaynağı olarak başvurulur.
+
+## Arayüz denetimleri (Dilim 31, her dilimde)
+- Teslimden önce yerelde: `python3 tools/arayuz_denetim.py`, `python3 tools/arayuz_lint.py` (önce `npm ci --prefix tools/lint`), `python3 tests/ui/ui_duman.py --hizli` (Playwright gerekir). CI'da `arayuz` iş akışı aynısını çalıştırır.
+- Yeni köprü komutu: `docs/ARAYUZ.md`'ye satır ekle (yoksa denetim kırılır). Yeni "yalnız Yönetici" yordam: ilk satır `IF gorev.fn_yonetici_mi() = 0 THROW 50023, …` (YetkiMatrisiTests denetler).
+- Yeni sekme/düğme/akış: `docs/KABUL-LISTESI.md`'yi güncelle.
+- Bir hata yakalandıysa önce onu yakalayacak kontrolü (denetim/duman/SQL testi) ekle, sonra düzelt.

@@ -165,4 +165,21 @@ public class RevizeTests
         Assert.Single(Liste(await RevizeService.DevirListeAsync(o.Yonetici, id)));
         Assert.Equal(1, await Bildirim(o.Sorumlu, "SORUMLU_DEVIR"));
     }
+
+    [SqlFact]
+    public async Task Sure_uzatma_mevcut_atananlari_yeni_gunlere_otomatik_atar()
+    {
+        var o = await KurAsync(); await using var _t = o.T;
+        var id = await TalepAsync(o, G(D(40)), G(D(41)));
+        await Ata(o, id, "1002", D(40));
+        var diger = await TalepAsync(o, G(D(42)));
+        await Ata(o, diger, "1002", D(42));                                                                     // 1002 D(42)'de başka görevde
+        var r = await RevizeService.ReviziteAsync(o.Yonetici, id, null, null, null, null,
+            new[] { G(D(40)), G(D(41)), G(D(42)), G(D(43)) }, "süre uzadı");
+        Assert.Equal(1, N(await o.T.SkalerAsync($"SELECT COUNT(*) FROM gorev.atamalar WHERE talep_id = {id} AND sicil_no = N'1002' AND tarih = '{D(43)}' AND durum = 'AKTIF'")));
+        Assert.Equal(0, N(await o.T.SkalerAsync($"SELECT COUNT(*) FROM gorev.atamalar WHERE talep_id = {id} AND sicil_no = N'1002' AND tarih = '{D(42)}' AND durum = 'AKTIF'")));   // çakışan atlandı
+        Assert.Equal(1, await Aktif(o, diger, "1002"));                                                         // başka görevden çıkarılmadı
+        Assert.Contains("yapılamadı", P(r, "uyari"));
+        Assert.Equal(1, await Bildirim(o.Saha1, "GOREV_UZATILDI"));
+    }
 }
