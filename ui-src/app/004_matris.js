@@ -211,8 +211,9 @@ async function matrisSayfa() {
     const sinif = 'hz-kart gor' + (d.t.renk !== 'DURUM' ? ' ozel' : '') + (s.cakisma ? ' cak' : '') + dimSinif(s) + (yarim ? ' yarim' : '');
     const zE = yarim ? (z === 'OO' ? 'ÖÖ · ' : 'ÖS · ') : '';
     let ic;
-    if (yarim || ya === 'KOMPAKT') ic = [h('div', { class: 'hz-bas' }, zE + c.ana + (d.t.konum && c.konum ? ' • ' + c.konum : ''))];
-    else ic = [h('div', { class: 'hz-bas' }, c.ana), ya === 'DETAYLI' && c.faaliyet ? h('div', { class: 'hz-alt' }, c.faaliyet) : null, d.t.konum && c.konum ? h('div', { class: 'hz-alt' }, '📍 ' + c.konum) : null,
+    const altAd = c.alt && c.alt !== 'Genel' ? c.alt : '';   // Alt Proje doğrudan görünür (imleçle üzerine gelmek gerekmez)
+    if (yarim || ya === 'KOMPAKT') ic = [h('div', { class: 'hz-bas' }, zE + c.ana + (altAd ? ' › ' + altAd : '') + (d.t.konum && c.konum ? ' • ' + c.konum : ''))];
+    else ic = [h('div', { class: 'hz-bas' }, c.ana), altAd ? h('div', { class: 'hz-alt', style: 'font-weight:600' }, '↳ ' + altAd) : null, ya === 'DETAYLI' && c.faaliyet ? h('div', { class: 'hz-alt' }, c.faaliyet) : null, d.t.konum && c.konum ? h('div', { class: 'hz-alt' }, '📍 ' + c.konum) : null,
       d.t.kod && c.kod ? h('div', { class: 'hz-kod' }, c.kod) : null, d.t.sorumlu && c.sorumlu ? h('div', { class: 'hz-sor' }, '👤 ' + c.sorumlu + (d.t.gsm && c.sorumluGsm ? ' • ' + c.sorumluGsm : '')) : null];
     return h('button', { type: 'button', class: sinif, style: st, title: c.kod + ' · ' + c.ana + ' › ' + c.alt + ' › ' + c.faaliyet + ' · Sorumlu: ' + c.sorumlu, 'aria-label': k.ad + ', ' + takvimTarihYaz(g.iso) + ', ' + atamaTamAd(c.zaman) + ', ' + c.ana + ', ' + c.kod,
       onclick: () => hucreTikla(k, g, s) }, s.cakisma ? h('span', { class: 'hz-cakpil' }, '⚠️ İkame Gerekli') : null, ic);
@@ -241,10 +242,10 @@ async function matrisSayfa() {
   // ---- Hücre etkileşimi (modal) ----
   const satir = (em, ad, v) => h('div', { class: 'ozsatir' }, h('span', { class: 'oze' }, em + ' ' + ad + ':'), h('span', { class: 'ozd' }, v));
   // Haftalık Özet'ten görev yönetimi: talep yönet paneli (kişi çıkar/ikame, sorumlu devri, revize: metin/saat/süre, erken bitir, iptal, proje bağlamı) pencerede açılır.
-  async function gorevYonet(talepId, kod) {
+  async function gorevYonet(talepId, kod, acik) {
     let kapat = () => {};
     try {
-      const panel = await talepYonetPaneli(talepId, async () => { kapat(); await yukle(); if (S.sayacYukle) S.sayacYukle(); });
+      const panel = await talepYonetPaneli(talepId, async () => { kapat(); await yukle(); if (S.sayacYukle) S.sayacYukle(); }, acik);
       kapat = pencereAc('⚙ ' + (kod || 'Görev') + ' · yönetim', panel);
     } catch (e) { hata(e); }
   }
@@ -259,7 +260,7 @@ async function matrisSayfa() {
       kapat = pencereAc((s.cakisma ? '⚠️ ' : '') + 'Görev / Durum Detayı', h('div', null, h('div', { class: 'alt', style: 'margin-bottom:6px' }, baslik + ' · ' + atamaTamAd(c.zaman) + (k.gsm ? ' · 📞 ' + k.gsm : '')), cakis,
         satir('🔖', 'Talep', c.kod), satir('📑', 'Ana Proje', c.ana + (c.alt && c.alt !== 'Genel' ? ' › ' + c.alt : '')), satir('📡', 'Faaliyet', c.faaliyet), satir('📍', 'Yerleşke', c.konum), satir('🕣', 'Saat', String(c.saat).replace(/:/g, '.')),
         satir('🧍‍♂️', 'Proje sorumlusu', c.sorumlu + (c.sorumluGsm ? '  📞 ' + c.sorumluGsm : '')),
-        h('div', { class: 'satir', style: 'justify-content:flex-end;margin-top:12px' }, yonetici && c.talepId ? h('button', { type: 'button', class: 'ana', onclick: () => { kapat(); gorevYonet(c.talepId, c.kod); } }, '⚙ Görevi yönet') : null, kapatBtn())));
+        h('div', { class: 'satir', style: 'justify-content:flex-end;margin-top:12px' }, yonetici && c.talepId ? h('button', { type: 'button', class: 'ana', onclick: () => { kapat(); gorevYonet(c.talepId, c.kod); } }, '⚙ Görevi yönet') : null, yonetici && c.talepId ? h('button', { type: 'button', onclick: () => { kapat(); gorevYonet(c.talepId, c.kod, 'revize'); } }, '⏱ Süre uzat / Revize') : null, kapatBtn())));
       return;
     }
     if (s.tur === 'IZIN') {

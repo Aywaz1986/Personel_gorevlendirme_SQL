@@ -10,3 +10,5 @@
 .izv .form-control{max-width:100%}
 .izv .data-table td,.izv .data-table th{vertical-align:top}
 .izv .pill-group{max-width:100%}
+
+.izv .container-max{max-width:none;padding-left:0;padding-right:0}

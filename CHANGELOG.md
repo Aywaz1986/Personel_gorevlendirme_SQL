@@ -3,6 +3,16 @@
 Her değişiklik önce **Yayınlanmamış** bölümüne yazılır; sürüm yükselince bölüm sürüm başlığına dönüştürülür.
 
 ## Yayınlanmamış
+### Dilim 30 – Yedi düzeltme (2026-11-28) — DEVAM EDİYOR (dal `dilim-30-yedi-duzeltme`, Dilim 29 dalından)
+- **Havuz silme uyarısı:** efor 0 görünse de alt dalda (pasif/birleştirilmiş gizli kayıtlar dahil) talep varsa silinemiyordu ve neden belirsizdi. Migration 025 `sp_havuz_sil`: eski araçtan taşınan geçmiş görev kayıtları artık silmeyi engellemez (bağ kopar, proje adı `proje_adi_eski`'de kalır); talep bağlıysa mesaj kaç talep olduğunu, kodlarını ve gizli alt kayıt sayısını yazar. Talep geçmişi korunur (pasife alın).
+- **Geniş çalışma alanı:** içerik alanı üst çubukla aynı kenar boşluğuna (logonun solu … Görünüm Geçişi'nin sağı) yayılır; 1500 px sınırı kalktı (Takvim/İzin prototipleri dahil).
+- **Revize: süre uzat/kısalt:** Revize formuna "Yeni son tarih": uzatmada hafta sonu ve tatil günleri de dahil takvimdeki tüm günler eklenir (hafta sonu/tatilde de görev olabilir; bilgi satırı kaç hafta sonu/tatil günü olduğunu söyler), kısaltmada sonraki günler çıkar; atanmış kişi varsa Yönetici için "erken bitir" uygulanır (onay sorulur). (Sunucu gün listesini zaten destekliyordu; yalnız arayüz eklendi.)
+- **Haftalık Özet görev penceresi:** "⏱ Süre uzat / Revize" düğmesi Revize formunu doğrudan açar (Yönetici).
+- **Takvim ipucu:** salt okunur kullanıcıda (Sorumlu/Saha) "Tatil eklemek için tıklayın" yalnız Yönetici'ye gösterilir; boş günde ipucu çıkmaz, tatil günü ayrıntısı çıkar.
+- **Yenile = yetki/rol de:** Yenile (ve 30 sn otomatik yenileme, açık pencere/giriş yokken) kimlik, rol ve görünümleri yeniden okur; değişiklik varsa kabuk yeniden kurulur — uygulamayı kapatıp açmaya gerek kalmaz. Kayıttan düşen kişi yetkisiz ekrana geçer.
+- **Haftalık Özet:** görev kartında Alt Proje doğrudan görünür ("↳ Alt Proje"; "Genel" gizli; kompakt/yarım gün kartlarında "Ana › Alt").
+- **İletişim varsayılan açık:** Bekleyen Görev Talepleri kartlarında iletişim bilgileri otomatik yüklenip açık gelir; düğme gizle/göster yapar, kapatılan kart yeniden açılmaz.
+- SQL 025 SINANMADI (CI SqlTests: `Havuz_birlestirme_…` genişletildi).
 ### Dilim 29 – Dört düzeltme (2026-11-28) — DEVAM EDİYOR (dal `dilim-29-dort-duzeltme`, Dilim 28 dalından)
 - **Revize & İkame Uyarıları açılmıyordu:** `liste()` içinde `sekmeSatiri` const'u tanımından önce çağrılıyordu (TDZ hatası, ekran hiç çizilmiyordu). Çağrı tanımdan sonraya alındı.
 - **Haftalık Özet hızlı (hazır) görünümler:** odak etkinken odağa uymayan personel satırı gizlenir (uyan hücreler vurgulu, kalanlar soluk); "Gölbaşı Saha Odak" yerleşke adını Türkçe/büyük-küçük harf duyarsız "içerir" ile eşler (ör. "Ankara Gölbaşı"); hazır görünüm seçilince araç çubuğu süzgeçleri (bölüm, proje, yerleşke, arama, personel süzgeci) varsayılana döner; odak sonucu boşsa açıklayıcı mesaj.

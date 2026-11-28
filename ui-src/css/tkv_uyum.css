@@ -4,3 +4,5 @@
 .tkv .container-max{max-width:none}
 .tkv .tsec-sar{display:flex;width:100%}.tkv .tsec-sar>input{flex:1;min-width:0}
 .tkv button{font-family:inherit}
+
+.tkv .container-max{padding-left:0;padding-right:0}
