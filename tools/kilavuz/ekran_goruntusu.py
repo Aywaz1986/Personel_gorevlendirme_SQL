@@ -86,7 +86,7 @@ with sync_playwright() as P:
     pi.get_by_label('İzin başlangıç').fill('07.12.2026'); pi.get_by_label('İzin bitiş').fill('11.12.2026')
     pi.set_viewport_size({'width': 1200, 'height': 1300}); sh(pi, '12_izin_rapor')
     pq = ac(ben(True, False, False, False, ["YONETICI"]))
-    pq.locator('nav.sekmeler button', has_text='İzin Onayları').first.click(); pq.wait_for_timeout(500)
+    pq.locator('nav.sekmeler button', has_text='Bekleyen Talepler').first.click(); pq.wait_for_timeout(500); pq.locator('button', has_text='İzin Onayları').first.click(); pq.wait_for_timeout(500)
     pq.set_viewport_size({'width': 1500, 'height': 1100}); sh(pq, '12b_izin_yonetici')
     pq.get_by_role('button', name='❌ Reddet').first.click(); pq.wait_for_timeout(300); sh(pq, '12c_izin_ret')
     pq.keyboard.press('Escape'); pq.get_by_role('button', name='🏥 Sağlık raporları ve ikame uyarıları').click(); pq.wait_for_timeout(300); sh(pq, '12d_rapor_ikame')

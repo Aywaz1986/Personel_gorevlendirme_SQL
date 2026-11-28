@@ -17,6 +17,7 @@ public class MainForm : Form
     public MainForm()
     {
         Text = $"Personel Görevlendirme · {AppInfo.Version}";
+        try { if (Environment.ProcessPath is { } yol) Icon = Icon.ExtractAssociatedIcon(yol); } catch (Exception) { /* simge okunamazsa varsayılan kalır */ }
         Width = 1280;
         Height = 820;
         StartPosition = FormStartPosition.CenterScreen;

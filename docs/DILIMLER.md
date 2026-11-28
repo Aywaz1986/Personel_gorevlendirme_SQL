@@ -146,3 +146,6 @@ Bkz. CHANGELOG Dilim 31; elle kabul: docs/KABUL-LISTESI.md.
 
 ## Dilim 32 – Süre uzatma otomatik atama + tarih seçici (Murat 28.11.2026)
 Bkz. CHANGELOG Dilim 32; sınama: docs/test-dilim-32.md.
+
+## Dilim 33 – Sekme düzeni, zaman aşımı, simge (Murat 28.11.2026)
+Bkz. CHANGELOG Dilim 33; sınama: docs/test-dilim-33.md.

@@ -81,13 +81,13 @@ function talepTarihOku(s) {
 
 async function talepSayfa() {
   const yonetici = S.gorunum === 'YONETICI';
-  const durum = { gorunum: 'liste', filtre: '', liste: [], havuz: [], tatiller: [], f: null, bildirim: [], atama: null, atananAcik: {}, iletisimAcik: {}, iletisimKapali: {}, iletisimBekle: {}, ikame: [], tav: {}, adlar: {}, ara: '' };
+  const durum = { gorunum: 'liste', filtre: 'ATANMIS', izinKap: null, izinSayi: 0, liste: [], havuz: [], tatiller: [], f: null, bildirim: [], atama: null, atananAcik: {}, iletisimAcik: {}, iletisimKapali: {}, iletisimBekle: {}, ikame: [], tav: {}, adlar: {}, ara: '' };
   const araEl = h('input', { type: 'search', class: 'metin', placeholder: 'Ara: talep no, proje, faaliyet, konum, sorumlu, atanan personel…', style: 'min-width:300px;flex:1', 'aria-label': 'Talep ara' });
   araEl.addEventListener('input', () => { durum.ara = araEl.value; ciz(); araEl.focus(); try { araEl.setSelectionRange(araEl.value.length, araEl.value.length); } catch (e) { /* arama kutusu seçimi desteklenmiyorsa geç */ } });
   const kap = h('div', { style: 'display:flex;flex-direction:column;gap:14px' });
 
   async function yukle() {
-    try { durum.liste = await Kopru.cagir('talepListe', {}); durum.bildirim = await Kopru.cagir('bildirimListe', {}); if (yonetici) { try { const [rv, ik] = await Promise.all([Kopru.cagir('revizeListe', { durum: 'BEKLIYOR' }), Kopru.cagir('ikameBekleyenler', {})]); durum.revizeSayi = (Array.isArray(rv) ? rv.length : 0) + (Array.isArray(ik) ? ik.length : 0); } catch (e) { durum.revizeSayi = 0; } } try { durum.adlar = {}; for (const r of await Kopru.cagir('talepAtananAdlar', {})) durum.adlar[r.talepId] = r.adlar; } catch (e) { /* başlıkta ad görünmez */ } await tavsiyeYukle(); ciz(); } catch (e) { hata(e); }
+    try { durum.liste = await Kopru.cagir('talepListe', {}); durum.bildirim = await Kopru.cagir('bildirimListe', {}); if (yonetici) { try { const sy = await Kopru.cagir('sayaclar', {}); durum.izinSayi = Number(sy.izinOnay) || 0; } catch (e) { durum.izinSayi = 0; } try { const [rv, ik] = await Promise.all([Kopru.cagir('revizeListe', { durum: 'BEKLIYOR' }), Kopru.cagir('ikameBekleyenler', {})]); durum.revizeSayi = (Array.isArray(rv) ? rv.length : 0) + (Array.isArray(ik) ? ik.length : 0); } catch (e) { durum.revizeSayi = 0; } } try { durum.adlar = {}; for (const r of await Kopru.cagir('talepAtananAdlar', {})) durum.adlar[r.talepId] = r.adlar; } catch (e) { /* başlıkta ad görünmez */ } await tavsiyeYukle(); ciz(); } catch (e) { hata(e); }
   }
   // Otomatik/elle yenileme: yalnız liste görünümündeyken (açık form kaybolmasın).
   const talepYenile = async () => { if (durum.gorunum === 'liste') await yukle(); };
@@ -191,18 +191,20 @@ async function talepSayfa() {
     const chip = (kod, ad, n) => h('button', { class: durum.filtre === kod ? 'secili ana' : '', onclick: async () => {
       try {
         durum.filtre = kod;
-        if (kod === 'REVIZE') durum.revizeKap = await revizeIkameSayfa(); else S.yenile = talepYenile;
+        if (kod === 'REVIZE') durum.revizeKap = await revizeIkameSayfa(); else if (kod === 'IZIN') durum.izinKap = await izinRaporSayfa(); else S.yenile = talepYenile;
         ciz();
       } catch (e) { hata(e); }
     } }, ad + (n == null ? '' : ' (' + n + ')'));
     const sekmeSatiri = () => h('div', { class: 'satir', style: 'align-items:center' },
-      chip('', 'Tümü', durum.liste.length), chip('BEKLEYEN', 'Bekleyen', sayi((x) => talepDegistirilebilir(x.durum))),
       chip('ATANMIS', 'Atanmış', sayi((x) => ['KISMEN_ATANDI', 'TAMAMEN_ATANDI'].includes(x.durum))),
+      chip('BEKLEYEN', 'Bekleyen', sayi((x) => talepDegistirilebilir(x.durum))),
       yonetici ? chip('REVIZE', 'Revize & İkame Uyarıları', durum.revizeSayi) : null,
+      yonetici ? chip('IZIN', 'İzin Onayları', durum.izinSayi) : null,
       chip('KAPALI', 'Kapalı', sayi((x) => ['REDDEDILDI', 'GERI_CEKILDI', 'IPTAL'].includes(x.durum))),
       h('span', { style: 'flex:1' }), h('button', { class: 'ana', onclick: () => formAc(null, false) }, 'Yeni talep'));
     araEl.value = durum.ara;
     // (sekmeSatiri const olduğundan çağrı tanımdan sonra olmalı; önce çağrılırsa TDZ hatası verip ekran açılmıyordu)
+    if (f === 'IZIN' && yonetici && durum.izinKap) return h('div', { style: 'display:flex;flex-direction:column;gap:12px' }, bildirimBandi(), sekmeSatiri(), durum.izinKap);
     if (f === 'REVIZE' && yonetici && durum.revizeKap) return h('div', { style: 'display:flex;flex-direction:column;gap:12px' }, bildirimBandi(), sekmeSatiri(), durum.revizeKap);
     const durumRenk = { iyi: 'background:#d1fae5;color:#047857', uyari: 'background:#fef3c7;color:#b45309', kotu: 'background:#fee2e2;color:#b91c1c', bilgi: 'background:#e0e7ff;color:#4338ca', soluk: 'background:#e2e8f0;color:#475569' };
     const kartlar = goster.map((x) => {
@@ -473,5 +475,6 @@ async function talepSayfa() {
   await yukle();
   if (!kap.childNodes.length) ciz();
   if (S.acilis === 'yeniTalep') { S.acilis = null; await formAc(null, false); }
+  if (yonetici && S.talepSekme === 'IZIN') { S.talepSekme = null; try { durum.filtre = 'IZIN'; durum.izinKap = await izinRaporSayfa(); ciz(); } catch (e) { hata(e); } }
   return kap;
 }
