@@ -3,6 +3,12 @@
 Her değişiklik önce **Yayınlanmamış** bölümüne yazılır; sürüm yükselince bölüm sürüm başlığına dönüştürülür.
 
 ## Yayınlanmamış
+### Dilim 29 – Dört düzeltme (2026-11-28) — DEVAM EDİYOR (dal `dilim-29-dort-duzeltme`, Dilim 28 dalından)
+- **Revize & İkame Uyarıları açılmıyordu:** `liste()` içinde `sekmeSatiri` const'u tanımından önce çağrılıyordu (TDZ hatası, ekran hiç çizilmiyordu). Çağrı tanımdan sonraya alındı.
+- **Haftalık Özet hızlı (hazır) görünümler:** odak etkinken odağa uymayan personel satırı gizlenir (uyan hücreler vurgulu, kalanlar soluk); "Gölbaşı Saha Odak" yerleşke adını Türkçe/büyük-küçük harf duyarsız "içerir" ile eşler (ör. "Ankara Gölbaşı"); hazır görünüm seçilince araç çubuğu süzgeçleri (bölüm, proje, yerleşke, arama, personel süzgeci) varsayılana döner; odak sonucu boşsa açıklayıcı mesaj.
+- **Akademik Takvim Excel/CSV şablonu inmiyordu:** WebView2'de `<a download>` çalışmıyordu. Yeni `dosyaKaydet` komutu (C# kayıt penceresi, yalnız .csv/.txt, 5 MB sınır); aynı yöntem izin/rapor arşivi CSV'si ve eski veri raporunda da kullanıldı.
+- **Kullanıcı Yetki › Saha Personeli istisnası:** "Saha personeli listesine ekle" onay kutusu (varsayılan işaretli). Migration 024: `kullanici_yetki_istisna.saha_listede`; işaret kalkınca kişi saha ekranlarını kullanır (erişim sürer) ama saha personeli listelerinde (haftalık özet, atama adayları, öneri, sayaç) görünmez; istisna satırında "⊘ Listede değil" rozeti.
+- SQL 024 SINANMADI (CI SqlTests: `Istisnada_saha_listesine_ekle_…`). Önceki dilimin 023'ü ile birlikte şema 24.
 ### Dilim 28 – Haftalık Özet'ten görev yönetimi, atanmış talepte proje bağlamı (2026-11-27) — DEVAM EDİYOR (dal `dilim-28-ozet-yonetim`, Dilim 27 dalından)
 - Madde 2: Haftalık Özet'te görev kartı → "⚙ Görevi yönet" (yalnız Yönetici): mevcut talep yönet paneli pencerede açılır (kişi çıkar, ikame, sorumlu devri, revize [metin/saha notu/saat/gün başına kişi], erken bitir, iptal). Kapanınca matris yenilenir.
 - Madde 6: panele "Proje bağlamı…" (yalnız Yönetici): Ana › Alt › Faaliyet › Yerleşke havuzdan seçilir ya da yazılır. Migration 023 `sp_talep_proje_degistir` + `talepProjeDegistir`: yalnız KISMEN/TAMAMEN_ATANDI talep; atama/gün korunur, efor yeni yolda sayılır, kişilere ve sorumluya bildirim (`PROJE_DEGISTI`), audit log `TALEP_PROJE_DEGISTI`. Görev metni/saha notu/süre uzatma-kısaltma zaten Revize ve Erken bitir ile Yönetici'ce doğrudan uygulanır.

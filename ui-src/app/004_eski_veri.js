@@ -12,10 +12,7 @@ async function eskiVeriSayfa() {
     durum.bekle = false; ciz();
   }
 
-  function indir(metin, ad) {
-    const a = h('a', { href: URL.createObjectURL(new Blob(['﻿' + metin], { type: 'text/plain;charset=utf-8' })), download: ad });
-    document.body.appendChild(a); a.click(); a.remove();
-  }
+  function indir(metin, ad) { dosyaKaydet(ad, metin); }
 
   function ciz() {
     const s = durum.sonuc;

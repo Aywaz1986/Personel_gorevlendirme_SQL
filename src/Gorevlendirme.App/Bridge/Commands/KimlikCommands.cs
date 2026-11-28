@@ -32,7 +32,7 @@ public static class KimlikCommands
         r.Register("istisnaKaydet", async (st, a) =>
         {
             await KadroService.IstisnaKaydetAsync(st.RequireSql, Args.S(a, "hesap"), Args.S(a, "sicilNo"),
-                Args.B(a, "yonetici"), Args.B(a, "sorumlu"), Args.B(a, "saha"), Args.B(a, "aktif", true), Args.S(a, "aciklama"));
+                Args.B(a, "yonetici"), Args.B(a, "sorumlu"), Args.B(a, "saha"), Args.B(a, "aktif", true), Args.S(a, "aciklama"), Args.B(a, "sahaListede", true));
             return (object?)new { tamam = true };
         }, kapiGerekli: true);
         r.Register("istisnaSil", async (st, a) =>

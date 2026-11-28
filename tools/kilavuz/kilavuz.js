@@ -61,6 +61,7 @@ C.push(h2("4.1 Bölüm 1 — Yönetici tanımı ve kişi bazlı istisna roller")
 C.push(b("Kişi bazlı tanım **her zaman** bölüm eşleştirmesinin önündedir: kişinin rolleri yalnızca burada işaretlenenlerdir. Merkez Yönetici yalnız buradan atanır."));
 C.push(b("**+ Yeni Yetki / İstisna Tanımla**: Özlük kadrosundan personel seçilir (ad yazılarak aranır), bölüm ve bölüm varsayılan rolü salt okunur görünür; roller kartlardan seçilir (birden fazla olabilir), **gerekçe zorunludur**. Birden fazla rol seçilirse kişi girişte üst menüde görünüm geçişi görür."));
 C.push(b("Tabloda arama (ad, sicil, Windows kimliği, bölüm) ve süzgeç: Tümü / Merkez Yöneticiler / İstisna-Çoklu Roller / Pasifler. **● Aktif / ○ Pasif** düğmesi durumu değiştirir; **✎ Düzenle**, **🗑️ Kaldır** (kişi bölüm kuralına döner)."));
+C.push(b("**Saha Personeli (İstisna)** seçildiğinde altında **Saha personeli listesine ekle** kutusu çıkar (varsayılan işaretli). İşaret kaldırılırsa kişi saha ekranlarını kullanmaya devam eder ama saha personeli listelerinde (Haftalık Özet, atama adayları, sayaç) görünmez ve göreve atanamaz; tabloda \"⊘ Listede değil\" rozeti görünür."));
 C.push(note("**Son aktif yönetici** kaldırılamaz, pasife alınamaz, yönetici rolü silinemez: satırda 🔒 Son Yönetici görünür, işlem sunucuda reddedilir ve kırmızı güvenlik bandı çıkar."));
 C.push(...img("03_istisna","Kullanıcı Yetki: kartlar, kişi bazlı istisnalar ve bölüm eşleştirme.",1500));
 C.push(...img("28_yetki_modal","Yeni yetki / istisna tanımlama penceresi."));
@@ -136,6 +137,7 @@ C.push(note("**Reddetme.** Onay bekleyen talepte **Reddet…** ile ret nedeni (z
 C.push(note("**Sorumlu tarafı.** Taleplerim sayfasının üstünde yeni bildirimler görünür (atandı, reddedildi, görevden çıkarıldı); **Tümünü okundu say** ile kapanır. Atama yapılmış talepte **Atananlar** düğmesi gün gün kimin atandığını gösterir."));
 
 C.push(h2("8.4 Haftalık Özet (herkes)"));
+C.push(note("**Hazır görünümler:** bir hazır görünüm seçildiğinde araç çubuğu süzgeçleri sıfırlanır; odak (Müsait, Çakışma, Yerleşke) etkinse odağa uymayan personel satırı gizlenir, uyan hücreler vurgulanır."));
 C.push(note("**Yönetici:** Haftalık Özet'te bir görev kartına tıklayınca açılan pencerede **⚙ Görevi yönet** düğmesi vardır. Açılan panelde görevli personeli çıkarabilir/ikame atayabilir, sorumluyu devredebilir, metin, saha notu, saat ve gün başına kişi sayısını değiştirebilir, görevi erken bitirebilir ya da iptal edebilir ve **Proje bağlamı…** ile Ana Proje › Alt Proje › Faaliyet › Yerleşke yolunu değiştirebilirsiniz. Atamalar korunur; etkilenen kişilere bildirim gider."));
 C.push(p("**Haftalık Özet** sekmesi Yönetici, Proje Sorumlusu ve Saha personeli için açıktır; yalnız okunur. Satırda personel, sütunda 7 gün vardır; kart ÖÖ/ÖS bölünmüş olabilir."));
 C.push(n("**Üst kartlar:** Toplam Saha Personeli, Görevli / Müsait Adam-Gün (Tam = 1,0; ÖÖ/ÖS = 0,5), İzin / Rapor ve **İkame / Çakışma Uyarısı** (görevi olan günde izin ya da rapor çıkmışsa).","n8"));

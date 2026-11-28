@@ -56,6 +56,20 @@ INSERT INTO gorev.rol_bolum_eslestirme (bolum, rol) VALUES (N'Bölüm A', N'SAHA
     }
 
     [SqlFact]
+    public async Task Istisnada_saha_listesine_ekle_kaldirilinca_erisim_surer_ama_listede_gorunmez()
+    {
+        await using var t = await KurulmusAsync();
+        var (hesap, kisi) = await t.KisiAsync();
+        await t.ExecAsync($"INSERT INTO gorev.personel (sicil_no, adi_soyadi, bolum, kullanici_adi) VALUES (N'1', N'Test Kişi', N'Bölüm A', N'{hesap}');");
+        await t.ExecAsync($"INSERT INTO gorev.kullanici_yetki_istisna (hesap, saha_mi) VALUES (N'{hesap}', 1);");   // saha_listede varsayılan 1
+        Assert.Equal(1, Convert.ToInt32(await t.SkalerAsync("SELECT COUNT(*) FROM gorev.fn_rol_kisileri(N'SAHA') WHERE sicil_no = N'1'")));
+        await t.ExecAsync($"UPDATE gorev.kullanici_yetki_istisna SET saha_listede = 0 WHERE hesap = N'{hesap}';");
+        var k = await KimlikService.BenAsync(kisi);
+        Assert.True(k.Saha);                                                                                         // saha ekranlarını kullanmaya devam eder
+        Assert.Equal(0, Convert.ToInt32(await t.SkalerAsync("SELECT COUNT(*) FROM gorev.fn_rol_kisileri(N'SAHA') WHERE sicil_no = N'1'")));   // ama listelenmez
+    }
+
+    [SqlFact]
     public async Task Eslesmesi_olmayan_bolum_ve_pasif_personel_rol_almaz()
     {
         await using var t = await KurulmusAsync();

@@ -97,6 +97,7 @@ Girdi sütunları (başlık yoksa sıra): Tarih; Ad; Zaman dilimi; Tür (son iki
 ## Dilim 8 komutları (iptal, erken bitiş, ikame, revize, devir)
 | Komut | Girdi | Çıktı | Yetki | Not |
 |---|---|---|---|---|
+| `dosyaKaydet` | `ad (.csv/.txt), metin` | `{iptal, yol?}` | herkes (kapı yok) | C# kayıt penceresi açar; UTF-8 BOM ile yazar |
 | `talepProjeDegistir` | `talepId, ana, alt?, faaliyet, konum, neden?` | `{id, havuzId}` | Yönetici | yalnız KISMEN/TAMAMEN_ATANDI; adlarla yol çözülür (yoksa oluşturulur; pasif/birleştirilmiş ad reddedilir); atamalar korunur, bildirim + log |
 | `talepIptal` | `id, neden` (≥3) | `{tamam}` | Yönetici; Sorumlu kendi talebi | yalnız KISMEN/TAMAMEN_ATANDI ve geçmiş günü AKTIF atama yoksa; atamalar kalkar, kişilere `GOREV_IPTAL` bildirimi |
 | `talepErkenBitir` | `id, yeniSon, neden` | `{talepId, durum}` | Yönetici; Sorumlu kendi talebi | yeni son gün sonrası gün ve atamalar kalkar (`ERKEN_BITIS` bildirimi) |

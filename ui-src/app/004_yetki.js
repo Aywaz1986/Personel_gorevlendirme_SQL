@@ -71,10 +71,10 @@ async function yetkiSayfa() {
       return h('tr', null,
         h('td', null, h('div', { class: 'yt-ad' }, i.adiSoyadi || '-'), h('div', { class: 'yt-alt' }, h('span', null, 'Sicil: ', h('b', null, i.sicilNo || '-')), ' • ', h('span', { class: 'yt-win' }, i.hesap))),
         h('td', null, h('span', { class: 'yt-pill', title: 'Özlük kadrosundan salt okunur gelir' }, '🏢 ' + ((k && k.bolum) || '-'))),
-        h('td', null, h('div', { class: 'yt-rozetler' }, r.map(rolRozet), r.length > 1 ? h('span', { class: 'yt-rb coklu', title: 'Birden fazla rolü olduğu için üst menüde görünüm geçişi açılır' }, '⇄ Üst Menü Görünüm Geçişi') : null)),
+        h('td', null, h('div', { class: 'yt-rozetler' }, r.map(rolRozet), i.saha && i.sahaListede === false ? h('span', { class: 'yt-rb', title: 'Saha ekranlarını kullanır; saha personeli listelerinde görünmez ve göreve atanamaz' }, '⊘ Listede değil') : null, r.length > 1 ? h('span', { class: 'yt-rb coklu', title: 'Birden fazla rolü olduğu için üst menüde görünüm geçişi açılır' }, '⇄ Üst Menü Görünüm Geçişi') : null)),
         h('td', { style: 'max-width:300px;font-size:12px;color:var(--soluk)' }, i.aciklama || h('i', null, 'Gerekçe girilmemiş')),
         h('td', null, h('div', { class: 'yt-durum' }, h('button', { type: 'button', class: 'yt-tog ' + (i.aktif ? 'ak' : 'pa'), title: 'Aktif / Pasif durumunu değiştir',
-          onclick: () => istCagir('istisnaKaydet', { hesap: i.hesap, sicilNo: i.sicilNo, yonetici: i.yonetici, sorumlu: i.sorumlu, saha: i.saha, aktif: !i.aktif, aciklama: i.aciklama }, i.aktif ? 'Yetki kaydı pasife alındı.' : 'Yetki kaydı aktifleştirildi.', i.yonetici) }, i.aktif ? '● Aktif' : '○ Pasif'),
+          onclick: () => istCagir('istisnaKaydet', { hesap: i.hesap, sicilNo: i.sicilNo, yonetici: i.yonetici, sorumlu: i.sorumlu, saha: i.saha, sahaListede: i.sahaListede !== false, aktif: !i.aktif, aciklama: i.aciklama }, i.aktif ? 'Yetki kaydı pasife alındı.' : 'Yetki kaydı aktifleştirildi.', i.yonetici) }, i.aktif ? '● Aktif' : '○ Pasif'),
           son ? h('span', { class: 'yt-kilit' }, '🔒 Son Yönetici') : null)),
         h('td', { style: 'text-align:right;white-space:nowrap' }, h('span', { class: 'yt-isl' }, h('button', { type: 'button', class: 'hv-b', onclick: () => modalAc(i) }, '✎ Düzenle'),
           h('button', { type: 'button', class: 'hv-b kotu', onclick: () => { if (!confirm((i.adiSoyadi || i.hesap) + ' için bireysel istisna kaldırılsın mı? Kişi artık Özlük bölüm kuralına tabi olur.')) return; istCagir('istisnaSil', { hesap: i.hesap }, 'Kişi bazlı yetki kaldırıldı.', i.aktif && i.yonetici); } }, '🗑️ Kaldır'))));
@@ -136,7 +136,7 @@ async function yetkiSayfa() {
 
   // ---- Yeni / düzenle penceresi ----
   function modalAc(i) {
-    const duz = !!i, f = { yon: !!(i && i.yonetici), sor: i ? !!i.sorumlu : true, saha: !!(i && i.saha), akt: i ? !!i.aktif : true };
+    const duz = !!i, f = { yon: !!(i && i.yonetici), sor: i ? !!i.sorumlu : true, saha: !!(i && i.saha), sahaListe: i ? i.sahaListede !== false : true, akt: i ? !!i.aktif : true };
     const dl = h('datalist', { id: 'ytKadro' }, D.kadro.filter((k) => k.aktif).slice(0, 3000).map((k) => h('option', { value: k.adiSoyadi + ' (Sicil: ' + k.sicilNo + ')' })));
     const kisi = h('input', { class: 'metin', list: 'ytKadro', autocomplete: 'off', placeholder: 'Ad Soyad yazarak arayın…', style: 'width:100%', disabled: duz, 'aria-label': 'Özlük personeli' });
     const hesap = h('input', { class: 'metin', style: 'width:100%', placeholder: 'ALAN\\kullanici', 'aria-label': 'Windows hesabı' });
@@ -154,6 +154,11 @@ async function yetkiSayfa() {
       roller.replaceChildren(kart(0, 'yon', '🛡️ Merkez Yönetici', 'Tüm projelere, haftalık özete, izin onaylarına ve yetki ekranlarına tam erişim sağlar.', '#7c3aed'),
         kart(0, 'sor', '📋 Proje Sorumlusu (İstisna)', 'Kişinin bölümü saha/kapsam dışı olsa dahi görev talebi açabilmesini sağlar.', 'var(--vurgu)'),
         kart(0, 'saha', '👷 Saha Personeli (İstisna)', 'Görevlendirme havuzuna dahil olur; saha görevlerini ve kişisel izin/rapor ekranını kullanır.', 'var(--iyi)'));
+      if (f.saha) {
+        const cb = h('input', { type: 'checkbox', checked: f.sahaListe, onchange: () => { f.sahaListe = cb.checked; rolCiz(); } });
+        roller.append(h('label', { class: 'onay', style: 'margin:-2px 0 0 28px;display:flex;gap:8px;align-items:flex-start' }, cb, h('span', null, h('b', null, 'Saha personeli listesine ekle'),
+          h('span', { class: 'yt-alt', style: 'display:block' }, f.sahaListe ? 'Kişi saha personeli olarak listelenir; haftalık özette görünür ve göreve atanabilir.' : 'İşaret kaldırıldı: kişi saha ekranlarını kullanır ama saha personeli listelerinde görünmez ve göreve atanamaz.'))));
+      }
       const n = [f.yon, f.sor, f.saha].filter(Boolean).length;
       uyar.replaceChildren(...(n > 1 ? [h('div', { class: 'yt-bant uyari' }, '⇄ Çoklu Rol Tespit Edildi: Bu personel girişte üst menüde ', h('b', null, 'Görünüm Geçiş Anahtarı'), ' görecek.')] : []));
     }
@@ -165,7 +170,7 @@ async function yetkiSayfa() {
       if (!f.yon && !f.sor && !f.saha) { toast('Lütfen en az bir sistem rolü seçin.', 'uyari'); return; }
       if (!ack.value.trim()) { toast('Yetki gerekçesi zorunludur.', 'uyari'); return; }
       kapat();
-      await istCagir('istisnaKaydet', { hesap: hesap.value.trim(), sicilNo: sicil, yonetici: f.yon, sorumlu: f.sor, saha: f.saha, aktif: f.akt, aciklama: ack.value.trim() }, 'Yetki tanımı kaydedildi.', !!(i && i.aktif && i.yonetici && !f.yon));
+      await istCagir('istisnaKaydet', { hesap: hesap.value.trim(), sicilNo: sicil, yonetici: f.yon, sorumlu: f.sor, saha: f.saha, sahaListede: f.saha ? f.sahaListe : true, aktif: f.akt, aciklama: ack.value.trim() }, 'Yetki tanımı kaydedildi.', !!(i && i.aktif && i.yonetici && !f.yon));
     };
     const akt = h('input', { type: 'checkbox', checked: f.akt, onchange: () => { f.akt = akt.checked; } });
     kapat = pencereAc(duz ? '✎ Yönetici / Kişi Bazlı İstisna Rolünü Düzenle' : '+ Yeni Yetki / İstisna Tanımla', h('div', { style: 'display:flex;flex-direction:column;gap:10px' }, dl,
