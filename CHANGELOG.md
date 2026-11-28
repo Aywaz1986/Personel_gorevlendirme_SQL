@@ -3,6 +3,14 @@
 Her değişiklik önce **Yayınlanmamış** bölümüne yazılır; sürüm yükselince bölüm sürüm başlığına dönüştürülür.
 
 ## Yayınlanmamış
+### Dilim 31 – Test altyapısı (2026-11-28) — DEVAM EDİYOR (dal `dilim-31-test-altyapi`, Dilim 30 dalından)
+Amaç: "düğme var, işlev yok / ekran hiç açılmıyor" türü hataları dilim teslim edilmeden CI'da yakalamak.
+- `tools/arayuz_denetim.py` (+ kendi testi `tools/test_arayuz_denetim.py`): arayüzün çağırdığı her köprü komutu C#'ta kayıtlı mı, C# komutları `docs/ARAYUZ.md`'de belgeli mi, arayüzün gönderdiği alan adları işleyicinin okuduklarıyla uyuşuyor mu. İlk koşuda 131 çağrı / 105 komut: 0 hata.
+- `tools/arayuz_lint.py` + `tools/lint/` (ESLint 9, yalnız geliştirme/CI): tanımsız değişken, tanımlanmadan kullanım (TDZ), yinelenen anahtar, ulaşılamaz kod… Eski bilinen bulgular `tools/arayuz_lint_taban.json`'da; taban dışı bulgu hata.
+- `tests/ui/ui_duman.py` (Playwright, sahte köprü `tools/kilavuz/mock_kopru.py`): 3 rol × her sekme × görünür düğmelere tek tek basılır; `pageerror`, konsol hatası ve JS hatası gibi görünen hata-toast'ı yakalanır (Dilim 29'daki Revize&İkame TDZ hatası eski kodla denendi ve yakalandı). Gürültü tabanı `tests/ui/duman_taban.json` (şu an boş).
+- `YetkiMatrisiTests`: "yalnız Yönetici" işaretli her yordam, Sorumlu ve Saha'ya (tüm parametreler NULL olsa da) önce yetki hatası vermeli. Yeni yönetici yordamında yetki denetimi unutulursa kırılır.
+- `.github/workflows/arayuz.yml` (`denetim`, `duman` işleri); `docs/KABUL-LISTESI.md` (rol × sekme elle kabul listesi).
+- Kılavuz ekran görüntüsü betiği sahte köprüyü `mock_kopru.py` modülünden alır (davranış değişmedi).
 ### Dilim 30 – Yedi düzeltme (2026-11-28) — DEVAM EDİYOR (dal `dilim-30-yedi-duzeltme`, Dilim 29 dalından)
 - **Havuz silme uyarısı:** efor 0 görünse de alt dalda (pasif/birleştirilmiş gizli kayıtlar dahil) talep varsa silinemiyordu ve neden belirsizdi. Migration 025 `sp_havuz_sil`: eski araçtan taşınan geçmiş görev kayıtları artık silmeyi engellemez (bağ kopar, proje adı `proje_adi_eski`'de kalır); talep bağlıysa mesaj kaç talep olduğunu, kodlarını ve gizli alt kayıt sayısını yazar. Talep geçmişi korunur (pasife alın).
 - **Geniş çalışma alanı:** içerik alanı üst çubukla aynı kenar boşluğuna (logonun solu … Görünüm Geçişi'nin sağı) yayılır; 1500 px sınırı kalktı (Takvim/İzin prototipleri dahil).

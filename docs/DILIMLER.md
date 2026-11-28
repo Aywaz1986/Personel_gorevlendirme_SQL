@@ -140,3 +140,6 @@ Bkz. CHANGELOG Dilim 29; sınama: docs/test-dilim-29.md.
 
 ## Dilim 30 – Yedi düzeltme (Murat 28.11.2026)
 Bkz. CHANGELOG Dilim 30; sınama: docs/test-dilim-30.md.
+
+## Dilim 31 – Test altyapısı (Murat 28.11.2026)
+Bkz. CHANGELOG Dilim 31; elle kabul: docs/KABUL-LISTESI.md.
